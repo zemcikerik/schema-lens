@@ -1,7 +1,13 @@
 <div class="app-root">
-  <app-top-bar/>
+  <app-top-bar />
 
   <div class="app-content">
+    {{ ('Test' | translate)() }}
 
+    @if (visible()) {
+      {{ setLanguage$ | async | json }}
+    }
+
+    <button (click)="visible.set(true)">Test</button>
   </div>
 </div>
