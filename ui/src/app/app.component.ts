@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
 import { CodeEditorComponent } from './shared/components/code-editor/code-editor.component';
+import { TopBarComponent } from './top-bar.component';
 
 @Component({
   selector: 'app-root',
@@ -10,6 +11,7 @@ import { CodeEditorComponent } from './shared/components/code-editor/code-editor
   imports: [
     RouterModule,
     CodeEditorComponent,
+    TopBarComponent,
   ],
 })
 export class AppComponent {

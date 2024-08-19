@@ -1,0 +1,11 @@
+@use '@angular/material' as mat;
+@import '../scss/theme';
+
+.app-root {
+  height: 100%;
+  background-color: mat.get-theme-color($theme, surface-container);
+}
+
+.app-content {
+  height: calc(100vh - 4rem);
+}
