@@ -1,10 +1,30 @@
 @use '@angular/material' as mat;
 @import './scss/theme';
 
+@import './scss/components/project-object-list';
+@import './scss/components/project-selector';
+@import './scss/components/top-bar';
+
 @include mat.core();
+
+@include app-project-object-list();
+@include app-project-selector();
+@include app-top-bar();
 
 html {
   @include mat.core-theme($theme);
+
+  @include mat.button-theme($theme);
+  @include mat.expansion-theme($theme);
+  @include mat.form-field-theme($theme);
+  @include mat.icon-theme($theme);
+  @include mat.icon-button-theme($theme);
+  @include mat.list-theme($theme);
+  @include mat.progress-spinner-theme($theme);
+  @include mat.ripple-theme($theme);
+  @include mat.select-theme($theme);
+  @include mat.toolbar-theme($theme);
+  @include mat.tooltip-theme($theme);
 }
 
 html, body {
@@ -14,4 +34,27 @@ html, body {
 body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.app-root {
+  height: 100%;
+  background-color: mat.get-theme-color($theme, surface-container);
+}
+
+.app-content {
+  --app-content-height: var(--mat-toolbar-standard-height);
+  display: flex;
+  height: calc(100vh - var(--app-content-height));
+  overflow: hidden;
+
+  @media (max-width: 599px) {
+    --app-content-height: var(--mat-toolbar-mobile-height);
+  }
+}
+
+.app-loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 }

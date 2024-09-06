@@ -1,26 +1,31 @@
-import { Component, inject, signal } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { CodeEditorComponent } from './shared/components/code-editor/code-editor.component';
-import { TopBarComponent } from './top-bar.component';
-import { TranslatePipe } from './core/translate/translate.pipe';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { TranslateService } from './core/translate/translate.service';
-import { AsyncPipe, JsonPipe } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { delay } from 'rxjs';
+import { LayoutMainComponent } from './layout-main.component';
+import { ProjectSelectorComponent } from './projects/components/project-selector/project-selector.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss',
+  changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    RouterModule,
-    CodeEditorComponent,
-    TopBarComponent,
-    TranslatePipe,
-    AsyncPipe,
-    JsonPipe,
+    MatProgressSpinner,
+    LayoutMainComponent,
+    ProjectSelectorComponent,
   ],
 })
 export class AppComponent {
-  visible = signal(false);
-  setLanguage$ = inject(TranslateService).setLanguage('en');
+
+  coreDataLoaded = signal(false);
+
+  constructor() {
+    inject(TranslateService).setLanguage('en').pipe(
+      delay(1500),
+      takeUntilDestroyed(),
+    ).subscribe(() => this.coreDataLoaded.set(true));
+  }
+
 }

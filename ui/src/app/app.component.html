@@ -1,13 +1,11 @@
 <div class="app-root">
-  <app-top-bar />
-
-  <div class="app-content">
-    {{ ('Test' | translate)() }}
-
-    @if (visible()) {
-      {{ setLanguage$ | async | json }}
-    }
-
-    <button (click)="visible.set(true)">Test</button>
-  </div>
+  @if (coreDataLoaded()) {
+    <app-layout-main>
+      <app-project-selector ngProjectAs="top-bar" />
+    </app-layout-main>
+  } @else {
+    <div class="app-loading">
+      <mat-progress-spinner mode="indeterminate" [strokeWidth]="7" [diameter]="72" />
+    </div>
+  }
 </div>

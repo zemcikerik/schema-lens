@@ -1,0 +1,16 @@
+@use '@angular/material' as mat;
+@import '../theme';
+
+@mixin app-top-bar($options: ()) {
+  .top-bar {
+    @include mat.toolbar-overrides((
+      container-background-color: mat.get-theme-color($theme, surface-container)
+    ));
+    gap: 0.25em;
+    user-select: none;
+  }
+
+  .top-bar__separator {
+    flex: 1 1 auto;
+  }
+}

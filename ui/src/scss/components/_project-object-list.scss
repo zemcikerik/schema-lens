@@ -1,0 +1,14 @@
+@use '@angular/material' as mat;
+@import '../theme';
+
+@mixin app-project-object-list($options: ()) {
+  .project-object-list {
+    @include mat.expansion-overrides((
+      container-background-color: transparent,
+    ));
+
+    .mdc-list {
+      padding: 0;
+    }
+  }
+}

@@ -1,0 +1,8 @@
+@use '@angular/material' as mat;
+@import '../theme';
+
+@mixin app-project-selector($options: ()) {
+  .project-selector {
+    @include mat.form-field-density(-4);
+  }
+}
