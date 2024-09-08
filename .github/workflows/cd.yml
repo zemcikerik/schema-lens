@@ -1,8 +1,14 @@
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
 
 name: CI/CD
+concurrency: Development
+
+defaults:
+  run:
+    shell: bash
 
 jobs:
   ui-build-and-test:
@@ -45,7 +51,7 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
-  ui-build-tocker:
+  ui-build-docker:
     name: '[UI] Build Docker'
     runs-on: ubuntu-latest
     needs:
@@ -160,3 +166,58 @@ jobs:
           push: true
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+
+  deploy:
+    name: 'Deploy'
+    runs-on: ubuntu-latest
+    environment: Development
+    needs:
+      - ui-build-docker
+      - api-build-docker
+    steps:
+      - name: Install Wireguard
+        run: sudo apt install wireguard
+
+      - name: Decode and save Wireguard config
+        run: |
+          install -m 600 -D /dev/null ./wg1.conf
+          echo $DEPLOY_WIREGUARD_CONFIG_BASE64 | base64 --decode > ./wg1.conf
+        env:
+          DEPLOY_WIREGUARD_CONFIG_BASE64: ${{ secrets.DEPLOY_WIREGUARD_CONFIG_BASE64 }}
+
+      - name: Connect to deployment network
+        id: connect-to-network
+        run: sudo wg-quick up ./wg1.conf
+
+      - name: Decode and save SSH key
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/private.key
+          echo $DEPLOY_SSH_KEY_BASE64 | base64 --decode > ~/.ssh/private.key
+        env:
+          DEPLOY_SSH_KEY_BASE64: ${{ secrets.DEPLOY_SSH_KEY_BASE64 }}
+
+      - name: Set up SSH config
+        run: |
+          cat >> ~/.ssh/config <<EOF
+          Host deploy
+            HostName $DEPLOY_SSH_HOST
+            Port $DEPLOY_SSH_PORT
+            User $DEPLOY_SSH_USER
+            IdentityFile ~/.ssh/private.key
+          EOF
+        env:
+          DEPLOY_SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
+          DEPLOY_SSH_PORT: ${{ secrets.DEPLOY_SSH_PORT }}
+          DEPLOY_SSH_USER: ${{ secrets.DEPLOY_SSH_USER }}
+
+      - name: Set up SSH known hosts
+        run: echo $DEPLOY_SSH_KNOWN_HOSTS > ~/.ssh/known_hosts
+        env:
+          DEPLOY_SSH_KNOWN_HOSTS: ${{ secrets.DEPLOY_SSH_KNOWN_HOSTS }}
+
+      - name: Deploy
+        run: ssh -o ConnectTimeout=30 -o ConnectionAttempts=1 deploy
+
+      - name: Disconnect from deployment network
+        if: ${{ always() && steps.connect-to-network.outcome == 'success' }}
+        run: sudo wg-quick down ./wg1.conf
