@@ -12,7 +12,7 @@ describe('TranslateParserService', () => {
   });
 
   it('should parse translations in message format syntax', () => {
-    const result = service.parseRawTranslations('en', {
+    const result = service.parseRawTranslations('en_US', {
       'KEY_SIMPLE': 'Hello, World!',
       'KEY_WITH_VARIABLE': 'Variable: {var}',
       'KEY_WITH_SELECT': 'Select: {var, select, 1 {first} 2 {second} other {unknown}}',
@@ -30,7 +30,7 @@ describe('TranslateParserService', () => {
   });
 
   it('should flatten grouped translations', () => {
-    const result = service.parseRawTranslations('en', {
+    const result = service.parseRawTranslations('en_US', {
       'FLAT': 'Flat structure',
       'PARENT': {
         'CHILD': 'Nested structure',

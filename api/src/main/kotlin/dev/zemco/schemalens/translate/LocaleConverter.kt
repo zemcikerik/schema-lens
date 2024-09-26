@@ -7,7 +7,9 @@ import org.springframework.stereotype.Component
 @Component
 @ConfigurationPropertiesBinding
 class LocaleConverter : Converter<String, Locale> {
+
     override fun convert(source: String): Locale {
         return parseLocale(source)
     }
+
 }

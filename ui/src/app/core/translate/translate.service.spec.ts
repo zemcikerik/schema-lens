@@ -26,34 +26,34 @@ describe('TranslateService', () => {
   });
 
   describe('setLanguage', () => {
-    it('should load translations of provided language', async () => {
+    it('should load translations for provided locale', async () => {
       const translateLoaderService = ngMocks.get(TranslateLoaderService);
       jest.spyOn(translateLoaderService, 'loadRawTranslations');
 
       const translateParserService = ngMocks.get(TranslateParserService);
       jest.spyOn(translateParserService, 'parseRawTranslations');
 
-      await lastValueFrom(service.setLanguage('en'));
-      expect(translateLoaderService.loadRawTranslations).toHaveBeenCalledWith('en');
-      expect(translateParserService.parseRawTranslations).toHaveBeenCalledWith('en', { RAW: 'yes' });
+      await lastValueFrom(service.setLocale('en_US'));
+      expect(translateLoaderService.loadRawTranslations).toHaveBeenCalledWith('en_US');
+      expect(translateParserService.parseRawTranslations).toHaveBeenCalledWith('en_US', { RAW: 'yes' });
       expect(service.translate('RAW')()).toEqual('no');
     });
 
     it('should not load translations of current language', async () => {
-      await lastValueFrom(service.setLanguage('en'));
+      await lastValueFrom(service.setLocale('en_US'));
       const translateLoaderService = ngMocks.get(TranslateLoaderService);
       jest.spyOn(translateLoaderService, 'loadRawTranslations');
 
-      await lastValueFrom(service.setLanguage('en'));
+      await lastValueFrom(service.setLocale('en_US'));
 
       expect(translateLoaderService.loadRawTranslations).not.toHaveBeenCalled();
     });
   });
 
   describe('translate', () => {
-    const mockTranslations = async (translations: Translations, language = 'en') => {
+    const mockTranslations = async (translations: Translations, locale = 'en_US') => {
       jest.spyOn(ngMocks.get(TranslateParserService), 'parseRawTranslations').mockReturnValue(translations);
-      await lastValueFrom(service.setLanguage(language));
+      await lastValueFrom(service.setLocale(locale));
     };
 
     it('should translate provided key', async () => {
@@ -79,7 +79,7 @@ describe('TranslateService', () => {
       const result = service.translate('GREETING');
       expect(result()).toEqual('Hello, World!');
 
-      await mockTranslations({ 'GREETING': () => 'Ahoj, svet!' }, 'sk');
+      await mockTranslations({ 'GREETING': () => 'Ahoj, svet!' }, 'sk_SK');
       expect(result()).toEqual('Ahoj, svet!');
     });
   });

@@ -7,8 +7,8 @@ export class TranslateParserService {
 
   private _messageFormatCache: Record<string, MessageFormat<'string'>> = {};
 
-  parseRawTranslations(languageKey: string, rawTranslations: RawTranslations): Translations {
-    return this.parseTranslationsRecursively(this.getMessageFormatFor(languageKey), rawTranslations);
+  parseRawTranslations(locale: string, rawTranslations: RawTranslations): Translations {
+    return this.parseTranslationsRecursively(this.getMessageFormatFor(locale), rawTranslations);
   }
 
   private parseTranslationsRecursively(format: MessageFormat<'string'>, rawTranslations: RawTranslations): Translations {
@@ -32,14 +32,20 @@ export class TranslateParserService {
     });
   }
 
-  private getMessageFormatFor(languageKey: string): MessageFormat<'string'> {
-    if (languageKey in this._messageFormatCache) {
-      return this._messageFormatCache[languageKey];
+  private getMessageFormatFor(locale: string): MessageFormat<'string'> {
+    const country = this.extractLanguageFrom(locale);
+
+    if (country in this._messageFormatCache) {
+      return this._messageFormatCache[country];
     }
 
-    const messageFormat = new MessageFormat(languageKey);
-    this._messageFormatCache[languageKey] = messageFormat;
+    const messageFormat = new MessageFormat(country);
+    this._messageFormatCache[country] = messageFormat;
     return messageFormat;
+  }
+
+  private extractLanguageFrom(locale: string): string {
+    return locale.split('_')[0];
   }
 
 }

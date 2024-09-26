@@ -11,10 +11,10 @@ export class TranslateService {
   private translateParser = inject(TranslateParserService);
 
   private _translations = signal<Translations>({});
-  private _language = signal<string>('');
+  private _locale = signal<string>('');
 
-  get language(): Signal<string> {
-    return this._language.asReadonly();
+  get locale(): Signal<string> {
+    return this._locale.asReadonly();
   }
 
   translate(key: string, params?: TranslationParams): Signal<string> {
@@ -24,17 +24,17 @@ export class TranslateService {
     });
   }
 
-  setLanguage(languageKey: string): Observable<unknown> {
+  setLocale(locale: string): Observable<unknown> {
     return defer(() => {
-      if (this.language() === languageKey) {
+      if (this.locale() === locale) {
         return of(true);
       }
       
-      return this.translateLoader.loadRawTranslations(languageKey).pipe(
-        map(rawTranslations => this.translateParser.parseRawTranslations(languageKey, rawTranslations)),
+      return this.translateLoader.loadRawTranslations(locale).pipe(
+        map(rawTranslations => this.translateParser.parseRawTranslations(locale, rawTranslations)),
         tap(translations => {
           this._translations.set(translations);
-          this._language.set(languageKey);
+          this._locale.set(locale);
         }),
       );
     });

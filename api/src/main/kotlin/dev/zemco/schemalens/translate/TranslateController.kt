@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.RestController
 class TranslateController(
     val translateService: TranslateService
 ) {
+
     @GetMapping("/translations/{locale}", produces = [MediaType.APPLICATION_JSON_VALUE])
     fun getRawTranslations(@PathVariable locale: Locale): ResponseEntity<String> =
         ResponseEntity.ofNullable(translateService.getRawTranslations(locale))
+
 }

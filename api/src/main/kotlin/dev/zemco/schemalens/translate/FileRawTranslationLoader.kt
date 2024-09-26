@@ -8,9 +8,11 @@ import java.nio.file.Files
 class FileRawTranslationLoader(
     val translateConfiguration: TranslateConfiguration
 ) : RawTranslationLoader {
+
     @Cacheable(cacheNames = ["raw-translations"], key = "#locale")
     override fun loadRawTranslations(locale: Locale): String {
         val path = translateConfiguration.basePath.resolve("$locale.json")
         return Files.readString(path)
     }
+
 }

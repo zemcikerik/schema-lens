@@ -9,21 +9,21 @@ export class TranslateLoaderService {
   private httpClient = inject(HttpClient);
   private _translationCache: Record<string, Observable<RawTranslations>> = {};
 
-  loadRawTranslations(languageKey: string): Observable<RawTranslations> {
+  loadRawTranslations(locale: string): Observable<RawTranslations> {
     return defer(() => {
-      if (languageKey in this._translationCache) {
-        return this._translationCache[languageKey];
+      if (locale in this._translationCache) {
+        return this._translationCache[locale];
       }
 
-      const translations$ = this.httpClient.get<RawTranslations>(`./translations/${languageKey}.json`).pipe(
+      const translations$ = this.httpClient.get<RawTranslations>(`./translations/${locale}.json`).pipe(
         catchError(err => {
-          delete this._translationCache[languageKey];
+          delete this._translationCache[locale];
           return throwError(() => err);
         }),
         shareReplay({ bufferSize: 1, refCount: false }),
       );
 
-      this._translationCache[languageKey] = translations$;
+      this._translationCache[locale] = translations$;
       return translations$;
     });
   }

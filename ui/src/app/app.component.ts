@@ -22,7 +22,7 @@ export class AppComponent {
   coreDataLoaded = signal(false);
 
   constructor() {
-    inject(TranslateService).setLanguage('en').pipe(
+    inject(TranslateService).setLocale('en_US').pipe(
       delay(1500),
       takeUntilDestroyed(),
     ).subscribe(() => this.coreDataLoaded.set(true));
