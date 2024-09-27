@@ -4,8 +4,8 @@ import org.springframework.stereotype.Service
 
 @Service
 class TranslateServiceImpl(
-    val translateConfiguration: TranslateConfiguration,
-    val rawTranslationLoader: RawTranslationLoader
+    private val translateConfiguration: TranslateConfiguration,
+    private val rawTranslationLoader: RawTranslationLoader
 ) : TranslateService {
 
     override fun getRawTranslations(locale: Locale): String? =

@@ -8,8 +8,6 @@ import org.springframework.stereotype.Component
 @ConfigurationPropertiesBinding
 class LocaleConverter : Converter<String, Locale> {
 
-    override fun convert(source: String): Locale {
-        return parseLocale(source)
-    }
+    override fun convert(source: String): Locale = parseLocale(source)
 
 }

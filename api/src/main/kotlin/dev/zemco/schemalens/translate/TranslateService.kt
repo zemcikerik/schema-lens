@@ -1,5 +1,5 @@
 package dev.zemco.schemalens.translate
 
-fun interface TranslateService {
+interface TranslateService {
     fun getRawTranslations(locale: Locale): String?
 }
