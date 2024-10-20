@@ -1,0 +1,17 @@
+@use '@angular/material' as mat;
+@import '../utilities/breakpoints';
+@import '../theme';
+
+@mixin app-content-card($options: ()) {
+  .content-card {
+    background-color: mat.get-theme-color($theme, surface);
+    padding: 1rem;
+    height: 100%;
+
+    @include breakpoint-up(lg) {
+      border-radius: 16px;
+      height: calc(100% - 1rem);
+      margin: 0 1rem;
+    }
+  }
+}
