@@ -1,0 +1,21 @@
+<form class="table-properties" [formGroup]="propertiesFormGroup">
+  <mat-form-field>
+    <mat-label>Table Name</mat-label>
+    <input matInput required formControlName="name">
+    <mat-error>Example validation error</mat-error>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Tablespace</mat-label>
+    <mat-select required formControlName="tablespace">
+      <mat-option value="SYSTEM">SYSTEM</mat-option>
+      <mat-option value="TEMP">TEMP</mat-option>
+      <mat-option value="USERS">USERS</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-form-field>
+    <mat-label>Description</mat-label>
+    <textarea matInput formControlName="description"></textarea>
+  </mat-form-field>
+</form>

@@ -1,0 +1,8 @@
+@mixin app-table($options: ()) {
+  .table {
+    &__content-host {
+      height: 100%;
+      overflow: auto;
+    }
+  }
+}

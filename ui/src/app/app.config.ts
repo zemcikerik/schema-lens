@@ -1,16 +1,24 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
-import { provideRouter } from '@angular/router';
+import { provideRouter, withComponentInputBinding, withRouterConfig } from '@angular/router';
 import { appRoutes } from './app.routes';
 import { provideMonacoEditor } from 'ngx-monaco-editor-v2';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
-import { provideHttpClient } from '@angular/common/http';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { LOCAL_STORAGE } from './core/persistence/local-storage.token';
+import { apiInterceptor } from './core/interceptors/api.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
     provideZoneChangeDetection({ eventCoalescing: true }),
-    provideRouter(appRoutes),
-    provideHttpClient(),
+    provideRouter(appRoutes,
+      withComponentInputBinding(),
+      withRouterConfig({ paramsInheritanceStrategy: 'always' }),
+    ),
+    provideHttpClient(
+      withInterceptors([apiInterceptor]),
+    ),
     provideMonacoEditor(),
     provideAnimationsAsync(),
+    { provide: LOCAL_STORAGE, useFactory: () => window.localStorage },
   ],
 };

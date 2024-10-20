@@ -3,8 +3,9 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { TranslateService } from './core/translate/translate.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { delay } from 'rxjs';
-import { LayoutMainComponent } from './layout-main.component';
 import { ProjectSelectorComponent } from './projects/components/project-selector/project-selector.component';
+import { TopBarComponent } from './top-bar.component';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -13,8 +14,9 @@ import { ProjectSelectorComponent } from './projects/components/project-selector
   standalone: true,
   imports: [
     MatProgressSpinner,
-    LayoutMainComponent,
     ProjectSelectorComponent,
+    TopBarComponent,
+    RouterOutlet,
   ],
 })
 export class AppComponent {

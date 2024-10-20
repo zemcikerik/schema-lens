@@ -1,0 +1,23 @@
+import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { NavTab, NavTabGroupComponent } from '../../../shared/components/nav-tab-group/nav-tab-group.component';
+
+@Component({
+  selector: 'app-table',
+  templateUrl: './table.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  standalone: true,
+  imports: [
+    RouterOutlet,
+    NavTabGroupComponent,
+  ],
+})
+export class TableComponent {
+  readonly TABLE_TABS: NavTab[] = [
+    { title: 'Properties', translateTitle: false, path: 'properties' },
+    { title: 'Columns', translateTitle: false, path: 'columns' },
+  ];
+
+  projectId = input.required<string>();
+  tableName = input.required<string>();
+}

@@ -1,4 +1,7 @@
+import { DbType } from '../../core/models/db-type';
+
 export interface Project {
-  id: number;
+  id: string;
   name: string;
+  dbType: DbType;
 }

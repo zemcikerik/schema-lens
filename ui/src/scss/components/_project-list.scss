@@ -1,0 +1,9 @@
+@mixin app-project-list($options: ()) {
+  .project-list {
+    &__header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+  }
+}

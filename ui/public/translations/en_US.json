@@ -1,5 +1,10 @@
 {
   "APP_TITLE": "Schema Lens",
+  "PROJECTS": {
+    "LIST_LABEL": "Projects",
+    "LIST_EMPTY": "There are no projects available! You can create one by clicking \"Create project\" button.",
+    "BUTTON_CREATE": "Create project"
+  },
   "TABLES": {
     "LIST_LABEL": "Tables"
   }

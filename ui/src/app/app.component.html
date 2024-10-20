@@ -1,8 +1,12 @@
 <div class="app-root">
   @if (coreDataLoaded()) {
-    <app-layout-main>
-      <app-project-selector ngProjectAs="top-bar" />
-    </app-layout-main>
+    <app-top-bar>
+      <app-project-selector />
+    </app-top-bar>
+
+    <div class="app-content">
+      <router-outlet />
+    </div>
   } @else {
     <div class="app-loading">
       <mat-progress-spinner mode="indeterminate" [strokeWidth]="7" [diameter]="72" />

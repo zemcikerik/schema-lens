@@ -1,0 +1,15 @@
+<nav mat-tab-nav-bar [mat-stretch-tabs]="false" [tabPanel]="tabPanel">
+  @for (entry of tabEntries(); track entry.title) {
+    <a
+      mat-tab-link
+      [routerLink]="entry.routerLink"
+      routerLinkActive
+      #rla="routerLinkActive"
+      [active]="rla.isActive"
+    >{{ entry.translateTitle ? (entry.title | translate)() : entry.title }}</a>
+  }
+</nav>
+
+<mat-tab-nav-panel #tabPanel>
+  <ng-content />
+</mat-tab-nav-panel>

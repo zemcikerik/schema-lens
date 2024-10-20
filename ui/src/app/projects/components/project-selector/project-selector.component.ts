@@ -19,8 +19,8 @@ import { Project } from '../../models/project.model';
 export class ProjectSelectorComponent {
 
   projects: Project[] = [
-    { id: 1, name: 'Test Project 1' },
-    { id: 2, name: 'Test Project 2' },
+    { id: '1', name: 'Test Project 1', dbType: 'oracle' },
+    { id: '2', name: 'Test Project 2', dbType: 'oracle' },
   ];
 
   selectedProject = this.projects[0];

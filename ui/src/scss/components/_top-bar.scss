@@ -1,16 +1,25 @@
 @use '@angular/material' as mat;
+@import '../utilities/breakpoints';
 @import '../theme';
 
 @mixin app-top-bar($options: ()) {
   .top-bar {
     @include mat.toolbar-overrides((
-      container-background-color: mat.get-theme-color($theme, surface-container)
+      container-background-color: mat.get-theme-color($theme, surface-container),
     ));
     gap: 0.25em;
     user-select: none;
-  }
 
-  .top-bar__separator {
-    flex: 1 1 auto;
+    &__separator {
+      flex: 1 1 auto;
+    }
+
+    &__sidebar-toggle__wrapper {
+      display: none;
+
+      @include breakpoint-down(lg) {
+        display: block;
+      }
+    }
   }
 }

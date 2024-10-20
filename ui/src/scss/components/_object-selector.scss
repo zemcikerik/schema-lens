@@ -1,0 +1,21 @@
+@use '@angular/material' as mat;
+@import '../theme';
+
+@mixin app-object-selector($options: ()) {
+  .object-selector {
+    @include mat.expansion-overrides((
+      container-background-color: transparent,
+    ));
+
+    &.mat-expansion-panel:not([class*="mat-elevation-z"]) {
+      @include mat.elevation(0);
+    }
+
+    &__header {
+      display: flex;
+      justify-content: space-between;
+      padding-right: 1rem;
+      width: 100%;
+    }
+  }
+}

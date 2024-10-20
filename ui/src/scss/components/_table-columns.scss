@@ -1,0 +1,21 @@
+@import '../utilities/breakpoints';
+
+@mixin app-table-columns($options: ()) {
+  .table-columns {
+    .mat-column-icon,
+    .mat-column-order {
+      width: 4rem;
+    }
+
+    &__container {
+      overflow: auto;
+      height: 100%;
+    }
+
+    @include breakpoint-down(sm) {
+      .mat-column-order {
+        display: none;
+      }
+    }
+  }
+}

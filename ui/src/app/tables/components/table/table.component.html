@@ -1,0 +1,7 @@
+<h2>{{ tableName() }}</h2>
+
+<app-nav-tab-group [baseRouterLink]="['/project', projectId(), 'table', tableName()]" [tabs]="TABLE_TABS">
+  <div class="table__content-host">
+    <router-outlet />
+  </div>
+</app-nav-tab-group>

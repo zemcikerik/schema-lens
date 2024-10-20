@@ -1,0 +1,14 @@
+<mat-table [dataSource]="projects()">
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+    <mat-cell *matCellDef="let project">{{ project.name }}</mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="dbType">
+    <mat-header-cell *matHeaderCellDef>Database Type</mat-header-cell>
+    <mat-cell *matCellDef="let project">{{ project.dbType }}</mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="DISPLAYED_COLUMNS" />
+  <mat-row matRipple *matRowDef="let project; columns: DISPLAYED_COLUMNS" (click)="selected.emit(project)" />
+</mat-table>

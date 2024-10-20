@@ -20,9 +20,7 @@ export type CodeEditorLanguage = 'sql' | 'text';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [
-    MonacoEditorComponent,
-  ],
+  imports: [MonacoEditorComponent],
 })
 export class CodeEditorComponent {
   language = input<CodeEditorLanguage>('text');

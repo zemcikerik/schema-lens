@@ -1,0 +1,8 @@
+<app-layout-content-with-sidebar>
+  <div ngProjectAs="sidebar">
+    <app-project-object-selector [projectId]="projectId()" />
+  </div>
+  <app-content-card>
+    <router-outlet />
+  </app-content-card>
+</app-layout-content-with-sidebar>
