@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd"
+    objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+
+  <changeSet id="2024-09-27T1800-add-project-table"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createTable tableName="project">
+      <column name="id"
+              type="BIGINT"
+              autoIncrement="true">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_project" />
+      </column>
+
+      <column name="uuid"
+              type="UUID">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="name"
+              type="VARCHAR(64)">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2024-09-27T1805-make-project-uuid-unique"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addUniqueConstraint tableName="project"
+                         columnNames="uuid"
+                         constraintName="uc_project_uuid" />
+  </changeSet>
+</databaseChangeLog>

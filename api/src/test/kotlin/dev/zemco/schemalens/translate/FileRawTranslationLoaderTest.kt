@@ -3,8 +3,8 @@ package dev.zemco.schemalens.translate
 import io.mockk.every
 import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 import org.junit.jupiter.api.io.TempDir
 import java.io.IOException
 import java.nio.file.Path
@@ -33,7 +33,7 @@ class FileRawTranslationLoaderTest {
     ) {
         val configuration = mockConfigurationWith(basePath)
         val loader = FileRawTranslationLoader(configuration)
-        assertThrows(IOException::class.java) { loader.loadRawTranslations(Locale(language = "aa", country = "AA")) }
+        assertThrows<IOException> { loader.loadRawTranslations(Locale(language = "aa", country = "AA")) }
     }
 
     private fun mockConfigurationWith(basePath: Path): TranslateConfiguration =

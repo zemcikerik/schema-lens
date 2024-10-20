@@ -1,8 +1,8 @@
 package dev.zemco.schemalens.translate
 
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
+import org.junit.jupiter.api.assertThrows
 
 class LocaleTest {
 
@@ -15,11 +15,11 @@ class LocaleTest {
 
     @Test
     fun `when parseLocale called with invalid locale, then exception should be thrown`() {
-        assertThrows(IllegalArgumentException::class.java) { parseLocale("en_USA") }
-        assertThrows(IllegalArgumentException::class.java) { parseLocale("EN_US") }
-        assertThrows(IllegalArgumentException::class.java) { parseLocale("US_en") }
-        assertThrows(IllegalArgumentException::class.java) { parseLocale("skSK") }
-        assertThrows(IllegalArgumentException::class.java) { parseLocale("sk") }
+        assertThrows<IllegalArgumentException> { parseLocale("en_USA") }
+        assertThrows<IllegalArgumentException> { parseLocale("EN_US") }
+        assertThrows<IllegalArgumentException> { parseLocale("US_en") }
+        assertThrows<IllegalArgumentException> { parseLocale("skSK") }
+        assertThrows<IllegalArgumentException> { parseLocale("sk") }
     }
 
     @Test

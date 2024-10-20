@@ -4,9 +4,7 @@ data class Locale(
     val language: String,
     val country: String,
 ) {
-    override fun toString(): String {
-        return "${language}_${country}"
-    }
+    override fun toString(): String = "${language}_${country}"
 }
 
 fun parseLocale(rawLocale: String): Locale =
