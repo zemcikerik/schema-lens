@@ -1,0 +1,52 @@
+<form class="project-properties" [formGroup]="formGroup">
+  <h2>Test Project Name</h2>
+
+  <h4>Project Properties</h4>
+  <div class="project-properties__main" formGroupName="mainProperties">
+    <mat-form-field>
+      <mat-label>Project Name</mat-label>
+      <input matInput required formControlName="name">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Database Type</mat-label>
+      <mat-select required formControlName="dbType">
+        <mat-option value="oracle">Oracle</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <h4>Oracle Database Connection Properties</h4>
+  <div class="project-properties__connection" formGroupName="connection">
+    <mat-form-field>
+      <mat-label>Host</mat-label>
+      <input required matInput formControlName="host">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Port</mat-label>
+      <input required type="number" min="1" max="65535" matInput formControlName="port">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Service</mat-label>
+      <input required matInput formControlName="service">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Username</mat-label>
+      <input required matInput formControlName="username">
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>Password</mat-label>
+      <input required matInput type="password" formControlName="password">
+    </mat-form-field>
+  </div>
+
+  <div class="project-properties__control">
+    <button mat-flat-button type="submit">
+      <mat-icon>save</mat-icon> Save
+    </button>
+  </div>
+</form>

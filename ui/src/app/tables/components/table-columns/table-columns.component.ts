@@ -2,13 +2,14 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { MatIcon } from '@angular/material/icon';
 import { TableColumn } from '../../models/table-column.model';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-table-columns',
   templateUrl: './table-columns.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
-  imports: [MatTableModule, MatIcon],
+  imports: [MatTableModule, MatIcon, MatTooltip],
 })
 export class TableColumnsComponent {
   readonly DISPLAYED_COLUMNS = ['icon', 'order', 'name', 'type'];

@@ -1,6 +1,8 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavTab, NavTabGroupComponent } from '../../../shared/components/nav-tab-group/nav-tab-group.component';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-table',
@@ -10,6 +12,8 @@ import { NavTab, NavTabGroupComponent } from '../../../shared/components/nav-tab
   imports: [
     RouterOutlet,
     NavTabGroupComponent,
+    MatIcon,
+    MatTooltip,
   ],
 })
 export class TableComponent {

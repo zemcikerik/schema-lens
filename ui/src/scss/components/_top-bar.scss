@@ -10,6 +10,26 @@
     gap: 0.25em;
     user-select: none;
 
+    &__app-name,
+    &__app-name-short {
+      color: mat.get-theme-color($theme, on-surface);
+      text-decoration: none;
+    }
+
+    &__app-name-short {
+      display: none;
+    }
+
+    @include breakpoint-down(sm) {
+      &__app-name {
+        display: none;
+      }
+
+      &__app-name-short {
+        display: inline;
+      }
+    }
+
     &__separator {
       flex: 1 1 auto;
     }

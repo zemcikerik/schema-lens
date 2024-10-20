@@ -1,15 +1,16 @@
+@use '@angular/material' as mat;
 @import '../utilities/breakpoints';
+@import '../theme';
 
 @mixin app-table-columns($options: ()) {
   .table-columns {
     .mat-column-icon,
     .mat-column-order {
-      width: 4rem;
+      width: 3rem;
     }
 
-    &__container {
-      overflow: auto;
-      height: 100%;
+    .mat-column-icon {
+      color: mat.get-theme-color($theme, secondary);
     }
 
     @include breakpoint-down(sm) {

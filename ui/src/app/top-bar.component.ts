@@ -4,6 +4,7 @@ import { MatToolbar } from '@angular/material/toolbar';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { SidebarStateService } from './core/layouts/sidebar-state.service';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-top-bar',
@@ -16,7 +17,8 @@ import { SidebarStateService } from './core/layouts/sidebar-state.service';
           </button>          
         </div>
       }
-      <span>{{ ('APP_TITLE' | translate)() }}</span>
+      <a class="top-bar__app-name" [routerLink]="['/']">{{ ('APP_TITLE' | translate)() }}</a>
+      <a class="top-bar__app-name-short" [routerLink]="['/']">{{ ('APP_TITLE_SHORT' | translate)() }}</a>
       <div class="top-bar__separator"></div>
       <ng-content />
     </mat-toolbar>
@@ -28,6 +30,7 @@ import { SidebarStateService } from './core/layouts/sidebar-state.service';
     TranslatePipe,
     MatIcon,
     MatIconButton,
+    RouterLink,
   ],
 })
 export class TopBarComponent {

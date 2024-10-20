@@ -8,6 +8,9 @@
 @import './scss/components/content-card';
 @import './scss/components/object-selector';
 @import './scss/components/project-list';
+@import './scss/components/project-list-table';
+@import './scss/components/project-object-selector';
+@import './scss/components/project-properties';
 @import './scss/components/project-selector';
 @import './scss/components/table';
 @import './scss/components/table-columns';
@@ -20,8 +23,11 @@
 
 @include app-alert();
 @include app-content-card();
-@include app-project-list();
 @include app-object-selector();
+@include app-project-list();
+@include app-project-list-table();
+@include app-project-properties();
+@include app-project-object-selector();
 @include app-project-selector();
 @include app-table();
 @include app-table-columns();

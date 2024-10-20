@@ -10,17 +10,15 @@
 
   <ng-template matExpansionPanelContent>
     @if (!loading() && objectListEntries()) {
-      <mat-nav-list>
-        @for (entry of objectListEntries(); track entry.name) {
-          <a
-            mat-list-item
-            [routerLink]="entry.routerLink"
-            routerLinkActive
-            #rla="routerLinkActive"
-            [activated]="rla.isActive"
-          >{{ entry.name }}</a>
-        }
-      </mat-nav-list>
+      @for (entry of objectListEntries(); track entry.name) {
+        <a
+          mat-list-item
+          [routerLink]="entry.routerLink"
+          routerLinkActive
+          #rla="routerLinkActive"
+          [activated]="rla.isActive"
+        >{{ entry.name }}</a>
+      }
     }
   </ng-template>
 </mat-expansion-panel>

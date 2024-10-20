@@ -1,1 +1,12 @@
-<app-table-object-selector [projectId]="projectId()" />
+<div class="project-object-selector__container">
+  <mat-nav-list class="project-object-selector">
+    <a
+      mat-list-item
+      [routerLink]="['/project', projectId(), 'properties']"
+      routerLinkActive
+      #rla="routerLinkActive"
+      [activated]="rla.isActive"
+    >Project Properties</a>
+    <app-table-object-selector [projectId]="projectId()" />
+  </mat-nav-list>
+</div>

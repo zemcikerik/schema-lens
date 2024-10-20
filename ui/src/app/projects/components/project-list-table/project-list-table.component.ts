@@ -11,7 +11,7 @@ import { MatRipple } from '@angular/material/core';
   imports: [MatTableModule, MatRipple],
 })
 export class ProjectListTableComponent {
-  readonly DISPLAYED_COLUMNS: Array<keyof Project> = ['name', 'dbType'];
+  readonly DISPLAYED_COLUMNS = ['name', 'dbType', 'owner'];
 
   projects = input.required<Project[]>();
   selected = output<Project>();

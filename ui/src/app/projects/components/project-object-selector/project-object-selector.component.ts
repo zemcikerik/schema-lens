@@ -1,5 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { TableObjectSelectorComponent } from '../../../tables/components/table-object-selector/table-object-selector.component';
+import { MatListItem, MatNavList } from '@angular/material/list';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 
 @Component({
   selector: 'app-project-object-selector',
@@ -7,7 +9,11 @@ import { TableObjectSelectorComponent } from '../../../tables/components/table-o
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
+    MatNavList,
+    MatListItem,
     TableObjectSelectorComponent,
+    RouterLink,
+    RouterLinkActive,
   ],
 })
 export class ProjectObjectSelectorComponent {

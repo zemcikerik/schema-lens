@@ -1,0 +1,16 @@
+@use '@angular/material' as mat;
+@import '../theme';
+
+@mixin app-project-object-selector($options: ()) {
+  .project-object-selector {
+    &__container {
+      height: 100%;
+      overflow-y: auto;
+      padding-left: 0.5rem;
+    }
+
+    > a {
+      --mdc-list-list-item-label-text-weight: 500;
+    }
+  }
+}

@@ -1,13 +1,16 @@
 <app-content-card>
   <div class="project-list__header">
     <h2>{{ ('PROJECTS.LIST_LABEL' | translate)() }}</h2>
-    <button mat-flat-button>{{ ('PROJECTS.BUTTON_CREATE' | translate)() }}</button>
+    <button mat-flat-button>
+      <mat-icon>add</mat-icon>
+      {{ ('PROJECTS.BUTTON_CREATE' | translate)() }}
+    </button>
   </div>
-  @if (loading()) {
-    <mat-progress-spinner mode="indeterminate" />
-  } @else if (projects().length > 0) {
-    <app-project-list-table [projects]="projects()" (selected)="openProject($event)" />
-  } @else {
-    <app-alert type="info">{{ ('PROJECTS.LIST_EMPTY' | translate)() }}</app-alert>
-  }
+  <div class="project-list__content">
+    @if (projects().length > 0) {
+      <app-project-list-table [projects]="projects()" (selected)="openProject($event)" />
+    } @else {
+      <app-alert type="info">{{ ('PROJECTS.LIST_EMPTY' | translate)() }}</app-alert>
+    }
+  </div>
 </app-content-card>

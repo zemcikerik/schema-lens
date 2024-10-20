@@ -13,6 +13,7 @@
       background: mat.get-theme-color($theme, surface-container);
       grid-row: 1;
       grid-column: 1;
+      min-height: 0;
     }
 
     &__content {
@@ -26,7 +27,7 @@
       grid-template-columns: 1fr;
 
       &__sidebar {
-        width: 0;
+        visibility: hidden;
       }
 
       &__content {
@@ -34,7 +35,7 @@
       }
 
       &.is-open &__sidebar {
-        width: 100%;
+        visibility: visible;
       }
 
       &.is-open &__content {

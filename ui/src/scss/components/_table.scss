@@ -1,7 +1,23 @@
+@use '@angular/material' as mat;
+@import '../theme';
+
 @mixin app-table($options: ()) {
   .table {
+    &__header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+
+      > .icon {
+        color: mat.get-theme-color($theme, secondary);
+        font-size: 2rem;
+        width: 2rem;
+        height: 2rem;
+      }
+    }
+
     &__content-host {
-      height: 100%;
+      height: calc(100% - 7rem);
       overflow: auto;
     }
   }
