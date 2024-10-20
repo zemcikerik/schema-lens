@@ -1,0 +1,77 @@
+@use 'sass:math';
+@import '../base/variables';
+
+$_infinity: 1e20px;
+
+@function get-breakpoint-size($breakpoint) {
+  $size: map-get($breakpoints, $breakpoint);
+
+  @if ($size == null) {
+    @error "Cannot find breakpoint #{ $breakpoint }!";
+  }
+
+  @return $size;
+}
+
+@function get-next-breakpoint($breakpoint) {
+  @if (_is-largest-breakpoint($breakpoint)) {
+    @error "Cannot retrieve next breakpoint for largest breakpoint (#{ $breakpoint })!";
+  }
+
+  $breakpointSize: get-breakpoint-size($breakpoint);
+  $nextBreakpointKey: null;
+  $nextBreakpointSize: $_infinity;
+
+  @each $key, $size in $breakpoints {
+    @if ($breakpointSize < $size and $size < $nextBreakpointSize) {
+      $nextBreakpointKey: $key;
+      $nextBreakpointSize: $size;
+    }
+  }
+
+  @return $nextBreakpointKey;
+}
+
+@mixin breakpoint-down($breakpoint) {
+  @if (_is-smallest-breakpoint($breakpoint)) {
+    @error "Breakpoint down cannot be used with the smallest breakpoint (#{ $breakpoint })!";
+  }
+  $size: get-breakpoint-size($breakpoint) - 0.01px;
+
+  @media screen and (max-width: $size) {
+    @content;
+  }
+}
+
+@mixin breakpoint-up($breakpoint) {
+  $size: get-breakpoint-size($breakpoint);
+
+  @media screen and (min-width: $size) {
+    @content;
+  }
+}
+
+@mixin breakpoint($breakpoint) {
+  @if (_is-smallest-breakpoint($breakpoint)) {
+    @include breakpoint-down(get-next-breakpoint($breakpoint));
+  } @else if (_is-largest-breakpoint($breakpoint)) {
+    @include breakpoint-up($breakpoint);
+  } @else {
+    $sizeFrom: get-breakpoint-size($breakpoint);
+    $sizeTo: get-breakpoint-size(get-next-breakpoint($breakpoint)) - 0.01px;
+
+    @media screen and (min-width: $sizeFrom) and (max-width: $sizeTo) {
+      @content;
+    }
+  }
+}
+
+@function _is-smallest-breakpoint($breakpoint) {
+  $breakpoint-values: map-values($breakpoints);
+  @return get-breakpoint-size($breakpoint) == math.min($breakpoint-values...);
+}
+
+@function _is-largest-breakpoint($breakpoint) {
+  $breakpoint-values: map-values($breakpoints);
+  @return get-breakpoint-size($breakpoint) == math.max($breakpoint-values...);
+}
