@@ -12,10 +12,7 @@ export class TranslateService {
 
   private _translations = signal<Translations>({});
   private _locale = signal<string>('');
-
-  get locale(): Signal<string> {
-    return this._locale.asReadonly();
-  }
+  readonly locale = this._locale.asReadonly();
 
   translate(key: string, params?: TranslationParams): Signal<string> {
     return computed(() => {
