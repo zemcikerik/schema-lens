@@ -12,14 +12,14 @@ import { MatTooltip } from '@angular/material/tooltip';
   imports: [MatTableModule, MatIcon, MatTooltip],
 })
 export class TableColumnsComponent {
-  readonly DISPLAYED_COLUMNS = ['icon', 'order', 'name', 'type'];
+  readonly DISPLAYED_COLUMNS = ['icon', 'order', 'name', 'type', 'nullable'];
 
   columns: TableColumn[] = [
-    {order: 1, name: 'ID', type: 'NUMBER(10)'},
-    {order: 2, name: 'FIRST_NAME', type: 'VARCHAR2(32)'},
-    {order: 3, name: 'LAST_NAME', type: 'VARCHAR2(32)'},
-    {order: 4, name: 'TEST_COLUMN1', type: 'VARCHAR2(32)'},
-    {order: 6, name: 'TEST_COLUMN2', type: 'VARCHAR2(32)'},
-    {order: 7, name: 'TEST_COLUMN3', type: 'VARCHAR2(32)'},
+    { order: 1, name: 'ID', type: 'NUMBER(10)', nullable: false },
+    { order: 2, name: 'FIRST_NAME', type: 'VARCHAR2(32)', nullable: false },
+    { order: 3, name: 'LAST_NAME', type: 'VARCHAR2(32)', nullable: false },
+    { order: 4, name: 'TEST_COLUMN1', type: 'VARCHAR2(32)', nullable: true },
+    { order: 6, name: 'TEST_COLUMN2', type: 'VARCHAR2(32)', nullable: true },
+    { order: 7, name: 'TEST_COLUMN3', type: 'VARCHAR2(32)', nullable: true },
   ];
 }

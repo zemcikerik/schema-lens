@@ -19,6 +19,11 @@
     <td mat-cell *matCellDef="let column">{{ column.type }}</td>
   </ng-container>
 
+  <ng-container matColumnDef="nullable">
+    <th mat-header-cell *matHeaderCellDef>Nullable</th>
+    <td mat-cell *matCellDef="let column">{{ column.nullable ? 'Y' : 'N' }}</td>
+  </ng-container>
+
   <tr mat-header-row *matHeaderRowDef="DISPLAYED_COLUMNS"></tr>
   <tr mat-row *matRowDef="let row; columns: DISPLAYED_COLUMNS;"></tr>
 </table>
