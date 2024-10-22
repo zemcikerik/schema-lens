@@ -5,6 +5,7 @@ import { MatLabel, MatOption, MatSelect } from '@angular/material/select';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
 @Component({
   selector: 'app-project-properties',
@@ -20,6 +21,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
     MatButton,
     MatIcon,
     ReactiveFormsModule,
+    TranslatePipe,
   ],
 })
 export class ProjectPropertiesComponent {

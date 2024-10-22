@@ -2,11 +2,13 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, signal }
 import { ObjectSelectorComponent } from '../../../shared/components/object-selector/object-selector.component';
 import { delay, finalize, of } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
 @Component({
   selector: 'app-table-object-selector',
   template: `
     <app-object-selector
+      [title]="('TABLES.LABEL' | translate)()"
       [baseRouterLink]="['/project', projectId(), 'table']"
       [objects]="tables()"
       [loading]="loading()"
@@ -16,6 +18,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   standalone: true,
   imports: [
     ObjectSelectorComponent,
+    TranslatePipe,
   ],
 })
 export class TableObjectSelectorComponent {

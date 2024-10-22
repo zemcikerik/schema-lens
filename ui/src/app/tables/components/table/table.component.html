@@ -1,5 +1,5 @@
 <div class="table__header">
-  <mat-icon class="icon" matTooltip="Table" matTooltipPosition="above">table_view</mat-icon>
+  <mat-icon class="icon" [matTooltip]="('TABLES.LABEL' | translate)()" matTooltipPosition="above">table_view</mat-icon>
   <h2>{{ tableName() }}</h2>
 </div>
 

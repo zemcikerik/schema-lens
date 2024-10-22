@@ -1,16 +1,16 @@
 <mat-table class="project-list-table" [dataSource]="projects()">
   <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ ('PROJECTS.LIST_COLUMN.NAME_LABEL' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let project">{{ project.name }}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="dbType">
-    <mat-header-cell *matHeaderCellDef>Database Type</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ ('PROJECTS.LIST_COLUMN.DB_TYPE_LABEL' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let project">{{ project.dbType }}</mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="owner">
-    <mat-header-cell *matHeaderCellDef>Owner</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ ('PROJECTS.LIST_COLUMN.OWNER_LABEL' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let project">username</mat-cell>
   </ng-container>
 

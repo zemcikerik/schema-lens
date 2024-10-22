@@ -21,6 +21,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   ],
 })
 export class ObjectSelectorComponent {
+  title = input.required<string>();
   baseRouterLink = input.required<string[]>();
   objects = input.required<string[] | null>();
   loading = input.required<boolean>();

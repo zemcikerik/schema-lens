@@ -6,7 +6,7 @@
       routerLinkActive
       #rla="routerLinkActive"
       [activated]="rla.isActive"
-    >Project Properties</a>
+    >{{ ('PROJECTS.PROPERTIES.LABEL' | translate)() }}</a>
     <app-table-object-selector [projectId]="projectId()" />
   </mat-nav-list>
 </div>

@@ -1,7 +1,7 @@
 <mat-expansion-panel class="object-selector" (opened)="triggerObjectLoadIfNeeded()">
   <mat-expansion-panel-header>
     <div class="object-selector__header">
-      <span>Tables</span>
+      <span>{{ title() }}</span>
       @if (loading()) {
         <mat-progress-spinner mode="indeterminate" diameter="24" />
       }

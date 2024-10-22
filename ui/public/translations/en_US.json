@@ -1,12 +1,39 @@
 {
   "APP_TITLE": "Schema Lens",
   "APP_TITLE_SHORT": "SL",
+  "GENERIC": {
+    "SAVE_LABEL": "Save"
+  },
   "PROJECTS": {
     "LIST_LABEL": "Projects",
     "LIST_EMPTY": "There are no projects available! You can create one by clicking \"Create project\" button.",
-    "BUTTON_CREATE": "Create project"
+    "LIST_COLUMN": {
+      "NAME_LABEL": "Name",
+      "DB_TYPE_LABEL": "Database Type",
+      "OWNER_LABEL": "Owner"
+    },
+    "BUTTON_CREATE": "Create project",
+    "PROPERTIES": {
+      "LABEL": "Project Properties"
+    },
+    "MAIN_PROPERTIES": {
+      "LABEL": "Project Properties",
+      "NAME_LABEL": "Project Name",
+      "DB_TYPE_LABEL": "Database Type"
+    },
+    "CONNECTION_PROPERTIES": {
+      "ORACLE": {
+        "LABEL": "Oracle Database Connection Properties",
+        "HOST_LABEL": "Host",
+        "PORT_LABEL": "Port",
+        "SERVICE_LABEL": "Service",
+        "USERNAME_LABEL": "Username",
+        "PASSWORD_LABEL": "Password"
+      }
+    }
   },
   "TABLES": {
+    "LABEL": "Table",
     "LIST_LABEL": "Tables"
   }
 }

@@ -1,52 +1,52 @@
 <form class="project-properties" [formGroup]="formGroup">
   <h2>Test Project Name</h2>
 
-  <h4>Project Properties</h4>
+  <h4>{{ ('PROJECTS.MAIN_PROPERTIES.LABEL' | translate)() }}</h4>
   <div class="project-properties__main" formGroupName="mainProperties">
     <mat-form-field>
-      <mat-label>Project Name</mat-label>
+      <mat-label>{{ ('PROJECTS.MAIN_PROPERTIES.NAME_LABEL' | translate)() }}</mat-label>
       <input matInput required formControlName="name">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Database Type</mat-label>
+      <mat-label>{{ ('PROJECTS.MAIN_PROPERTIES.DB_TYPE_LABEL' | translate)() }}</mat-label>
       <mat-select required formControlName="dbType">
         <mat-option value="oracle">Oracle</mat-option>
       </mat-select>
     </mat-form-field>
   </div>
 
-  <h4>Oracle Database Connection Properties</h4>
+  <h4>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.LABEL' | translate)() }}</h4>
   <div class="project-properties__connection" formGroupName="connection">
     <mat-form-field>
-      <mat-label>Host</mat-label>
+      <mat-label>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.HOST_LABEL' | translate)() }}</mat-label>
       <input required matInput formControlName="host">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Port</mat-label>
+      <mat-label>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.PORT_LABEL' | translate)() }}</mat-label>
       <input required type="number" min="1" max="65535" matInput formControlName="port">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Service</mat-label>
+      <mat-label>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.SERVICE_LABEL' | translate)() }}</mat-label>
       <input required matInput formControlName="service">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Username</mat-label>
+      <mat-label>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.USERNAME_LABEL' | translate)() }}</mat-label>
       <input required matInput formControlName="username">
     </mat-form-field>
 
     <mat-form-field>
-      <mat-label>Password</mat-label>
+      <mat-label>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.PASSWORD_LABEL' | translate)() }}</mat-label>
       <input required matInput type="password" formControlName="password">
     </mat-form-field>
   </div>
 
   <div class="project-properties__control">
     <button mat-flat-button type="submit">
-      <mat-icon>save</mat-icon> Save
+      <mat-icon>save</mat-icon> {{ ('GENERIC.SAVE_LABEL' | translate)() }}
     </button>
   </div>
 </form>

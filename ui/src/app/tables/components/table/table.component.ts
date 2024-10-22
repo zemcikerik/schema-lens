@@ -3,6 +3,7 @@ import { RouterOutlet } from '@angular/router';
 import { NavTab, NavTabGroupComponent } from '../../../shared/components/nav-tab-group/nav-tab-group.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
 @Component({
   selector: 'app-table',
@@ -14,6 +15,7 @@ import { MatTooltip } from '@angular/material/tooltip';
     NavTabGroupComponent,
     MatIcon,
     MatTooltip,
+    TranslatePipe,
   ],
 })
 export class TableComponent {
