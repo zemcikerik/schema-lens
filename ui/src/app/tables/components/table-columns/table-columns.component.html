@@ -1,7 +1,9 @@
 <table mat-table class="table-columns" [dataSource]="columns">
   <ng-container matColumnDef="icon">
     <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let column"><mat-icon matTooltip="Type Icon Placeholder" matTooltipPosition="above">pin</mat-icon></td>
+    <td mat-cell *matCellDef="let column">
+      <app-table-column-icon [type]="column.type" />
+    </td>
   </ng-container>
 
   <ng-container matColumnDef="order">

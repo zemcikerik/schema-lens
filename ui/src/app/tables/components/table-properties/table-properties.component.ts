@@ -24,7 +24,7 @@ import { MatIcon } from '@angular/material/icon';
   ],
 })
 export class TablePropertiesComponent {
-  propertiesFormGroup = new FormGroup({
+  propertiesForm = new FormGroup({
     name: new FormControl('Default name', [Validators.required]),
     tablespace: new FormControl('USERS', [Validators.required]),
     description: new FormControl('')

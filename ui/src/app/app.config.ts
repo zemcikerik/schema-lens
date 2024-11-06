@@ -6,6 +6,7 @@ import { provideAnimationsAsync } from '@angular/platform-browser/animations/asy
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { LOCAL_STORAGE } from './core/persistence/local-storage.token';
 import { apiInterceptor } from './core/interceptors/api.interceptor';
+import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -20,5 +21,6 @@ export const appConfig: ApplicationConfig = {
     provideMonacoEditor(),
     provideAnimationsAsync(),
     { provide: LOCAL_STORAGE, useFactory: () => window.localStorage },
+    { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: { position: 'above' } },
   ],
 };

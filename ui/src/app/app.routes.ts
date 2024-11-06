@@ -3,6 +3,11 @@ import { Route } from '@angular/router';
 export const appRoutes: Route[] = [
   { path: '', redirectTo: 'project', pathMatch: 'full' },
   {
+    path: 'login',
+    loadComponent: () => import('./core/auth/login.component').then(c => c.LoginComponent),
+    data: { disableTopBar: true },
+  },
+  {
     path: 'project',
     loadComponent: () => import('./projects/components/project-list/project-list.component').then(c => c.ProjectListComponent),
   },

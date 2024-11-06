@@ -6,6 +6,7 @@
 
 @import './scss/components/alert';
 @import './scss/components/content-card';
+@import './scss/components/login';
 @import './scss/components/object-selector';
 @import './scss/components/project-list';
 @import './scss/components/project-list-table';
@@ -23,6 +24,7 @@
 
 @include app-alert();
 @include app-content-card();
+@include app-login();
 @include app-object-selector();
 @include app-project-list();
 @include app-project-list-table();
@@ -43,6 +45,7 @@ html {
   @include mat.icon-theme($theme);
   @include mat.icon-button-theme($theme);
   @include mat.list-theme($theme);
+  @include mat.progress-bar-theme($theme);
   @include mat.progress-spinner-theme($theme);
   @include mat.ripple-theme($theme);
   @include mat.select-theme($theme);

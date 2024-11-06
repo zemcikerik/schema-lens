@@ -25,7 +25,7 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
   ],
 })
 export class ProjectPropertiesComponent {
-  formGroup = new FormGroup({
+  propertiesForm = new FormGroup({
     mainProperties: new FormGroup({
       name: new FormControl('Test Project Name', [Validators.required]),
       dbType: new FormControl('oracle', [Validators.required]),
