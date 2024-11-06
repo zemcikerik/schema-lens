@@ -1,0 +1,5 @@
+@mixin app-utility-icon($options: ()) {
+  .material-symbols-outlined.emphasis-high {
+    font-variation-settings: 'GRAD' 200;
+  }
+}

@@ -3,23 +3,28 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { OracleTypeService } from '../../../oracle/oracle-type.service';
 import { OracleTypeCategory } from '../../../oracle/oracle-type-category.model';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
-const ORACLE_CATEGORY_TO_ICON: Partial<Record<OracleTypeCategory, string>> = {
-  'character': 'text_snippet',
+const ORACLE_CATEGORY_TO_ICON: Record<OracleTypeCategory, string> = {
+  'character': 'subject',
   'numeric': 'pin',
   'raw': 'raw_on',
+  'datetime': 'calendar_today',
+  'large-object': 'package_2',
+  'rowid': 'link',
 };
 
-const DEFAULT_ICON = 'help';
+const UNKNOWN_ICON = 'help';
 
 @Component({
   selector: 'app-table-column-icon',
-  templateUrl: './table-column-icon.component.html',
+  template: '<mat-icon [matTooltip]="(categoryLabel() | translate)()">{{ icon() }}</mat-icon>',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
     MatIcon,
     MatTooltip,
+    TranslatePipe,
   ],
 })
 export class TableColumnIconComponent {
@@ -33,6 +38,11 @@ export class TableColumnIconComponent {
 
   icon = computed(() => {
     const category = this.category();
-    return category !== null ? ORACLE_CATEGORY_TO_ICON[category] ?? DEFAULT_ICON : DEFAULT_ICON;
+    return category !== null ? ORACLE_CATEGORY_TO_ICON[category] ?? UNKNOWN_ICON : UNKNOWN_ICON;
+  });
+
+  categoryLabel = computed(() => {
+    const category = this.category() ?? 'unknown';
+    return `ORACLE.TYPE_CATEGORY_LABELS.${category.toUpperCase()}`;
   });
 }

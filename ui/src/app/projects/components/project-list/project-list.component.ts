@@ -7,6 +7,7 @@ import { Router } from '@angular/router';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { MatIcon } from '@angular/material/icon';
+import { IconEmphasisDirective } from '../../../shared/directives/icon-emphasis.directive';
 
 @Component({
   selector: 'app-project-list',
@@ -19,7 +20,8 @@ import { MatIcon } from '@angular/material/icon';
     MatIcon,
     MatButton,
     AlertComponent,
-    TranslatePipe
+    TranslatePipe,
+    IconEmphasisDirective,
   ],
 })
 export class ProjectListComponent {

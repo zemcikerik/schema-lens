@@ -4,6 +4,17 @@
   "GENERIC": {
     "SAVE_LABEL": "Save"
   },
+  "ORACLE": {
+    "TYPE_CATEGORY_LABELS": {
+      "CHARACTER": "Character Data Type",
+      "NUMERIC": "Numeric Data Type",
+      "RAW": "Raw Data Type",
+      "DATETIME": "Datetime Data Type",
+      "LARGE-OBJECT": "Large Object Data Type",
+      "ROWID": "Row ID Data Type",
+      "UNKNOWN": "Unknown Data Type"
+    }
+  },
   "PROJECTS": {
     "LIST_LABEL": "Projects",
     "LIST_EMPTY": "There are no projects available! You can create one by clicking \"Create project\" button.",

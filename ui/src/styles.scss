@@ -3,6 +3,7 @@
 @import './scss/base/reset';
 
 @import './scss/layouts/content-with-sidebar';
+@import './scss/utilities/icon';
 
 @import './scss/components/alert';
 @import './scss/components/content-card';
@@ -21,6 +22,7 @@
 @include mat.core();
 
 @include app-layout-content-with-sidebar();
+@include app-utility-icon();
 
 @include app-alert();
 @include app-content-card();

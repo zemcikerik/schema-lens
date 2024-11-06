@@ -11,14 +11,15 @@ import { TableColumnIconComponent } from '../table-column-icon/table-column-icon
   imports: [MatTableModule, TableColumnIconComponent],
 })
 export class TableColumnsComponent {
-  readonly DISPLAYED_COLUMNS = ['icon', 'order', 'name', 'type', 'nullable'];
+  readonly DISPLAYED_COLUMNS = ['icon', 'name', 'type', 'position', 'nullable'];
 
   columns: TableColumn[] = [
-    { order: 1, name: 'ID', type: 'NUMBER(10)', nullable: false },
-    { order: 2, name: 'FIRST_NAME', type: 'VARCHAR2(32)', nullable: false },
-    { order: 3, name: 'LAST_NAME', type: 'VARCHAR2(32)', nullable: false },
-    { order: 4, name: 'TEST_COLUMN1', type: 'VARCHAR2(32)', nullable: true },
-    { order: 6, name: 'TEST_COLUMN2', type: 'VARCHAR2(32)', nullable: true },
-    { order: 7, name: 'TEST_COLUMN3', type: 'VARCHAR2(32)', nullable: true },
+    { position: 1, name: 'ID', type: 'NUMBER(10)', nullable: false },
+    { position: 2, name: 'FIRST_NAME', type: 'VARCHAR2(32)', nullable: false },
+    { position: 3, name: 'LAST_NAME', type: 'LONG RAW', nullable: false },
+    { position: 4, name: 'TEST_COLUMN1', type: 'DATE', nullable: true },
+    { position: 6, name: 'TEST_COLUMN2', type: 'BLOB', nullable: true },
+    { position: 7, name: 'TEST_COLUMN3', type: 'ROWID', nullable: true },
+    { position: 8, name: 'TEST_COLUMN3', type: 'CUSTOM_OBJECT_TYPE', nullable: true },
   ];
 }
