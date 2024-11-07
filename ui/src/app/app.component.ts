@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { ProgressSpinnerComponent } from './shared/components/progress-spinner/progress-spinner.component';
 import { TranslateService } from './core/translate/translate.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { delay } from 'rxjs';
@@ -14,7 +14,7 @@ import { RouteDataService } from './core/routing/route-data.service';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    MatProgressSpinner,
+    ProgressSpinnerComponent,
     ProjectSelectorComponent,
     TopBarComponent,
     RouterOutlet,

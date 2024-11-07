@@ -1,18 +1,18 @@
-import { TableColumnIconComponent } from './table-column-icon.component';
+import { OracleTypeIconComponent } from './oracle-type-icon.component';
 import { MockBuilder, MockInstance, MockRender, ngMocks } from 'ng-mocks';
-import { OracleTypeService } from '../../../oracle/oracle-type.service';
+import { OracleTypeService } from '../../oracle-type.service';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { computed } from '@angular/core';
 
-describe('TableColumnIconComponent', () => {
+describe('OracleTypeIconComponent', () => {
   ngMocks.faster();
   MockInstance.scope();
 
-  beforeAll(() => MockBuilder(TableColumnIconComponent)
+  beforeAll(() => MockBuilder(OracleTypeIconComponent)
     .mock(TranslatePipe, v => computed(() => v)));
 
-  const render = (type: string): TableColumnIconComponent =>
-    MockRender(TableColumnIconComponent, { type }).point.componentInstance;
+  const render = (type: string): OracleTypeIconComponent =>
+    MockRender(OracleTypeIconComponent, { type }).point.componentInstance;
 
   it('should be created', () => {
     expect(render('TYPE')).toBeTruthy();

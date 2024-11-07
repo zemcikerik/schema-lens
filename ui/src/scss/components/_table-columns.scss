@@ -5,12 +5,20 @@
 @mixin app-table-columns($options: ()) {
   .table-columns {
     .mat-column-icon,
-    .mat-column-order {
+    .mat-column-primary-key,
+    .mat-column-order,
+    .mat-column-nullable {
       width: 3rem;
+      text-align: center;
     }
 
-    .mat-column-icon {
+    .mat-column-icon,
+    tbody .mat-column-nullable {
       color: mat.get-theme-color($theme, secondary);
+    }
+
+    .mat-column-primary-key {
+      color: mat.get-theme-color($theme, primary);
     }
 
     @include breakpoint-down(sm) {

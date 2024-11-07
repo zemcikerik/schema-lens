@@ -1,0 +1,10 @@
+@mixin app-progress-spinner($options: ()) {
+  .progress-spinner {
+    &__center-wrapper {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100%;
+    }
+  }
+}

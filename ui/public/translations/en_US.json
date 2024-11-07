@@ -45,6 +45,14 @@
   },
   "TABLES": {
     "LABEL": "Table",
-    "LIST_LABEL": "Tables"
+    "LIST_LABEL": "Tables",
+    "COLUMNS": {
+      "LABEL": "Columns",
+      "NAME_LABEL": "Name",
+      "TYPE_LABEL": "Type",
+      "POSITION_LABEL": "#",
+      "NULLABLE_LABEL": "Nullable",
+      "IS_PRIMARY_KEY_TOOLTIP": "Primary Key"
+    }
   }
 }

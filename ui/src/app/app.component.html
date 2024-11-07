@@ -10,8 +10,6 @@
       <router-outlet />
     </div>
   } @else {
-    <div class="app-loading">
-      <mat-progress-spinner mode="indeterminate" [strokeWidth]="7" [diameter]="72" />
-    </div>
+    <app-progress-spinner [center]="true" />
   }
 </div>

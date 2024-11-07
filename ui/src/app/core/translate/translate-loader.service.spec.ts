@@ -1,6 +1,6 @@
 import { TranslateLoaderService } from './translate-loader.service';
 import { MockBuilder, MockRender, ngMocks } from 'ng-mocks';
-import { HttpErrorResponse, provideHttpClient } from '@angular/common/http';
+import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { lastValueFrom } from 'rxjs';
 
@@ -51,17 +51,7 @@ describe('TranslateLoaderService', () => {
       statusText: 'Internal Server Error',
     });
 
-    let exceptionTriggered = false;
-    try {
-      await translationPromise;
-    } catch (err: unknown) {
-      exceptionTriggered = true;
-      expect((err as HttpErrorResponse).status).toEqual(500);
-    }
-
-    if (!exceptionTriggered) {
-      throw new Error('Expected translation promise to throw!');
-    }
+    await expect(translationPromise).rejects.toHaveProperty('status', 500);
 
     const repeatedPromise = lastValueFrom(service.loadRawTranslations('de_DE'));
     httpController.expectOne('./translations/de_DE.json').flush({});

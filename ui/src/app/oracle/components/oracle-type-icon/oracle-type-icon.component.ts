@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, Signal } from '@angular/core';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { OracleTypeService } from '../../../oracle/oracle-type.service';
-import { OracleTypeCategory } from '../../../oracle/oracle-type-category.model';
+import { OracleTypeService } from '../../oracle-type.service';
+import { OracleTypeCategory } from '../../oracle-type-category.model';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
-const ORACLE_CATEGORY_TO_ICON: Record<OracleTypeCategory, string> = {
+const CATEGORY_TO_ICON: Record<OracleTypeCategory, string> = {
   'character': 'subject',
   'numeric': 'pin',
   'raw': 'raw_on',
@@ -17,7 +17,7 @@ const ORACLE_CATEGORY_TO_ICON: Record<OracleTypeCategory, string> = {
 const UNKNOWN_ICON = 'help';
 
 @Component({
-  selector: 'app-table-column-icon',
+  selector: 'app-oracle-type-icon',
   template: '<mat-icon [matTooltip]="(categoryLabel() | translate)()">{{ icon() }}</mat-icon>',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
@@ -27,7 +27,7 @@ const UNKNOWN_ICON = 'help';
     TranslatePipe,
   ],
 })
-export class TableColumnIconComponent {
+export class OracleTypeIconComponent {
   type = input.required<string>();
 
   private oracleTypeService = inject(OracleTypeService);
@@ -38,7 +38,7 @@ export class TableColumnIconComponent {
 
   icon = computed(() => {
     const category = this.category();
-    return category !== null ? ORACLE_CATEGORY_TO_ICON[category] ?? UNKNOWN_ICON : UNKNOWN_ICON;
+    return category !== null ? CATEGORY_TO_ICON[category] ?? UNKNOWN_ICON : UNKNOWN_ICON;
   });
 
   categoryLabel = computed(() => {

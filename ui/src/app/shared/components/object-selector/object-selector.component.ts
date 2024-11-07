@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { MatExpansionPanel, MatExpansionPanelContent, MatExpansionPanelHeader } from '@angular/material/expansion';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatListItem, MatNavList } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
+import { ProgressSpinnerComponent } from '../progress-spinner/progress-spinner.component';
 
 @Component({
   selector: 'app-object-selector',
@@ -13,11 +13,11 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelContent,
-    MatProgressSpinner,
     MatNavList,
     MatListItem,
     RouterLink,
     RouterLinkActive,
+    ProgressSpinnerComponent,
   ],
 })
 export class ObjectSelectorComponent {

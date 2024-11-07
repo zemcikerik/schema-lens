@@ -2,28 +2,43 @@
   <ng-container matColumnDef="icon">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let column">
-      <app-table-column-icon [type]="column.type" />
+      <app-oracle-type-icon [type]="column.type" />
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="primary-key">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let column">
+      @if (primaryKeyColumns.includes(column.name)) {
+        <mat-icon [matTooltip]="('TABLES.COLUMNS.IS_PRIMARY_KEY_TOOLTIP' | translate)()">key</mat-icon>
+      }
     </td>
   </ng-container>
 
   <ng-container matColumnDef="name">
-    <th mat-header-cell *matHeaderCellDef>Name</th>
+    <th mat-header-cell *matHeaderCellDef>{{ ('TABLES.COLUMNS.NAME_LABEL' | translate)() }}</th>
     <td mat-cell *matCellDef="let column">{{ column.name }}</td>
   </ng-container>
 
   <ng-container matColumnDef="type">
-    <th mat-header-cell *matHeaderCellDef>Type</th>
+    <th mat-header-cell *matHeaderCellDef>{{ ('TABLES.COLUMNS.TYPE_LABEL' | translate)() }}</th>
     <td mat-cell *matCellDef="let column">{{ column.type }}</td>
   </ng-container>
 
   <ng-container matColumnDef="position">
-    <th mat-header-cell *matHeaderCellDef>#</th>
+    <th mat-header-cell *matHeaderCellDef>{{ ('TABLES.COLUMNS.POSITION_LABEL' | translate)() }}</th>
     <td mat-cell *matCellDef="let column">{{ column.position }}</td>
   </ng-container>
 
   <ng-container matColumnDef="nullable">
-    <th mat-header-cell *matHeaderCellDef>Nullable</th>
-    <td mat-cell *matCellDef="let column">{{ column.nullable ? 'Y' : 'N' }}</td>
+    <th mat-header-cell *matHeaderCellDef>{{ ('TABLES.COLUMNS.NULLABLE_LABEL' | translate)() }}</th>
+    <td mat-cell *matCellDef="let column">
+      @if (column.nullable) {
+        <mat-icon>check</mat-icon>
+      } @else {
+        <mat-icon>close</mat-icon>
+      }
+    </td>
   </ng-container>
 
   <tr mat-header-row *matHeaderRowDef="DISPLAYED_COLUMNS"></tr>

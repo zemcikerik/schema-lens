@@ -5,6 +5,10 @@
 
 <app-nav-tab-group [baseRouterLink]="['/project', projectId(), 'table', tableName()]" [tabs]="TABLE_TABS">
   <div class="table__content-host">
-    <router-outlet />
+    @if (loading()) {
+      <app-progress-spinner [center]="true" />
+    } @else {
+      <router-outlet />
+    }
   </div>
 </app-nav-tab-group>
