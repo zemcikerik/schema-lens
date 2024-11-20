@@ -1,0 +1,56 @@
+services:
+  api:
+    image: ghcr.io/zemcikerik/schema-lens/api:master
+    restart: on-failure:3
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - ./ui/public/translations:/app/translations
+    environment:
+      - spring.datasource.url=jdbc:oracle:thin:@db:1521/FREEPDB1
+      - spring.datasource.username=${DB_APP_USER}
+      - spring.datasource.password=${DB_APP_PASSWORD}
+    networks:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: '2'
+          memory: 1536M
+
+  ui:
+    image: ghcr.io/zemcikerik/schema-lens/ui:master
+    restart: on-failure:3
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+
+  db:
+    image: gvenzl/oracle-free:slim
+    restart: on-failure:3
+    volumes:
+      - ./db/data:/opt/oracle/oradata
+    environment:
+      ORACLE_PASSWORD: ${DB_ROOT_PASSWORD}
+      APP_USER: ${DB_APP_USER}
+      APP_USER_PASSWORD: ${DB_APP_PASSWORD}
+    networks:
+      - db
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 2G
+    healthcheck:
+      test: [ "CMD", "healthcheck.sh" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 5s
+      start_interval: 5s
+
+networks:
+  db:
