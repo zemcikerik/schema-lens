@@ -51,8 +51,24 @@
       "NAME_LABEL": "Name",
       "TYPE_LABEL": "Type",
       "POSITION_LABEL": "#",
-      "NULLABLE_LABEL": "Nullable",
-      "IS_PRIMARY_KEY_TOOLTIP": "Primary Key"
+      "NULLABLE_LABEL": "Nullable"
+    },
+    "CONSTRAINTS": {
+      "LABEL": "Constraints",
+      "NAME_LABEL": "Name",
+      "TYPE": {
+        "LABEL": "Type",
+        "PRIMARY-KEY": "Primary Key",
+        "FOREIGN-KEY": "Foreign Key",
+        "CHECK": "Check",
+        "UNIQUE": "Unique"
+      },
+      "ENABLED_LABEL": "Enabled",
+      "COLUMNS_LABEL": "Affected columns:",
+      "CONDITION_LABEL": "Condition:",
+      "REFERENCED_CONSTRAINT_NAME_LABEL": "Referenced Constraint Name",
+      "REFERENCED_TABLE_NAME_LABEL": "Referenced Table Name",
+      "REFERENCED_COLUMN_NAME_LABEL": "Referenced Column Name"
     }
   }
 }

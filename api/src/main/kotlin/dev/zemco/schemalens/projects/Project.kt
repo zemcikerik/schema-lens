@@ -22,13 +22,13 @@ class Project(
     var name: String,
 
     @OneToOne(optional = true, fetch = FetchType.LAZY, cascade = [CascadeType.ALL])
-    @JoinColumn(name = "db_info_id", referencedColumnName = "id", nullable = true)
-    var dbInfo: ProjectDbInfo? = null,
+    @JoinColumn(name = "connection_info_id", referencedColumnName = "id", nullable = true)
+    var connectionInfo: ProjectConnectionInfo? = null,
 )
 
 @Entity
 @Inheritance(strategy = InheritanceType.JOINED)
-abstract class ProjectDbInfo(
+abstract class ProjectConnectionInfo(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
@@ -51,7 +51,7 @@ abstract class ProjectDbInfo(
 }
 
 @Entity
-class OracleProjectDbInfo(
+class OracleProjectConnectionInfo(
     id: Long? = null,
     host: String,
     port: Int,
@@ -61,7 +61,7 @@ class OracleProjectDbInfo(
     @NotBlank
     @Column(nullable = false, length = 128)
     var service: String
-) : ProjectDbInfo(id, host, port, username, password) {
+) : ProjectConnectionInfo(id, host, port, username, password) {
 
     override fun toDataSource(): DataSource = DataSourceBuilder.create()
         .url("jdbc:oracle:thin:@$host:$port/$service")

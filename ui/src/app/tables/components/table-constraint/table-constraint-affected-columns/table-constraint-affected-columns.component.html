@@ -1,0 +1,11 @@
+<div class="table-constraint__affected-columns">
+  <span class="table-constraint__label">{{ ('TABLES.CONSTRAINTS.COLUMNS_LABEL' | translate)() }}</span>
+  <table>
+    @for (column of columns(); track column.name) {
+      <tr>
+        <td><app-oracle-type-icon [type]="column.type" /></td>
+        <td>{{ column.name }}</td>
+      </tr>
+    }
+  </table>
+</div>

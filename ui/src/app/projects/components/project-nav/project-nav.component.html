@@ -1,5 +1,5 @@
-<div class="project-object-selector__container">
-  <mat-nav-list class="project-object-selector">
+<div class="project-nav__container">
+  <mat-nav-list class="project-nav">
     <a
       mat-list-item
       [routerLink]="['/project', projectId(), 'properties']"
@@ -7,6 +7,6 @@
       #rla="routerLinkActive"
       [activated]="rla.isActive"
     >{{ ('PROJECTS.PROPERTIES.LABEL' | translate)() }}</a>
-    <app-table-object-selector [projectId]="projectId()" />
+    <app-project-object-nav-host [projectId]="projectId()" />
   </mat-nav-list>
 </div>

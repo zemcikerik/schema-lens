@@ -32,10 +32,7 @@ export class ProjectListComponent {
 
   constructor() {
     this.projects.set([
-      { id: 'f6b987b3-4c3b-4993-a9e1-10bbf6fb9ea5', name: 'First Project', dbType: 'oracle' as const },
-      { id: 'f6b987b3-4c3b-4993-a9e1-10bbf6fb9ea6', name: 'Second Project', dbType: 'oracle' as const },
-      { id: 'f6b987b3-4c3b-4993-a9e1-10bbf6fb9ea7', name: 'Third Project', dbType: 'oracle' as const },
-      { id: 'f6b987b3-4c3b-4993-a9e1-10bbf6fb9ea8', name: 'Fourth Project', dbType: 'oracle' as const },
+      { id: '86a06301-ae55-4d6a-9157-1cd1f994af65', name: 'First Project', dbType: 'oracle' as const },
     ]);
   }
 

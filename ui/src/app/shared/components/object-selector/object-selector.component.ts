@@ -1,8 +1,10 @@
-import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, signal, untracked } from '@angular/core';
 import { MatExpansionPanel, MatExpansionPanelContent, MatExpansionPanelHeader } from '@angular/material/expansion';
-import { MatListItem, MatNavList } from '@angular/material/list';
+import { MatListItem } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ProgressSpinnerComponent } from '../progress-spinner/progress-spinner.component';
+import { finalize, Observable, Subject, switchMap, tap } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-object-selector',
@@ -13,7 +15,6 @@ import { ProgressSpinnerComponent } from '../progress-spinner/progress-spinner.c
     MatExpansionPanel,
     MatExpansionPanelHeader,
     MatExpansionPanelContent,
-    MatNavList,
     MatListItem,
     RouterLink,
     RouterLinkActive,
@@ -23,26 +24,48 @@ import { ProgressSpinnerComponent } from '../progress-spinner/progress-spinner.c
 export class ObjectSelectorComponent {
   title = input.required<string>();
   baseRouterLink = input.required<string[]>();
-  objects = input.required<string[] | null>();
-  loading = input.required<boolean>();
-  reloadObjects = output();
+  loadAction = input.required<() => Observable<string[]>>();
+
+  objects = signal<string[] | null>(null);
+  loading = signal<boolean>(false);
+  private reload$ = new Subject<void>();
 
   objectListEntries = computed(() => {
     const objects = this.objects();
     if (objects === null) {
-      return;
+      return null;
     }
     const baseRouterLink = this.baseRouterLink();
 
     return objects.map(object => ({
       name: object,
-      routerLink: [...baseRouterLink, object]
+      routerLink: [...baseRouterLink, object],
     }));
   });
 
+  constructor() {
+    const destroyRef = inject(DestroyRef);
+
+    effect(onCleanup => {
+      const loadAction = this.loadAction();
+
+      const subscription = untracked(() =>
+        this.reload$.pipe(
+          tap(() => this.loading.set(true)),
+          switchMap(() => loadAction().pipe(
+            finalize(() => this.loading.set(false)),
+          )),
+          takeUntilDestroyed(destroyRef),
+        ).subscribe(objects => this.objects.set(objects)),
+      );
+
+      onCleanup(() => subscription.unsubscribe());
+    });
+  }
+
   triggerObjectLoadIfNeeded(): void {
     if (!this.loading() && this.objects() === null) {
-      this.reloadObjects.emit();
+      this.reload$.next();
     }
   }
 }

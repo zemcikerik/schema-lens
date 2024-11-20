@@ -9,8 +9,8 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
     property = "type"
 )
 @JsonSubTypes(value = [
-    JsonSubTypes.Type(value = PrimaryKeyConstraintMetadata::class, name = "primary_key"),
-    JsonSubTypes.Type(value = ForeignKeyConstraintMetadata::class, name = "foreign_key"),
+    JsonSubTypes.Type(value = PrimaryKeyConstraintMetadata::class, name = "primary-key"),
+    JsonSubTypes.Type(value = ForeignKeyConstraintMetadata::class, name = "foreign-key"),
     JsonSubTypes.Type(value = UniqueConstraintMetadata::class, name = "unique"),
     JsonSubTypes.Type(value = CheckConstraintMetadata::class, name = "check"),
 ])

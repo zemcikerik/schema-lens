@@ -82,7 +82,7 @@ class ProjectConverterTest {
 
         private val MOCK_USER = User()
         private val MOCK_UUID = UUID.randomUUID()
-        private val MOCK_PROJECT = Project(id = 3, uuid = MOCK_UUID, name = "Test", dbInfo = null)
+        private val MOCK_PROJECT = Project(id = 3, uuid = MOCK_UUID, name = "Test", connectionInfo = null)
     }
 
 }

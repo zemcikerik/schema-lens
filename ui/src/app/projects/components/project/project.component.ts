@@ -1,8 +1,7 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { LayoutContentWithSidebarComponent } from '../../../core/layouts/layout-content-with-sidebar.component';
 import { ContentCardComponent } from '../../../shared/components/content-card/content-card.component';
-import { AlertComponent } from '../../../shared/components/alert/alert.component';
-import { ProjectObjectSelectorComponent } from '../project-object-selector/project-object-selector.component';
+import { ProjectNavComponent } from '../project-nav/project-nav.component';
 import { RouterOutlet } from '@angular/router';
 
 @Component({
@@ -13,8 +12,7 @@ import { RouterOutlet } from '@angular/router';
   imports: [
     LayoutContentWithSidebarComponent,
     ContentCardComponent,
-    AlertComponent,
-    ProjectObjectSelectorComponent,
+    ProjectNavComponent,
     RouterOutlet,
   ],
 })

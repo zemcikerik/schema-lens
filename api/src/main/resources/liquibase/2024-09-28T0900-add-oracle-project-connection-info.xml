@@ -7,12 +7,12 @@
 
   <changeSet id="2024-09-28T0858-add-oracle-project-connection-info-table"
              author="Erik Zemčík (zemcik.erik@gmail.com)">
-    <createTable tableName="oracle_project_db_info">
+    <createTable tableName="oracle_project_connection_info">
       <column name="id"
               type="BIGINT">
         <constraints nullable="false"
                      primaryKey="true"
-                     primaryKeyName="pk_oracle_project_db_info" />
+                     primaryKeyName="pk_oracle_project_connection_info" />
       </column>
 
       <column name="service"
@@ -24,10 +24,10 @@
 
   <changeSet id="2024-09-28T0900-oracle-project-db-info-inheritance"
              author="Erik Zemčík (zemcik.erik@gmail.com)">
-    <addForeignKeyConstraint baseTableName="oracle_project_db_info"
+    <addForeignKeyConstraint baseTableName="oracle_project_connection_info"
                              baseColumnNames="id"
-                             constraintName="fk_oracle_project_info_on_id"
-                             referencedTableName="project_db_info"
+                             constraintName="fk_oracle_project_connection_info_on_id"
+                             referencedTableName="project_connection_info"
                              referencedColumnNames="id" />
   </changeSet>
 </databaseChangeLog>

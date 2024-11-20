@@ -10,4 +10,29 @@ export interface PrimaryKeyTableConstraint extends BaseTableConstraint {
   type: 'primary-key';
 }
 
-export type TableConstraint = PrimaryKeyTableConstraint;
+export interface ForeignKeyTableConstraint extends BaseTableConstraint {
+  type: 'foreign-key';
+  referencedConstraintName: string;
+  referencedTableName: string;
+  references: ForeignKeyColumnReference[];
+}
+
+export interface UniqueTableConstraint extends BaseTableConstraint {
+  type: 'unique';
+}
+
+export interface CheckTableConstraint extends BaseTableConstraint {
+  type: 'check';
+  condition: string;
+}
+
+export type TableConstraint =
+  PrimaryKeyTableConstraint
+  | ForeignKeyTableConstraint
+  | UniqueTableConstraint
+  | CheckTableConstraint;
+
+export interface ForeignKeyColumnReference {
+  columnName: string;
+  referencedColumnName: string;
+}

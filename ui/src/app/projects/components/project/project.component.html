@@ -1,6 +1,6 @@
 <app-layout-content-with-sidebar>
   <ng-container ngProjectAs="sidebar">
-    <app-project-object-selector [projectId]="projectId()" />
+    <app-project-nav [projectId]="projectId()" />
   </ng-container>
   <app-content-card>
     <router-outlet />

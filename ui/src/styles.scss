@@ -11,12 +11,14 @@
 @import './scss/components/object-selector';
 @import './scss/components/project-list';
 @import './scss/components/project-list-table';
-@import './scss/components/project-object-selector';
+@import './scss/components/project-nav';
 @import './scss/components/project-properties';
 @import './scss/components/project-selector';
 @import './scss/components/progress-spinner';
 @import './scss/components/table';
 @import './scss/components/table-columns';
+@import './scss/components/table-constraint';
+@import './scss/components/table-constraints';
 @import './scss/components/table-properties';
 @import './scss/components/top-bar';
 
@@ -32,11 +34,13 @@
 @include app-project-list();
 @include app-project-list-table();
 @include app-project-properties();
-@include app-project-object-selector();
+@include app-project-nav();
 @include app-project-selector();
 @include app-progress-spinner();
 @include app-table();
 @include app-table-columns();
+@include app-table-constraint();
+@include app-table-constraints();
 @include app-table-properties();
 @include app-top-bar();
 

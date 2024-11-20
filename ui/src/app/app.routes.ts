@@ -33,6 +33,10 @@ export const appRoutes: Route[] = [
             path: 'columns',
             loadComponent: () => import('./tables/components/table-columns/table-columns.component').then(c => c.TableColumnsComponent),
           },
+          {
+            path: 'constraints',
+            loadComponent: () => import('./tables/components/table-constraints/table-constraints.component').then(c => c.TableConstraintsComponent),
+          },
         ],
       },
     ],
