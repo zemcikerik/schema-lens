@@ -1,8 +1,13 @@
-<mat-form-field class="project-selector" appearance="outline" subscriptSizing="dynamic">
+<mat-form-field
+  class="project-selector"
+  [class.is-hidden]="selectControl.value === null"
+  appearance="outline"
+  subscriptSizing="dynamic"
+>
   <mat-label>Project</mat-label>
-  <mat-select [(ngModel)]="selectedProject" name="project">
-    @for (project of projects; track project.id) {
-      <mat-option [value]="project">{{ project.name }}</mat-option>
+  <mat-select [formControl]="selectControl" (selectionChange)="onSelectionChange($event.value)">
+    @for (project of projects(); track project.id) {
+      <mat-option [value]="project.id">{{ project.name }}</mat-option>
     }
   </mat-select>
 </mat-form-field>

@@ -4,5 +4,9 @@
 @mixin app-project-selector($options: ()) {
   .project-selector {
     @include mat.form-field-density(-4);
+
+    &.is-hidden {
+      display: none;
+    }
   }
 }

@@ -1,10 +1,11 @@
 import { ProjectObjectNavHostComponent } from './project-object-nav-host.component';
-import { MockBuilder, MockInstance, MockRender, ngMocks } from 'ng-mocks';
+import { MockBuilder, MockInstance, MockRender, MockService, ngMocks } from 'ng-mocks';
 import { ProjectObjectDefinition, ProjectObjectNavService } from '../../services/project-object-nav.service';
 import { EMPTY } from 'rxjs';
 import { ObjectSelectorComponent } from '../../../shared/components/object-selector/object-selector.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { signal } from '@angular/core';
+import { MatExpansionPanel } from '@angular/material/expansion';
 
 describe('ProjectObjectNavHostComponent', () => {
   ngMocks.faster();
@@ -15,6 +16,11 @@ describe('ProjectObjectNavHostComponent', () => {
       getObjectDefinitionsFor: () => [],
     })
     .mock(TranslatePipe, v => signal(v)));
+
+  beforeEach(() => {
+    // https://github.com/help-me-mom/ng-mocks/issues/8634
+    MockInstance(ObjectSelectorComponent, 'expansionPanel', signal(MockService(MatExpansionPanel)));
+  });
 
   const render = (projectId: string): ProjectObjectNavHostComponent => {
     const fixture = MockRender(ProjectObjectNavHostComponent, { projectId });

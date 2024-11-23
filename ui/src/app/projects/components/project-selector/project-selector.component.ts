@@ -1,7 +1,13 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatFormField, MatLabel, MatOption, MatSelect } from '@angular/material/select';
-import { FormsModule } from '@angular/forms';
-import { Project } from '../../models/project.model';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { ProjectService } from '../../services/project.service';
+import { NavigationEnd, Router } from '@angular/router';
+import { filter } from 'rxjs';
+import { Location } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
+const PROJECT_ID_REGEX = /^\/project\/([a-z-\d]{36})/;
 
 @Component({
   selector: 'app-project-selector',
@@ -9,20 +15,38 @@ import { Project } from '../../models/project.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    FormsModule,
+    ReactiveFormsModule,
     MatSelect,
     MatOption,
     MatFormField,
     MatLabel,
   ],
 })
-export class ProjectSelectorComponent {
+export class ProjectSelectorComponent implements AfterViewInit {
+  projects = inject(ProjectService).projects;
+  private location = inject(Location);
+  private router = inject(Router);
 
-  projects: Project[] = [
-    { id: '1', name: 'Test Project 1', dbType: 'oracle' },
-    { id: '2', name: 'Test Project 2', dbType: 'oracle' },
-  ];
+  selectControl = new FormControl<string | null>(null);
 
-  selectedProject = this.projects[0];
-  
+  constructor() {
+    this.router.events.pipe(
+      filter(event => event instanceof NavigationEnd),
+      takeUntilDestroyed()
+    ).subscribe(() => this.updateProjectSelection());
+  }
+
+  ngAfterViewInit(): void {
+    this.updateProjectSelection();
+  }
+
+  async onSelectionChange(projectId: string): Promise<void> {
+    await this.router.navigate(['/project', projectId]);
+  }
+
+  private updateProjectSelection(): void {
+    const url = this.location.path(false);
+    const matches = PROJECT_ID_REGEX.exec(url);
+    this.selectControl.setValue(matches?.[1] ?? null);
+  }
 }

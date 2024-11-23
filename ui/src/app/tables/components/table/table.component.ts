@@ -48,7 +48,7 @@ export class TableComponent {
 
         return tableService.getTableDetails(projectId, tableName).pipe(
           takeUntilDestroyed(destroyRef),
-          finalize(() => this.loading.set(false)),
+          finalize(() => untracked(() => this.loading.set(false))),
         ).subscribe(() => {
           // todo
         });

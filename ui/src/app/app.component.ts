@@ -2,11 +2,12 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { ProgressSpinnerComponent } from './shared/components/progress-spinner/progress-spinner.component';
 import { TranslateService } from './core/translate/translate.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { delay } from 'rxjs';
+import { combineLatest } from 'rxjs';
 import { ProjectSelectorComponent } from './projects/components/project-selector/project-selector.component';
 import { TopBarComponent } from './top-bar.component';
 import { RouterOutlet } from '@angular/router';
 import { RouteDataService } from './core/routing/route-data.service';
+import { ProjectService } from './projects/services/project.service';
 
 @Component({
   selector: 'app-root',
@@ -28,9 +29,11 @@ export class AppComponent {
   showTopBar = computed(() => !this.routeData().disableTopBar);
 
   constructor() {
-    inject(TranslateService).setLocale('en_US').pipe(
-      delay(1500),
-      takeUntilDestroyed(),
+    combineLatest([
+      inject(TranslateService).setLocale('en_US'),
+      inject(ProjectService).loadProjects(),
+    ]).pipe(
+      takeUntilDestroyed()
     ).subscribe(() => this.coreDataLoaded.set(true));
   }
 

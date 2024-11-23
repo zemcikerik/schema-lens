@@ -1,4 +1,15 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, effect, inject, input, signal, untracked } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+  viewChild,
+} from '@angular/core';
 import { MatExpansionPanel, MatExpansionPanelContent, MatExpansionPanelHeader } from '@angular/material/expansion';
 import { MatListItem } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
@@ -25,6 +36,7 @@ export class ObjectSelectorComponent {
   title = input.required<string>();
   baseRouterLink = input.required<string[]>();
   loadAction = input.required<() => Observable<string[]>>();
+  expansionPanel = viewChild.required(MatExpansionPanel);
 
   objects = signal<string[] | null>(null);
   loading = signal<boolean>(false);
@@ -53,13 +65,22 @@ export class ObjectSelectorComponent {
         this.reload$.pipe(
           tap(() => this.loading.set(true)),
           switchMap(() => loadAction().pipe(
-            finalize(() => this.loading.set(false)),
+            finalize(() => untracked(() => this.loading.set(false))),
           )),
           takeUntilDestroyed(destroyRef),
         ).subscribe(objects => this.objects.set(objects)),
       );
 
       onCleanup(() => subscription.unsubscribe());
+    });
+
+    effect(() => {
+      this.baseRouterLink(); // mark as dependency
+
+      untracked(() => {
+        this.objects.set(null);
+        this.expansionPanel().close();
+      });
     });
   }
 
