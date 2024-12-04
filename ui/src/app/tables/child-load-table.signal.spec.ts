@@ -11,7 +11,7 @@ describe('childLoadTableSignal', () => {
 
   beforeAll(() => MockBuilder(ChildLoadTableSignalHostComponent)
     .mock(TableService, {
-      getTableDetails: () => of({} as Table)
+      getTableDetails: (() => of({} as Table)) as any // todo
     }));
 
   it('should let host be rendered successfully', () => {
@@ -28,7 +28,7 @@ describe('childLoadTableSignal', () => {
 
     const mockTable = { tableName } as unknown as Table;
     const result$ = new Subject<Table | null>();
-    MockInstance(TableService, 'getTableDetails', jest.fn(() => result$.asObservable()));
+    MockInstance(TableService, 'getTableDetails', jest.fn(() => result$.asObservable()) as any); // todo
 
     const fixture = MockRender(ChildLoadTableSignalHostComponent, { projectId, tableName });
 
@@ -41,8 +41,8 @@ describe('childLoadTableSignal', () => {
   });
 
   it('should update table data when input signal changes', () => {
-    MockInstance(TableService, 'getTableDetails', (projectId: string, tableName: string) =>
-      of({ name: `${projectId}:${tableName}` } as Table));
+    MockInstance(TableService, 'getTableDetails', ((projectId: string, tableName: string) =>
+      of({ name: `${projectId}:${tableName}` } as Table)) as any); // todo
 
     const fixture = MockRender(ChildLoadTableSignalHostComponent, {
       projectId: '2430c834-b90b-45da-afd6-68294072f47a',
@@ -59,7 +59,7 @@ describe('childLoadTableSignal', () => {
   });
 
   it('should ignore table retrieval errors', () => {
-    MockInstance(TableService, 'getTableDetails', () => throwError(() => new Error()));
+    MockInstance(TableService, 'getTableDetails', (() => throwError(() => new Error())) as any);
 
     const fixture = MockRender(ChildLoadTableSignalHostComponent, {
       projectId: 'a3d6574a-4877-4c89-9d9f-f881f300e427',

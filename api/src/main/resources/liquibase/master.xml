@@ -4,6 +4,5 @@
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.27.xsd">
   <include file="/liquibase/2024-09-27T1805-add-project.xml" />
-  <include file="/liquibase/2024-09-28T0830-add-project-connection-info.xml" />
   <include file="/liquibase/2024-09-28T0900-add-oracle-project-connection-info.xml" />
 </databaseChangeLog>

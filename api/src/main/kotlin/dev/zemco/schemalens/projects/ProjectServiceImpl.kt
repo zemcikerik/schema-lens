@@ -9,7 +9,6 @@ class ProjectServiceImpl(
     private val projectRepository: ProjectRepository,
 ) : ProjectService {
 
-    // TODO: remove once user auth is done
     override fun getProjects(): List<Project> {
         return projectRepository.findAll().toList()
     }
@@ -21,5 +20,11 @@ class ProjectServiceImpl(
         // TODO: check for user access
         return getProjectByUuid(uuid)
     }
+
+    override fun deleteProjectByUuid(uuid: UUID) =
+        projectRepository.deleteByUuid(uuid)
+
+    override fun saveProject(project: Project): Project =
+        projectRepository.save(project)
 
 }

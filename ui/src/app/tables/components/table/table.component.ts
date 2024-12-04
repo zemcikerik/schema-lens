@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject, input, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untracked } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavTab, NavTabGroupComponent } from '../../../shared/components/nav-tab-group/nav-tab-group.component';
 import { MatIcon } from '@angular/material/icon';
@@ -6,7 +6,6 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { TableService } from '../../services/table.service';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 
 @Component({
@@ -37,7 +36,6 @@ export class TableComponent {
 
   constructor() {
     const tableService = inject(TableService);
-    const destroyRef = inject(DestroyRef);
 
     effect(onCleanup => {
       const projectId = this.projectId();
@@ -47,7 +45,6 @@ export class TableComponent {
         this.loading.set(true);
 
         return tableService.getTableDetails(projectId, tableName).pipe(
-          takeUntilDestroyed(destroyRef),
           finalize(() => untracked(() => this.loading.set(false))),
         ).subscribe(() => {
           // todo

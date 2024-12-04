@@ -2,9 +2,7 @@ import {
   ChangeDetectionStrategy,
   Component,
   computed,
-  DestroyRef,
   effect,
-  inject,
   input,
   signal,
   untracked,
@@ -15,7 +13,6 @@ import { MatListItem } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ProgressSpinnerComponent } from '../progress-spinner/progress-spinner.component';
 import { finalize, Observable, Subject, switchMap, tap } from 'rxjs';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-object-selector',
@@ -56,8 +53,6 @@ export class ObjectSelectorComponent {
   });
 
   constructor() {
-    const destroyRef = inject(DestroyRef);
-
     effect(onCleanup => {
       const loadAction = this.loadAction();
 
@@ -67,7 +62,6 @@ export class ObjectSelectorComponent {
           switchMap(() => loadAction().pipe(
             finalize(() => untracked(() => this.loading.set(false))),
           )),
-          takeUntilDestroyed(destroyRef),
         ).subscribe(objects => this.objects.set(objects)),
       );
 

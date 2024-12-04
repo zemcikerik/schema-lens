@@ -12,13 +12,17 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('./projects/components/project-list/project-list.component').then(c => c.ProjectListComponent),
   },
   {
+    path: 'project/create',
+    loadComponent: () => import('./projects/components/project-create/project-create.component').then(c => c.ProjectCreateComponent),
+  },
+  {
     path: 'project/:projectId',
     loadComponent: () => import('./projects/components/project/project.component').then(c => c.ProjectComponent),
     children: [
       { path: '', redirectTo: 'properties', pathMatch: 'full' },
       {
         path: 'properties',
-        loadComponent: () => import('./projects/components/project-properties/project-properties.component').then(c => c.ProjectPropertiesComponent),
+        loadComponent: () => import('./projects/components/project-properties-edit/project-properties-edit.component').then(c => c.ProjectPropertiesEditComponent),
       },
       {
         path: 'table/:tableName',

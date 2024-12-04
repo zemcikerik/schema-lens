@@ -35,6 +35,7 @@ dependencies {
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.liquibase:liquibase-core")
+    implementation("commons-validator:commons-validator:1.9.0")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.oracle.database.jdbc:ojdbc11")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

@@ -7,4 +7,6 @@ interface ProjectService {
     fun getProjects(): List<Project>
     fun getProjectByUuid(uuid: UUID): Project?
     fun getSecuredProjectByUuid(uuid: UUID, user: User): Project?
+    fun deleteProjectByUuid(uuid: UUID)
+    fun saveProject(project: Project): Project
 }

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { MatError, MatFormField, MatHint } from '@angular/material/form-field';
+import { MatError, MatFormField } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatLabel } from '@angular/material/select';
 import { MatButton } from '@angular/material/button';
@@ -21,7 +21,6 @@ import { AlertComponent } from '../../shared/components/alert/alert.component';
     MatInput,
     MatLabel,
     MatButton,
-    MatHint,
     MatProgressBar,
     MatError,
     ReactiveFormsModule,
@@ -55,7 +54,7 @@ export class LoginComponent {
       }),
     ).subscribe(async success => {
       if (success) {
-        await this.router.navigateByUrl('/project');
+        await this.router.navigate(['/project']);
       } else {
         // todo
       }

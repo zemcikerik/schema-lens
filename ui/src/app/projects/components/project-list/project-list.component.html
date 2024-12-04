@@ -1,10 +1,10 @@
 <app-content-card>
   <div class="project-list__header">
     <h2>{{ ('PROJECTS.LIST_LABEL' | translate)() }}</h2>
-    <button mat-flat-button>
+    <a mat-flat-button [routerLink]="['/project', 'create']">
       <mat-icon appIconEmphasis="high">add</mat-icon>
       {{ ('PROJECTS.BUTTON_CREATE' | translate)() }}
-    </button>
+    </a>
   </div>
   <div class="project-list__content">
     @if (projects().length > 0) {

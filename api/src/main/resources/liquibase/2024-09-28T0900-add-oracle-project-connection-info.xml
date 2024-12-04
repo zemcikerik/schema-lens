@@ -15,6 +15,26 @@
                      primaryKeyName="pk_oracle_project_connection_info" />
       </column>
 
+      <column name="host"
+              type="VARCHAR(255)">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="port"
+              type="SMALLINT UNSIGNED">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="auth_username"
+              type="VARCHAR(128)">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="auth_password"
+              type="VARCHAR(128)">
+        <constraints nullable="false" />
+      </column>
+
       <column name="service"
               type="VARCHAR(128)">
         <constraints nullable="false" />
@@ -22,12 +42,14 @@
     </createTable>
   </changeSet>
 
-  <changeSet id="2024-09-28T0900-oracle-project-db-info-inheritance"
+  <changeSet id="2024-09-28T0900-oracle-project-db-info-project-ownership"
              author="Erik Zemčík (zemcik.erik@gmail.com)">
     <addForeignKeyConstraint baseTableName="oracle_project_connection_info"
                              baseColumnNames="id"
                              constraintName="fk_oracle_project_connection_info_on_id"
-                             referencedTableName="project_connection_info"
-                             referencedColumnNames="id" />
+                             referencedTableName="project"
+                             referencedColumnNames="id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
   </changeSet>
 </databaseChangeLog>

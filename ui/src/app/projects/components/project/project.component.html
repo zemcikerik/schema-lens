@@ -3,6 +3,10 @@
     <app-project-nav [projectId]="projectId()" />
   </ng-container>
   <app-content-card>
-    <router-outlet />
+    @if (loading()) {
+      <app-progress-spinner [center]="true" />
+    } @else {
+      <router-outlet />
+    }
   </app-content-card>
 </app-layout-content-with-sidebar>

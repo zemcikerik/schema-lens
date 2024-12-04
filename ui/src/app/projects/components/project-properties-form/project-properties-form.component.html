@@ -1,0 +1,83 @@
+<form class="project-properties" [formGroup]="propertiesForm" (ngSubmit)="submit()">
+  <h4>{{ ('PROJECTS.MAIN_PROPERTIES.LABEL' | translate)() }}</h4>
+  <div class="project-properties__main">
+    <mat-form-field>
+      <mat-label>{{ ('PROJECTS.MAIN_PROPERTIES.NAME_LABEL' | translate)() }}</mat-label>
+      <input matInput required formControlName="name">
+      @if (nameControl.invalid) {
+        <mat-error>{{ (nameControl.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ ('PROJECTS.MAIN_PROPERTIES.DB_TYPE_LABEL' | translate)() }}</mat-label>
+      <mat-select required formControlName="dbType">
+        <mat-option value="oracle">Oracle</mat-option>
+      </mat-select>
+      @if (dbTypeControl.invalid) {
+        <mat-error>{{ (dbTypeControl.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  @if (propertiesForm.controls.dbType.value === 'oracle') {
+    <h4>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.LABEL' | translate)() }}</h4>
+    <div class="project-properties__connection" formGroupName="oracleConnection">
+      <mat-form-field>
+        <mat-label>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.HOST_LABEL' | translate)() }}</mat-label>
+        <input required matInput formControlName="host">
+        <mat-hint>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.HOST_HINT' | translate)() }}</mat-hint>
+        @if (connectionHostControl.invalid) {
+          <mat-error>{{ (connectionHostControl.errors | formatGenericValidationErrors)() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.PORT_LABEL' | translate)() }}</mat-label>
+        <input required type="number" min="1" max="65535" matInput formControlName="port">
+        @if (connectionPortControl.invalid) {
+          <mat-error>{{ (connectionPortControl.errors | formatGenericValidationErrors)() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.SERVICE_LABEL' | translate)() }}</mat-label>
+        <input required matInput formControlName="service">
+        @if (connectionServiceControl.invalid) {
+          <mat-error>{{ (connectionServiceControl.errors | formatGenericValidationErrors)() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.USERNAME_LABEL' | translate)() }}</mat-label>
+        <input required matInput formControlName="username">
+        @if (connectionUsernameControl.invalid) {
+          <mat-error>{{ (connectionUsernameControl.errors | formatGenericValidationErrors)() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field [floatLabel]="properties() !== null ? 'always' : 'auto'">
+        <mat-label>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.PASSWORD_LABEL' | translate)() }}</mat-label>
+        <input matInput type="password" formControlName="password"
+               [placeholder]="properties() !== null ? '(unchanged)' : ''">
+        @if (connectionPasswordControl.invalid) {
+          <mat-error>{{ (connectionPasswordControl.errors | formatGenericValidationErrors)() }}</mat-error>
+        }
+      </mat-form-field>
+    </div>
+  }
+
+  <div class="project-properties__control">
+    @if (properties() !== null) {
+      <button mat-flat-button (click)="delete.emit()" type="button">
+        <mat-icon>delete</mat-icon>
+        {{ ('GENERIC.DELETE_LABEL' | translate)() }}
+      </button>
+    }
+
+    <button mat-flat-button type="submit">
+      <mat-icon>save</mat-icon>
+      {{ ('GENERIC.SAVE_LABEL' | translate)() }}
+    </button>
+  </div>
+</form>
