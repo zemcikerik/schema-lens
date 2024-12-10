@@ -2,12 +2,13 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { ProgressSpinnerComponent } from './shared/components/progress-spinner/progress-spinner.component';
 import { TranslateService } from './core/translate/translate.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { combineLatest } from 'rxjs';
+import { combineLatest, finalize } from 'rxjs';
 import { ProjectSelectorComponent } from './projects/components/project-selector/project-selector.component';
 import { TopBarComponent } from './top-bar.component';
 import { RouterOutlet } from '@angular/router';
 import { RouteDataService } from './core/routing/route-data.service';
 import { ProjectService } from './projects/services/project.service';
+import { AlertComponent } from './shared/components/alert/alert.component';
 
 @Component({
   selector: 'app-root',
@@ -19,11 +20,12 @@ import { ProjectService } from './projects/services/project.service';
     ProjectSelectorComponent,
     TopBarComponent,
     RouterOutlet,
+    AlertComponent,
   ],
 })
 export class AppComponent {
-
-  coreDataLoaded = signal(false);
+  loading = signal<boolean>(true);
+  error = signal<string | null>(null);
 
   private routeData = inject(RouteDataService).routeData;
   showTopBar = computed(() => !this.routeData().disableTopBar);
@@ -33,8 +35,10 @@ export class AppComponent {
       inject(TranslateService).setLocale('en_US'),
       inject(ProjectService).loadProjects(),
     ]).pipe(
-      takeUntilDestroyed()
-    ).subscribe(() => this.coreDataLoaded.set(true));
+      takeUntilDestroyed(),
+      finalize(() => this.loading.set(false)),
+    ).subscribe({
+      error: (err: Error) => this.error.set(err.message),
+    });
   }
-
 }

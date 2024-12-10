@@ -1,5 +1,17 @@
 <div class="app-root">
-  @if (coreDataLoaded()) {
+  @if (loading()) {
+    <app-progress-spinner [center]="true" />
+  } @else if (error() !== null) {
+    <div class="app-error">
+      <app-alert type="error">
+        <div class="app-error__message">
+          There was an error loading needed data for application!
+          Please try again later.
+        </div>
+        <div>Error: {{ error() }}</div>
+      </app-alert>
+    </div>
+  } @else {
     @if (showTopBar()) {
       <app-top-bar>
         <app-project-selector />
@@ -9,7 +21,5 @@
     <div class="app-content">
       <router-outlet />
     </div>
-  } @else {
-    <app-progress-spinner [center]="true" />
   }
 </div>

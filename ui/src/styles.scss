@@ -88,3 +88,22 @@ body {
     --app-content-height: var(--mat-toolbar-mobile-height);
   }
 }
+
+.app-error {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+
+  > * {
+    width: 100%;
+
+    @include breakpoint-up(md) {
+      width: get-breakpoint-size(md);
+    }
+  }
+
+  &__message {
+    margin-bottom: 1rem;
+  }
+}
