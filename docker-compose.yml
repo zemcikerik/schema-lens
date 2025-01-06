@@ -13,6 +13,7 @@ services:
       - spring.datasource.password=${DB_APP_PASSWORD}
     networks:
       - db
+      - reverse-proxy
     deploy:
       resources:
         limits:
@@ -22,10 +23,28 @@ services:
   ui:
     image: ghcr.io/zemcikerik/schema-lens/ui:master
     restart: on-failure:3
+    networks:
+      - reverse-proxy
     deploy:
       resources:
         limits:
           cpus: '0.5'
+          memory: 512M
+
+  reverse-proxy:
+    image: ghcr.io/zemcikerik/schema-lens/reverse-proxy:master
+    restart: on-failure:3
+    depends_on:
+      - api
+      - ui
+    ports:
+      - '80:8080'
+    networks:
+      - reverse-proxy
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
           memory: 512M
 
   db:
@@ -54,3 +73,4 @@ services:
 
 networks:
   db:
+  reverse-proxy:
