@@ -15,6 +15,11 @@
     @if (showTopBar()) {
       <app-top-bar>
         <app-project-selector />
+
+        @let user = currentUser();
+        @if (user !== null) {
+          <app-user-identifier [user]="user" (logout)="logout()" />
+        }
       </app-top-bar>
     }
 

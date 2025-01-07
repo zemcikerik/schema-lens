@@ -19,11 +19,11 @@ export class AuthService {
   private readonly keyValueStoreService = inject(KeyValueStoreService);
 
   private _isAuthenticated$ = new ReplaySubject<boolean>(1);
-  private _currentUser$ = signal<User | null>(null);
+  private _currentUser = signal<User | null>(null);
   private _jwt = '';
 
   readonly isAuthenticated = toSignal(this._isAuthenticated$, { initialValue: false });
-  readonly currentUser = this._currentUser$.asReadonly();
+  readonly currentUser = this._currentUser.asReadonly();
 
   get jwt(): string {
     return this._jwt;
@@ -50,7 +50,7 @@ export class AuthService {
         }
 
         this._isAuthenticated$.next(true);
-        this._currentUser$.set(user);
+        this._currentUser.set(user);
         return true;
       }));
     });
@@ -72,6 +72,13 @@ export class AuthService {
     }));
   }
 
+  logout(): void {
+    this._isAuthenticated$.next(false);
+    this._currentUser.set(null);
+    this._jwt = '';
+    this.keyValueStoreService.removeString(JWT_TOKEN_KEY);
+  }
+
   private updateStateFromAuthResult(result: AuthResult | null): boolean {
     if (result === null) {
       return false;
@@ -80,8 +87,7 @@ export class AuthService {
     this._jwt = result.jwt;
     this.keyValueStoreService.setString(JWT_TOKEN_KEY, result.jwt);
     this._isAuthenticated$.next(true);
-    this._currentUser$.set(result.user);
+    this._currentUser.set(result.user);
     return true;
   }
-
 }

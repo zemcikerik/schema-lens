@@ -31,6 +31,9 @@ export class FormatGenericValidationErrorsPipe implements PipeTransform {
         { maxLength: errors['maxlength'].requiredLength }
       );
     }
+    if (errors['email']) {
+      return this.translateService.translate('GENERIC.VALIDATION.EMAIL');
+    }
     if (errors['pattern']) {
       return this.translateService.translate('GENERIC.VALIDATION.PATTERN');
     }

@@ -5,11 +5,12 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize, forkJoin, map, mergeMap, of } from 'rxjs';
 import { ProjectSelectorComponent } from './projects/components/project-selector/project-selector.component';
 import { TopBarComponent } from './top-bar.component';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { RouteDataService } from './core/routing/route-data.service';
 import { ProjectService } from './projects/services/project.service';
 import { AlertComponent } from './shared/components/alert/alert.component';
 import { AuthService } from './core/auth/auth.service';
+import { UserIdentifierComponent } from './shared/components/user-identifier/user-identifier.component';
 
 @Component({
   selector: 'app-root',
@@ -22,21 +23,26 @@ import { AuthService } from './core/auth/auth.service';
     TopBarComponent,
     RouterOutlet,
     AlertComponent,
+    UserIdentifierComponent,
   ],
 })
 export class AppComponent {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
 
   private routeData = inject(RouteDataService).routeData;
   showTopBar = computed(() => !this.routeData().disableTopBar);
+  currentUser = this.authService.currentUser;
 
   constructor() {
     const projectService = inject(ProjectService);
 
     forkJoin([
       inject(TranslateService).setLocale('en_US'),
-      inject(AuthService).attemptAuthFromStorage(),
+      this.authService.attemptAuthFromStorage(),
     ]).pipe(
       map(([, authenticated]) => authenticated),
       mergeMap(authenticated => authenticated ? projectService.loadProjects() : of(null)),
@@ -45,5 +51,10 @@ export class AppComponent {
     ).subscribe({
       error: (err: Error) => this.error.set(err.message),
     });
+  }
+
+  logout(): void {
+    this.authService.logout();
+    this.router.navigate(['/login']);
   }
 }

@@ -21,6 +21,7 @@
 @import './scss/components/table-constraints';
 @import './scss/components/table-properties';
 @import './scss/components/top-bar';
+@import './scss/components/user-identifier';
 
 @include mat.core();
 
@@ -43,6 +44,7 @@
 @include app-table-constraints();
 @include app-table-properties();
 @include app-top-bar();
+@include app-user-identifier();
 
 html {
   @include mat.core-theme($theme);
@@ -54,6 +56,7 @@ html {
   @include mat.icon-theme($theme);
   @include mat.icon-button-theme($theme);
   @include mat.list-theme($theme);
+  @include mat.menu-theme($theme);
   @include mat.progress-bar-theme($theme);
   @include mat.progress-spinner-theme($theme);
   @include mat.ripple-theme($theme);

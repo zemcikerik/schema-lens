@@ -1,0 +1,17 @@
+<div class="user-identifier" matRipple [matMenuTriggerFor]="options">
+  <div class="user-identifier__photo">
+    <img ngSrc="/login.jpg" fill [alt]="user().username">
+    <div class="user-identifier__photo__filter"></div>
+  </div>
+  <span class="user-identifier__username">{{ user().username }}</span>
+  <span class="user-identifier__email">{{ user().email }}</span>
+</div>
+
+<mat-menu #options xPosition="before" yPosition="below">
+  <button mat-menu-item (click)="language.emit()">
+    <mat-icon>language</mat-icon> {{ ('LOCALE.LANGUAGE_BUTTON' | translate)() }}
+  </button>
+  <button mat-menu-item (click)="logout.emit()">
+    <mat-icon>logout</mat-icon> {{ ('AUTH.LOGOUT_BUTTON' | translate)() }}
+  </button>
+</mat-menu>

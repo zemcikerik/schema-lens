@@ -33,11 +33,15 @@
     "REGISTER_BUTTON": "Register",
     "LOGIN_REDIRECT": "Try logging in",
     "REGISTER_REDIRECT": "Create new account",
+    "LOGOUT_BUTTON": "Logout",
     "ERRORS": {
       "USERNAME_TAKEN": "This username was already taken by another user.",
       "EMAIL_TAKEN": "This email was already taken by another user.",
       "CREDENTIALS_WRONG": "Provided username or password is not correct."
     }
+  },
+  "LOCALE": {
+    "LANGUAGE_BUTTON": "Language"
   },
   "ORACLE": {
     "TYPE_CATEGORY_LABELS": {

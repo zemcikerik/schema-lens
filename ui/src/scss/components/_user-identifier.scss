@@ -1,0 +1,70 @@
+@use '@angular/material' as mat;
+@import '../theme';
+
+@mixin app-user-identifier($options: ()) {
+  .user-identifier {
+    display: grid;
+    grid-template-columns: 2.75rem 1fr;
+    grid-template-rows: repeat(2, auto);
+    grid-template-areas:
+      "photo username"
+      "photo email";
+    column-gap: 0.5rem;
+    max-width: 15rem;
+    height: 2.75rem;
+    cursor: pointer;
+    border-radius: 48px;
+    padding-right: 1rem;
+    transition: color 100ms;
+
+    &__photo {
+      grid-area: photo;
+      position: relative;
+      width: 100%;
+      height: 100%;
+
+      > img {
+        object-fit: cover;
+        border-radius: 48px;
+      }
+
+      &__filter {
+        position: absolute;
+        inset: 0;
+        grid-area: photo;
+        width: 100%;
+        height: 100%;
+        border-radius: 48px;
+        background-color: mat.get-theme-color($theme, neutral, 40);
+        opacity: 0;
+        transition: opacity 100ms;
+      }
+    }
+
+    &__username {
+      grid-area: username;
+      font: mat.get-theme-typography($theme, body-medium, font);
+      vertical-align: bottom;
+    }
+
+    &__email {
+      grid-area: email;
+      font: mat.get-theme-typography($theme, body-small, font);
+    }
+
+    &__username,
+    &__email {
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      overflow: hidden;
+    }
+
+    &:hover {
+      color: mat.get-theme-color($theme, neutral, 0);
+    }
+
+    &:hover &__photo__filter {
+      opacity: 20%;
+    }
+  }
+}
