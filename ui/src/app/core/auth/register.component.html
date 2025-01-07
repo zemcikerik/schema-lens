@@ -1,0 +1,41 @@
+@let err = error();
+<app-layout-auth [title]="('AUTH.REGISTER_TITLE' | translate)()" [loading]="loading()" [error]="err ? (err | translate)() : null">
+  <form [formGroup]="registerForm" (ngSubmit)="register()">
+    <mat-form-field>
+      <mat-label>{{ ('AUTH.USERNAME_LABEL' | translate)() }}</mat-label>
+      <input required matInput formControlName="username">
+      @if (registerForm.controls.username.invalid) {
+        <mat-error>{{ (registerForm.controls.username.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ ('AUTH.EMAIL_LABEL' | translate)() }}</mat-label>
+      <input required matInput formControlName="email">
+      @if (registerForm.controls.email.invalid) {
+        <mat-error>{{ (registerForm.controls.email.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ ('AUTH.PASSWORD_LABEL' | translate)() }}</mat-label>
+      <input required matInput type="password" formControlName="password">
+      @if (registerForm.controls.password.invalid) {
+        <mat-error>{{ (registerForm.controls.password.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ ('AUTH.VERIFY_PASSWORD_LABEL' | translate)() }}</mat-label>
+      <input required matInput type="password" formControlName="verifyPassword">
+      @if (registerForm.controls.verifyPassword.invalid) {
+        <mat-error>{{ (registerForm.controls.verifyPassword.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+
+    <div class="actions">
+      <a mat-button [routerLink]="['/login']">{{ ('AUTH.LOGIN_REDIRECT' | translate)() }}</a>
+      <button mat-flat-button type="submit">{{ ('AUTH.REGISTER_BUTTON' | translate)() }}</button>
+    </div>
+  </form>
+</app-layout-auth>

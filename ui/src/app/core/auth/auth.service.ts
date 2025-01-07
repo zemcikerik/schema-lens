@@ -4,6 +4,8 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { User } from '../models/user.model';
 import { UserHttpClientService } from './user-http-client.service';
 import { KeyValueStoreService } from '../persistence/key-value-store.service';
+import { RegistrationData } from '../models/registration-data.model';
+import { AuthResult, RegistrationResult } from '../models/auth.model';
 
 const JWT_TOKEN_KEY = 'token';
 export const USERNAME_REGEX = /^[a-zA-Z\d_-]+$/;
@@ -55,17 +57,31 @@ export class AuthService {
   }
 
   login(username: string, password: string): Observable<boolean> {
-    return this.userHttpClientService.login(username, password).pipe(map(result => {
-      if (result === null) {
-        return false;
+    return this.userHttpClientService.login(username, password)
+      .pipe(map(result => this.updateStateFromAuthResult(result)));
+  }
+
+  register(registration: RegistrationData): Observable<RegistrationResult> {
+    return this.userHttpClientService.register(registration).pipe(map(result => {
+      if (result === RegistrationResult.USERNAME_TAKEN || result === RegistrationResult.EMAIL_TAKEN) {
+        return result;
       }
 
-      this._jwt = result.jwt;
-      this.keyValueStoreService.setString(JWT_TOKEN_KEY, result.jwt);
-      this._isAuthenticated$.next(true);
-      this._currentUser$.set(result.user);
-      return true;
+      this.updateStateFromAuthResult(result);
+      return RegistrationResult.SUCCESS;
     }));
+  }
+
+  private updateStateFromAuthResult(result: AuthResult | null): boolean {
+    if (result === null) {
+      return false;
+    }
+
+    this._jwt = result.jwt;
+    this.keyValueStoreService.setString(JWT_TOKEN_KEY, result.jwt);
+    this._isAuthenticated$.next(true);
+    this._currentUser$.set(result.user);
+    return true;
   }
 
 }

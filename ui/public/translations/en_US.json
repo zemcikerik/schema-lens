@@ -13,6 +13,7 @@
       "MAX_LENGTH": "This field has to be maximum {maxLength} characters long.",
       "PATTERN": "This field contains disallowed characters.",
       "EMAIL": "This e-mail is invalid.",
+      "VERIFY_PASSWORD": "Verify password must match the password.",
       "UNKNOWN": "This field is invalid.",
       "IP_ADDRESS": {
         "INVALID": "This IP address is invalid.",
@@ -25,10 +26,13 @@
     "USERNAME_LABEL": "Username",
     "EMAIL_LABEL": "E-mail",
     "PASSWORD_LABEL": "Password",
+    "VERIFY_PASSWORD_LABEL": "Verify password",
     "LOGIN_TITLE": "Sign in",
     "REGISTER_TITLE": "Register",
     "LOGIN_BUTTON": "Log in",
     "REGISTER_BUTTON": "Register",
+    "LOGIN_REDIRECT": "Try logging in",
+    "REGISTER_REDIRECT": "Create new account",
     "ERRORS": {
       "USERNAME_TAKEN": "This username was already taken by another user.",
       "EMAIL_TAKEN": "This email was already taken by another user.",

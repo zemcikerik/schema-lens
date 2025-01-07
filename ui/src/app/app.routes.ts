@@ -9,6 +9,11 @@ export const appRoutes: Route[] = [
     data: { disableTopBar: true },
   },
   {
+    path: 'register',
+    loadComponent: () => import('./core/auth/register.component').then(c => c.RegisterComponent),
+    data: { disableTopBar: true },
+  },
+  {
     path: 'project',
     loadComponent: () => import('./projects/components/project-list/project-list.component').then(c => c.ProjectListComponent),
     canActivate: [authGuard],

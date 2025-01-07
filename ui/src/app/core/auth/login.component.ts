@@ -2,12 +2,12 @@ import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AuthService, USERNAME_REGEX } from './auth.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize, map, mergeMap, of } from 'rxjs';
 import { LayoutAuthComponent } from '../layouts/layout-auth.component';
 import { MatInputModule } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
+import { MatAnchor, MatButton } from '@angular/material/button';
 import { TranslatePipe } from '../translate/translate.pipe';
 import { FormatGenericValidationErrorsPipe } from '../../shared/pipes/format-generic-validation-errors.pipe';
 import { ProjectService } from '../../projects/services/project.service';
@@ -25,12 +25,14 @@ import { ProjectService } from '../../projects/services/project.service';
     LayoutAuthComponent,
     TranslatePipe,
     FormatGenericValidationErrorsPipe,
+    MatAnchor,
+    RouterLink,
   ],
 })
 export class LoginComponent {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
-  private projectService = inject(ProjectService); // todo move me
+  private projectService = inject(ProjectService);
   private router = inject(Router);
 
   loginForm = new FormGroup({

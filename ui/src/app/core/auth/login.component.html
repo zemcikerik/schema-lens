@@ -18,7 +18,7 @@
     </mat-form-field>
 
     <div class="actions">
-      <button mat-button>{{ ('AUTH.REGISTER_BUTTON' | translate)() }}</button>
+      <a mat-button [routerLink]="['/register']">{{ ('AUTH.REGISTER_REDIRECT' | translate)() }}</a>
       <button mat-flat-button type="submit">{{ ('AUTH.LOGIN_BUTTON' | translate)() }}</button>
     </div>
   </form>
