@@ -35,12 +35,12 @@ export class AuthService {
 
   attemptAuthFromStorage(): Observable<boolean> {
     return defer(() => {
-      this._jwt = this.keyValueStoreService.getStringOrDefault(JWT_TOKEN_KEY, '');
-
-      if (this._jwt === '') {
+      if (!this.keyValueStoreService.hasString(JWT_TOKEN_KEY)) {
         this._isAuthenticated$.next(false);
         return of(false);
       }
+
+      this._jwt = this.keyValueStoreService.getStringOrDefault(JWT_TOKEN_KEY, '');
 
       return this.userHttpClientService.getCurrentUser().pipe(map(user => {
         if (user === null) {

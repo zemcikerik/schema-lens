@@ -4,6 +4,7 @@ import { TranslateLoaderService } from './translate-loader.service';
 import { lastValueFrom, of } from 'rxjs';
 import { TranslateParserService } from './translate-parser.service';
 import { Translations } from './translate.types';
+import { KeyValueStoreService } from '../persistence/key-value-store.service';
 
 describe('TranslateService', () => {
   let service: TranslateService;
@@ -15,6 +16,11 @@ describe('TranslateService', () => {
     })
     .mock(TranslateParserService, {
       parseRawTranslations: () => ({ RAW: () => 'no' }),
+    })
+    .mock(KeyValueStoreService, {
+      getStringOrDefault: () => 'en_US',
+      hasString: () => false,
+      removeString: () => void 0,
     }));
 
   beforeEach(() => {

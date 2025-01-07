@@ -1,11 +1,5 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import {
-  MAT_DIALOG_DATA,
-  MatDialogActions,
-  MatDialogClose,
-  MatDialogContent,
-  MatDialogTitle,
-} from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { MatButton } from '@angular/material/button';
 
@@ -27,11 +21,8 @@ export interface ConfirmationDialogData {
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    MatDialogTitle,
+    MatDialogModule,
     TranslatePipe,
-    MatDialogContent,
-    MatDialogActions,
-    MatDialogClose,
     MatButton,
   ],
 })

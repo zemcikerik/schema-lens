@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>{{ ('LOCALE.CHANGE_DIALOG.TITLE' | translate)() }}</h2>
+
+<mat-dialog-content class="change-locale-dialog">
+  @if (loading()) {
+    <app-progress-spinner />
+  } @else {
+    <p>{{ ('LOCALE.CHANGE_DIALOG.DESCRIPTION' | translate)() }}</p>
+
+    @if (error()) {
+      <app-alert class="d-block mb-1" type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+    }
+
+    <mat-form-field class="w-100">
+      <mat-icon matPrefix>language</mat-icon>
+      <mat-label>Language</mat-label>
+      <mat-select [formControl]="selectedLocale">
+        @for (locale of availableLocales(); track locale.code) {
+          <mat-option [value]="locale.code">{{ locale.name }} ({{ locale.code }})</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="false">{{ ('GENERIC.CANCEL_LABEL' | translate)() }}</button>
+  <button mat-flat-button (click)="changeLocale()">{{ ('GENERIC.CONFIRM_LABEL' | translate)() }}</button>
+</mat-dialog-actions>

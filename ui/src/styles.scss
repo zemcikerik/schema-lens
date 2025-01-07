@@ -4,6 +4,8 @@
 
 @import './scss/layouts/auth';
 @import './scss/layouts/content-with-sidebar';
+@import './scss/utilities/dimensions';
+@import './scss/utilities/display';
 @import './scss/utilities/icon';
 
 @import './scss/components/alert';
@@ -27,6 +29,8 @@
 
 @include app-layout-auth();
 @include app-layout-content-with-sidebar();
+@include app-utility-dimensions();
+@include app-utility-display();
 @include app-utility-icon();
 
 @include app-alert();

@@ -18,6 +18,10 @@
     </mat-form-field>
 
     <div class="actions">
+      <button mat-icon-button type="button" (click)="changeLocale()">
+        <mat-icon>language</mat-icon>
+      </button>
+      <div class="actions__spacer"></div>
       <a mat-button [routerLink]="['/register']">{{ ('AUTH.REGISTER_REDIRECT' | translate)() }}</a>
       <button mat-flat-button type="submit">{{ ('AUTH.LOGIN_BUTTON' | translate)() }}</button>
     </div>

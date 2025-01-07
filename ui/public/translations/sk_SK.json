@@ -1,0 +1,120 @@
+{
+  "APP_TITLE": "Schema Lens",
+  "APP_TITLE_SHORT": "SL",
+  "GENERIC": {
+    "SAVE_LABEL": "Uložiť",
+    "DELETE_LABEL": "Vymazať",
+    "CONFIRM_LABEL": "Potvrdiť",
+    "CANCEL_LABEL": "Zrušiť",
+    "ERROR_LABEL": "Pri spracovaní vašej požiadavky nastala chyba. Skúste to prosím neskôr.",
+    "VALIDATION": {
+      "REQUIRED": "Toto pole je povinné.",
+      "MIN_LENGTH": "Toto pole musí obsahovať aspoň {minLength} znakov.",
+      "MAX_LENGTH": "Toto pole môže obsahovať maximálne {maxLength} znakov.",
+      "PATTERN": "Toto pole obsahuje nepovolené znaky.",
+      "EMAIL": "Tento e-mail je neplatný.",
+      "VERIFY_PASSWORD": "Potvrdené heslo sa musí zhodovať s heslom.",
+      "UNKNOWN": "Toto pole je neplatné.",
+      "IP_ADDRESS": {
+        "INVALID": "Táto IP adresa je neplatná.",
+        "ILLEGAL": "Táto IP adresa je z nepovoleného rozsahu."
+      },
+      "PORT": "Tento port je neplatný (povolený rozsah: 1-65535)."
+    }
+  },
+  "AUTH": {
+    "USERNAME_LABEL": "Používateľské meno",
+    "EMAIL_LABEL": "E-mail",
+    "PASSWORD_LABEL": "Heslo",
+    "VERIFY_PASSWORD_LABEL": "Potvrdiť heslo",
+    "LOGIN_TITLE": "Prihlásiť sa",
+    "REGISTER_TITLE": "Registrácia",
+    "LOGIN_BUTTON": "Prihlásiť",
+    "REGISTER_BUTTON": "Registrovať",
+    "LOGIN_REDIRECT": "Skúste sa prihlásiť",
+    "REGISTER_REDIRECT": "Vytvoriť nový účet",
+    "LOGOUT_BUTTON": "Odhlásiť sa",
+    "ERRORS": {
+      "USERNAME_TAKEN": "Toto používateľské meno už používa iný používateľ.",
+      "EMAIL_TAKEN": "Tento e-mail už používa iný používateľ.",
+      "CREDENTIALS_WRONG": "Zadané používateľské meno alebo heslo nie je správne."
+    }
+  },
+  "LOCALE": {
+    "LANGUAGE_BUTTON": "Jazyk",
+    "CHANGE_DIALOG": {
+      "TITLE": "Zmeniť jazyk",
+      "DESCRIPTION": "Vyberte jazyk, ktorý chcete použiť v aplikácii. Táto zmena by mala byť takmer okamžitá."
+    }
+  },
+  "ORACLE": {
+    "TYPE_CATEGORY_LABELS": {
+      "CHARACTER": "Znakové typ údajov",
+      "NUMERIC": "Číselný typ údajov",
+      "RAW": "Raw typ údajov",
+      "DATETIME": "Časový typ údajov",
+      "LARGE-OBJECT": "Typ údajov veľkých objektov",
+      "ROWID": "Typ údajov ID riadku",
+      "UNKNOWN": "Neznámy typ údajov"
+    }
+  },
+  "PROJECTS": {
+    "LIST_LABEL": "Projekty",
+    "LIST_EMPTY": "Nie sú dostupné žiadne projekty! Môžete vytvoriť nový kliknutím na tlačidlo \"Vytvoriť projekt\".",
+    "LIST_COLUMN": {
+      "NAME_LABEL": "Názov",
+      "DB_TYPE_LABEL": "Typ databázy",
+      "OWNER_LABEL": "Vlastník"
+    },
+    "BUTTON_CREATE": "Vytvoriť projekt",
+    "CREATE_LABEL": "Vytvoriť nový projekt",
+    "PROPERTIES": {
+      "LABEL": "Možnosti projektu"
+    },
+    "MAIN_PROPERTIES": {
+      "LABEL": "Vlastnosti projektu",
+      "NAME_LABEL": "Názov projektu",
+      "DB_TYPE_LABEL": "Typ databázy"
+    },
+    "CONNECTION_PROPERTIES": {
+      "ORACLE": {
+        "LABEL": "Vlastnosti pripojenia k Oracle databáze",
+        "HOST_LABEL": "Hostiteľ",
+        "HOST_HINT": "Hostiteľ musí byť platná IPv4 alebo IPv6 adresa.",
+        "PORT_LABEL": "Port",
+        "SERVICE_LABEL": "Služba",
+        "USERNAME_LABEL": "Používateľské meno",
+        "PASSWORD_LABEL": "Heslo"
+      }
+    },
+    "DELETE_CONFIRM_DESCRIPTION": "Naozaj chcete vymazať tento projekt? Tento krok je nevratný!"
+  },
+  "TABLES": {
+    "LABEL": "Tabuľka",
+    "LIST_LABEL": "Tabuľky",
+    "COLUMNS": {
+      "LABEL": "Stĺpce",
+      "NAME_LABEL": "Názov",
+      "TYPE_LABEL": "Typ",
+      "POSITION_LABEL": "#",
+      "NULLABLE_LABEL": "Nullable"
+    },
+    "CONSTRAINTS": {
+      "LABEL": "Integritné obmedzenia",
+      "NAME_LABEL": "Názov",
+      "TYPE": {
+        "LABEL": "Typ",
+        "PRIMARY-KEY": "Primárny kľúč",
+        "FOREIGN-KEY": "Cudzí kľúč",
+        "CHECK": "Check",
+        "UNIQUE": "Unikátne"
+      },
+      "ENABLED_LABEL": "Povolené",
+      "COLUMNS_LABEL": "Ovplyvnené stĺpce:",
+      "CONDITION_LABEL": "Podmienka:",
+      "REFERENCED_CONSTRAINT_NAME_LABEL": "Názov referencovaného obmedzenia",
+      "REFERENCED_TABLE_NAME_LABEL": "Názov referenovanej tabuľky",
+      "REFERENCED_COLUMN_NAME_LABEL": "Názov referencovaného stĺpca"
+    }
+  }
+}

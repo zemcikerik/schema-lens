@@ -41,7 +41,11 @@
     }
   },
   "LOCALE": {
-    "LANGUAGE_BUTTON": "Language"
+    "LANGUAGE_BUTTON": "Language",
+    "CHANGE_DIALOG": {
+      "TITLE": "Change language",
+      "DESCRIPTION": "Choose language to use in application. This change should be reflected almost instantly."
+    }
   },
   "ORACLE": {
     "TYPE_CATEGORY_LABELS": {

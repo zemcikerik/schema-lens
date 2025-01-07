@@ -11,6 +11,8 @@ import { ProjectService } from './projects/services/project.service';
 import { AlertComponent } from './shared/components/alert/alert.component';
 import { AuthService } from './core/auth/auth.service';
 import { UserIdentifierComponent } from './shared/components/user-identifier/user-identifier.component';
+import { MatDialog } from '@angular/material/dialog';
+import { ChangeLocaleDialogComponent } from './shared/components/change-locale-dialog/change-locale-dialog.component';
 
 @Component({
   selector: 'app-root',
@@ -29,6 +31,8 @@ import { UserIdentifierComponent } from './shared/components/user-identifier/use
 export class AppComponent {
   private authService = inject(AuthService);
   private router = inject(Router);
+  private matDialog = inject(MatDialog);
+  private translateService = inject(TranslateService);
 
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
@@ -41,7 +45,7 @@ export class AppComponent {
     const projectService = inject(ProjectService);
 
     forkJoin([
-      inject(TranslateService).setLocale('en_US'),
+      this.translateService.trySetLocaleFromStorageOrDefault(),
       this.authService.attemptAuthFromStorage(),
     ]).pipe(
       map(([, authenticated]) => authenticated),
@@ -51,6 +55,10 @@ export class AppComponent {
     ).subscribe({
       error: (err: Error) => this.error.set(err.message),
     });
+  }
+
+  changeLocale(): void {
+    this.matDialog.open(ChangeLocaleDialogComponent, { disableClose: true });
   }
 
   logout(): void {

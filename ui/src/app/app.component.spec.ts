@@ -18,7 +18,7 @@ describe('AppComponent', () => {
 
   beforeAll(() => MockBuilder(AppComponent)
     .mock(TranslateService, {
-      setLocale: () => of(null),
+      trySetLocaleFromStorageOrDefault: () => of(null),
     })
     .mock(ProjectService, {
       loadProjects: () => of(null),
@@ -37,7 +37,7 @@ describe('AppComponent', () => {
 
   it('should set translation locale', () => {
     const setLocaleSpy = jest.fn(() => of(null));
-    MockInstance(TranslateService, 'setLocale', setLocaleSpy);
+    MockInstance(TranslateService, 'trySetLocaleFromStorageOrDefault', setLocaleSpy);
     MockRender(AppComponent);
     expect(setLocaleSpy).toHaveBeenCalled();
   });
@@ -66,7 +66,7 @@ describe('AppComponent', () => {
 
   it('should show error alert when error was emitted during initialization', () => {
     const setLocale$ = new Subject();
-    MockInstance(TranslateService, 'setLocale', () => setLocale$.asObservable());
+    MockInstance(TranslateService, 'trySetLocaleFromStorageOrDefault', () => setLocale$.asObservable());
 
     const fixture = MockRender(AppComponent);
     expect(ngMocks.find(AlertComponent, null)).toBeNull();

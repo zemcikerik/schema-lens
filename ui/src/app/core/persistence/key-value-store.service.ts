@@ -6,6 +6,10 @@ export class KeyValueStoreService {
 
   private localStorage = inject(LOCAL_STORAGE);
 
+  hasString(key: string): boolean {
+    return this.localStorage.getItem(key) !== null;
+  }
+
   getStringOrDefault(key: string, defaultValue: string): string {
     const value = this.localStorage.getItem(key);
     return value ?? defaultValue;
