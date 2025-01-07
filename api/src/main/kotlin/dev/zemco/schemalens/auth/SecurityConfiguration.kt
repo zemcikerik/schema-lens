@@ -12,7 +12,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.security.web.SecurityFilterChain
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter
-import org.springframework.security.web.csrf.CookieCsrfTokenRepository
 
 @Configuration
 @EnableWebSecurity
@@ -40,6 +39,7 @@ class SecurityConfiguration {
             authorizeRequests {
                 authorize(POST, "/user", permitAll)
                 authorize(POST, "/user/login", permitAll)
+                authorize(POST, "/user/login/refresh", permitAll)
                 authorize(anyRequest, authenticated)
             }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(jwtTokenFilter)

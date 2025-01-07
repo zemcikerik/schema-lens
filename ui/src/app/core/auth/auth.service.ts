@@ -1,13 +1,15 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { defer, map, Observable, of, ReplaySubject } from 'rxjs';
+import { defer, map, Observable, of, ReplaySubject, shareReplay, tap } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { User } from '../models/user.model';
 import { UserHttpClientService } from './user-http-client.service';
 import { KeyValueStoreService } from '../persistence/key-value-store.service';
 import { RegistrationData } from '../models/registration-data.model';
 import { AuthResult, RegistrationResult } from '../models/auth.model';
+import { Jwt, JwtClaims } from '../models/jwt.model';
 
 const JWT_TOKEN_KEY = 'token';
+const JWT_EXPIRY_OFFSET = 10;
 export const USERNAME_REGEX = /^[a-zA-Z\d_-]+$/;
 
 @Injectable({
@@ -20,12 +22,13 @@ export class AuthService {
 
   private _isAuthenticated$ = new ReplaySubject<boolean>(1);
   private _currentUser = signal<User | null>(null);
-  private _jwt = '';
+  private _jwt: Jwt | null = null;
+  private _jwtRefresh: Observable<string | null> | null = null;
 
   readonly isAuthenticated = toSignal(this._isAuthenticated$, { initialValue: false });
   readonly currentUser = this._currentUser.asReadonly();
 
-  get jwt(): string {
+  get jwt(): Jwt | null {
     return this._jwt;
   }
 
@@ -40,7 +43,12 @@ export class AuthService {
         return of(false);
       }
 
-      this._jwt = this.keyValueStoreService.getStringOrDefault(JWT_TOKEN_KEY, '');
+      this._jwt = this.parseJwt(this.keyValueStoreService.getStringOrDefault(JWT_TOKEN_KEY, ''));
+
+      if (this._jwt === null) {
+        this._isAuthenticated$.next(false);
+        return of(false);
+      }
 
       return this.userHttpClientService.getCurrentUser().pipe(map(user => {
         if (user === null) {
@@ -53,6 +61,33 @@ export class AuthService {
         this._currentUser.set(user);
         return true;
       }));
+    });
+  }
+
+  getJwtToken(): Observable<string | null> {
+    return defer(() => {
+      if (this._jwtRefresh !== null) {
+        return this._jwtRefresh;
+      }
+
+      if (this._jwt === null || Date.now() / 1000 + JWT_EXPIRY_OFFSET < this._jwt.expiresOn) {
+        return of(this._jwt?.rawJwt ?? null);
+      }
+
+      const refresh$ = this.userHttpClientService.refresh(this._jwt.refreshToken).pipe(
+        tap(rawJwt => {
+          this._jwt = rawJwt !== null ? this.parseJwt(rawJwt) : null;
+          if (this._jwt !== null) {
+            this.keyValueStoreService.setString(JWT_TOKEN_KEY, rawJwt!);
+          } else {
+            this.keyValueStoreService.removeString(JWT_TOKEN_KEY);
+          }
+          this._jwtRefresh = null;
+        }),
+        shareReplay({ bufferSize: 1, refCount: true }),
+      );
+      this._jwtRefresh = refresh$;
+      return refresh$;
     });
   }
 
@@ -75,7 +110,7 @@ export class AuthService {
   logout(): void {
     this._isAuthenticated$.next(false);
     this._currentUser.set(null);
-    this._jwt = '';
+    this._jwt = null;
     this.keyValueStoreService.removeString(JWT_TOKEN_KEY);
   }
 
@@ -84,10 +119,32 @@ export class AuthService {
       return false;
     }
 
-    this._jwt = result.jwt;
-    this.keyValueStoreService.setString(JWT_TOKEN_KEY, result.jwt);
+    this._jwt = this.parseJwt(result.rawJwt);
+
+    if (this._jwt === null) {
+      return false;
+    }
+
+    this.keyValueStoreService.setString(JWT_TOKEN_KEY, result.rawJwt);
     this._isAuthenticated$.next(true);
     this._currentUser.set(result.user);
     return true;
+  }
+
+  private parseJwt(rawJwt: string): Jwt | null {
+    const parts = rawJwt.split('.');
+
+    if (parts.length !== 3) {
+      return null;
+    }
+
+    const [, encodedClaims] = parts;
+    const claims: JwtClaims = JSON.parse(window.atob(encodedClaims));
+
+    if (!claims.exp || !claims.refresh_token) {
+      return null;
+    }
+
+    return { rawJwt, expiresOn: claims.exp, refreshToken: claims.refresh_token };
   }
 }

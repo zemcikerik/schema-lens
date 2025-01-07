@@ -17,7 +17,8 @@ import javax.crypto.SecretKey
 @Service
 class JwtServiceImpl(
     private val jwtConfiguration: JwtConfiguration,
-    private val userDetailsService: UserDetailsService
+    private val userDetailsService: UserDetailsService,
+    private val refreshTokenService: RefreshTokenService,
 ) : JwtService {
 
     private val signingKey: SecretKey = jwtConfiguration.signingKey?.let { decodeKey(it) } ?: generateKey()
@@ -28,6 +29,7 @@ class JwtServiceImpl(
             .issuer(jwtConfiguration.issuer)
             .subject(user.username)
             .expiration(createExpirationDate())
+            .claim(jwtConfiguration.refreshTokenClaimName, refreshTokenService.createRefreshTokenFor(user))
             .compact()
 
     override fun createAuthenticationFrom(jwt: String): Authentication =

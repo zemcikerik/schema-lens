@@ -2,7 +2,7 @@ import { User } from './user.model';
 
 export interface AuthResult {
   user: User;
-  jwt: string;
+  rawJwt: string;
 }
 
 export enum RegistrationResult {

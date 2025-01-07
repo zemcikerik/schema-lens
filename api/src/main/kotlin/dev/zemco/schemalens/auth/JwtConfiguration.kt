@@ -10,7 +10,13 @@ data class JwtConfiguration(
     val issuer: String = "schema-lens",
 
     @field:Min(1)
-    val expirationMinutes: Long = 60 * 12,
+    val expirationMinutes: Long = 10,
+
+    @field:Min(1)
+    val refreshTokenExpirationMinutes: Long = 60 * 24 * 3,
+
+    @field:NotBlank
+    val refreshTokenClaimName: String = "refresh_token",
 
     val signingKey: String? = null,
 )
