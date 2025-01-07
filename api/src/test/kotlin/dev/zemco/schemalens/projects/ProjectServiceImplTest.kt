@@ -27,7 +27,7 @@ class ProjectServiceImplTest {
 
     private companion object {
         private val MOCK_UUID = UUID.randomUUID()
-        private val MOCK_PROJECT = Project(id = 4, uuid = MOCK_UUID, name = "Mock Project", connectionInfo = null)
+        private val MOCK_PROJECT = Project(id = 4, uuid = MOCK_UUID, name = "Mock Project", ownerId = 3, connectionInfo = null)
     }
 
 }

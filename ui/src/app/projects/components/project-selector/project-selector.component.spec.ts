@@ -27,7 +27,7 @@ describe('ProjectSelectorComponent', () => {
   });
 
   it('should get loaded projects from project service', () => {
-    const projects: Project[] = [{ id: '15424e6e-6a3f-47d3-9b54-ace8f3e292ca', name: 'Test', dbType: 'oracle' }];
+    const projects: Project[] = [{ id: '15424e6e-6a3f-47d3-9b54-ace8f3e292ca', name: 'Test', dbType: 'oracle', owner: 'user' }];
     MockInstance(ProjectService, 'projects', signal(projects));
 
     const component = render();

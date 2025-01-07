@@ -4,4 +4,5 @@ export interface Project {
   id: string;
   name: string;
   dbType: DbType;
+  owner: string;
 }

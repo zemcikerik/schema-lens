@@ -76,6 +76,7 @@ export class ProjectPropertiesFormComponent {
         id: this.properties()?.id ?? null,
         name: name as string,
         dbType: dbType as DbType,
+        owner: '',
         connection: oracleConnection as OracleConnectionProperties,
       });
     }

@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.projects
 
+import dev.zemco.schemalens.auth.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*
@@ -7,20 +8,26 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/project")
 class ProjectController(
-    private val projectService: ProjectService
+    private val projectService: ProjectService,
+    private val userService: UserService,
 ) {
 
     @GetMapping
     fun listProjects(): List<ProjectListDto> =
-        projectService.getProjects().map { ProjectListDto(id = it.uuid, name = it.name) }
+        projectService.getSecuredProjects(userService.getCurrentUser()).map {
+            ProjectListDto(id = it.uuid, name = it.name, owner = it.owner!!.username)
+        }
 
     @GetMapping("{project}")
     fun getProjectProperties(@PathVariable project: Project) = project.mapToPropertiesDto()
 
     @PostMapping
     fun createProject(@RequestBody @Validated(OnCreate::class) projectDto: OracleProjectPropertiesDto): OracleProjectPropertiesDto {
+        val user = userService.getCurrentUser()
         val project = Project(
             name = projectDto.name,
+            ownerId = user.id!!,
+            owner = user,
             connectionInfo = projectDto.connection.let {
                 OracleProjectConnectionInfo(
                     host = it.host,
@@ -63,6 +70,7 @@ class ProjectController(
         OracleProjectPropertiesDto(
             id = uuid,
             name = name,
+            owner = owner!!.username,
             connection = connectionInfo!!.let {
                 OracleProjectPropertiesDto.ConnectionDto(
                     host = it.host,

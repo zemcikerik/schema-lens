@@ -92,11 +92,15 @@ export class AuthService {
   }
 
   login(username: string, password: string): Observable<boolean> {
+    this.logout();
+
     return this.userHttpClientService.login(username, password)
       .pipe(map(result => this.updateStateFromAuthResult(result)));
   }
 
   register(registration: RegistrationData): Observable<RegistrationResult> {
+    this.logout();
+
     return this.userHttpClientService.register(registration).pipe(map(result => {
       if (result === RegistrationResult.USERNAME_TAKEN || result === RegistrationResult.EMAIL_TAKEN) {
         return result;

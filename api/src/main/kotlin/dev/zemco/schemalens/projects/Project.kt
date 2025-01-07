@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.projects
 
+import dev.zemco.schemalens.auth.User
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotBlank
 import org.hibernate.validator.constraints.Range
@@ -20,6 +21,13 @@ class Project(
     @NotBlank
     @Column(nullable = false, length = 64)
     var name: String,
+
+    @Column(name = "owner_id", nullable = false)
+    var ownerId: Long,
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "owner_id", nullable = false, insertable = false, updatable = false)
+    var owner: User? = null,
 
     @OneToOne(mappedBy = "project", optional = true, fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
     var connectionInfo: ProjectConnectionInfo? = null,

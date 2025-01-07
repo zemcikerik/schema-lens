@@ -11,6 +11,7 @@ import java.util.*
 data class ProjectListDto(
     val id: UUID?,
     val name: String,
+    val owner: String,
 )
 
 data class OracleProjectPropertiesDto(
@@ -19,6 +20,7 @@ data class OracleProjectPropertiesDto(
     @field:NotBlank(groups = [OnCreate::class, OnUpdate::class])
     @field:Length(max = 64, groups = [OnCreate::class, OnUpdate::class])
     val name: String,
+    val owner: String,
 
     @field:Valid
     val connection: ConnectionDto,

@@ -60,6 +60,7 @@ export class ProjectService {
       id: projectId,
       name: properties.name,
       dbType: properties.dbType,
+      owner: properties.owner,
     };
     this._projects.update(projects => [...projects, project]);
   }
@@ -73,7 +74,7 @@ export class ProjectService {
 
     this._projects.update(projects => {
       const projectsCopy = [...projects];
-      projectsCopy[projectIndex] = { id: projectId, name: properties.name, dbType: properties.dbType };
+      projectsCopy[projectIndex] = { id: projectId, name: properties.name, dbType: properties.dbType, owner: properties.owner };
       return projectsCopy;
     });
   }

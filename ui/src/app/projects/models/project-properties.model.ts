@@ -4,6 +4,7 @@ interface BaseProjectProperties {
   id: string | null;
   name: string;
   dbType: DbType;
+  owner: string;
 }
 
 export interface OracleProjectProperties extends BaseProjectProperties {
