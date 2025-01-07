@@ -52,4 +52,52 @@
                              onDelete="CASCADE"
                              onUpdate="CASCADE" />
   </changeSet>
+
+  <changeSet id="2025-01-06T1950-add-registered-user-table"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createTable tableName="registered_user">
+      <column name="id"
+              type="BIGINT"
+              autoIncrement="true">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_registered_user" />
+      </column>
+
+      <column name="username"
+              type="VARCHAR(32)">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="hashed_password"
+              type="VARCHAR(60)">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="email"
+              type="VARCHAR(128)">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="active"
+              type="NUMBER(1,0)"
+              defaultValue="0">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2025-01-06T1951-make-registered-user-username-unique"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addUniqueConstraint tableName="registered_user"
+                         columnNames="username"
+                         constraintName="uc_registered_user_username" />
+  </changeSet>
+
+  <changeSet id="2025-01-06T1952-make-registered-user-email-unique"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addUniqueConstraint tableName="registered_user"
+                         columnNames="email"
+                         constraintName="uc_registered_user_email" />
+  </changeSet>
 </databaseChangeLog>

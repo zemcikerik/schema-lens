@@ -1,0 +1,23 @@
+<div class="layout-auth__container">
+  <div class="layout-auth">
+    @if (loading()) {
+      <mat-progress-bar mode="indeterminate" />
+    }
+
+    <div class="layout-auth__image">
+      <img ngSrc="/login.jpg" fill priority alt="Coffee :)">
+    </div>
+
+    <form class="layout-auth__content">
+      <h1>{{ title() }}</h1>
+
+      @if (error()) {
+        <app-alert type="error">{{ error() }}</app-alert>
+      }
+
+      <div class="layout-auth__form">
+        <ng-content />
+      </div>
+    </form>
+  </div>
+</div>

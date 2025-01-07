@@ -1,40 +1,25 @@
-<div class="login__container">
-  <div class="login">
-    @if (loading()) {
-      <mat-progress-bar mode="indeterminate" />
-    }
+@let err = error();
+<app-layout-auth [title]="('AUTH.LOGIN_TITLE' | translate)()" [loading]="loading()" [error]="err ? (err | translate)() : null">
+  <form [formGroup]="loginForm" (ngSubmit)="login()">
+    <mat-form-field>
+      <mat-label>{{ ('AUTH.USERNAME_LABEL' | translate)() }}</mat-label>
+      <input required matInput formControlName="username">
+      @if (loginForm.controls.username.invalid) {
+        <mat-error>{{ (loginForm.controls.username.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
 
-    <img src="/login.jpg" alt="test">
+    <mat-form-field>
+      <mat-label>{{ ('AUTH.PASSWORD_LABEL' | translate)() }}</mat-label>
+      <input required matInput type="password" formControlName="password">
+      @if (loginForm.controls.password.invalid) {
+        <mat-error>{{ (loginForm.controls.password.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
 
-    <form class="login__form" [formGroup]="loginForm" (ngSubmit)="login()">
-      <h1>Sign in</h1>
-
-      <div class="login__form__fields">
-        <mat-form-field>
-          <mat-label>E-mail</mat-label>
-          <input required matInput type="email" formControlName="email">
-          @if (loginForm.controls.email.invalid) {
-            <mat-error>Please enter a valid e-mail!</mat-error>
-          }
-        </mat-form-field>
-
-        <mat-form-field>
-          <mat-label>Password</mat-label>
-          <input required matInput type="password" formControlName="password">
-          @if (loginForm.controls.password.invalid) {
-            <mat-error>Please enter a password!</mat-error>
-          }
-        </mat-form-field>
-      </div>
-
-      <app-alert type="error">
-        Your e-mail or password is incorrect!
-      </app-alert>
-
-      <div class="login__form__actions">
-        <button mat-button>Register</button>
-        <button mat-flat-button type="submit">Login</button>
-      </div>
-    </form>
-  </div>
-</div>
+    <div class="actions">
+      <button mat-button>{{ ('AUTH.REGISTER_BUTTON' | translate)() }}</button>
+      <button mat-flat-button type="submit">{{ ('AUTH.LOGIN_BUTTON' | translate)() }}</button>
+    </div>
+  </form>
+</app-layout-auth>

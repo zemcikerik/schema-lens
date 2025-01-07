@@ -15,4 +15,8 @@ export class KeyValueStoreService {
     this.localStorage.setItem(key, value);
   }
 
+  removeString(key: string): void {
+    this.localStorage.removeItem(key);
+  }
+
 }

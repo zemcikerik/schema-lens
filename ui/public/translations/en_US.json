@@ -6,15 +6,33 @@
     "DELETE_LABEL": "Delete",
     "CONFIRM_LABEL": "Confirm",
     "CANCEL_LABEL": "Cancel",
+    "ERROR_LABEL": "There was an error processing your request. Please try again later.",
     "VALIDATION": {
       "REQUIRED": "This field is required.",
-      "MAX_LENGTH": "Maximum allowed length is {maxLength}.",
+      "MIN_LENGTH": "This field has to be at least {minLength} characters long.",
+      "MAX_LENGTH": "This field has to be maximum {maxLength} characters long.",
+      "PATTERN": "This field contains disallowed characters.",
+      "EMAIL": "This e-mail is invalid.",
       "UNKNOWN": "This field is invalid.",
       "IP_ADDRESS": {
         "INVALID": "This IP address is invalid.",
         "ILLEGAL": "This IP address is from a disallowed range."
       },
       "PORT": "This port is invalid (allowed range: 1-65535)."
+    }
+  },
+  "AUTH": {
+    "USERNAME_LABEL": "Username",
+    "EMAIL_LABEL": "E-mail",
+    "PASSWORD_LABEL": "Password",
+    "LOGIN_TITLE": "Sign in",
+    "REGISTER_TITLE": "Register",
+    "LOGIN_BUTTON": "Log in",
+    "REGISTER_BUTTON": "Register",
+    "ERRORS": {
+      "USERNAME_TAKEN": "This username was already taken by another user.",
+      "EMAIL_TAKEN": "This email was already taken by another user.",
+      "CREDENTIALS_WRONG": "Provided username or password is not correct."
     }
   },
   "ORACLE": {

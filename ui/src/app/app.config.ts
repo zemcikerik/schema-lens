@@ -8,6 +8,8 @@ import { LOCAL_STORAGE } from './core/persistence/local-storage.token';
 import { apiInterceptor } from './core/interceptors/api.interceptor';
 import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
+import { unauthorizedInterceptor } from './core/interceptors/unauthorized.interceptor';
+import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -17,7 +19,7 @@ export const appConfig: ApplicationConfig = {
       withRouterConfig({ paramsInheritanceStrategy: 'always' }),
     ),
     provideHttpClient(
-      withInterceptors([apiInterceptor]),
+      withInterceptors([apiInterceptor, jwtInterceptor, unauthorizedInterceptor]),
     ),
     provideMonacoEditor(),
     provideAnimationsAsync(),

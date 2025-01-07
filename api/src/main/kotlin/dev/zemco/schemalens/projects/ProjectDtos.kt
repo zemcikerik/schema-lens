@@ -1,6 +1,6 @@
 package dev.zemco.schemalens.projects
 
-import dev.zemco.schemalens.IpAddressConstraint
+import dev.zemco.schemalens.validation.IpAddressConstraint
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull

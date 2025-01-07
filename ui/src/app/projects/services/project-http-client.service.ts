@@ -13,7 +13,7 @@ export class ProjectHttpClientService {
 
   getProjects(): Observable<Project[]> {
     return this.httpClient.get<Project[]>('/project').pipe(
-      map(projects => projects.map(project => ({ ...project, dbType: 'oracle' }))),
+      map(projects => projects.map(project => ({ ...project, dbType: 'oracle' as const }))),
     );
   }
 

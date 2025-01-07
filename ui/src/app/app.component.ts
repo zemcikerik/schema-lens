@@ -2,13 +2,14 @@ import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@a
 import { ProgressSpinnerComponent } from './shared/components/progress-spinner/progress-spinner.component';
 import { TranslateService } from './core/translate/translate.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { combineLatest, finalize } from 'rxjs';
+import { finalize, forkJoin, map, mergeMap, of } from 'rxjs';
 import { ProjectSelectorComponent } from './projects/components/project-selector/project-selector.component';
 import { TopBarComponent } from './top-bar.component';
 import { RouterOutlet } from '@angular/router';
 import { RouteDataService } from './core/routing/route-data.service';
 import { ProjectService } from './projects/services/project.service';
 import { AlertComponent } from './shared/components/alert/alert.component';
+import { AuthService } from './core/auth/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -31,10 +32,14 @@ export class AppComponent {
   showTopBar = computed(() => !this.routeData().disableTopBar);
 
   constructor() {
-    combineLatest([
+    const projectService = inject(ProjectService);
+
+    forkJoin([
       inject(TranslateService).setLocale('en_US'),
-      inject(ProjectService).loadProjects(),
+      inject(AuthService).attemptAuthFromStorage(),
     ]).pipe(
+      map(([, authenticated]) => authenticated),
+      mergeMap(authenticated => authenticated ? projectService.loadProjects() : of(null)),
       takeUntilDestroyed(),
       finalize(() => this.loading.set(false)),
     ).subscribe({

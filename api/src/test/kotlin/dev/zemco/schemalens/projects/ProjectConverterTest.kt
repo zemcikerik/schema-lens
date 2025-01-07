@@ -7,6 +7,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.assertThrows
@@ -80,7 +81,7 @@ class ProjectConverterTest {
         private val TO_PROJECT_INSECURE = TypeDescriptor(
             ResolvableType.forClass(Project::class.java), null, arrayOf(NoOwnershipCheck()))
 
-        private val MOCK_USER = User()
+        private val MOCK_USER = mockk<User>()
         private val MOCK_UUID = UUID.randomUUID()
         private val MOCK_PROJECT = Project(id = 3, uuid = MOCK_UUID, name = "Test", connectionInfo = null)
     }

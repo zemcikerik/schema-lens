@@ -10,6 +10,7 @@ import { DEFAULT_ROUTE_DATA, RouteData } from './core/models/route-data.model';
 import { RouterOutlet } from '@angular/router';
 import { AlertComponent } from './shared/components/alert/alert.component';
 import { TopBarComponent } from './top-bar.component';
+import { AuthService } from './core/auth/auth.service';
 
 describe('AppComponent', () => {
   ngMocks.faster();
@@ -24,6 +25,9 @@ describe('AppComponent', () => {
     })
     .mock(RouteDataService, {
       routeData: signal({ ...DEFAULT_ROUTE_DATA })
+    })
+    .mock(AuthService, {
+      attemptAuthFromStorage: () => of(true),
     }));
 
   it('should be created', () => {

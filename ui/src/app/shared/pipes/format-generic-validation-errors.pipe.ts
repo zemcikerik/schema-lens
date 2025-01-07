@@ -19,11 +19,20 @@ export class FormatGenericValidationErrorsPipe implements PipeTransform {
     if (errors['required']) {
       return this.translateService.translate('GENERIC.VALIDATION.REQUIRED');
     }
+    if (errors['minlength']) {
+      return this.translateService.translate(
+        'GENERIC.VALIDATION.MIN_LENGTH',
+        { minLength: errors['minlength'].requiredLength }
+      );
+    }
     if (errors['maxlength']) {
       return this.translateService.translate(
         'GENERIC.VALIDATION.MAX_LENGTH',
         { maxLength: errors['maxlength'].requiredLength }
       );
+    }
+    if (errors['pattern']) {
+      return this.translateService.translate('GENERIC.VALIDATION.PATTERN');
     }
     if (errors['ipAddress']) {
       return this.translateService.translate(

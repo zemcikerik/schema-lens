@@ -18,7 +18,7 @@
       </app-top-bar>
     }
 
-    <div class="app-content">
+    <div class="app-content" [class.no-top-bar]="!showTopBar()">
       <router-outlet />
     </div>
   }

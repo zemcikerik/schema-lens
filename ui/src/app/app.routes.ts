@@ -1,7 +1,8 @@
 import { Route } from '@angular/router';
+import { authGuard } from './core/guards/auth.guard';
 
 export const appRoutes: Route[] = [
-  { path: '', redirectTo: 'project', pathMatch: 'full' },
+  { path: '', redirectTo: 'login', pathMatch: 'full' },
   {
     path: 'login',
     loadComponent: () => import('./core/auth/login.component').then(c => c.LoginComponent),
@@ -10,14 +11,17 @@ export const appRoutes: Route[] = [
   {
     path: 'project',
     loadComponent: () => import('./projects/components/project-list/project-list.component').then(c => c.ProjectListComponent),
+    canActivate: [authGuard],
   },
   {
     path: 'project/create',
     loadComponent: () => import('./projects/components/project-create/project-create.component').then(c => c.ProjectCreateComponent),
+    canActivate: [authGuard],
   },
   {
     path: 'project/:projectId',
     loadComponent: () => import('./projects/components/project/project.component').then(c => c.ProjectComponent),
+    canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'properties', pathMatch: 'full' },
       {

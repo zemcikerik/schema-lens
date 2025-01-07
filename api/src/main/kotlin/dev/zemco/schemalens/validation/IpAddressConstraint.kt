@@ -1,4 +1,4 @@
-package dev.zemco.schemalens
+package dev.zemco.schemalens.validation
 
 import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator

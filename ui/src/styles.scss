@@ -2,12 +2,12 @@
 @import './scss/theme';
 @import './scss/base/reset';
 
+@import './scss/layouts/auth';
 @import './scss/layouts/content-with-sidebar';
 @import './scss/utilities/icon';
 
 @import './scss/components/alert';
 @import './scss/components/content-card';
-@import './scss/components/login';
 @import './scss/components/object-selector';
 @import './scss/components/project-list';
 @import './scss/components/project-list-table';
@@ -24,12 +24,12 @@
 
 @include mat.core();
 
+@include app-layout-auth();
 @include app-layout-content-with-sidebar();
 @include app-utility-icon();
 
 @include app-alert();
 @include app-content-card();
-@include app-login();
 @include app-object-selector();
 @include app-project-list();
 @include app-project-list-table();
@@ -81,11 +81,15 @@ body {
 }
 
 .app-content {
-  --app-content-height: var(--mat-toolbar-standard-height);
-  height: calc(100vh - var(--app-content-height));
+  --app-top-bar-height: var(--mat-toolbar-standard-height);
+  height: calc(100vh - var(--app-top-bar-height));
 
   @media (max-width: 599.99px) { // breakpoint used by @angular/material for toolbar height
-    --app-content-height: var(--mat-toolbar-mobile-height);
+    --app-top-bar-height: var(--mat-toolbar-mobile-height);
+  }
+
+  &.no-top-bar {
+    height: 100vh;
   }
 }
 

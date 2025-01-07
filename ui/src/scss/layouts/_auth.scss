@@ -1,13 +1,16 @@
 @use '@angular/material' as mat;
 @import '../theme';
+@import '../utilities/breakpoints';
 
-@mixin app-login($options: ()) {
-  .login {
+@mixin app-layout-auth($options: ()) {
+  .layout-auth {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     background-color: mat.get-theme-color($theme, surface);
     border-radius: 48px;
-    width: 60rem;
+    width: 100%;
+    max-width: 60rem;
+    min-height: 30rem;
     position: relative;
     overflow: hidden;
 
@@ -18,6 +21,22 @@
       height: 100%;
     }
 
+    &__image {
+      position: relative;
+
+      > img {
+        object-fit: cover;
+      }
+    }
+
+    @include breakpoint-down(md) {
+      grid-template-columns: 1fr;
+
+      &__image {
+        display: none;
+      }
+    }
+
     > mat-progress-bar {
       position: absolute;
       top: 0;
@@ -25,29 +44,27 @@
       right: 0;
     }
 
-    > img {
-      display: block;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    &__form {
+    &__content {
       display: flex;
-      align-items: center;
+      align-items: stretch;
+      justify-content: center;
       flex-direction: column;
-      margin-left: 2rem;
-      padding: 3rem;
+      margin: 2rem;
       gap: 2rem;
 
-      &__fields {
+      h1 {
+        margin: 1rem 0;
+        text-align: center;
+      }
+
+      form {
         display: flex;
         flex-direction: column;
         gap: 0.5rem;
         width: 100%;
       }
 
-      &__actions {
+      .actions {
         display: flex;
         justify-content: end;
         gap: 0.5rem;

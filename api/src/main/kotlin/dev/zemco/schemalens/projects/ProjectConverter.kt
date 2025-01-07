@@ -32,18 +32,17 @@ class ProjectConverter(
     }
 
     private fun retrieveProjectUnsecure(projectId: UUID): Project? {
-        logger.debug("Retrieving unsecured project with uuid: {}", projectId)
+        LOGGER.debug("Retrieving unsecured project with uuid: {}", projectId)
         return projectService.getProjectByUuid(projectId)
     }
 
     private fun retrieveProject(projectId: UUID): Project? {
-        logger.debug("Retrieving secured project with id: {}", projectId)
+        LOGGER.debug("Retrieving secured project with id: {}", projectId)
         return projectService.getSecuredProjectByUuid(projectId, userService.getCurrentUser())
     }
 
     private companion object {
-        @JvmStatic
-        private val logger = LoggerFactory.getLogger(ProjectConverter::class.java)
+        private val LOGGER = LoggerFactory.getLogger(ProjectConverter::class.java)
     }
 
 }
