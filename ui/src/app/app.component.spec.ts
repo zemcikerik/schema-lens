@@ -28,6 +28,7 @@ describe('AppComponent', () => {
     })
     .mock(AuthService, {
       attemptAuthFromStorage: () => of(true),
+      currentUser: signal(null)
     }));
 
   it('should be created', () => {
