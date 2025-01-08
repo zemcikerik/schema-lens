@@ -27,10 +27,13 @@ class Project(
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id", nullable = false, insertable = false, updatable = false)
-    var owner: User? = null,
+    var owner: User,
 
     @OneToOne(mappedBy = "project", optional = true, fetch = FetchType.LAZY, cascade = [CascadeType.ALL], orphanRemoval = true)
-    var connectionInfo: ProjectConnectionInfo? = null,
+    var connectionInfo: ProjectConnectionInfo,
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", orphanRemoval = true)
+    var collaborators: MutableList<ProjectCollaborator> = mutableListOf(),
 )
 
 @Entity

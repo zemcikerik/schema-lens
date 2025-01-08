@@ -31,7 +31,7 @@ class RefreshTokenServiceImpl(
         }
 
         refreshTokenRepository.delete(entry)
-        return entry.user!!
+        return entry.user
     }
 
     private fun createExpirationDate(): LocalDateTime =

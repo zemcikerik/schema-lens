@@ -20,7 +20,7 @@ class RefreshTokenEntry(
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false, insertable = false, updatable = false)
-    var user: User? = null,
+    var user: User,
 
     @Column(nullable = false)
     var createdAt: LocalDateTime = LocalDateTime.now(),

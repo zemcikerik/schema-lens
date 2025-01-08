@@ -16,10 +16,10 @@ class ProjectServiceImpl(
         projectRepository.findByUuid(uuid)
 
     override fun getSecuredProjects(user: User): List<Project> =
-        projectRepository.findByOwnerId(user.id!!)
+        projectRepository.findAllByOwnership(user.id!!)
 
     override fun getSecuredProjectByUuid(uuid: UUID, user: User): Project? =
-        projectRepository.findByUuidAndOwnerId(uuid, user.id!!)
+        projectRepository.findByUuidAndOwnership(uuid, user.id!!)
 
     override fun deleteProjectByUuid(uuid: UUID) =
         projectRepository.deleteByUuid(uuid)

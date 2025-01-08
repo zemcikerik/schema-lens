@@ -1,9 +1,11 @@
 package dev.zemco.schemalens.projects
 
+import dev.zemco.schemalens.auth.User
 import io.mockk.every
 import io.mockk.impl.annotations.InjectMockKs
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit5.MockKExtension
+import io.mockk.mockk
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 import org.junit.jupiter.api.extension.ExtendWith
@@ -27,7 +29,14 @@ class ProjectServiceImplTest {
 
     private companion object {
         private val MOCK_UUID = UUID.randomUUID()
-        private val MOCK_PROJECT = Project(id = 4, uuid = MOCK_UUID, name = "Mock Project", ownerId = 3, connectionInfo = null)
+        private val MOCK_PROJECT = Project(
+            id = 4,
+            uuid = MOCK_UUID,
+            name = "Mock Project",
+            ownerId = 3,
+            owner = mockk<User>(),
+            connectionInfo = mockk<ProjectConnectionInfo>()
+        )
     }
 
 }

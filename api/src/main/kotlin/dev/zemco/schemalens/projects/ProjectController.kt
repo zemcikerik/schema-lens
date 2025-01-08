@@ -15,7 +15,7 @@ class ProjectController(
     @GetMapping
     fun listProjects(): List<ProjectListDto> =
         projectService.getSecuredProjects(userService.getCurrentUser()).map {
-            ProjectListDto(id = it.uuid, name = it.name, owner = it.owner!!.username)
+            ProjectListDto(id = it.uuid, name = it.name, owner = it.owner.username)
         }
 
     @GetMapping("{project}")
@@ -38,7 +38,7 @@ class ProjectController(
                 )
             }
         )
-        project.connectionInfo!!.project = project
+        project.connectionInfo.project = project
         return projectService.saveProject(project).mapToPropertiesDto()
     }
 
@@ -70,8 +70,8 @@ class ProjectController(
         OracleProjectPropertiesDto(
             id = uuid,
             name = name,
-            owner = owner!!.username,
-            connection = connectionInfo!!.let {
+            owner = owner.username,
+            connection = connectionInfo.let {
                 OracleProjectPropertiesDto.ConnectionDto(
                     host = it.host,
                     port = it.port,

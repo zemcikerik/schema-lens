@@ -79,11 +79,20 @@ class ProjectConverterTest {
         private val FROM_STRING = TypeDescriptor.valueOf(String::class.java)
         private val TO_PROJECT = TypeDescriptor.valueOf(Project::class.java)
         private val TO_PROJECT_INSECURE = TypeDescriptor(
-            ResolvableType.forClass(Project::class.java), null, arrayOf(NoOwnershipCheck()))
+            ResolvableType.forClass(Project::class.java), null, arrayOf(NoOwnershipCheck())
+        )
 
         private val MOCK_USER = mockk<User>()
         private val MOCK_UUID = UUID.randomUUID()
-        private val MOCK_PROJECT = Project(id = 3, uuid = MOCK_UUID, name = "Test", ownerId = 4, connectionInfo = null)
+        private val MOCK_PROJECT =
+            Project(
+                id = 3,
+                uuid = MOCK_UUID,
+                name = "Test",
+                ownerId = 4,
+                owner = MOCK_USER,
+                connectionInfo = mockk<ProjectConnectionInfo>()
+            )
     }
 
 }

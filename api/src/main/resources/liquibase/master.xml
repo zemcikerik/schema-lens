@@ -197,4 +197,50 @@
                              onDelete="CASCADE"
                              onUpdate="CASCADE" />
   </changeSet>
+
+  <changeSet id="2025-01-08T0913-add-project-collaborator-table"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createTable tableName="project_collaborator">
+      <column name="project_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_project_collaborator" />
+      </column>
+
+      <column name="user_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_project_collaborator" />
+      </column>
+
+      <column name="role"
+              type="CHAR(1)">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2025-01-08T0914-project-collaborator-project-ownership"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addForeignKeyConstraint baseTableName="project_collaborator"
+                             baseColumnNames="project_id"
+                             constraintName="fk_project_collaborator_on_project_id"
+                             referencedTableName="project"
+                             referencedColumnNames="id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2025-01-08T0915-project-collaborator-registered-user-ownership"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addForeignKeyConstraint baseTableName="project_collaborator"
+                             baseColumnNames="user_id"
+                             constraintName="fk_project_collaborator_on_user_id"
+                             referencedTableName="registered_user"
+                             referencedColumnNames="id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
 </databaseChangeLog>
