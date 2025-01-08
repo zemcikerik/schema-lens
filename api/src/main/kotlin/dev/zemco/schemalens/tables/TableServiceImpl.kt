@@ -3,22 +3,23 @@ package dev.zemco.schemalens.tables
 import dev.zemco.schemalens.meta.TableMetadata
 import dev.zemco.schemalens.meta.oracle.OracleTableMetadataReader
 import dev.zemco.schemalens.projects.Project
-import dev.zemco.schemalens.projects.ProjectHasNoConnectionInfoException
+import dev.zemco.schemalens.projects.ProjectConnectionService
 import org.springframework.stereotype.Service
-import javax.sql.DataSource
 
 @Service
 class TableServiceImpl(
+    private val connectionService: ProjectConnectionService,
     private val oracleTableMetadataReader: OracleTableMetadataReader
 ) : TableService {
 
     override fun getTableList(project: Project): List<String> =
-        oracleTableMetadataReader.readTableList(project.toDataSource())
+        connectionService.withDataSource(project.connectionInfo) {
+            oracleTableMetadataReader.readTableList(it)
+        }
 
     override fun getTableDetails(project: Project, tableName: String): TableMetadata? =
-        oracleTableMetadataReader.readTableDetails(project.toDataSource(), tableName)
-
-    private fun Project.toDataSource(): DataSource =
-        connectionInfo?.toDataSource() ?: throw ProjectHasNoConnectionInfoException(uuid!!)
+        connectionService.withDataSource(project.connectionInfo) {
+            oracleTableMetadataReader.readTableDetails(it, tableName)
+        }
 
 }

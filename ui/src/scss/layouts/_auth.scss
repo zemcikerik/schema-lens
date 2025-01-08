@@ -7,6 +7,7 @@
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     background-color: mat.get-theme-color($theme, surface);
+    margin: 0 0.5rem;
     border-radius: 48px;
     width: 100%;
     max-width: 60rem;
@@ -31,6 +32,7 @@
 
     @include breakpoint-down(md) {
       grid-template-columns: 1fr;
+      margin: 0;
 
       &__image {
         display: none;

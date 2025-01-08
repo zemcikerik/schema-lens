@@ -50,5 +50,10 @@ data class OracleProjectPropertiesDto(
 
 }
 
+data class ProjectConnectionFailureDto(
+    val status: ProjectConnectionFailure,
+    val message: String?,
+)
+
 interface OnCreate
 interface OnUpdate

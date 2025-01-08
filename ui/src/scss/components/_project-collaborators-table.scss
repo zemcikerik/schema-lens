@@ -1,3 +1,5 @@
+@import '../utilities/breakpoints';
+
 @mixin app-project-collaborators-table($options: ()) {
   .project-collaborators-table {
     .mat-column-picture {
@@ -6,6 +8,12 @@
 
     .mat-column-actions {
       width: 2rem;
+    }
+
+    @include breakpoint-down(sm) {
+      .mat-column-email {
+        display: none;
+      }
     }
   }
 }
