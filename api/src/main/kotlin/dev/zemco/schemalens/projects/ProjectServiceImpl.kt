@@ -16,15 +16,18 @@ class ProjectServiceImpl(
         projectRepository.findByUuid(uuid)
 
     override fun getSecuredProjects(user: User): List<Project> =
-        projectRepository.findAllByOwnership(user.id!!)
+        projectRepository.findAllByOwnership(user.id!!).map { it.unwrapRole() }
 
     override fun getSecuredProjectByUuid(uuid: UUID, user: User): Project? =
-        projectRepository.findByUuidAndOwnership(uuid, user.id!!)
+        projectRepository.findByUuidAndOwnership(uuid, user.id!!)?.unwrapRole()
 
     override fun deleteProjectByUuid(uuid: UUID) =
         projectRepository.deleteByUuid(uuid)
 
     override fun saveProject(project: Project): Project =
         projectRepository.save(project)
+
+    private fun Pair<Project, ProjectCollaborationRole?>.unwrapRole(): Project =
+        first.also { it.role = second ?: ProjectCollaborationRole.OWNER }
 
 }

@@ -12,8 +12,8 @@
 
     <mat-form-field class="w-100">
       <mat-icon matPrefix>language</mat-icon>
-      <mat-label>Language</mat-label>
-      <mat-select [formControl]="selectedLocale">
+      <mat-label>{{ ('LOCALE.LANGUAGE_BUTTON' | translate)() }}</mat-label>
+      <mat-select [formControl]="selectedLocale" required>
         @for (locale of availableLocales(); track locale.code) {
           <mat-option [value]="locale.code">{{ locale.name }} ({{ locale.code }})</mat-option>
         }
@@ -23,6 +23,6 @@
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-button [mat-dialog-close]="false">{{ ('GENERIC.CANCEL_LABEL' | translate)() }}</button>
-  <button mat-flat-button (click)="changeLocale()">{{ ('GENERIC.CONFIRM_LABEL' | translate)() }}</button>
+  <button mat-button [mat-dialog-close]="false" [disabled]="loading()">{{ ('GENERIC.CANCEL_LABEL' | translate)() }}</button>
+  <button mat-flat-button [disabled]="loading()" (click)="changeLocale()">{{ ('GENERIC.CONFIRM_LABEL' | translate)() }}</button>
 </mat-dialog-actions>

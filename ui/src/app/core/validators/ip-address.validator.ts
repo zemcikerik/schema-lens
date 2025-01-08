@@ -3,7 +3,7 @@ import ipaddr from 'ipaddr.js';
 
 type IpAddress = ipaddr.IPv4 | ipaddr.IPv6;
 
-export const validateIpAddress: ValidatorFn = (control: AbstractControl<string>): ValidationErrors | null => {
+export const ipAddressValidator: ValidatorFn = (control: AbstractControl<string>): ValidationErrors | null => {
   const ipAddress = parseIpAddress(control.value);
 
   if (ipAddress === null) {

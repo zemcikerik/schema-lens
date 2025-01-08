@@ -58,7 +58,7 @@ export class AppComponent {
   }
 
   changeLocale(): void {
-    this.matDialog.open(ChangeLocaleDialogComponent, { disableClose: true });
+    this.matDialog.open(ChangeLocaleDialogComponent);
   }
 
   logout(): void {

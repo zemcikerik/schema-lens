@@ -8,9 +8,10 @@ import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { OracleConnectionProperties, ProjectProperties } from '../../models/project-properties.model';
 import { DbType } from '../../../core/models/db-type';
-import { validateIpAddress } from '../../../core/validators/ip-address.validator';
+import { ipAddressValidator } from '../../../core/validators/ip-address.validator';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { portValidator } from '../../../core/validators/port.validator';
+import { ProjectCollaborationRole } from '../../models/project-collaboration-role.model';
 
 @Component({
   selector: 'app-project-properties-form',
@@ -38,7 +39,7 @@ export class ProjectPropertiesFormComponent {
     name: new FormControl<string>('', [Validators.required, Validators.maxLength(64)]),
     dbType: new FormControl<DbType | null>(null, [Validators.required]),
     oracleConnection: new FormGroup({
-      host: new FormControl<string>('', [Validators.required, validateIpAddress]),
+      host: new FormControl<string>('', [Validators.required, ipAddressValidator]),
       port: new FormControl<number | null>(null, [Validators.required, portValidator]),
       service: new FormControl<string>('', [Validators.required, Validators.maxLength(128)]),
       username: new FormControl<string>('', [Validators.required, Validators.maxLength(128)]),
@@ -77,6 +78,7 @@ export class ProjectPropertiesFormComponent {
         name: name as string,
         dbType: dbType as DbType,
         owner: '',
+        currentUserRole: ProjectCollaborationRole.OWNER,
         connection: oracleConnection as OracleConnectionProperties,
       });
     }

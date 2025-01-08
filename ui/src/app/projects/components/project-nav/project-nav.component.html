@@ -8,5 +8,12 @@
       [activated]="rla.isActive"
     >{{ ('PROJECTS.PROPERTIES.LABEL' | translate)() }}</a>
     <app-project-object-nav-host [projectId]="projectId()" />
+    <a
+      mat-list-item
+      [routerLink]="['/project', projectId(), 'collaborators']"
+      routerLinkActive
+      #rla1="routerLinkActive"
+      [activated]="rla1.isActive"
+    >{{ ('PROJECTS.COLLABORATORS.LABEL' | translate)() }}</a>
   </mat-nav-list>
 </div>

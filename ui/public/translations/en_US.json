@@ -87,7 +87,27 @@
         "PASSWORD_LABEL": "Password"
       }
     },
-    "DELETE_CONFIRM_DESCRIPTION": "Are you sure you want to delete this project? This is irreversible!"
+    "DELETE_CONFIRM_DESCRIPTION": "Are you sure you want to delete this project? This is irreversible!",
+    "COLLABORATORS": {
+      "LABEL": "Collaborators",
+      "ADD_LABEL": "Add collaborator",
+      "ADD_DESCRIPTION": "Add collaborator to grant access to project to a specific user.",
+      "ALREADY_COLLABORATOR_ERROR": "This user is already a collaborator.",
+      "USER_NOT_EXISTS_ERROR": "The provided user does not exist.",
+      "CHANGE_ROLE_LABEL": "Change collaborator role",
+      "CHANGE_ROLE_DESCRIPTION": "Change role of an existing collaborator.",
+      "DELETE_LABEL": "Delete collaborator",
+      "DELETE_DESCRIPTION": "Are you sure you want to remove this collaborator?",
+      "ROLES": {
+        "LABEL": "Role",
+        "OWNER_LABEL": "Owner",
+        "MANAGER_LABEL": "Manager",
+        "ADMIN_LABEL": "Admin",
+        "CONTRIBUTOR_LABEL": "Contributor",
+        "VIEWER_LABEL": "Viewer",
+        "CHANGE_BUTTON": "Change role"
+      }
+    }
   },
   "TABLES": {
     "LABEL": "Table",

@@ -9,6 +9,7 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { MatIcon } from '@angular/material/icon';
 import { IconEmphasisDirective } from '../../../shared/directives/icon-emphasis.directive';
 import { ProjectService } from '../../services/project.service';
+import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
 
 @Component({
   selector: 'app-project-list',
@@ -24,6 +25,7 @@ import { ProjectService } from '../../services/project.service';
     IconEmphasisDirective,
     MatAnchor,
     RouterLink,
+    LayoutHeaderAndContentComponent,
   ],
 })
 export class ProjectListComponent {

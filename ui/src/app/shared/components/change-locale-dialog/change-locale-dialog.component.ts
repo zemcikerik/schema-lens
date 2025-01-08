@@ -45,6 +45,10 @@ export class ChangeLocaleDialogComponent {
     effect(() => {
       this.selectedLocale.setValue(this.currentLocale());
     });
+
+    effect(() => {
+      this.dialogRef.disableClose = this.loading();
+    });
   }
 
   changeLocale(): void {

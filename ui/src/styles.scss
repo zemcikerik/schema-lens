@@ -3,6 +3,7 @@
 @import './scss/base/reset';
 
 @import './scss/layouts/auth';
+@import './scss/layouts/header-and-content';
 @import './scss/layouts/content-with-sidebar';
 @import './scss/utilities/dimensions';
 @import './scss/utilities/display';
@@ -11,7 +12,6 @@
 @import './scss/components/alert';
 @import './scss/components/content-card';
 @import './scss/components/object-selector';
-@import './scss/components/project-list';
 @import './scss/components/project-list-table';
 @import './scss/components/project-nav';
 @import './scss/components/project-properties';
@@ -28,6 +28,7 @@
 @include mat.core();
 
 @include app-layout-auth();
+@include app-layout-header-and-content();
 @include app-layout-content-with-sidebar();
 @include app-utility-dimensions();
 @include app-utility-display();
@@ -36,7 +37,6 @@
 @include app-alert();
 @include app-content-card();
 @include app-object-selector();
-@include app-project-list();
 @include app-project-list-table();
 @include app-project-properties();
 @include app-project-nav();

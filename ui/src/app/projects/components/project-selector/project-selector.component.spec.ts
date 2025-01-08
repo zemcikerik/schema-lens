@@ -6,6 +6,7 @@ import { EMPTY, Subject } from 'rxjs';
 import { ProjectService } from '../../services/project.service';
 import { signal } from '@angular/core';
 import { Project } from '../../models/project.model';
+import { ProjectCollaborationRole } from '../../models/project-collaboration-role.model';
 
 describe('ProjectSelectorComponent', () => {
   ngMocks.faster();
@@ -27,7 +28,13 @@ describe('ProjectSelectorComponent', () => {
   });
 
   it('should get loaded projects from project service', () => {
-    const projects: Project[] = [{ id: '15424e6e-6a3f-47d3-9b54-ace8f3e292ca', name: 'Test', dbType: 'oracle', owner: 'user' }];
+    const projects: Project[] = [{
+      id: '15424e6e-6a3f-47d3-9b54-ace8f3e292ca',
+      name: 'Test',
+      dbType: 'oracle',
+      owner: 'user',
+      currentUserRole: ProjectCollaborationRole.OWNER
+    }];
     MockInstance(ProjectService, 'projects', signal(projects));
 
     const component = render();

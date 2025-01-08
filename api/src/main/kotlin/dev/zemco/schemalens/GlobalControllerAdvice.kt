@@ -3,12 +3,10 @@ package dev.zemco.schemalens
 import dev.zemco.schemalens.auth.ResourceAccessDeniedException
 import dev.zemco.schemalens.projects.ProjectNotFoundException
 import org.springframework.http.HttpStatus
-import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.ResponseStatus
 
-// TODO: maybe return unit
 @ControllerAdvice
 class GlobalControllerAdvice {
 
@@ -19,9 +17,5 @@ class GlobalControllerAdvice {
     @ExceptionHandler(ProjectNotFoundException::class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     fun handleProjectNotFoundException(ex: ProjectNotFoundException) = ex
-
-    @ExceptionHandler(MethodArgumentNotValidException::class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    fun handleMethodArgumentNotValidException(ex: MethodArgumentNotValidException) = ex
 
 }

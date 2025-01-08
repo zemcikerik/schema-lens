@@ -12,6 +12,7 @@ data class ProjectListDto(
     val id: UUID?,
     val name: String,
     val owner: String,
+    val currentUserRole: ProjectCollaborationRole? = null,
 )
 
 data class OracleProjectPropertiesDto(
@@ -21,6 +22,7 @@ data class OracleProjectPropertiesDto(
     @field:Length(max = 64, groups = [OnCreate::class, OnUpdate::class])
     val name: String,
     val owner: String,
+    val currentUserRole: ProjectCollaborationRole? = null,
 
     @field:Valid
     val connection: ConnectionDto,

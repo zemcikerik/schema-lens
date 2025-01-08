@@ -52,6 +52,10 @@ export const appRoutes: Route[] = [
           },
         ],
       },
+      {
+        path: 'collaborators',
+        loadComponent: () => import('./projects/components/project-collaborators/project-collaborators.component').then(c => c.ProjectCollaboratorsComponent),
+      },
     ],
   },
 ];

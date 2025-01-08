@@ -1,0 +1,51 @@
+<h2 mat-dialog-title>{{ ('PROJECTS.COLLABORATORS.ADD_LABEL' | translate)() }}</h2>
+
+<mat-dialog-content>
+  @if (loading()) {
+    <app-progress-spinner [center]="true" />
+  } @else {
+    <p>{{ ('PROJECTS.COLLABORATORS.ADD_DESCRIPTION' | translate)() }}</p>
+
+    @let err = error();
+    @if (err !== null) {
+      <app-alert type="error">{{ (err | translate)() }}</app-alert>
+    }
+
+    <form [formGroup]="formGroup">
+      <mat-form-field class="w-100 mt-1 mb-1">
+        <mat-icon matPrefix>person</mat-icon>
+        <mat-label>{{ ('AUTH.USERNAME_LABEL' | translate)() }}</mat-label>
+        <input type="text" required matInput formControlName="username" autocomplete="off">
+        @if (formGroup.controls.username.invalid) {
+          <mat-error>
+            @if (formGroup.controls.username.errors?.['disallowedUsername']) {
+              {{ ('PROJECTS.COLLABORATORS.ALREADY_COLLABORATOR_ERROR' | translate)() }}
+            } @else {
+              {{ (formGroup.controls.username.errors | formatGenericValidationErrors)() }}
+            }
+          </mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field class="w-100">
+        <mat-icon matPrefix>flag</mat-icon>
+        <mat-label>{{ ('PROJECTS.COLLABORATORS.ROLES.LABEL' | translate)() }}</mat-label>
+        <mat-select required formControlName="role">
+          @for (entry of roles; track entry.role) {
+            <mat-option [value]="entry.role" [disabled]="entry.disabled">
+              {{ (entry.role | projectRoleTypeToLabel | translate)() }}
+            </mat-option>
+          }
+        </mat-select>
+        @if (formGroup.controls.role.invalid) {
+          <mat-error>{{ (formGroup.controls.role.errors | formatGenericValidationErrors)() }}</mat-error>
+        }
+      </mat-form-field>
+    </form>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="null" [disabled]="loading()">{{ ('GENERIC.CANCEL_LABEL' | translate)() }}</button>
+  <button mat-flat-button [disabled]="loading()" (click)="submit()">{{ ('GENERIC.CONFIRM_LABEL' | translate)() }}</button>
+</mat-dialog-actions>

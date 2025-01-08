@@ -103,6 +103,6 @@ export class RegisterComponent {
   }
 
   changeLocale(): void {
-    this.matDialog.open(ChangeLocaleDialogComponent, { disableClose: true });
+    this.matDialog.open(ChangeLocaleDialogComponent);
   }
 }

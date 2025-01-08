@@ -15,7 +15,7 @@ class ProjectController(
     @GetMapping
     fun listProjects(): List<ProjectListDto> =
         projectService.getSecuredProjects(userService.getCurrentUser()).map {
-            ProjectListDto(id = it.uuid, name = it.name, owner = it.owner.username)
+            ProjectListDto(id = it.uuid, name = it.name, owner = it.owner.username, currentUserRole = it.role)
         }
 
     @GetMapping("{project}")
@@ -28,6 +28,7 @@ class ProjectController(
             name = projectDto.name,
             ownerId = user.id!!,
             owner = user,
+            role = ProjectCollaborationRole.OWNER,
             connectionInfo = projectDto.connection.let {
                 OracleProjectConnectionInfo(
                     host = it.host,
@@ -44,7 +45,7 @@ class ProjectController(
 
     @PutMapping("{project}")
     fun updateProject(
-        @PathVariable project: Project,
+        @PathVariable @ProjectRole(ProjectCollaborationRole.ADMIN) project: Project,
         @RequestBody @Validated(OnUpdate::class) projectDto: OracleProjectPropertiesDto
     ): OracleProjectPropertiesDto {
         project.name = projectDto.name
@@ -63,7 +64,7 @@ class ProjectController(
 
     @DeleteMapping("{project}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteProject(@PathVariable project: Project) =
+    fun deleteProject(@PathVariable @ProjectRole(ProjectCollaborationRole.ADMIN) project: Project) =
         projectService.deleteProjectByUuid(project.uuid)
 
     private fun Project.mapToPropertiesDto(): OracleProjectPropertiesDto =
@@ -71,6 +72,7 @@ class ProjectController(
             id = uuid,
             name = name,
             owner = owner.username,
+            currentUserRole = role,
             connection = connectionInfo.let {
                 OracleProjectPropertiesDto.ConnectionDto(
                     host = it.host,

@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.projects
 
+import dev.zemco.schemalens.auth.ResourceAccessDeniedException
 import dev.zemco.schemalens.auth.UserService
 import org.slf4j.LoggerFactory
 import org.springframework.core.convert.TypeDescriptor
@@ -25,7 +26,7 @@ class ProjectConverter(
         val project = if (targetType.hasAnnotation(NoOwnershipCheck::class.java)) {
             retrieveProjectUnsecure(projectId)
         } else {
-            retrieveProject(projectId)
+            retrieveProject(projectId, targetType)
         }
 
         return project ?: throw ProjectNotFoundException(projectId)
@@ -36,9 +37,18 @@ class ProjectConverter(
         return projectService.getProjectByUuid(projectId)
     }
 
-    private fun retrieveProject(projectId: UUID): Project? {
+    private fun retrieveProject(projectId: UUID, targetType: TypeDescriptor): Project? {
         LOGGER.debug("Retrieving secured project with id: {}", projectId)
-        return projectService.getSecuredProjectByUuid(projectId, userService.getCurrentUser())
+        val user = userService.getCurrentUser()
+        val project = projectService.getSecuredProjectByUuid(projectId, user) ?: return null
+        val requiredRole = targetType.getAnnotation(ProjectRole::class.java)?.role ?: return project
+
+        if (project.role!! > requiredRole) {
+            LOGGER.error("User {} does not have required role {} for project {}", user.id, requiredRole, projectId)
+            throw ResourceAccessDeniedException() // todo figure out why this does not return 403 from api
+        }
+
+        return project
     }
 
     private companion object {
@@ -50,3 +60,7 @@ class ProjectConverter(
 @Target(AnnotationTarget.VALUE_PARAMETER)
 @Retention(AnnotationRetention.RUNTIME)
 annotation class NoOwnershipCheck
+
+@Target(AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.RUNTIME)
+annotation class ProjectRole(val role: ProjectCollaborationRole)

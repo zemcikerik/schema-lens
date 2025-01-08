@@ -23,7 +23,7 @@ class UserController(
         userService.getCurrentUser().mapToDto()
 
     @PostMapping("/login")
-    fun login(@RequestBody loginDto: UserLoginDto): ResponseEntity<Any> {
+    fun login(@RequestBody @Valid loginDto: UserLoginDto): ResponseEntity<Any> {
         try {
             val user = userService.loginUser(loginDto.username, loginDto.password)
                 ?: return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build()

@@ -1,0 +1,23 @@
+<app-layout-header-and-content [title]="('PROJECTS.COLLABORATORS.LABEL' | translate)()" [includeSpacing]="error()">
+  <ng-container ngProjectAs="header-action">
+    @if ((projectId() | hasProjectRole: 'MANAGER')()) {
+      <button mat-flat-button [disabled]="loading() || error()" (click)="addCollaborator()">
+        <mat-icon appIconEmphasis="high">add</mat-icon>
+        {{ ('PROJECTS.COLLABORATORS.ADD_LABEL' | translate)() }}
+      </button>
+    }
+  </ng-container>
+
+  @if (loading()) {
+    <app-progress-spinner [center]="true" />
+  } @else if (error()) {
+    <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+  } @else {
+    <app-project-collaborators-table
+      [collaborators]="collaborators()"
+      [showActions]="(projectId() | hasProjectRole: 'MANAGER')()"
+      [allowActionsForManagers]="(projectId() | hasProjectRole: 'OWNER')()"
+      (changeRole)="changeCollaboratorRole($event)"
+      (remove)="deleteCollaborator($event)" />
+  }
+</app-layout-header-and-content>

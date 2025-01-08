@@ -9,23 +9,28 @@ interface ProjectRepository : CrudRepository<Project, Long> {
     fun findByUuid(uuid: UUID): Project?
 
     @Query("""
-        SELECT p
+        SELECT new kotlin.Pair(p, null)
         FROM Project p
-        WHERE p.ownerId = :userId OR p.id IN (
-            SELECT pc.project.id
-            FROM ProjectCollaborator pc
-            WHERE pc.user.id = :userId
-        )
+        WHERE p.ownerId = :userId
+        UNION ALL
+        SELECT new kotlin.Pair(p, pc.role)
+        FROM Project p
+            INNER JOIN ProjectCollaborator pc ON (p.id = pc.project.id)
+        WHERE p.ownerId <> :userId AND pc.user.id = :userId
     """)
-    fun findAllByOwnership(userId: Long): List<Project>
+    fun findAllByOwnership(userId: Long): List<Pair<Project, ProjectCollaborationRole?>>
 
     @Query("""
-        SELECT p
+        SELECT new kotlin.Pair(p, null)
         FROM Project p
-            LEFT JOIN ProjectCollaborator pc ON (p.id = pc.project.id)
-        WHERE p.uuid = :uuid AND (p.ownerId = :userId OR pc.user.id = :userId)
+        WHERE p.uuid = :uuid AND p.ownerId = :userId
+        UNION ALL
+        SELECT new kotlin.Pair(p, pc.role)
+        FROM Project p
+            INNER JOIN ProjectCollaborator pc ON (p.id = pc.project.id)
+        WHERE p.uuid = :uuid AND p.ownerId <> :userId AND pc.user.id = :userId
     """)
-    fun findByUuidAndOwnership(uuid: UUID, userId: Long): Project?
+    fun findByUuidAndOwnership(uuid: UUID, userId: Long): Pair<Project, ProjectCollaborationRole?>?
 
     @Transactional
     fun deleteByUuid(uuid: UUID)

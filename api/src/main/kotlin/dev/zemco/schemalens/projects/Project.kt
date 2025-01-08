@@ -34,6 +34,9 @@ class Project(
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "project", orphanRemoval = true)
     var collaborators: MutableList<ProjectCollaborator> = mutableListOf(),
+
+    @Transient
+    var role: ProjectCollaborationRole? = null,
 )
 
 @Entity

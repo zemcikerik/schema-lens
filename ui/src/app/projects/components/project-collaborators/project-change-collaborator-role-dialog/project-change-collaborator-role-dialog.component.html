@@ -1,0 +1,36 @@
+<h2 mat-dialog-title>{{ ('PROJECTS.COLLABORATORS.CHANGE_ROLE_LABEL' | translate)() }}</h2>
+
+<mat-dialog-content>
+  @if (loading()) {
+    <app-progress-spinner [center]="true" />
+  } @else {
+    <p>{{ ('PROJECTS.COLLABORATORS.CHANGE_ROLE_DESCRIPTION' | translate)() }}</p>
+
+    @if (error()) {
+      <app-alert class="d-block mb-1" type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+    }
+
+    <mat-form-field class="w-100">
+      <mat-icon matPrefix>person</mat-icon>
+      <mat-label>{{ ('AUTH.USERNAME_LABEL' | translate)() }}</mat-label>
+      <input type="text" required matInput disabled [value]="username">
+    </mat-form-field>
+
+    <mat-form-field class="w-100">
+      <mat-icon matPrefix>flag</mat-icon>
+      <mat-label>{{ ('PROJECTS.COLLABORATORS.ROLES.LABEL' | translate)() }}</mat-label>
+      <mat-select required [formControl]="roleControl">
+        @for (entry of roles; track entry.role) {
+          <mat-option [value]="entry.role" [disabled]="entry.disabled">
+            {{ (entry.role | projectRoleTypeToLabel | translate)() }}
+          </mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="null" [disabled]="loading()">{{ ('GENERIC.CANCEL_LABEL' | translate)() }}</button>
+  <button mat-flat-button [disabled]="loading()" (click)="submit()">{{ ('GENERIC.CONFIRM_LABEL' | translate)() }}</button>
+</mat-dialog-actions>

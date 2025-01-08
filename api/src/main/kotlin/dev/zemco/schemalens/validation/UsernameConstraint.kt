@@ -8,7 +8,7 @@ import kotlin.reflect.KClass
 
 @Constraint(validatedBy = [UsernameValidator::class])
 @Retention(AnnotationRetention.RUNTIME)
-@Target(AnnotationTarget.FIELD)
+@Target(AnnotationTarget.FIELD, AnnotationTarget.PROPERTY, AnnotationTarget.VALUE_PARAMETER)
 annotation class UsernameConstraint(
     val message: String = "Invalid username",
     val groups: Array<KClass<*>> = [],

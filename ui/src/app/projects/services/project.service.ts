@@ -1,9 +1,18 @@
-import { inject, Injectable, Signal, signal } from '@angular/core';
+import { computed, inject, Injectable, Signal, signal } from '@angular/core';
 import { Observable, tap } from 'rxjs';
 import { Project } from '../models/project.model';
 import { ProjectHttpClientService } from './project-http-client.service';
 import { ProjectProperties } from '../models/project-properties.model';
 import { cacheObservable } from '../../core/persistence/cache-observable.fn';
+import { ProjectCollaborationRole } from '../models/project-collaboration-role.model';
+
+const COLLABORATION_ROLE_ORDER: Record<ProjectCollaborationRole, number> = {
+  [ProjectCollaborationRole.OWNER]: 0,
+  [ProjectCollaborationRole.MANAGER]: 1,
+  [ProjectCollaborationRole.ADMIN]: 2,
+  [ProjectCollaborationRole.CONTRIBUTOR]: 3,
+  [ProjectCollaborationRole.VIEWER]: 3,
+};
 
 @Injectable({
   providedIn: 'root',
@@ -12,10 +21,7 @@ export class ProjectService {
 
   private _projects = signal<Project[]>([]);
   private projectHttpClient = inject(ProjectHttpClientService);
-
-  get projects(): Signal<Project[]> {
-    return this._projects.asReadonly();
-  }
+  readonly projects = this._projects.asReadonly();
 
   isProjectAvailable(projectId: string): boolean {
     return this._projects().find(project => project.id === projectId) !== undefined;
@@ -55,12 +61,25 @@ export class ProjectService {
     );
   }
 
+  hasProjectRole(projectId: string, role: ProjectCollaborationRole): Signal<boolean> {
+    return computed(() => {
+      const projectRole = this.projects().find(project => project.id === projectId)?.currentUserRole;
+
+      if (projectRole === undefined) {
+        return false;
+      }
+
+      return COLLABORATION_ROLE_ORDER[projectRole] <= COLLABORATION_ROLE_ORDER[role];
+    });
+  }
+
   private addAvailableProject(projectId: string, properties: ProjectProperties): void {
     const project: Project = {
       id: projectId,
       name: properties.name,
       dbType: properties.dbType,
       owner: properties.owner,
+      currentUserRole: properties.currentUserRole,
     };
     this._projects.update(projects => [...projects, project]);
   }
@@ -74,7 +93,15 @@ export class ProjectService {
 
     this._projects.update(projects => {
       const projectsCopy = [...projects];
-      projectsCopy[projectIndex] = { id: projectId, name: properties.name, dbType: properties.dbType, owner: properties.owner };
+
+      projectsCopy[projectIndex] = {
+        id: projectId,
+        name: properties.name,
+        dbType: properties.dbType,
+        owner: properties.owner,
+        currentUserRole: properties.currentUserRole,
+      };
+
       return projectsCopy;
     });
   }

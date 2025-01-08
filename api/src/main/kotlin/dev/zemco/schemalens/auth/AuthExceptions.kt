@@ -1,6 +1,8 @@
 package dev.zemco.schemalens.auth
 
-class ResourceAccessDeniedException(message: String = "Forbidden") : RuntimeException(message)
+import org.springframework.security.access.AccessDeniedException
+
+class ResourceAccessDeniedException(message: String = "Forbidden") : AccessDeniedException(message)
 
 class UsernameIsTakenException(message: String = "Username is taken by another user") : RuntimeException(message)
 class EmailIsTakenException(message: String = "Email is taken by another user") : RuntimeException(message)

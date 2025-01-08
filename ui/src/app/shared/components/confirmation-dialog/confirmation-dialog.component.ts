@@ -14,7 +14,7 @@ export interface ConfirmationDialogData {
     <h2 mat-dialog-title>{{ (titleKey | translate)() }}</h2>
     <mat-dialog-content>{{ (descriptionKey | translate)() }}</mat-dialog-content>
     <mat-dialog-actions align="end">
-      <button mat-flat-button [mat-dialog-close]="false">{{ ('GENERIC.CANCEL_LABEL' | translate)() }}</button>
+      <button mat-button [mat-dialog-close]="false">{{ ('GENERIC.CANCEL_LABEL' | translate)() }}</button>
       <button mat-flat-button [mat-dialog-close]="true">{{ ('GENERIC.CONFIRM_LABEL' | translate)() }}</button>
     </mat-dialog-actions>
   `,
