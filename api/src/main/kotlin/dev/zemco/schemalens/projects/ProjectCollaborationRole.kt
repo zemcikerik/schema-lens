@@ -11,27 +11,32 @@ enum class ProjectCollaborationRole {
     VIEWER,
 }
 
+fun ProjectCollaborationRole.mapToCharacter(): Char =
+    when (this) {
+        ProjectCollaborationRole.OWNER -> 'O'
+        ProjectCollaborationRole.MANAGER -> 'M'
+        ProjectCollaborationRole.ADMIN -> 'A'
+        ProjectCollaborationRole.CONTRIBUTOR -> 'C'
+        ProjectCollaborationRole.VIEWER -> 'V'
+    }
+
+fun Char.mapToProjectCollaborationRole(): ProjectCollaborationRole? =
+    when (this) {
+        'O' -> ProjectCollaborationRole.OWNER
+        'M' -> ProjectCollaborationRole.MANAGER
+        'A' -> ProjectCollaborationRole.ADMIN
+        'C' -> ProjectCollaborationRole.CONTRIBUTOR
+        'V' -> ProjectCollaborationRole.VIEWER
+        else -> null
+    }
+
 @Converter
 class ProjectCollaborationRoleConverter : AttributeConverter<ProjectCollaborationRole, Char> {
 
     override fun convertToDatabaseColumn(role: ProjectCollaborationRole?): Char? =
-        when (role) {
-            ProjectCollaborationRole.OWNER -> 'O'
-            ProjectCollaborationRole.MANAGER -> 'M'
-            ProjectCollaborationRole.ADMIN -> 'A'
-            ProjectCollaborationRole.CONTRIBUTOR -> 'C'
-            ProjectCollaborationRole.VIEWER -> 'V'
-            null -> null
-        }
+        role?.mapToCharacter()
 
     override fun convertToEntityAttribute(rawRole: Char?): ProjectCollaborationRole? =
-        when (rawRole) {
-            'O' -> ProjectCollaborationRole.OWNER
-            'M' -> ProjectCollaborationRole.MANAGER
-            'A' -> ProjectCollaborationRole.ADMIN
-            'C' -> ProjectCollaborationRole.CONTRIBUTOR
-            'V' -> ProjectCollaborationRole.VIEWER
-            else -> null
-        }
+        rawRole?.mapToProjectCollaborationRole()
 
 }

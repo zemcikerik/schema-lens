@@ -9,28 +9,28 @@ interface ProjectRepository : CrudRepository<Project, Long> {
     fun findByUuid(uuid: UUID): Project?
 
     @Query("""
-        SELECT new kotlin.Pair(p, null)
+        SELECT NEW kotlin.Pair(p, 'O')
         FROM Project p
         WHERE p.ownerId = :userId
         UNION ALL
-        SELECT new kotlin.Pair(p, pc.role)
+        SELECT new kotlin.Pair(p, CAST(pc.role as char))
         FROM Project p
             INNER JOIN ProjectCollaborator pc ON (p.id = pc.project.id)
         WHERE p.ownerId <> :userId AND pc.user.id = :userId
     """)
-    fun findAllByOwnership(userId: Long): List<Pair<Project, ProjectCollaborationRole?>>
+    fun findAllByOwnership(userId: Long): List<Pair<Project, String>>
 
     @Query("""
-        SELECT new kotlin.Pair(p, null)
+        SELECT new kotlin.Pair(p, 'O')
         FROM Project p
         WHERE p.uuid = :uuid AND p.ownerId = :userId
         UNION ALL
-        SELECT new kotlin.Pair(p, pc.role)
+        SELECT new kotlin.Pair(p, CAST(pc.role as char))
         FROM Project p
             INNER JOIN ProjectCollaborator pc ON (p.id = pc.project.id)
         WHERE p.uuid = :uuid AND p.ownerId <> :userId AND pc.user.id = :userId
     """)
-    fun findByUuidAndOwnership(uuid: UUID, userId: Long): Pair<Project, ProjectCollaborationRole?>?
+    fun findByUuidAndOwnership(uuid: UUID, userId: Long): Pair<Project, String>?
 
     @Transactional
     fun deleteByUuid(uuid: UUID)

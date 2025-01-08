@@ -27,7 +27,7 @@ class ProjectServiceImpl(
     override fun saveProject(project: Project): Project =
         projectRepository.save(project)
 
-    private fun Pair<Project, ProjectCollaborationRole?>.unwrapRole(): Project =
-        first.also { it.role = second ?: ProjectCollaborationRole.OWNER }
+    private fun Pair<Project, String>.unwrapRole(): Project =
+        first.also { it.role = second[0].mapToProjectCollaborationRole() }
 
 }
