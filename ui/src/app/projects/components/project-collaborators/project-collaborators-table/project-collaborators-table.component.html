@@ -1,7 +1,9 @@
 <table mat-table class="project-collaborators-table" [dataSource]="collaborators()">
   <ng-container matColumnDef="picture">
     <th mat-header-cell *matHeaderCellDef></th>
-    <td mat-cell *matCellDef="let collaborator"></td>
+    <td mat-cell *matCellDef="let collaborator">
+      <app-profile-picture [username]="collaborator.username" />
+    </td>
   </ng-container>
 
   <ng-container matColumnDef="username">

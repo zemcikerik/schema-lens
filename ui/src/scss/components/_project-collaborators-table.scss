@@ -1,0 +1,11 @@
+@mixin app-project-collaborators-table($options: ()) {
+  .project-collaborators-table {
+    .mat-column-picture {
+      width: 2.75rem;
+    }
+
+    .mat-column-actions {
+      width: 2rem;
+    }
+  }
+}

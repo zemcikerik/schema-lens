@@ -1,0 +1,12 @@
+@mixin app-profile-picture($options: ()) {
+  .profile-picture {
+    object-fit: cover;
+    border-radius: 48px;
+
+    &__wrapper {
+      position: relative;
+      width: 2.75rem;
+      height: 2.75rem;
+    }
+  }
+}

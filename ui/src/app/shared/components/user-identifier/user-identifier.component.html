@@ -1,6 +1,6 @@
 <div class="user-identifier" matRipple [matMenuTriggerFor]="options">
   <div class="user-identifier__photo">
-    <img ngSrc="/login.jpg" fill [alt]="user().username">
+    <app-profile-picture [username]="user().username" />
   </div>
   <span class="user-identifier__username">{{ user().username }}</span>
   <span class="user-identifier__email">{{ user().email }}</span>

@@ -16,19 +16,21 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { ProjectProperties } from '../../models/project-properties.model';
 import { DialogService } from '../../../core/dialog.service';
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
+import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
 
 @Component({
   selector: 'app-project-properties-edit',
   template: `
-    <h2>{{ ('PROJECTS.PROPERTIES.LABEL' | translate)() }}</h2>
-    @if (loading()) {
-      <app-progress-spinner [center]="true" />
-    } @else if (projectProperties()) {
-      <app-project-properties-form
-        [properties]="projectProperties()"
-        (delete)="deleteProject()"
-        (save)="updateProperties($event)" />
-    }
+    <app-layout-header-and-content [title]="('PROJECTS.PROPERTIES.LABEL' | translate)()">
+      @if (loading()) {
+        <app-progress-spinner [center]="true" />
+      } @else if (projectProperties()) {
+        <app-project-properties-form
+          [properties]="projectProperties()"
+          (delete)="deleteProject()"
+          (save)="updateProperties($event)" />
+      }
+    </app-layout-header-and-content>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
@@ -36,6 +38,7 @@ import { ProgressSpinnerComponent } from '../../../shared/components/progress-sp
     ProjectPropertiesFormComponent,
     TranslatePipe,
     ProgressSpinnerComponent,
+    LayoutHeaderAndContentComponent,
   ],
 })
 export class ProjectPropertiesEditComponent {

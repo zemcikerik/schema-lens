@@ -12,6 +12,8 @@
 @import './scss/components/alert';
 @import './scss/components/content-card';
 @import './scss/components/object-selector';
+@import './scss/components/profile-picture';
+@import './scss/components/project-collaborators-table';
 @import './scss/components/project-list-table';
 @import './scss/components/project-nav';
 @import './scss/components/project-properties';
@@ -37,6 +39,8 @@
 @include app-alert();
 @include app-content-card();
 @include app-object-selector();
+@include app-profile-picture();
+@include app-project-collaborators-table();
 @include app-project-list-table();
 @include app-project-properties();
 @include app-project-nav();

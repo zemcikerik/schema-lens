@@ -4,9 +4,6 @@
 
 @mixin app-project-properties($options: ()) {
   .project-properties {
-    height: 100%;
-    overflow-y: auto;
-
     &__main {
       display: grid;
       gap: 0.5rem 1.5rem;

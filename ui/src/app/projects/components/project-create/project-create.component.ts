@@ -7,17 +7,19 @@ import { Router } from '@angular/router';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { finalize } from 'rxjs';
+import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
 
 @Component({
   selector: 'app-project-create',
   template: `
     <app-content-card>
-      <h2>{{ ('PROJECTS.CREATE_LABEL' | translate)() }}</h2>
-      @if (loading()) {
-        <app-progress-spinner [center]="true" />
-      } @else {
-        <app-project-properties-form (save)="createProject($event)" />
-      }
+      <app-layout-header-and-content [title]="('PROJECTS.CREATE_LABEL' | translate)()">
+        @if (loading()) {
+          <app-progress-spinner [center]="true" />
+        } @else {
+          <app-project-properties-form (save)="createProject($event)" />
+        }
+      </app-layout-header-and-content>
     </app-content-card>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -27,6 +29,7 @@ import { finalize } from 'rxjs';
     ContentCardComponent,
     TranslatePipe,
     ProgressSpinnerComponent,
+    LayoutHeaderAndContentComponent,
   ],
 })
 export class ProjectCreateComponent {

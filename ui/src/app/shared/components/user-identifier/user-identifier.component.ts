@@ -1,10 +1,10 @@
 import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { User } from '../../../core/models/user.model';
-import { NgOptimizedImage } from '@angular/common';
 import { MatRipple } from '@angular/material/core';
 import { MatMenuModule } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
+import { ProfilePictureComponent } from '../profile-picture/profile-picture.component';
 
 @Component({
   selector: 'app-user-identifier',
@@ -12,11 +12,11 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    NgOptimizedImage,
     MatRipple,
     MatMenuModule,
     MatIcon,
     TranslatePipe,
+    ProfilePictureComponent,
   ],
 })
 export class UserIdentifierComponent {

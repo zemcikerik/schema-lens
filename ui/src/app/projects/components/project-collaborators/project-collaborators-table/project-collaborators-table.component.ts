@@ -6,6 +6,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { TranslatePipe } from '../../../../core/translate/translate.pipe';
 import { ProjectRoleTypeToLabelPipe } from '../../../pipes/project-role-type-to-label.pipe';
+import { ProfilePictureComponent } from '../../../../shared/components/profile-picture/profile-picture.component';
 
 @Component({
   selector: 'app-project-collaborators-table',
@@ -22,6 +23,7 @@ import { ProjectRoleTypeToLabelPipe } from '../../../pipes/project-role-type-to-
     MatMenuContent,
     TranslatePipe,
     ProjectRoleTypeToLabelPipe,
+    ProfilePictureComponent,
   ],
 })
 export class ProjectCollaboratorsTableComponent {
