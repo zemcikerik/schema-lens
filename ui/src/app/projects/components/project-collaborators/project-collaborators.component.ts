@@ -121,7 +121,7 @@ export class ProjectCollaboratorsComponent {
     const titleKey = 'PROJECTS.COLLABORATORS.DELETE_LABEL';
     const descriptionKey = 'PROJECTS.COLLABORATORS.DELETE_DESCRIPTION';
 
-    this.dialogService.openConfirmationDialog(titleKey, descriptionKey).pipe(
+    this.dialogService.openConfirmationDialog(titleKey, descriptionKey, 'danger').pipe(
       filter(result => !!result),
       tap(() => this.loading.set(true)),
       mergeMap(() => this.projectCollaboratorService.deleteProjectCollaborator(projectId, username)),

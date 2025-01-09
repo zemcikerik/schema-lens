@@ -80,7 +80,7 @@ export class ProjectPropertiesEditComponent {
   deleteProject(): void {
     const projectId = this.projectId();
 
-    this.dialogService.openConfirmationDialog('GENERIC.CONFIRM_LABEL', 'PROJECTS.DELETE_CONFIRM_DESCRIPTION').pipe(
+    this.dialogService.openConfirmationDialog('GENERIC.CONFIRM_LABEL', 'PROJECTS.DELETE_CONFIRM_DESCRIPTION', 'danger').pipe(
       filter(result => result === true),
       tap(() => this.loading.set(true)),
       switchMap(() => this.projectService.deleteProject(projectId).pipe(

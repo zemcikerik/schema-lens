@@ -82,6 +82,10 @@ export class UserHttpClientService {
     );
   }
 
+  deleteUser(): Observable<unknown> {
+    return this.httpClient.delete('/user');
+  }
+
   private extractJwtFrom(response: HttpResponse<unknown>): string {
     const authorization = response.headers.get('Authorization');
     const jwt = authorization?.substring(7);

@@ -10,6 +10,7 @@
 @import './scss/utilities/icon';
 
 @import './scss/components/alert';
+@import './scss/components/confirmation-dialog';
 @import './scss/components/content-card';
 @import './scss/components/nav';
 @import './scss/components/object-selector';
@@ -38,6 +39,7 @@
 @include app-utility-icon();
 
 @include app-alert();
+@include app-confirmation-dialog();
 @include app-content-card();
 @include app-object-selector();
 @include app-nav();

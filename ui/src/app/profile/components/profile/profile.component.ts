@@ -14,9 +14,11 @@ import { ProgressSpinnerComponent } from '../../../shared/components/progress-sp
 import { ChangePassword } from '../../../core/models/change-password.model';
 import { UserService } from '../../../core/auth/user.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { catchError, finalize, map, mergeMap, of } from 'rxjs';
+import { catchError, filter, finalize, map, mergeMap, of, tap } from 'rxjs';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { UpdateUserInfo } from '../../../core/models/change-user-info.model';
+import { DialogService } from '../../../core/dialog.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -38,6 +40,8 @@ import { UpdateUserInfo } from '../../../core/models/change-user-info.model';
 export class ProfileComponent {
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private dialogService = inject(DialogService);
+  private router = inject(Router);
   private destroyRef = inject(DestroyRef);
 
   user = this.authService.currentUser as Signal<User>;
@@ -45,6 +49,7 @@ export class ProfileComponent {
   loading = signal<boolean>(false);
   generalInformationResult = signal<string | true | null>(null);
   changePasswordResult = signal<string | true | null>(null);
+  deleteError = signal<boolean>(false);
 
   changeUserInfo(data: UpdateUserInfo): void {
     type Failure = 'user' | 'picture-bad' | 'picture-unknown' | null;
@@ -87,10 +92,30 @@ export class ProfileComponent {
     });
   }
 
+  deleteUser(): void {
+    const titleKey = 'PROFILE.DELETE_ACCOUNT_CONFIRM_TITLE';
+    const descriptionKey = 'PROFILE.DELETE_ACCOUNT_CONFIRM_DESCRIPTION';
+
+    this.dialogService.openConfirmationDialog(titleKey, descriptionKey, 'danger').pipe(
+      filter(result => result === true),
+      tap(() => this.loading.set(true)),
+      mergeMap(() => this.userService.deleteUser()),
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.loading.set(false)),
+    ).subscribe({
+      next: async () => {
+        this.authService.logout();
+        await this.router.navigate(['/']);
+      },
+      error: () => this.deleteError.set(true),
+    });
+  }
+
   private beginUpdate(): void {
     this.loading.set(true);
     this.generalInformationResult.set(null);
     this.changePasswordResult.set(null);
+    this.deleteError.set(false);
   }
 
   private withoutProfilePicture(data: UpdateUserInfo): UpdateUserInfo {

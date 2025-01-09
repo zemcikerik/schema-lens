@@ -14,8 +14,12 @@ export class DialogService {
 
   private matDialog = inject(MatDialog);
 
-  openConfirmationDialog(titleKey: string, descriptionKey: string): Observable<boolean | null> {
-    const data: ConfirmationDialogData = { titleKey, descriptionKey };
+  openConfirmationDialog(
+    titleKey: string,
+    descriptionKey: string,
+    type: 'classic' | 'danger' = 'classic'
+  ): Observable<boolean | null> {
+    const data: ConfirmationDialogData = { titleKey, descriptionKey, type };
 
     return this.matDialog.open(ConfirmationDialogComponent, { data }).afterClosed().pipe(
       map(result => result ?? null),

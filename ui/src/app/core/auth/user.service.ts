@@ -18,4 +18,8 @@ export class UserService {
     return this.userHttpClient.updateProfilePicture(file);
   }
 
+  deleteUser(): Observable<unknown> {
+    return this.userHttpClient.deleteUser();
+  }
+
 }

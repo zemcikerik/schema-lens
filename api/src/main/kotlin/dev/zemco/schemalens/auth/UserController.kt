@@ -4,6 +4,7 @@ import jakarta.validation.Valid
 import org.hibernate.validator.constraints.Length
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.PutMapping
@@ -70,6 +71,12 @@ class UserController(
         return if (userService.changePassword(user, oldPassword, newPassword))
             ResponseEntity.noContent().build()
             else ResponseEntity.status(HttpStatus.FORBIDDEN).build()
+    }
+
+    @DeleteMapping
+    fun deleteUser(): ResponseEntity<Any> {
+        userService.deleteUser(userService.getCurrentUser())
+        return ResponseEntity.noContent().build()
     }
 
     private fun ResponseEntity.BodyBuilder.addJwtTokenFor(user: User): ResponseEntity.BodyBuilder =

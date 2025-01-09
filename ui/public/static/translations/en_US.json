@@ -164,7 +164,9 @@
     "PICTURE_TOO_LARGE_TITLE": "Picture too large",
     "PICTURE_TOO_LARGE_DESCRIPTION": "The provided picture is too large. Maximum allowed file size is 2MB.",
     "DISALLOWED_MIME_TYPE_TITLE": "Disallowed file type",
-    "DISALLOWED_MIME_TYPE_DESCRIPTION": "The provided type is not an allowed picture. Please use .png or .jpeg files."
+    "DISALLOWED_MIME_TYPE_DESCRIPTION": "The provided type is not an allowed picture. Please use .png or .jpeg files.",
+    "DELETE_ACCOUNT_CONFIRM_TITLE": "Confirm account deletion",
+    "DELETE_ACCOUNT_CONFIRM_DESCRIPTION": "Are you sure you want to delete your account? This action is irreversible. All projects that you own will be deleted as well."
   },
   "ADMIN": {
     "PANEL_LABEL": "Admin Panel",

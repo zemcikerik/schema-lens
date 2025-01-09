@@ -20,6 +20,9 @@ class UserServiceImpl(
         return true
     }
 
+    override fun deleteUser(user: User) =
+        userRepository.delete(user)
+
     override fun getCurrentUser(): User {
         val authentication = SecurityContextHolder.getContext().authentication
             ?: throw IllegalStateException("User is not authenticated")

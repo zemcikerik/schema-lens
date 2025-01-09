@@ -22,7 +22,12 @@
       <app-profile-change-password-form (changePassword)="changePassword($event)" />
 
       <h3>{{ ('PROFILE.DANGER_ZONE_LABEL' | translate)() }}</h3>
-      <button class="profile__delete" mat-flat-button>
+      @if (deleteError()) {
+        <app-alert class="d-block mb-1" type="error">
+          {{ ('GENERIC.ERROR_LABEL' | translate)() }}
+        </app-alert>
+      }
+      <button class="profile__delete" mat-flat-button (click)="deleteUser()">
         <mat-icon>delete</mat-icon> {{ ('PROFILE.DELETE_ACCOUNT_LABEL' | translate)() }}
       </button>
     }
