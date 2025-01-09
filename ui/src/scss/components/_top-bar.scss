@@ -7,7 +7,7 @@
     @include mat.toolbar-overrides((
       container-background-color: mat.get-theme-color($theme, surface-container),
     ));
-    gap: 0.25em;
+    gap: 0.5em;
     user-select: none;
 
     &__app-name,

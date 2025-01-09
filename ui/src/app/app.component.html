@@ -16,6 +16,10 @@
       <app-top-bar>
         <app-project-selector />
 
+        @if (('ADMIN' | hasRole)()) {
+          <app-admin-link />
+        }
+
         @let user = currentUser();
         @if (user !== null) {
           <app-user-identifier [user]="user" (language)="changeLocale()" (logout)="logout()" />

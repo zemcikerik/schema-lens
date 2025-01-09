@@ -1,8 +1,9 @@
 import { Route } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { hasAdminRoleGuard } from './core/guards/has-role.guard';
 
 export const appRoutes: Route[] = [
-  { path: '', redirectTo: 'login', pathMatch: 'full' },
+  { path: '', redirectTo: 'project', pathMatch: 'full' },
   {
     path: 'login',
     loadComponent: () => import('./core/auth/login.component').then(c => c.LoginComponent),
@@ -62,4 +63,9 @@ export const appRoutes: Route[] = [
       },
     ],
   },
+  {
+    path: 'admin',
+    loadComponent: () => import('./admin/components/admin/admin.component').then(c => c.AdminComponent),
+    canActivate: [authGuard, hasAdminRoleGuard],
+  }
 ];

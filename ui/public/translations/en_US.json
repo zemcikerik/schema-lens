@@ -147,5 +147,8 @@
       "REFERENCED_TABLE_NAME_LABEL": "Referenced Table Name",
       "REFERENCED_COLUMN_NAME_LABEL": "Referenced Column Name"
     }
+  },
+  "ADMIN": {
+    "PANEL_LABEL": "Admin Panel"
   }
 }

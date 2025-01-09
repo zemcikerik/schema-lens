@@ -22,19 +22,14 @@ export class AuthService {
 
   private _isAuthenticated$ = new ReplaySubject<boolean>(1);
   private _currentUser = signal<User | null>(null);
+  private _jwt$ = new ReplaySubject<Jwt | null>(1);
   private _jwt: Jwt | null = null;
   private _jwtRefresh: Observable<string | null> | null = null;
 
   readonly isAuthenticated = toSignal(this._isAuthenticated$, { initialValue: false });
+  readonly isAuthenticated$ = this._isAuthenticated$.asObservable();
   readonly currentUser = this._currentUser.asReadonly();
-
-  get jwt(): Jwt | null {
-    return this._jwt;
-  }
-
-  get isAuthenticated$(): Observable<boolean> {
-    return this._isAuthenticated$.asObservable();
-  }
+  readonly jwt = this._jwt$.asObservable();
 
   attemptAuthFromStorage(): Observable<boolean> {
     return defer(() => {
@@ -43,7 +38,7 @@ export class AuthService {
         return of(false);
       }
 
-      this._jwt = this.parseJwt(this.keyValueStoreService.getStringOrDefault(JWT_TOKEN_KEY, ''));
+      this.setJwt(this.parseJwt(this.keyValueStoreService.getStringOrDefault(JWT_TOKEN_KEY, '')));
 
       if (this._jwt === null) {
         this._isAuthenticated$.next(false);
@@ -76,7 +71,7 @@ export class AuthService {
 
       const refresh$ = this.userHttpClientService.refresh(this._jwt.refreshToken).pipe(
         tap(rawJwt => {
-          this._jwt = rawJwt !== null ? this.parseJwt(rawJwt) : null;
+          this.setJwt(rawJwt !== null ? this.parseJwt(rawJwt) : null);
           if (this._jwt !== null) {
             this.keyValueStoreService.setString(JWT_TOKEN_KEY, rawJwt!);
           } else {
@@ -114,7 +109,7 @@ export class AuthService {
   logout(): void {
     this._isAuthenticated$.next(false);
     this._currentUser.set(null);
-    this._jwt = null;
+    this.setJwt(null);
     this.keyValueStoreService.removeString(JWT_TOKEN_KEY);
   }
 
@@ -123,7 +118,7 @@ export class AuthService {
       return false;
     }
 
-    this._jwt = this.parseJwt(result.rawJwt);
+    this.setJwt(this.parseJwt(result.rawJwt));
 
     if (this._jwt === null) {
       return false;
@@ -144,11 +139,11 @@ export class AuthService {
 
     const [, encodedClaims] = parts;
     const claims: JwtClaims = JSON.parse(window.atob(encodedClaims));
+    return { rawJwt, expiresOn: claims.exp, refreshToken: claims.refresh_token, roles: claims.roles };
+  }
 
-    if (!claims.exp || !claims.refresh_token) {
-      return null;
-    }
-
-    return { rawJwt, expiresOn: claims.exp, refreshToken: claims.refresh_token };
+  private setJwt(jwt: Jwt | null): void {
+    this._jwt = jwt;
+    this._jwt$.next(jwt);
   }
 }

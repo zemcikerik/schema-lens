@@ -13,6 +13,8 @@ import { AuthService } from './core/auth/auth.service';
 import { UserIdentifierComponent } from './shared/components/user-identifier/user-identifier.component';
 import { MatDialog } from '@angular/material/dialog';
 import { ChangeLocaleDialogComponent } from './shared/components/change-locale-dialog/change-locale-dialog.component';
+import { AdminLinkComponent } from './shared/components/admin-link/admin-link.component';
+import { HasRolePipe } from './core/pipes/has-role.pipe';
 
 @Component({
   selector: 'app-root',
@@ -26,6 +28,8 @@ import { ChangeLocaleDialogComponent } from './shared/components/change-locale-d
     RouterOutlet,
     AlertComponent,
     UserIdentifierComponent,
+    AdminLinkComponent,
+    HasRolePipe,
   ],
 })
 export class AppComponent {
