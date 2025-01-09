@@ -157,7 +157,8 @@
     "LABEL": "Profile",
     "GENERAL_INFORMATION_LABEL": "General information",
     "DANGER_ZONE_LABEL": "Danger zone",
-    "DELETE_ACCOUNT_LABEL": "Delete account"
+    "DELETE_ACCOUNT_LABEL": "Delete account",
+    "UPDATE_SUCCESS": "Information updated successfully."
   },
   "ADMIN": {
     "PANEL_LABEL": "Admin Panel",

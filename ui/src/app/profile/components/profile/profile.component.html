@@ -3,8 +3,14 @@
     @if (loading()) {
       <app-progress-spinner [center]="true" />
     } @else {
+      @let generalInfoResult = generalInformationResult();
       <h3>{{ ('PROFILE.GENERAL_INFORMATION_LABEL' | translate)() }}</h3>
-      <app-profile-general-form [user]="user()" />
+      @if (generalInfoResult !== null) {
+        <app-alert class="d-block mb-1" [type]="generalInfoResult === true ? 'info' : 'error'">
+          {{ ((generalInfoResult === true ? 'PROFILE.UPDATE_SUCCESS' : generalInfoResult) | translate)() }}
+        </app-alert>
+      }
+      <app-profile-general-form (changeUserInfo)="changeUserInfo($event)" [user]="user()" />
 
       @let changePassResult = changePasswordResult();
       <h3>{{ ('AUTH.CHANGE_PASSWORD_LABEL' | translate)() }}</h3>
@@ -13,7 +19,7 @@
           {{ ((changePassResult === true ? 'AUTH.CHANGE_PASSWORD_SUCCESS' : changePassResult) | translate)() }}
         </app-alert>
       }
-      <app-profile-change-password-form [user]="user()" (changePassword)="changePassword($event)" />
+      <app-profile-change-password-form (changePassword)="changePassword($event)" />
 
       <h3>{{ ('PROFILE.DANGER_ZONE_LABEL' | translate)() }}</h3>
       <button class="profile__delete" mat-flat-button>

@@ -8,6 +8,7 @@ import { RegistrationData } from '../models/registration-data.model';
 import { AuthResult, RegistrationFailure, RegistrationResult } from '../models/auth.model';
 import { NO_AUTHORIZATION } from '../interceptors/jwt.interceptor';
 import { ChangePassword } from '../models/change-password.model';
+import { UpdateUserInfo } from '../models/change-user-info.model';
 
 @Injectable({
   providedIn: 'root',
@@ -58,6 +59,10 @@ export class UserHttpClientService {
       map(response => this.extractJwtFrom(response)),
       catch404StatusError(() => of(null)),
     );
+  }
+
+  updateCurrentUser(data: UpdateUserInfo): Observable<User> {
+    return this.httpClient.put<User>('/user', data);
   }
 
   updatePassword(data: ChangePassword): Observable<boolean> {

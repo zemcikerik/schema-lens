@@ -55,6 +55,13 @@ class UserController(
         return ResponseEntity.ok().addJwtTokenFor(user).build()
     }
 
+    @PutMapping
+    fun updateUser(@RequestBody @Valid updateUserDto: UpdateUserDto): ResponseEntity<UserDto> {
+        val user = userService.getCurrentUser()
+        user.email = updateUserDto.email
+        return ResponseEntity.ok(user.mapToDto())
+    }
+
     @PutMapping("/password")
     fun changePassword(@RequestBody @Valid changePasswordDto: ChangePasswordDto): ResponseEntity<Any> {
         val user = userService.getCurrentUser()

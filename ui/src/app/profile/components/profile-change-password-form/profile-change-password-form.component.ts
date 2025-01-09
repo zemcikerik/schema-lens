@@ -1,5 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
-import { User } from '../../../core/models/user.model';
+import { ChangeDetectionStrategy, Component, output } from '@angular/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
@@ -26,7 +25,6 @@ import { ChangePassword } from '../../../core/models/change-password.model';
   ],
 })
 export class ProfileChangePasswordFormComponent {
-  user = input.required<User>();
   changePassword = output<ChangePassword>();
 
   passwordForm = new FormGroup({

@@ -16,6 +16,7 @@ import { UserService } from '../../../core/auth/user.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize } from 'rxjs';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
+import { UpdateUserInfo } from '../../../core/models/change-user-info.model';
 
 @Component({
   selector: 'app-profile',
@@ -35,15 +36,30 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
   ],
 })
 export class ProfileComponent {
-  user = inject(AuthService).currentUser as Signal<User>;
+  private authService = inject(AuthService);
   private userService = inject(UserService);
   private destroyRef = inject(DestroyRef);
 
+  user = this.authService.currentUser as Signal<User>;
+
   loading = signal<boolean>(false);
+  generalInformationResult = signal<string | true | null>(null);
   changePasswordResult = signal<string | true | null>(null);
 
+  changeUserInfo(data: UpdateUserInfo): void {
+    this.beginUpdate();
+
+    this.authService.updateCurrentUser(data).pipe(
+      takeUntilDestroyed(this.destroyRef),
+      finalize(() => this.loading.set(false)),
+    ).subscribe({
+      next: () => this.generalInformationResult.set(true),
+      error: () => this.generalInformationResult.set('GENERIC.ERROR_LABEL'),
+    });
+  }
+
   changePassword(data: ChangePassword): void {
-    this.loading.set(true);
+    this.beginUpdate();
 
     this.userService.updatePassword(data).pipe(
       takeUntilDestroyed(this.destroyRef),
@@ -52,5 +68,11 @@ export class ProfileComponent {
       next: result => this.changePasswordResult.set(result || 'AUTH.WRONG_PASSWORD_LABEL'),
       error: () => this.changePasswordResult.set('GENERIC.ERROR_LABEL'),
     });
+  }
+
+  private beginUpdate(): void {
+    this.loading.set(true);
+    this.generalInformationResult.set(null);
+    this.changePasswordResult.set(null);
   }
 }

@@ -40,6 +40,13 @@ enum class UserRegistrationFailure {
     EMAIL_TAKEN,
 }
 
+data class UpdateUserDto(
+    @field:Email
+    @field:NotNull
+    @field:Length(max = 128)
+    val email: String,
+)
+
 data class ChangePasswordDto(
     val oldPassword: String,
     val newPassword: String,

@@ -1,4 +1,4 @@
-<form class="profile__general">
+<form class="profile__general" (ngSubmit)="submit()">
   <app-interactable-profile-picture class="profile__general__picture" [username]="user().username" />
 
   <mat-form-field class="profile__general__username">
@@ -8,8 +8,10 @@
 
   <mat-form-field class="profile__general__email">
     <mat-label>{{ ('AUTH.EMAIL_LABEL' | translate)() }}</mat-label>
-    <input matInput type="text" required>
-    <mat-error>Test Error</mat-error>
+    <input matInput [formControl]="emailControl" type="text" required>
+    @if (emailControl.invalid) {
+      <mat-error>{{ (emailControl.errors | formatGenericValidationErrors)() }}</mat-error>
+    }
   </mat-form-field>
 
   <div class="profile__actions profile__general__actions">

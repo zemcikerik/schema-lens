@@ -55,4 +55,7 @@ class UserServiceImpl(
             active = true,
         ))
     }
+
+    override fun saveUser(user: User): User =
+        userRepository.save(user)
 }

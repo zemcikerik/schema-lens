@@ -7,6 +7,7 @@ import { KeyValueStoreService } from '../persistence/key-value-store.service';
 import { RegistrationData } from '../models/registration-data.model';
 import { AuthResult, RegistrationResult } from '../models/auth.model';
 import { Jwt, JwtClaims } from '../models/jwt.model';
+import { UpdateUserInfo } from '../models/change-user-info.model';
 
 const JWT_TOKEN_KEY = 'token';
 const JWT_EXPIRY_OFFSET = 10;
@@ -104,6 +105,12 @@ export class AuthService {
       this.updateStateFromAuthResult(result);
       return RegistrationResult.SUCCESS;
     }));
+  }
+
+  updateCurrentUser(data: UpdateUserInfo): Observable<User> {
+    return this.userHttpClientService.updateCurrentUser(data).pipe(
+      tap(user => this._currentUser.set(user)),
+    );
   }
 
   logout(): void {

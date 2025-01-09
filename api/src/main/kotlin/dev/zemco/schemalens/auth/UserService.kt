@@ -6,4 +6,5 @@ interface UserService {
     fun getUserByUsername(username: String): User?
     fun loginUser(username: String, password: String): User?
     fun registerUser(registrationDto: UserRegistrationDto): User
+    fun saveUser(user: User): User
 }
