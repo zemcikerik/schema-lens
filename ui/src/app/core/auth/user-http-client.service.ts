@@ -79,6 +79,7 @@ export class UserHttpClientService {
     return this.httpClient.post('/user/profile-picture', formData).pipe(
       map(() => true),
       catchSpecificHttpStatusError(400, () => of(false)),
+      catchSpecificHttpStatusError(413, () => of(false)),
     );
   }
 

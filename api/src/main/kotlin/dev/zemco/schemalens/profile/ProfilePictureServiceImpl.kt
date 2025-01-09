@@ -11,6 +11,9 @@ class ProfilePictureServiceImpl(
     private val profilePictureStorage: ProfilePictureStorage,
 ) : ProfilePictureService {
 
+    override fun removeProfilePicture(username: String) =
+        profilePictureStorage.deleteProfilePicture(username)
+
     override fun saveProfilePicture(username: String, resource: Resource): Boolean {
         val pngBytes = try {
             resource.inputStream.use {

@@ -1,9 +1,11 @@
 package dev.zemco.schemalens.auth
 
+import dev.zemco.schemalens.profile.ProfilePictureService
 import jakarta.validation.Valid
 import org.hibernate.validator.constraints.Length
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
+import org.springframework.transaction.annotation.Transactional
 import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
@@ -18,6 +20,7 @@ class UserController(
     private val userService: UserService,
     private val jwtService: JwtService,
     private val refreshTokenService: RefreshTokenService,
+    private val profilePictureService: ProfilePictureService,
 ) {
 
     @GetMapping
@@ -74,8 +77,11 @@ class UserController(
     }
 
     @DeleteMapping
+    @Transactional(readOnly = false, rollbackFor = [Exception::class])
     fun deleteUser(): ResponseEntity<Any> {
-        userService.deleteUser(userService.getCurrentUser())
+        val user = userService.getCurrentUser()
+        userService.deleteUser(user)
+        profilePictureService.removeProfilePicture(user.username)
         return ResponseEntity.noContent().build()
     }
 
