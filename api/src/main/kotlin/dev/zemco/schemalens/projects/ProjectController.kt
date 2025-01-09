@@ -64,7 +64,7 @@ class ProjectController(
 
     @DeleteMapping("{project}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteProject(@PathVariable @ProjectRole(ProjectCollaborationRole.ADMIN) project: Project) =
+    fun deleteProject(@PathVariable @ProjectRole(ProjectCollaborationRole.OWNER) project: Project) =
         projectService.deleteProjectByUuid(project.uuid)
 
     private fun Project.mapToPropertiesDto(): OracleProjectPropertiesDto =

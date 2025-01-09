@@ -15,6 +15,11 @@ export const appRoutes: Route[] = [
     data: { disableTopBar: true },
   },
   {
+    path: 'profile',
+    loadComponent: () => import('./profile/components/profile/profile.component').then(c => c.ProfileComponent),
+    canActivate: [authGuard],
+  },
+  {
     path: 'project',
     loadComponent: () => import('./projects/components/project-list/project-list.component').then(c => c.ProjectListComponent),
     canActivate: [authGuard],
@@ -67,5 +72,12 @@ export const appRoutes: Route[] = [
     path: 'admin',
     loadComponent: () => import('./admin/components/admin/admin.component').then(c => c.AdminComponent),
     canActivate: [authGuard, hasAdminRoleGuard],
+    children: [
+      { path: '', redirectTo: 'user', pathMatch: 'full' },
+      {
+        path: 'user',
+        loadComponent: () => import('./admin/components/admin-user-management/admin-user-management.component').then(c => c.AdminUserManagementComponent),
+      },
+    ],
   }
 ];

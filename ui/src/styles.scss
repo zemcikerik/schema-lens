@@ -11,11 +11,11 @@
 
 @import './scss/components/alert';
 @import './scss/components/content-card';
+@import './scss/components/nav';
 @import './scss/components/object-selector';
 @import './scss/components/profile-picture';
 @import './scss/components/project-collaborators-table';
 @import './scss/components/project-list-table';
-@import './scss/components/project-nav';
 @import './scss/components/project-properties';
 @import './scss/components/project-selector';
 @import './scss/components/progress-spinner';
@@ -39,11 +39,11 @@
 @include app-alert();
 @include app-content-card();
 @include app-object-selector();
+@include app-nav();
 @include app-profile-picture();
 @include app-project-collaborators-table();
 @include app-project-list-table();
 @include app-project-properties();
-@include app-project-nav();
 @include app-project-selector();
 @include app-progress-spinner();
 @include app-table();

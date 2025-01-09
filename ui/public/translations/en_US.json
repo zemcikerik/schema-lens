@@ -148,7 +148,13 @@
       "REFERENCED_COLUMN_NAME_LABEL": "Referenced Column Name"
     }
   },
+  "PROFILE": {
+    "LABEL": "Profile"
+  },
   "ADMIN": {
-    "PANEL_LABEL": "Admin Panel"
+    "PANEL_LABEL": "Admin Panel",
+    "USER_MANAGEMENT": {
+      "LABEL": "User Management"
+    }
   }
 }

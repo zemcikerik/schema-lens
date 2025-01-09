@@ -1,1 +1,9 @@
-<p>admin works!</p>
+<app-layout-content-with-sidebar>
+  <ng-container ngProjectAs="sidebar">
+    <app-admin-nav />
+  </ng-container>
+
+  <app-content-card>
+    <router-outlet />
+  </app-content-card>
+</app-layout-content-with-sidebar>

@@ -32,6 +32,8 @@ import { ProjectCollaborationRole } from '../../models/project-collaboration-rol
 })
 export class ProjectPropertiesFormComponent {
   properties = input<ProjectProperties | null>(null);
+  saveAllowed = input<boolean>(true);
+  deleteAllowed = input<boolean>(true);
   save = output<ProjectProperties>();
   delete = output();
 
@@ -66,6 +68,11 @@ export class ProjectPropertiesFormComponent {
           oracleConnection: { ...properties.connection },
         });
       });
+    });
+
+    effect(() => {
+      const saveAllowed = this.saveAllowed();
+      untracked(() => this.propertiesForm[saveAllowed ? 'enable' : 'disable']())
     });
   }
 

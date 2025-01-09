@@ -61,6 +61,10 @@ export class AppComponent {
     });
   }
 
+  async goToProfile(): Promise<void> {
+    await this.router.navigate(['/profile']);
+  }
+
   changeLocale(): void {
     this.matDialog.open(ChangeLocaleDialogComponent);
   }

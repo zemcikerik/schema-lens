@@ -17,6 +17,7 @@ import { ProjectProperties } from '../../models/project-properties.model';
 import { DialogService } from '../../../core/dialog.service';
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
+import { HasProjectRolePipe } from '../../pipes/has-project-role.pipe';
 
 @Component({
   selector: 'app-project-properties-edit',
@@ -27,6 +28,8 @@ import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-he
       } @else if (projectProperties()) {
         <app-project-properties-form
           [properties]="projectProperties()"
+          [saveAllowed]="(projectId() | hasProjectRole: 'ADMIN')()"
+          [deleteAllowed]="(projectId() | hasProjectRole: 'OWNER')()"
           (delete)="deleteProject()"
           (save)="updateProperties($event)" />
       }
@@ -39,6 +42,7 @@ import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-he
     TranslatePipe,
     ProgressSpinnerComponent,
     LayoutHeaderAndContentComponent,
+    HasProjectRolePipe,
   ],
 })
 export class ProjectPropertiesEditComponent {

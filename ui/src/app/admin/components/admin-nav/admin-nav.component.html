@@ -1,0 +1,11 @@
+<div class="nav__container">
+  <mat-nav-list class="nav">
+    <a
+      mat-list-item
+      [routerLink]="['/admin', 'user']"
+      routerLinkActive
+      #rla="routerLinkActive"
+      [activated]="rla.isActive"
+    >{{ ('ADMIN.USER_MANAGEMENT.LABEL' | translate)() }}</a>
+  </mat-nav-list>
+</div>

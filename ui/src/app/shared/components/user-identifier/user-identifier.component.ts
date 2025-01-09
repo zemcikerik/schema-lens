@@ -21,6 +21,7 @@ import { ProfilePictureComponent } from '../profile-picture/profile-picture.comp
 })
 export class UserIdentifierComponent {
   user = input.required<User>();
+  profile = output();
   language = output();
   logout = output();
 }

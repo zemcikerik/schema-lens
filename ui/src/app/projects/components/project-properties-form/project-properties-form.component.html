@@ -68,16 +68,18 @@
   }
 
   <div class="project-properties__control">
-    @if (properties() !== null) {
+    @if (properties() !== null && deleteAllowed()) {
       <button mat-flat-button (click)="delete.emit()" type="button">
         <mat-icon>delete</mat-icon>
         {{ ('GENERIC.DELETE_LABEL' | translate)() }}
       </button>
     }
 
-    <button mat-flat-button type="submit">
-      <mat-icon>save</mat-icon>
-      {{ ('GENERIC.SAVE_LABEL' | translate)() }}
-    </button>
+    @if (saveAllowed()) {
+      <button mat-flat-button type="submit">
+        <mat-icon>save</mat-icon>
+        {{ ('GENERIC.SAVE_LABEL' | translate)() }}
+      </button>
+    }
   </div>
 </form>

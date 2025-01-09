@@ -8,6 +8,9 @@
 </div>
 
 <mat-menu #options xPosition="before" yPosition="below">
+  <button mat-menu-item (click)="profile.emit()">
+    <mat-icon>person</mat-icon> {{ ('PROFILE.LABEL' | translate)() }}
+  </button>
   <button mat-menu-item (click)="language.emit()">
     <mat-icon>language</mat-icon> {{ ('LOCALE.LANGUAGE_BUTTON' | translate)() }}
   </button>
