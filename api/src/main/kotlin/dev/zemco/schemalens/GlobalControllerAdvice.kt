@@ -27,7 +27,7 @@ class GlobalControllerAdvice {
         ResponseEntity.status(HttpStatus.CONFLICT)
             .contentType(MediaType.APPLICATION_JSON)
             .body(ProjectConnectionFailureDto(
-                status = ex.type,
+                type = ex.type,
                 message = ex.message,
             ))}
 

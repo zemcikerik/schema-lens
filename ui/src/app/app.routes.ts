@@ -34,6 +34,10 @@ export const appRoutes: Route[] = [
         loadComponent: () => import('./projects/components/project-properties-edit/project-properties-edit.component').then(c => c.ProjectPropertiesEditComponent),
       },
       {
+        path: 'table/404',
+        loadComponent: () => import('./tables/components/table-not-found/table-not-found.component').then(c => c.TableNotFoundComponent),
+      },
+      {
         path: 'table/:tableName',
         loadComponent: () => import('./tables/components/table/table.component').then(c => c.TableComponent),
         children: [

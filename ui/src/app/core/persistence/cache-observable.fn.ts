@@ -1,4 +1,4 @@
-import { defer, Observable, of, shareReplay } from 'rxjs';
+import { catchError, defer, Observable, of, shareReplay, throwError } from 'rxjs';
 
 type ObservableFn<T extends unknown[], R> = (...args: T) => Observable<R>;
 
@@ -13,7 +13,13 @@ export const cacheObservable = <T extends string[], R>(fn: ObservableFn<T, R>) =
         return cache[cacheKey];
       }
 
-      const observable = fn(...args).pipe(shareReplay(1));
+      const observable = fn(...args).pipe(
+        catchError(err => {
+          delete cache[cacheKey];
+          return throwError(() => err);
+        }),
+        shareReplay(1),
+      );
       cache[cacheKey] = observable;
       return observable;
     })

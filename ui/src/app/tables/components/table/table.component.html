@@ -8,7 +8,12 @@
     @if (loading()) {
       <app-progress-spinner [center]="true" />
     } @else {
-      <router-outlet />
+      @let err = error();
+      @if (err !== null) {
+        <app-project-connection-error-alert class="d-block mt-1" [error]="err" />
+      } @else {
+        <router-outlet />
+      }
     }
   </div>
 </app-nav-tab-group>

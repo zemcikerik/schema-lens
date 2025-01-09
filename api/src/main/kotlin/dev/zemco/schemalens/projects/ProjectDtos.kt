@@ -51,7 +51,7 @@ data class OracleProjectPropertiesDto(
 }
 
 data class ProjectConnectionFailureDto(
-    val status: ProjectConnectionFailure,
+    val type: ProjectConnectionFailure,
     val message: String?,
 )
 
