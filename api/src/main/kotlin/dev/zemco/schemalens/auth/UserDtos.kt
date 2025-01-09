@@ -39,3 +39,8 @@ enum class UserRegistrationFailure {
     USERNAME_TAKEN,
     EMAIL_TAKEN,
 }
+
+data class ChangePasswordDto(
+    val oldPassword: String,
+    val newPassword: String,
+)

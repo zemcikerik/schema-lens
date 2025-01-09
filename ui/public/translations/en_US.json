@@ -34,7 +34,12 @@
     "REGISTER_BUTTON": "Register",
     "LOGIN_REDIRECT": "Try logging in",
     "REGISTER_REDIRECT": "Create new account",
+    "CHANGE_PASSWORD_LABEL": "Change password",
+    "OLD_PASSWORD_LABEL": "Old password",
+    "NEW_PASSWORD_LABEL": "New password",
     "LOGOUT_BUTTON": "Logout",
+    "CHANGE_PASSWORD_SUCCESS": "Password changed successfully.",
+    "WRONG_PASSWORD_LABEL": "The provided old password is not correct.",
     "ERRORS": {
       "USERNAME_TAKEN": "This username was already taken by another user.",
       "EMAIL_TAKEN": "This email was already taken by another user.",
@@ -149,7 +154,10 @@
     }
   },
   "PROFILE": {
-    "LABEL": "Profile"
+    "LABEL": "Profile",
+    "GENERAL_INFORMATION_LABEL": "General information",
+    "DANGER_ZONE_LABEL": "Danger zone",
+    "DELETE_ACCOUNT_LABEL": "Delete account"
   },
   "ADMIN": {
     "PANEL_LABEL": "Admin Panel",

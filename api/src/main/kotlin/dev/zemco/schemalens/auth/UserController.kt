@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.PutMapping
 import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RequestMapping
 import org.springframework.web.bind.annotation.RestController
@@ -52,6 +53,16 @@ class UserController(
             ?: return ResponseEntity.notFound().build()
 
         return ResponseEntity.ok().addJwtTokenFor(user).build()
+    }
+
+    @PutMapping("/password")
+    fun changePassword(@RequestBody @Valid changePasswordDto: ChangePasswordDto): ResponseEntity<Any> {
+        val user = userService.getCurrentUser()
+        val (oldPassword, newPassword) = changePasswordDto
+
+        return if (userService.changePassword(user, oldPassword, newPassword))
+            ResponseEntity.noContent().build()
+            else ResponseEntity.status(HttpStatus.FORBIDDEN).build()
     }
 
     private fun ResponseEntity.BodyBuilder.addJwtTokenFor(user: User): ResponseEntity.BodyBuilder =

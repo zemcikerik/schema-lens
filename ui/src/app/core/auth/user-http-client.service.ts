@@ -7,6 +7,7 @@ import { User } from '../models/user.model';
 import { RegistrationData } from '../models/registration-data.model';
 import { AuthResult, RegistrationFailure, RegistrationResult } from '../models/auth.model';
 import { NO_AUTHORIZATION } from '../interceptors/jwt.interceptor';
+import { ChangePassword } from '../models/change-password.model';
 
 @Injectable({
   providedIn: 'root',
@@ -56,6 +57,13 @@ export class UserHttpClientService {
     return this.httpClient.post('/user/login/refresh', refreshToken, { context, observe: 'response' }).pipe(
       map(response => this.extractJwtFrom(response)),
       catch404StatusError(() => of(null)),
+    );
+  }
+
+  updatePassword(data: ChangePassword): Observable<boolean> {
+    return this.httpClient.put('/user/password', data).pipe(
+      map(() => true),
+      catchSpecificHttpStatusError(403, () => of(false)),
     );
   }
 

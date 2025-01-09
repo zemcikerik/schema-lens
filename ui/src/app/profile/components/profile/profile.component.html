@@ -1,14 +1,24 @@
 <app-content-card>
   <app-layout-header-and-content [title]="('PROFILE.LABEL' | translate)()" [includeSpacing]="true">
-    <h3>General information</h3>
-    <app-profile-general-form [user]="user()" />
+    @if (loading()) {
+      <app-progress-spinner [center]="true" />
+    } @else {
+      <h3>{{ ('PROFILE.GENERAL_INFORMATION_LABEL' | translate)() }}</h3>
+      <app-profile-general-form [user]="user()" />
 
-    <h3>Change password</h3>
-    <app-profile-change-password-form [user]="user()" />
+      @let changePassResult = changePasswordResult();
+      <h3>{{ ('AUTH.CHANGE_PASSWORD_LABEL' | translate)() }}</h3>
+      @if (changePassResult !== null) {
+        <app-alert class="d-block mb-1" [type]="changePassResult === true ? 'info' : 'error'">
+          {{ ((changePassResult === true ? 'AUTH.CHANGE_PASSWORD_SUCCESS' : changePassResult) | translate)() }}
+        </app-alert>
+      }
+      <app-profile-change-password-form [user]="user()" (changePassword)="changePassword($event)" />
 
-    <h3>Danger zone</h3>
-    <button class="profile__delete" mat-flat-button>
-      <mat-icon>delete</mat-icon> Delete account
-    </button>
+      <h3>{{ ('PROFILE.DANGER_ZONE_LABEL' | translate)() }}</h3>
+      <button class="profile__delete" mat-flat-button>
+        <mat-icon>delete</mat-icon> {{ ('PROFILE.DELETE_ACCOUNT_LABEL' | translate)() }}
+      </button>
+    }
   </app-layout-header-and-content>
 </app-content-card>

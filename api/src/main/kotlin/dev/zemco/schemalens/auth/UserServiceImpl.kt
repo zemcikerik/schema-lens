@@ -10,6 +10,16 @@ class UserServiceImpl(
     private val passwordEncoder: PasswordEncoder,
 ) : UserService {
 
+    override fun changePassword(user: User, oldPassword: String, newPassword: String): Boolean {
+        if (!passwordEncoder.matches(oldPassword, user.password)) {
+            return false
+        }
+
+        user.password = passwordEncoder.encode(newPassword)
+        userRepository.save(user)
+        return true
+    }
+
     override fun getCurrentUser(): User {
         val authentication = SecurityContextHolder.getContext().authentication
             ?: throw IllegalStateException("User is not authenticated")
