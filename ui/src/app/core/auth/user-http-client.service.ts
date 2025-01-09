@@ -72,6 +72,16 @@ export class UserHttpClientService {
     );
   }
 
+  updateProfilePicture(file: File): Observable<boolean> {
+    const formData = new FormData();
+    formData.set('profilePicture', file);
+
+    return this.httpClient.post('/user/profile-picture', formData).pipe(
+      map(() => true),
+      catchSpecificHttpStatusError(400, () => of(false)),
+    );
+  }
+
   private extractJwtFrom(response: HttpResponse<unknown>): string {
     const authorization = response.headers.get('Authorization');
     const jwt = authorization?.substring(7);
@@ -92,5 +102,4 @@ export class UserHttpClientService {
 
     return user;
   }
-
 }

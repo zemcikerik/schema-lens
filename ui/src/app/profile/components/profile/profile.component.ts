@@ -14,7 +14,7 @@ import { ProgressSpinnerComponent } from '../../../shared/components/progress-sp
 import { ChangePassword } from '../../../core/models/change-password.model';
 import { UserService } from '../../../core/auth/user.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize } from 'rxjs';
+import { catchError, finalize, map, mergeMap, of } from 'rxjs';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { UpdateUserInfo } from '../../../core/models/change-user-info.model';
 
@@ -47,13 +47,30 @@ export class ProfileComponent {
   changePasswordResult = signal<string | true | null>(null);
 
   changeUserInfo(data: UpdateUserInfo): void {
+    type Failure = 'user' | 'picture-bad' | 'picture-unknown' | null;
+
+    const FAILURE_MAPPINGS: Record<Exclude<Failure, null>, string | true> = {
+      'user': 'GENERIC.ERROR_LABEL',
+      'picture-bad': 'PROFILE.PICTURE_BAD_ERROR',
+      'picture-unknown': 'PROFILE.PICTURE_UNKNOWN_ERROR',
+    };
+
     this.beginUpdate();
 
-    this.authService.updateCurrentUser(data).pipe(
+    this.authService.updateCurrentUser(this.withoutProfilePicture(data)).pipe(
+      map(() => null),
+      catchError(() => of('fail-user' as Failure)),
+      mergeMap(result => result === null && data.profilePicture
+        ? this.userService.updateProfilePicture(data.profilePicture).pipe(
+          map(success => success ? null : 'picture-bad' as Failure),
+          catchError(() => of('picture-unknown' as Failure))
+        )
+        : of(result)
+      ),
       takeUntilDestroyed(this.destroyRef),
       finalize(() => this.loading.set(false)),
     ).subscribe({
-      next: () => this.generalInformationResult.set(true),
+      next: failure => this.generalInformationResult.set(failure === null || FAILURE_MAPPINGS[failure]),
       error: () => this.generalInformationResult.set('GENERIC.ERROR_LABEL'),
     });
   }
@@ -74,5 +91,11 @@ export class ProfileComponent {
     this.loading.set(true);
     this.generalInformationResult.set(null);
     this.changePasswordResult.set(null);
+  }
+
+  private withoutProfilePicture(data: UpdateUserInfo): UpdateUserInfo {
+    const copy = { ...data };
+    delete copy.profilePicture;
+    return copy;
   }
 }

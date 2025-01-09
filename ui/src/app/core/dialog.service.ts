@@ -5,6 +5,7 @@ import {
   ConfirmationDialogComponent,
   ConfirmationDialogData,
 } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
+import { TextDialogComponent, TextDialogData } from '../shared/components/text-dialog/text-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,11 @@ export class DialogService {
     return this.matDialog.open(ConfirmationDialogComponent, { data }).afterClosed().pipe(
       map(result => result ?? null),
     );
+  }
+
+  openTextDialog(titleKey: string, descriptionKey: string): void {
+    const data: TextDialogData = { titleKey, descriptionKey };
+    this.matDialog.open(TextDialogComponent, { data });
   }
 
 }

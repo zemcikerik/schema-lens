@@ -6,11 +6,12 @@ services:
       db:
         condition: service_healthy
     volumes:
-      - ./ui/public/translations:/app/translations
+      - ${STORAGE_PROFILE_PICTURE_FOLDER_PATH}:/app/profile-pictures
     environment:
       - spring.datasource.url=jdbc:oracle:thin:@db:1521/FREEPDB1
       - spring.datasource.username=${DB_APP_USER}
       - spring.datasource.password=${DB_APP_PASSWORD}
+      - storage.profile-picture.folder-path=/app/profile-pictures
       - jwt.signing-key=${JWT_SIGNING_KEY}
     networks:
       - db
@@ -26,6 +27,8 @@ services:
     restart: on-failure:3
     networks:
       - reverse-proxy
+    volumes:
+      - ${STORAGE_PROFILE_PICTURE_FOLDER_PATH}:/usr/share/nginx/html/static/profile-pictures
     deploy:
       resources:
         limits:

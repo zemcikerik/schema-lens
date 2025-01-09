@@ -15,7 +15,7 @@ export class TranslateLoaderService {
         return this._translationCache[locale];
       }
 
-      const translations$ = this.httpClient.get<RawTranslations>(`./translations/${locale}.json`).pipe(
+      const translations$ = this.httpClient.get<RawTranslations>(`/static/translations/${locale}.json`).pipe(
         catchError(err => {
           delete this._translationCache[locale];
           return throwError(() => err);

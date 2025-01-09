@@ -158,7 +158,11 @@
     "GENERAL_INFORMATION_LABEL": "General information",
     "DANGER_ZONE_LABEL": "Danger zone",
     "DELETE_ACCOUNT_LABEL": "Delete account",
-    "UPDATE_SUCCESS": "Information updated successfully."
+    "UPDATE_SUCCESS": "Information updated successfully.",
+    "PICTURE_BAD_ERROR": "The provided picture is not valid. General information were updated successfully.",
+    "PICTURE_UNKNOWN_ERROR": "There was an error while uploading profile picture. General information were updated successfully.",
+    "PICTURE_TOO_LARGE_TITLE": "Picture too large",
+    "PICTURE_TOO_LARGE_DESCRIPTION": "The provided picture is too large. Maximum allowed file size is 2MB."
   },
   "ADMIN": {
     "PANEL_LABEL": "Admin Panel",

@@ -1,9 +1,14 @@
 <form class="profile__general" (ngSubmit)="submit()">
-  <app-interactable-profile-picture class="profile__general__picture" [username]="user().username" />
+  <app-file-picker-profile-picture
+    class="profile__general__picture"
+    [username]="user().username"
+    [maximumFileSizeInKb]="2048"
+    (select)="setProfilePicture($event)"
+    (fileSizeTooBig)="notifyFileTooBig()" />
 
   <mat-form-field class="profile__general__username">
     <mat-label>{{ ('AUTH.USERNAME_LABEL' | translate)() }}</mat-label>
-    <input matInput type="text" required [value]="user().username">
+    <input matInput type="text" required [value]="user().username" disabled>
   </mat-form-field>
 
   <mat-form-field class="profile__general__email">

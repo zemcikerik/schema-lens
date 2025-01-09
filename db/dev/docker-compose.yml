@@ -1,0 +1,12 @@
+services:
+  db:
+    image: gvenzl/oracle-free:slim
+    container_name: schema-lens-test-db
+    ports:
+      - '1521:1521'
+    volumes:
+      - ./data:/opt/oracle/oradata:Z
+    environment:
+      ORACLE_PASSWORD: testtest1!
+      APP_USER: schema_lens
+      APP_USER_PASSWORD: testtest1!

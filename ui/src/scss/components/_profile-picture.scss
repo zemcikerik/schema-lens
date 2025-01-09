@@ -6,6 +6,13 @@
     position: absolute;
     inset: 0;
     object-fit: cover;
+    pointer-events: none;
+
+    &__picker {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+    }
 
     &__wrapper {
       position: relative;
@@ -27,6 +34,7 @@
       background-color: mat.get-theme-color($theme, neutral, 40);
       opacity: 0;
       transition: opacity 100ms;
+      pointer-events: none;
     }
 
     &__wrapper:hover &__filter {

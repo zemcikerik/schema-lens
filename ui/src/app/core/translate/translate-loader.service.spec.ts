@@ -27,7 +27,7 @@ describe('TranslateLoaderService', () => {
   it('should load translations using http client', async () => {
     const translationPromise = lastValueFrom(service.loadRawTranslations('en_US'));
 
-    const req = httpController.expectOne('./translations/en_US.json');
+    const req = httpController.expectOne('/static/translations/en_US.json');
     expect(req.request.method).toEqual('GET');
     req.flush({ key: 'value' });
 
@@ -36,17 +36,17 @@ describe('TranslateLoaderService', () => {
 
   it('should cache loaded translations', async () => {
     const translationPromise = lastValueFrom(service.loadRawTranslations('en_GB'));
-    httpController.expectOne('./translations/en_GB.json').flush({ cached: 'Cached!' });
+    httpController.expectOne('/static/translations/en_GB.json').flush({ cached: 'Cached!' });
     await translationPromise;
 
     const cachedPromise = lastValueFrom(service.loadRawTranslations('en_GB'));
-    httpController.expectNone('./translations/en_GB.json');
+    httpController.expectNone('/static/translations/en_GB.json');
     expect(await cachedPromise).toEqual({ cached: 'Cached!' });
   });
 
   it('should expunge errored responses from cache', async () => {
     const translationPromise = lastValueFrom(service.loadRawTranslations('de_DE'));
-    httpController.expectOne('./translations/de_DE.json').flush(null, {
+    httpController.expectOne('/static/translations/de_DE.json').flush(null, {
       status: 500,
       statusText: 'Internal Server Error',
     });
@@ -54,7 +54,7 @@ describe('TranslateLoaderService', () => {
     await expect(translationPromise).rejects.toHaveProperty('status', 500);
 
     const repeatedPromise = lastValueFrom(service.loadRawTranslations('de_DE'));
-    httpController.expectOne('./translations/de_DE.json').flush({});
+    httpController.expectOne('/static/translations/de_DE.json').flush({});
     expect(await repeatedPromise).toEqual({});
   });
 });

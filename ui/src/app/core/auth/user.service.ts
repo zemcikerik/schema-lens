@@ -14,4 +14,8 @@ export class UserService {
     return this.userHttpClient.updatePassword(data);
   }
 
+  updateProfilePicture(file: File): Observable<boolean> {
+    return this.userHttpClient.updateProfilePicture(file);
+  }
+
 }

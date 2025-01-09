@@ -59,7 +59,7 @@ class UserController(
     fun updateUser(@RequestBody @Valid updateUserDto: UpdateUserDto): ResponseEntity<UserDto> {
         val user = userService.getCurrentUser()
         user.email = updateUserDto.email
-        return ResponseEntity.ok(user.mapToDto())
+        return ResponseEntity.ok(userService.saveUser(user).mapToDto())
     }
 
     @PutMapping("/password")

@@ -1,0 +1,16 @@
+<div class="profile-picture__wrapper large" matRipple>
+  <input
+    type="file"
+    class="profile-picture__picker"
+    accept="image/png, image/jpeg"
+    (change)="updateSelection($event)"
+  >
+  <img
+    class="profile-picture large"
+    [ngSrc]="imageUrl()"
+    fill priority
+    [alt]="username()"
+    (error)="fallBackToDefault()"
+  >
+  <div class="profile-picture__filter"></div>
+</div>
