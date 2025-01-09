@@ -15,11 +15,24 @@
       @include mat.elevation(0);
     }
 
+    & .mat-content.mat-content-hide-toggle {
+      margin-right: 0;
+    }
+
     &__header {
       display: flex;
       justify-content: space-between;
-      padding-right: 1rem;
+      align-items: center;
       width: 100%;
+
+      > app-progress-spinner {
+        display: block;
+        margin-right: 1rem;
+      }
+
+      > button {
+        @include mat.icon-button-color($theme, $color-variant: error);
+      }
     }
   }
 }

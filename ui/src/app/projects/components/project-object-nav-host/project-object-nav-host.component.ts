@@ -1,28 +1,39 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import { ProjectObjectNavService } from '../../services/project-object-nav.service';
-import { ObjectSelectorComponent } from '../../../shared/components/object-selector/object-selector.component';
+import { ProjectObjectSelectorComponent } from '../project-object-selector/project-object-selector.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
+import { MatDialog } from '@angular/material/dialog';
+import {
+  ProjectConnectionErrorDialogComponent
+} from '../project-connection-error-dialog/project-connection-error-dialog.component';
+import { ProjectConnectionError } from '../../models/project-connection-error.model';
 
 @Component({
   selector: 'app-project-object-nav-host',
   template: `
     @for (objectDefinition of objectDefinitions(); track objectDefinition.id) {
-      <app-object-selector
+      <app-project-object-selector
         [title]="(objectDefinition.titleTranslationKey | translate)()"
         [baseRouterLink]="objectDefinition.baseRouterLink"
-        [loadAction]="objectDefinition.objectLoadAction" />
+        [loadAction]="objectDefinition.objectLoadAction"
+        (displayError)="displayError($event)" />
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
-    ObjectSelectorComponent,
+    ProjectObjectSelectorComponent,
     TranslatePipe,
   ],
 })
 export class ProjectObjectNavHostComponent {
   projectId = input.required<string>();
 
+  private matDialog = inject(MatDialog);
   private projectObjectNavService = inject(ProjectObjectNavService);
   objectDefinitions = computed(() => this.projectObjectNavService.getObjectDefinitionsFor(this.projectId()));
+
+  displayError(error: ProjectConnectionError): void {
+    this.matDialog.open(ProjectConnectionErrorDialogComponent, { data: error });
+  }
 }

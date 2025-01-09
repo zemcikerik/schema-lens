@@ -3,7 +3,7 @@ import {
   Component,
   computed,
   effect,
-  input,
+  input, output,
   signal,
   untracked,
   viewChild,
@@ -11,12 +11,20 @@ import {
 import { MatExpansionPanel, MatExpansionPanelContent, MatExpansionPanelHeader } from '@angular/material/expansion';
 import { MatListItem } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
-import { ProgressSpinnerComponent } from '../progress-spinner/progress-spinner.component';
-import { finalize, Observable, Subject, switchMap, tap } from 'rxjs';
+import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
+import { finalize, Observable, of, Subject, switchMap, tap } from 'rxjs';
+import {
+  isProjectConnectionError,
+  ProjectConnectionError,
+  ProjectConnectionFailure,
+} from '../../models/project-connection-error.model';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { catchProjectConnectionError } from '../../catch-project-connection-error.fn';
 
 @Component({
-  selector: 'app-object-selector',
-  templateUrl: './object-selector.component.html',
+  selector: 'app-project-object-selector',
+  templateUrl: './project-object-selector.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   standalone: true,
   imports: [
@@ -27,16 +35,20 @@ import { finalize, Observable, Subject, switchMap, tap } from 'rxjs';
     RouterLink,
     RouterLinkActive,
     ProgressSpinnerComponent,
+    MatIconButton,
+    MatIcon,
   ],
 })
-export class ObjectSelectorComponent {
+export class ProjectObjectSelectorComponent {
   title = input.required<string>();
   baseRouterLink = input.required<string[]>();
   loadAction = input.required<() => Observable<string[]>>();
+  displayError = output<ProjectConnectionError>();
   expansionPanel = viewChild.required(MatExpansionPanel);
 
   objects = signal<string[] | null>(null);
   loading = signal<boolean>(false);
+  error = signal<ProjectConnectionError | null>(null);
   private reload$ = new Subject<void>();
 
   objectListEntries = computed(() => {
@@ -60,9 +72,19 @@ export class ObjectSelectorComponent {
         this.reload$.pipe(
           tap(() => this.loading.set(true)),
           switchMap(() => loadAction().pipe(
+            catchProjectConnectionError(err => of(err)),
             finalize(() => untracked(() => this.loading.set(false))),
           )),
-        ).subscribe(objects => this.objects.set(objects)),
+        ).subscribe({
+          next: result => {
+            if (!isProjectConnectionError(result)) {
+              this.objects.set(result);
+            } else {
+              this.error.set(result);
+            }
+          },
+          error: () => this.error.set({ type: ProjectConnectionFailure.UNKNOWN, message: null }),
+        }),
       );
 
       onCleanup(() => subscription.unsubscribe());
@@ -73,13 +95,22 @@ export class ObjectSelectorComponent {
 
       untracked(() => {
         this.objects.set(null);
+        this.error.set(null);
         this.expansionPanel().close();
       });
+    });
+
+    effect(() => {
+      const error = this.error();
+
+      if (error !== null) {
+        untracked(() => this.expansionPanel().close());
+      }
     });
   }
 
   triggerObjectLoadIfNeeded(): void {
-    if (!this.loading() && this.objects() === null) {
+    if (!this.loading() && this.objects() === null && this.error() === null) {
       this.reload$.next();
     }
   }

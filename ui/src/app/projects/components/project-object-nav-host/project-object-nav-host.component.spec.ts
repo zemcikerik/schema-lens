@@ -2,16 +2,20 @@ import { ProjectObjectNavHostComponent } from './project-object-nav-host.compone
 import { MockBuilder, MockInstance, MockRender, MockService, ngMocks } from 'ng-mocks';
 import { ProjectObjectDefinition, ProjectObjectNavService } from '../../services/project-object-nav.service';
 import { EMPTY } from 'rxjs';
-import { ObjectSelectorComponent } from '../../../shared/components/object-selector/object-selector.component';
+import { ProjectObjectSelectorComponent } from '../project-object-selector/project-object-selector.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { signal } from '@angular/core';
 import { MatExpansionPanel } from '@angular/material/expansion';
+import { MatDialog } from '@angular/material/dialog';
 
 describe('ProjectObjectNavHostComponent', () => {
   ngMocks.faster();
   MockInstance.scope();
 
   beforeAll(() => MockBuilder(ProjectObjectNavHostComponent)
+    .mock(MatDialog, {
+      open: () => null as any,
+    })
     .mock(ProjectObjectNavService, {
       getObjectDefinitionsFor: () => [],
     })
@@ -19,7 +23,7 @@ describe('ProjectObjectNavHostComponent', () => {
 
   beforeEach(() => {
     // https://github.com/help-me-mom/ng-mocks/issues/8634
-    MockInstance(ObjectSelectorComponent, 'expansionPanel', signal(MockService(MatExpansionPanel)));
+    MockInstance(ProjectObjectSelectorComponent, 'expansionPanel', signal(MockService(MatExpansionPanel)));
   });
 
   const render = (projectId: string): ProjectObjectNavHostComponent => {
@@ -52,6 +56,6 @@ describe('ProjectObjectNavHostComponent', () => {
       { id: 'trigger', baseRouterLink: [], titleTranslationKey: '', objectLoadAction: () => EMPTY },
     ]);
     render('72997912-c96a-44fc-b4c5-bf93eefcbe57');
-    expect(ngMocks.findAll(ObjectSelectorComponent)).toHaveLength(3);
+    expect(ngMocks.findAll(ProjectObjectSelectorComponent)).toHaveLength(3);
   });
 });

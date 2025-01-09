@@ -6,6 +6,7 @@
     "DELETE_LABEL": "Delete",
     "CONFIRM_LABEL": "Confirm",
     "CANCEL_LABEL": "Cancel",
+    "CLOSE_LABEL": "Close",
     "ERROR_LABEL": "There was an error processing your request. Please try again later.",
     "VALIDATION": {
       "REQUIRED": "This field is required.",
@@ -93,7 +94,8 @@
       "INTEGRITY_VIOLATION": "The operation could not be completed due to a violation of database integrity rules.",
       "PERMISSION_DENIED": "Project database user does not have the required permissions.",
       "UNKNOWN": "An unknown error occurred while trying to connect to the project database.",
-      "DETAILS_LABEL": "Error details: {message}"
+      "DETAILS_LABEL": "Error details: {message}",
+      "TITLE_LABEL": "Project connection error"
     },
     "DELETE_CONFIRM_DESCRIPTION": "Are you sure you want to delete this project? This is irreversible!",
     "COLLABORATORS": {

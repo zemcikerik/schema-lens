@@ -1,9 +1,16 @@
-<mat-expansion-panel class="object-selector" (opened)="triggerObjectLoadIfNeeded()">
+<mat-expansion-panel class="object-selector" [disabled]="error()" (opened)="triggerObjectLoadIfNeeded()">
   <mat-expansion-panel-header>
     <div class="object-selector__header">
       <span>{{ title() }}</span>
       @if (loading()) {
         <app-progress-spinner size="small" />
+      } @else {
+        @let err = error();
+        @if (err) {
+          <button mat-icon-button (click)="displayError.emit(err)">
+            <mat-icon>error</mat-icon>
+          </button>
+        }
       }
     </div>
   </mat-expansion-panel-header>
