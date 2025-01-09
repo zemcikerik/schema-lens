@@ -2,7 +2,7 @@
   <input
     type="file"
     class="profile-picture__picker"
-    accept="image/png, image/jpeg"
+    [accept]="acceptedMimeTypes"
     (change)="updateSelection($event)"
   >
   <img

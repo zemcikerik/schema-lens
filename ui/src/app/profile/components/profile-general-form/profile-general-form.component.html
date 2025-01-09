@@ -4,7 +4,8 @@
     [username]="user().username"
     [maximumFileSizeInKb]="2048"
     (select)="setProfilePicture($event)"
-    (fileSizeTooBig)="notifyFileTooBig()" />
+    (fileSizeTooBig)="notifyFileTooBig()"
+    (disallowedMimeType)="notifyDisallowedMimeType()" />
 
   <mat-form-field class="profile__general__username">
     <mat-label>{{ ('AUTH.USERNAME_LABEL' | translate)() }}</mat-label>

@@ -12,16 +12,17 @@ class ProfilePictureServiceImpl(
 ) : ProfilePictureService {
 
     override fun saveProfilePicture(username: String, resource: Resource): Boolean {
-        try {
-            val pngBytes = resource.inputStream.use {
+        val pngBytes = try {
+            resource.inputStream.use {
                 profilePictureConverter.convertToPngWithCorrectResolution(it)
             }
-            profilePictureStorage.saveProfilePicture(username, pngBytes)
-            return true
         } catch (ex: IOException) {
             LOGGER.error("Failed to save profile picture for user '$username'", ex)
             return false
         }
+
+        profilePictureStorage.saveProfilePicture(username, pngBytes)
+        return true
     }
 
     private companion object {

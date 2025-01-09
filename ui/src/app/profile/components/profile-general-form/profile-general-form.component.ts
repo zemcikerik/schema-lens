@@ -61,6 +61,10 @@ export class ProfileGeneralFormComponent {
     this.dialogService.openTextDialog('PROFILE.PICTURE_TOO_LARGE_TITLE', 'PROFILE.PICTURE_TOO_LARGE_DESCRIPTION');
   }
 
+  notifyDisallowedMimeType(): void {
+    this.dialogService.openTextDialog('PROFILE.DISALLOWED_MIME_TYPE_TITLE', 'PROFILE.DISALLOWED_MIME_TYPE_DESCRIPTION');
+  }
+
   submit(): void {
     const email = this.emailControl.value;
 

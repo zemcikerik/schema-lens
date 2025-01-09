@@ -22,6 +22,8 @@ interface SelectedFile {
   objectUrl: string;
 }
 
+const ALLOWED_PICTURE_MIMETYPES = ['image/png', 'image/jpeg'];
+
 @Component({
   selector: 'app-file-picker-profile-picture',
   templateUrl: './file-picker-profile-picture.component.html',
@@ -37,7 +39,9 @@ export class FilePickerProfilePictureComponent {
   maximumFileSizeInKb = input.required<number>();
   select = output<File>();
   fileSizeTooBig = output();
+  disallowedMimeType = output();
 
+  acceptedMimeTypes = ALLOWED_PICTURE_MIMETYPES.join(', ');
   imageUrl = signal<string>(DEFAULT_PROFILE_PICTURE_URL);
   private selectedFile: SelectedFile | null = null;
   private wasModified = false;
@@ -66,6 +70,11 @@ export class FilePickerProfilePictureComponent {
 
     if (file.size / 1024 > this.maximumFileSizeInKb()) {
       this.fileSizeTooBig.emit();
+      return;
+    }
+
+    if (!ALLOWED_PICTURE_MIMETYPES.includes(file.type)) {
+      this.disallowedMimeType.emit();
       return;
     }
 

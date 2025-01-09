@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, effect, input, signal, untracked } from '@angular/core';
 import { NgOptimizedImage } from '@angular/common';
 
-export const DEFAULT_PROFILE_PICTURE_URL = '/login.jpg';
+export const DEFAULT_PROFILE_PICTURE_URL = '/static/default-profile-picture.png';
 export const BASE_PROFILE_PICTURE_URL = '/static/profile-pictures';
 export const PROFILE_PICTURE_EXTENSION = 'png';
 

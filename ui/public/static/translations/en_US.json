@@ -162,7 +162,9 @@
     "PICTURE_BAD_ERROR": "The provided picture is not valid. General information were updated successfully.",
     "PICTURE_UNKNOWN_ERROR": "There was an error while uploading profile picture. General information were updated successfully.",
     "PICTURE_TOO_LARGE_TITLE": "Picture too large",
-    "PICTURE_TOO_LARGE_DESCRIPTION": "The provided picture is too large. Maximum allowed file size is 2MB."
+    "PICTURE_TOO_LARGE_DESCRIPTION": "The provided picture is too large. Maximum allowed file size is 2MB.",
+    "DISALLOWED_MIME_TYPE_TITLE": "Disallowed file type",
+    "DISALLOWED_MIME_TYPE_DESCRIPTION": "The provided type is not an allowed picture. Please use .png or .jpeg files."
   },
   "ADMIN": {
     "PANEL_LABEL": "Admin Panel",
