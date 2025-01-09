@@ -11,9 +11,35 @@ defaults:
     shell: bash
 
 jobs:
+  files-changed:
+    name: 'Detect file changes'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check for file changes
+        id: changes
+        uses: dorny/paths-filter@v3
+        with:
+          filters: |
+            ui:
+            - 'ui/**'
+            api:
+              - 'api/**'
+            reverse-proxy:
+              - 'reverse-proxy/**'
+          list-files: json
+          token: ${{ github.token }}
+
   ui-build-and-test:
     name: '[UI] Build and test'
     runs-on: ubuntu-latest
+    needs:
+      - files-changed
+    if: needs.files-changed.outputs.ui == 'true'
     permissions:
       contents: read
     steps:
@@ -51,12 +77,52 @@ jobs:
           if-no-files-found: error
           retention-days: 30
 
+  api-build-and-test:
+    name: '[API] Build and test'
+    runs-on: ubuntu-latest
+    needs:
+      - files-changed
+    if: needs.files-changed.outputs.api == 'true'
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Build and test
+        run: ./gradlew build
+        working-directory: ./api
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: api-dist
+          if-no-files-found: error
+          retention-days: 30
+          path: |
+            ./api/build/libs
+            !./api/build/libs/*-plain.jar
+
   ui-build-docker:
     name: '[UI] Build Docker'
     runs-on: ubuntu-latest
     needs:
       - ui-build-and-test
       - api-build-and-test
+    if: |
+      always() &&
+      needs.ui-build-and-test.result == 'success' &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
     permissions:
       contents: read
       packages: write
@@ -94,44 +160,17 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
 
-  api-build-and-test:
-    name: '[API] Build and test'
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Java
-        uses: actions/setup-java@v4
-        with:
-          distribution: 'temurin'
-          java-version: 21
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v4
-
-      - name: Build and test
-        run: ./gradlew build
-        working-directory: ./api
-
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: api-dist
-          if-no-files-found: error
-          retention-days: 30
-          path: |
-            ./api/build/libs
-            !./api/build/libs/*-plain.jar
-
   api-build-docker:
     name: '[API] Build Docker'
     runs-on: ubuntu-latest
     needs:
-      - api-build-and-test
       - ui-build-and-test
+      - api-build-and-test
+    if: |
+      always() &&
+      needs.api-build-and-test.result == 'success' &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
     permissions:
       contents: read
       packages: write
@@ -173,8 +212,14 @@ jobs:
     name: '[Reverse Proxy] Build Docker'
     runs-on: ubuntu-latest
     needs:
-      - api-build-and-test
+      - files-changed
       - ui-build-and-test
+      - api-build-and-test
+    if: |
+      always() &&
+      needs.files-changed.outputs.reverse-proxy == 'true' &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
     permissions:
       contents: read
       packages: write
@@ -214,6 +259,15 @@ jobs:
       - ui-build-docker
       - api-build-docker
       - reverse-proxy-build-docker
+    if: |
+      always() &&
+      (
+        needs.ui-build-docker.result == 'success' ||
+        needs.api-build-docker.result == 'success' ||
+        needs.reverse-proxy-build-docker.result == 'success'
+      ) &&
+      !contains(needs.*.result, 'failure') &&
+      !contains(needs.*.result, 'cancelled')
     steps:
       - name: Install Wireguard
         run: sudo apt install wireguard
