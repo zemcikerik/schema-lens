@@ -243,4 +243,15 @@
                              onDelete="CASCADE"
                              onUpdate="CASCADE" />
   </changeSet>
+
+  <changeSet id="2025-01-09T1229-add-registered-user-admin-column"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addColumn tableName="registered_user">
+      <column name="admin"
+              type="NUMBER(1,0)"
+              defaultValue="0">
+        <constraints nullable="false"/>
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

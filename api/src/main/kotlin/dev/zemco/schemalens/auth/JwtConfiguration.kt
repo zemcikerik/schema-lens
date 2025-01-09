@@ -16,6 +16,9 @@ data class JwtConfiguration(
     val refreshTokenExpirationMinutes: Long = 60 * 24 * 3,
 
     @field:NotBlank
+    val authoritiesClaimName: String = "roles",
+
+    @field:NotBlank
     val refreshTokenClaimName: String = "refresh_token",
 
     val signingKey: String? = null,

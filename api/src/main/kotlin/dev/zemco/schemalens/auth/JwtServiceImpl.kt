@@ -24,13 +24,16 @@ class JwtServiceImpl(
     private val signingKey: SecretKey = jwtConfiguration.signingKey?.let { decodeKey(it) } ?: generateKey()
 
     override fun createJwtFor(user: User): String =
-        Jwts.builder()
-            .signWith(signingKey)
-            .issuer(jwtConfiguration.issuer)
-            .subject(user.username)
-            .expiration(createExpirationDate())
-            .claim(jwtConfiguration.refreshTokenClaimName, refreshTokenService.createRefreshTokenFor(user))
-            .compact()
+        UserWrapperDetails(user).let {
+            Jwts.builder()
+                .signWith(signingKey)
+                .issuer(jwtConfiguration.issuer)
+                .subject(user.username)
+                .expiration(createExpirationDate())
+                .claim(jwtConfiguration.authoritiesClaimName, it.authorities.map { a -> a.authority })
+                .claim(jwtConfiguration.refreshTokenClaimName, refreshTokenService.createRefreshTokenFor(user))
+                .compact()
+        }
 
     override fun createAuthenticationFrom(jwt: String): Authentication =
         Jwts.parser()

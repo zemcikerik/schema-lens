@@ -42,6 +42,7 @@ class UserServiceImpl(
             username = registrationDto.username,
             email = registrationDto.email,
             password = passwordEncoder.encode(registrationDto.password),
+            active = true,
         ))
     }
 }

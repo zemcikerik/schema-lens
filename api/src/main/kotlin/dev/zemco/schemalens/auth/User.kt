@@ -33,4 +33,7 @@ class User(
 
     @Column(nullable = false)
     var active: Boolean = false,
+
+    @Column(nullable = false)
+    var admin: Boolean = false,
 )
