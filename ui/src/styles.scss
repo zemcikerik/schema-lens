@@ -13,6 +13,7 @@
 @import './scss/components/content-card';
 @import './scss/components/nav';
 @import './scss/components/object-selector';
+@import './scss/components/profile';
 @import './scss/components/profile-picture';
 @import './scss/components/project-collaborators-table';
 @import './scss/components/project-list-table';
@@ -40,6 +41,7 @@
 @include app-content-card();
 @include app-object-selector();
 @include app-nav();
+@include app-profile();
 @include app-profile-picture();
 @include app-project-collaborators-table();
 @include app-project-list-table();

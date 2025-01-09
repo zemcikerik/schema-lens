@@ -1,3 +1,14 @@
 <app-content-card>
-  <p>profile works!</p>
+  <app-layout-header-and-content [title]="('PROFILE.LABEL' | translate)()" [includeSpacing]="true">
+    <h3>General information</h3>
+    <app-profile-general-form [user]="user()" />
+
+    <h3>Change password</h3>
+    <app-profile-change-password-form [user]="user()" />
+
+    <h3>Danger zone</h3>
+    <button class="profile__delete" mat-flat-button>
+      <mat-icon>delete</mat-icon> Delete account
+    </button>
+  </app-layout-header-and-content>
 </app-content-card>

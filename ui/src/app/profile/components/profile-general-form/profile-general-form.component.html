@@ -1,0 +1,21 @@
+<form class="profile__general">
+  <app-interactable-profile-picture class="profile__general__picture" [username]="user().username" />
+
+  <mat-form-field class="profile__general__username">
+    <mat-label>{{ ('AUTH.USERNAME_LABEL' | translate)() }}</mat-label>
+    <input matInput type="text" required [value]="user().username">
+  </mat-form-field>
+
+  <mat-form-field class="profile__general__email">
+    <mat-label>{{ ('AUTH.EMAIL_LABEL' | translate)() }}</mat-label>
+    <input matInput type="text" required>
+    <mat-error>Test Error</mat-error>
+  </mat-form-field>
+
+  <div class="profile__actions profile__general__actions">
+    <button mat-flat-button type="submit">
+      <mat-icon>save</mat-icon>
+      {{ ('GENERIC.SAVE_LABEL' | translate)() }}
+    </button>
+  </div>
+</form>

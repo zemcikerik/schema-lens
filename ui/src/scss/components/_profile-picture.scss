@@ -1,12 +1,36 @@
+@use '@angular/material' as mat;
+@import '../theme';
+
 @mixin app-profile-picture($options: ()) {
   .profile-picture {
+    position: absolute;
+    inset: 0;
     object-fit: cover;
-    border-radius: 48px;
 
     &__wrapper {
       position: relative;
+      overflow: hidden;
+      border-radius: 2.75rem;
       width: 2.75rem;
       height: 2.75rem;
+    }
+
+    &__wrapper.large {
+      border-radius: 10rem;
+      width: 10rem;
+      height: 10rem;
+    }
+
+    &__filter {
+      position: absolute;
+      inset: 0;
+      background-color: mat.get-theme-color($theme, neutral, 40);
+      opacity: 0;
+      transition: opacity 100ms;
+    }
+
+    &__wrapper:hover &__filter {
+      opacity: 20%;
     }
   }
 }
