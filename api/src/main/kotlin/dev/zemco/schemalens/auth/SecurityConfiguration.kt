@@ -42,6 +42,7 @@ class SecurityConfiguration {
                 authorize(POST, "/user/login", permitAll)
                 authorize(POST, "/user/login/refresh", permitAll)
                 authorize(GET, "/help/faq/*", permitAll)
+                authorize("/admin/**", hasAuthority(Role.ADMIN.toString()))
                 authorize(anyRequest, authenticated)
             }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(jwtTokenFilter)

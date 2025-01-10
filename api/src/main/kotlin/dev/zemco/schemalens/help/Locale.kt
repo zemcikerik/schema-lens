@@ -1,5 +1,10 @@
 package dev.zemco.schemalens.help
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.annotation.JsonSerialize
+
+@JsonSerialize(using = LocaleSerializer::class)
+@JsonDeserialize(using = LocaleDeserializer::class)
 data class Locale(
     val language: String,
     val country: String,

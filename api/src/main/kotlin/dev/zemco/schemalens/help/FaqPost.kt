@@ -1,16 +1,12 @@
 package dev.zemco.schemalens.help
 
-import jakarta.persistence.Column
-import jakarta.persistence.Convert
-import jakarta.persistence.Entity
-import jakarta.persistence.GeneratedValue
-import jakarta.persistence.Id
+import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 
 @Entity
 class FaqPost(
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long? = null,
 
     @NotNull

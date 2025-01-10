@@ -259,7 +259,8 @@
              author="Erik Zemčík (zemcik.erik@gmail.com)">
     <createTable tableName="faq_post">
       <column name="id"
-              type="bigint">
+              type="bigint"
+              autoIncrement="true">
         <constraints nullable="false"
                      primaryKey="true"
                      primaryKeyName="pk_faq_post" />
