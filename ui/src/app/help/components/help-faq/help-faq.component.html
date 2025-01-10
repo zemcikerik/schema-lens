@@ -1,5 +1,13 @@
 <app-content-card>
-  <app-layout-header-and-content [title]="('HELP.FAQ_LABEL' | translate)()">
-    Hello, World
+  <app-layout-header-and-content [title]="('HELP.FAQ_LABEL' | translate)()" [includeSpacing]="true">
+    @if (loading()) {
+      <app-progress-spinner [center]="true" />
+    } @else if (error()) {
+      <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+    } @else if (faqPosts().length > 0) {
+      <app-help-faq-posts [faqPosts]="faqPosts()" />
+    } @else {
+      <app-alert type="info">{{ ('HELP.FAQ_EMPTY_LABEL' | translate)() }}</app-alert>
+    }
   </app-layout-header-and-content>
 </app-content-card>

@@ -1,0 +1,7 @@
+@mixin app-help-faq($options: ()) {
+  .help-faq {
+    &__posts {
+      padding: 0 1rem 1rem 1rem;
+    }
+  }
+}

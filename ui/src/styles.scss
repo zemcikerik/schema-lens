@@ -12,6 +12,7 @@
 @import './scss/components/alert';
 @import './scss/components/confirmation-dialog';
 @import './scss/components/content-card';
+@import './scss/components/help-faq';
 @import './scss/components/nav';
 @import './scss/components/object-selector';
 @import './scss/components/profile';
@@ -41,6 +42,7 @@
 @include app-alert();
 @include app-confirmation-dialog();
 @include app-content-card();
+@include app-help-faq();
 @include app-object-selector();
 @include app-nav();
 @include app-profile();

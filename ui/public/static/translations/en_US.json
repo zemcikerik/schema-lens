@@ -170,7 +170,8 @@
   },
   "HELP": {
     "LABEL": "Help",
-    "FAQ_LABEL": "Frequently Asked Questions"
+    "FAQ_LABEL": "Frequently Asked Questions",
+    "FAQ_EMPTY_LABEL": "There are currently no frequently asked questions available."
   },
   "ADMIN": {
     "PANEL_LABEL": "Admin Panel",

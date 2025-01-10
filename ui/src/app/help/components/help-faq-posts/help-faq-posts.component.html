@@ -1,0 +1,15 @@
+<div class="help-faq__posts">
+  <mat-accordion multi>
+    @for (faqPost of faqPosts(); track faqPost) {
+      <mat-expansion-panel class="mat-elevation-z0">
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{ faqPost.title }}</mat-panel-title>
+        </mat-expansion-panel-header>
+
+        <ng-template matExpansionPanelContent>
+          {{ faqPost.answer }}
+        </ng-template>
+      </mat-expansion-panel>
+    }
+  </mat-accordion>
+</div>
