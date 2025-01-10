@@ -254,4 +254,31 @@
       </column>
     </addColumn>
   </changeSet>
+
+  <changeSet id="2025-01-10T0947-add-faq-post-table"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createTable tableName="faq_post">
+      <column name="id"
+              type="bigint">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_faq_post" />
+      </column>
+
+      <column name="locale"
+              type="CHAR(5)">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="title"
+              type="VARCHAR(128)">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="answer"
+              type="VARCHAR(2048)">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
 </databaseChangeLog>
