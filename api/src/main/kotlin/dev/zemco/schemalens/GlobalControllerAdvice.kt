@@ -9,18 +9,17 @@ import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.ControllerAdvice
 import org.springframework.web.bind.annotation.ExceptionHandler
-import org.springframework.web.bind.annotation.ResponseStatus
 
 @ControllerAdvice
 class GlobalControllerAdvice {
 
     @ExceptionHandler(ResourceAccessDeniedException::class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    fun handleResourceAccessDeniedException(ex: ResourceAccessDeniedException) = ex
+    fun handleResourceAccessDeniedException(ex: ResourceAccessDeniedException) =
+        ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.message)
 
     @ExceptionHandler(ProjectNotFoundException::class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    fun handleProjectNotFoundException(ex: ProjectNotFoundException) = ex
+    fun handleProjectNotFoundException(ex: ProjectNotFoundException) =
+        ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
 
     @ExceptionHandler(ProjectConnectionException::class)
     fun handleProjectConnectionException(ex: ProjectConnectionException) = ex.also { ex.printStackTrace() }.run {

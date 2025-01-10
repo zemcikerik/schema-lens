@@ -1,7 +1,5 @@
 <app-layout-content-with-sidebar>
-  <ng-container ngProjectAs="sidebar">
-    <app-admin-nav />
-  </ng-container>
+  <app-admin-nav ngProjectAs="sidebar" />
 
   <app-content-card>
     <router-outlet />

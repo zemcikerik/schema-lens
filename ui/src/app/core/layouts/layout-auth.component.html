@@ -5,7 +5,7 @@
     }
 
     <div class="layout-auth__image">
-      <img ngSrc="/login.jpg" fill priority alt="Coffee :)">
+      <ng-content select="image" />
     </div>
 
     <form class="layout-auth__content">
@@ -15,9 +15,7 @@
         <app-alert type="error">{{ error() }}</app-alert>
       }
 
-      <div class="layout-auth__form">
-        <ng-content />
-      </div>
+      <ng-content />
     </form>
   </div>
 </div>

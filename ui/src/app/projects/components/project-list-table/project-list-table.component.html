@@ -11,7 +11,10 @@
 
   <ng-container matColumnDef="owner">
     <mat-header-cell *matHeaderCellDef>{{ ('PROJECTS.LIST_COLUMN.OWNER_LABEL' | translate)() }}</mat-header-cell>
-    <mat-cell *matCellDef="let project">{{ project.owner }}</mat-cell>
+    <mat-cell *matCellDef="let project">
+      <app-profile-picture class="project-list-table__profile-picture" [username]="project.owner" />
+      {{ project.owner }}
+    </mat-cell>
   </ng-container>
 
   <mat-header-row *matHeaderRowDef="DISPLAYED_COLUMNS" />

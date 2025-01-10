@@ -10,18 +10,15 @@ class RefreshTokenServiceImpl(
     private val jwtConfiguration: JwtConfiguration,
 ) : RefreshTokenService {
 
-    override fun createRefreshTokenFor(user: User): String {
-        val token = refreshTokenGenerator.generateRefreshToken()
-
-        refreshTokenRepository.save(RefreshTokenEntry(
-            token = token,
-            userId = user.id!!,
-            user = user,
-            expiresAt = createExpirationDate()
-        ))
-
-        return token
-    }
+    override fun createRefreshTokenFor(user: User): String =
+        refreshTokenGenerator.generateRefreshToken().also {
+            refreshTokenRepository.save(RefreshTokenEntry(
+                token = it,
+                userId = user.id!!,
+                user = user,
+                expiresAt = createExpirationDate()
+            ))
+        }
 
     override fun useRefreshToken(token: String): User? {
         val entry = refreshTokenRepository.findByToken(token) ?: return null

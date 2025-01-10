@@ -1,20 +1,14 @@
 <div class="nav__container">
   <mat-nav-list class="nav">
-    <a
-      mat-list-item
-      [routerLink]="['/admin', 'user']"
-      routerLinkActive
-      #rlaUser="routerLinkActive"
-      [activated]="rlaUser.isActive"
-    >{{ ('ADMIN.USER_MANAGEMENT.LABEL' | translate)() }}</a>
-  </mat-nav-list>
-  <mat-nav-list class="nav">
-    <a
-      mat-list-item
-      [routerLink]="['/admin', 'faq']"
-      routerLinkActive
-      #rlaFaq="routerLinkActive"
-      [activated]="rlaFaq.isActive"
-    >{{ ('HELP.FAQ_LABEL' | translate)() }}</a>
+    @for (entry of ENTRIES; track entry.labelKey) {
+      <a
+        mat-list-item
+        [routerLink]="entry.routerLink"
+        routerLinkActive
+        #rla="routerLinkActive"
+        [activated]="rla.isActive"
+        appSidebarClose
+      >{{ (entry.labelKey | translate)() }}</a>
+    }
   </mat-nav-list>
 </div>

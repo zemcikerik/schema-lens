@@ -21,6 +21,7 @@ import {
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { catchProjectConnectionError } from '../../catch-project-connection-error.fn';
+import { SidebarCloseDirective } from '../../../core/layouts/sidebar-close.directive';
 
 @Component({
   selector: 'app-project-object-selector',
@@ -37,6 +38,7 @@ import { catchProjectConnectionError } from '../../catch-project-connection-erro
     ProgressSpinnerComponent,
     MatIconButton,
     MatIcon,
+    SidebarCloseDirective,
   ],
 })
 export class ProjectObjectSelectorComponent {

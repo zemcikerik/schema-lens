@@ -19,6 +19,7 @@ import {
   ChangeLocaleDialogComponent
 } from '../../shared/components/change-locale-dialog/change-locale-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-register',
@@ -37,6 +38,7 @@ import { MatDialog } from '@angular/material/dialog';
     RouterLink,
     MatIconButton,
     MatIcon,
+    NgOptimizedImage,
   ],
 })
 export class RegisterComponent {

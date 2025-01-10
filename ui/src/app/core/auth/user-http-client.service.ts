@@ -2,13 +2,12 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient, HttpContext, HttpResponse } from '@angular/common/http';
 import { map, Observable, of, throwError } from 'rxjs';
 import { SKIP_UNAUTHORIZED_REDIRECT } from '../interceptors/unauthorized.interceptor';
-import { catch404StatusError, catchSpecificHttpStatusError } from '../rxjs-pipes';
-import { User } from '../models/user.model';
+import { catchSpecificHttpStatusError } from '../rxjs-pipes';
+import { UpdateUserInfo, User } from '../models/user.model';
 import { RegistrationData } from '../models/registration-data.model';
 import { AuthResult, RegistrationFailure, RegistrationResult } from '../models/auth.model';
 import { NO_AUTHORIZATION } from '../interceptors/jwt.interceptor';
 import { ChangePassword } from '../models/change-password.model';
-import { UpdateUserInfo } from '../models/change-user-info.model';
 
 @Injectable({
   providedIn: 'root',
@@ -57,7 +56,7 @@ export class UserHttpClientService {
 
     return this.httpClient.post('/user/login/refresh', refreshToken, { context, observe: 'response' }).pipe(
       map(response => this.extractJwtFrom(response)),
-      catch404StatusError(() => of(null)),
+      catchSpecificHttpStatusError(404, () => of(null)),
     );
   }
 
@@ -69,17 +68,6 @@ export class UserHttpClientService {
     return this.httpClient.put('/user/password', data).pipe(
       map(() => true),
       catchSpecificHttpStatusError(403, () => of(false)),
-    );
-  }
-
-  updateProfilePicture(file: File): Observable<boolean> {
-    const formData = new FormData();
-    formData.set('profilePicture', file);
-
-    return this.httpClient.post('/user/profile-picture', formData).pipe(
-      map(() => true),
-      catchSpecificHttpStatusError(400, () => of(false)),
-      catchSpecificHttpStatusError(413, () => of(false)),
     );
   }
 

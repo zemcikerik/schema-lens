@@ -1,10 +1,8 @@
 <app-layout-header-and-content [title]="('HELP.FAQ_LABEL' | translate)()">
-  <ng-container ngProjectAs="header-action">
-    <button mat-flat-button [disabled]="loading()" (click)="create()">
-      <mat-icon appIconEmphasis="high">add</mat-icon>
-      {{ ('ADMIN.FAQ.ADD_LABEL' | translate)() }}
-    </button>
-  </ng-container>
+  <button ngProjectAs="header-action" mat-flat-button [disabled]="loading()" (click)="create()">
+    <mat-icon appIconEmphasis="high">add</mat-icon>
+    {{ ('ADMIN.FAQ.ADD_LABEL' | translate)() }}
+  </button>
 
   @if (loading()) {
     <app-progress-spinner [center]="true" />

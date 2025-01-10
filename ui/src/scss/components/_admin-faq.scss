@@ -1,9 +1,16 @@
+@use '@angular/material' as mat;
+@import '../theme';
+
 @mixin app-admin-faq($options: ()) {
   .admin-faq {
     &__table {
       .mat-column-id,
       .mat-column-actions {
         width: 3rem;
+      }
+
+      td.mat-column-id {
+        font: mat.get-theme-typography($theme, label-large);
       }
     }
 

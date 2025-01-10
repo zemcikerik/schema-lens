@@ -16,6 +16,7 @@ import {
   ChangeLocaleDialogComponent
 } from '../../shared/components/change-locale-dialog/change-locale-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
+import { NgOptimizedImage } from '@angular/common';
 
 @Component({
   selector: 'app-login',
@@ -34,6 +35,7 @@ import { MatDialog } from '@angular/material/dialog';
     RouterLink,
     MatIconButton,
     MatIcon,
+    NgOptimizedImage,
   ],
 })
 export class LoginComponent {
@@ -57,14 +59,16 @@ export class LoginComponent {
   error = signal<string | null>(null);
 
   login(): void {
-    if (this.loginForm.invalid) {
+    const { username, password } = this.loginForm.value;
+
+    if (this.loginForm.invalid || !username || !password) {
       return;
     }
 
     this.loading.set(true);
     this.loginForm.disable();
 
-    this.authService.login(this.loginForm.value.username!, this.loginForm.value.password!).pipe(
+    this.authService.login(username, password).pipe(
       mergeMap(authenticated => authenticated
         ? this.projectService.loadProjects().pipe(map(() => true))
         : of(false)),

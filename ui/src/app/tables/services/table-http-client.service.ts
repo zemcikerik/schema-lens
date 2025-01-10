@@ -2,7 +2,7 @@ import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Table } from '../models/table.model';
-import { catch404StatusError } from '../../core/rxjs-pipes';
+import { catchSpecificHttpStatusError } from '../../core/rxjs-pipes';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class TableHttpClientService {
 
   getTable(projectId: string, tableName: string): Observable<Table | null> {
     return this.httpClient.get<Table>(`/project/${projectId}/table/${tableName}`).pipe(
-      catch404StatusError(() => of(null)),
+      catchSpecificHttpStatusError(404, () => of(null)),
     );
   }
 

@@ -45,7 +45,7 @@ class ProjectConverter(
 
         if (project.role!! > requiredRole) {
             LOGGER.error("User {} does not have required role {} for project {}", user.id, requiredRole, projectId)
-            throw ResourceAccessDeniedException() // todo figure out why this does not return 403 from api
+            throw ResourceAccessDeniedException()
         }
 
         return project

@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, output, untracked } from '@angular/core';
-import { User } from '../../../core/models/user.model';
+import { UpdateUserInfo, User } from '../../../core/models/user.model';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import {
@@ -9,7 +9,6 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { FormControl, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
-import { UpdateUserInfo } from '../../../core/models/change-user-info.model';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { DialogService } from '../../../core/dialog.service';
 

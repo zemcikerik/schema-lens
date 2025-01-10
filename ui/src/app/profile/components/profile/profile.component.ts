@@ -3,7 +3,7 @@ import { ContentCardComponent } from '../../../shared/components/content-card/co
 import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { AuthService } from '../../../core/auth/auth.service';
-import { User } from '../../../core/models/user.model';
+import { UpdateUserInfo, User } from '../../../core/models/user.model';
 import { ProfileGeneralFormComponent } from '../profile-general-form/profile-general-form.component';
 import {
   ProfileChangePasswordFormComponent
@@ -16,9 +16,9 @@ import { UserService } from '../../../core/auth/user.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, filter, finalize, map, mergeMap, of, tap } from 'rxjs';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
-import { UpdateUserInfo } from '../../../core/models/change-user-info.model';
 import { DialogService } from '../../../core/dialog.service';
 import { Router } from '@angular/router';
+import { ProfileService } from '../../services/profile.service';
 
 @Component({
   selector: 'app-profile',
@@ -40,6 +40,7 @@ import { Router } from '@angular/router';
 export class ProfileComponent {
   private authService = inject(AuthService);
   private userService = inject(UserService);
+  private profileService = inject(ProfileService);
   private dialogService = inject(DialogService);
   private router = inject(Router);
   private destroyRef = inject(DestroyRef);
@@ -66,7 +67,7 @@ export class ProfileComponent {
       map(() => null),
       catchError(() => of('fail-user' as Failure)),
       mergeMap(result => result === null && data.profilePicture
-        ? this.userService.updateProfilePicture(data.profilePicture).pipe(
+        ? this.profileService.updateProfilePicture(data.profilePicture).pipe(
           map(success => success ? null : 'picture-bad' as Failure),
           catchError(() => of('picture-unknown' as Failure))
         )

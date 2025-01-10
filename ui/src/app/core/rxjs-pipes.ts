@@ -8,6 +8,3 @@ export const catchSpecificHttpStatusError = <T, O>(status: number, selector: Htt
     ? selector(err, caught)
     : throwError(() => err)
   );
-
-export const catch404StatusError = <T, O>(selector: HttpErrorSelector<T, O>) =>
-  catchSpecificHttpStatusError<T, O>(404, selector);

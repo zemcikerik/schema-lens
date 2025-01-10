@@ -3,6 +3,7 @@ import { MatListItem, MatNavList } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { ProjectObjectNavHostComponent } from '../project-object-nav-host/project-object-nav-host.component';
+import { SidebarCloseDirective } from '../../../core/layouts/sidebar-close.directive';
 
 @Component({
   selector: 'app-project-nav',
@@ -16,6 +17,7 @@ import { ProjectObjectNavHostComponent } from '../project-object-nav-host/projec
     RouterLinkActive,
     TranslatePipe,
     ProjectObjectNavHostComponent,
+    SidebarCloseDirective,
   ],
 })
 export class ProjectNavComponent {

@@ -1,5 +1,7 @@
 @let err = error();
 <app-layout-auth [title]="('AUTH.REGISTER_TITLE' | translate)()" [loading]="loading()" [error]="err ? (err | translate)() : null">
+  <img ngProjectAs="image" ngSrc="/static/img/register.jpg" fill priority alt="☕">
+
   <form [formGroup]="registerForm" (ngSubmit)="register()">
     <mat-form-field>
       <mat-label>{{ ('AUTH.USERNAME_LABEL' | translate)() }}</mat-label>

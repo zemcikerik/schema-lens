@@ -1,13 +1,12 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { defer, map, Observable, of, ReplaySubject, shareReplay, tap } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { User } from '../models/user.model';
+import { UpdateUserInfo, User } from '../models/user.model';
 import { UserHttpClientService } from './user-http-client.service';
 import { KeyValueStoreService } from '../persistence/key-value-store.service';
 import { RegistrationData } from '../models/registration-data.model';
 import { AuthResult, RegistrationResult } from '../models/auth.model';
 import { Jwt, JwtClaims } from '../models/jwt.model';
-import { UpdateUserInfo } from '../models/change-user-info.model';
 
 const JWT_TOKEN_KEY = 'token';
 const JWT_EXPIRY_OFFSET = 10;

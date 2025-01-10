@@ -1,11 +1,9 @@
 <app-content-card>
   <app-layout-header-and-content [title]="('PROJECTS.LIST_LABEL' | translate)()" [includeSpacing]="projects().length === 0">
-    <ng-container ngProjectAs="header-action">
-      <a mat-flat-button [routerLink]="['/project', 'create']">
-        <mat-icon appIconEmphasis="high">add</mat-icon>
-        {{ ('PROJECTS.BUTTON_CREATE' | translate)() }}
-      </a>
-    </ng-container>
+    <a ngProjectAs="header-action" mat-flat-button [routerLink]="['/project', 'create']">
+      <mat-icon appIconEmphasis="high">add</mat-icon>
+      {{ ('PROJECTS.BUTTON_CREATE' | translate)() }}
+    </a>
 
     @if (projects().length > 0) {
       <app-project-list-table [projects]="projects()" (selected)="openProject($event)" />

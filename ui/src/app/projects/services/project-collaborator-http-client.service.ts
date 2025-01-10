@@ -3,7 +3,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { ProjectCollaborator } from '../models/project-collaborator.model';
 import { ProjectCollaborationRole } from '../models/project-collaboration-role.model';
-import { catch404StatusError } from '../../core/rxjs-pipes';
+import { catchSpecificHttpStatusError } from '../../core/rxjs-pipes';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +23,7 @@ export class ProjectCollaboratorHttpClientService {
     });
 
     return this.httpClient.post<ProjectCollaborator>(`/project/${projectId}/collaborator/${username}`, jsonRole, { headers }).pipe(
-      catch404StatusError(() => of(null)),
+      catchSpecificHttpStatusError(404, () => of(null)),
     );
   }
 
