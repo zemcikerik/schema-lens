@@ -7,16 +7,15 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize, map, mergeMap, of } from 'rxjs';
 import { LayoutAuthComponent } from '../layouts/layout-auth.component';
 import { MatInputModule } from '@angular/material/input';
-import { MatAnchor, MatButton, MatIconButton } from '@angular/material/button';
+import { MatAnchor, MatButton } from '@angular/material/button';
 import { TranslatePipe } from '../translate/translate.pipe';
 import { FormatGenericValidationErrorsPipe } from '../../shared/pipes/format-generic-validation-errors.pipe';
 import { ProjectService } from '../../projects/services/project.service';
-import { MatIcon } from '@angular/material/icon';
-import {
-  ChangeLocaleDialogComponent
-} from '../../shared/components/change-locale-dialog/change-locale-dialog.component';
-import { MatDialog } from '@angular/material/dialog';
 import { NgOptimizedImage } from '@angular/common';
+import {
+  ChangeLocaleButtonComponent
+} from '../../shared/components/change-locale-button/change-locale-button.component';
+import { IconLinkComponent } from '../../shared/components/icon-link/icon-link.component';
 
 @Component({
   selector: 'app-login',
@@ -33,9 +32,9 @@ import { NgOptimizedImage } from '@angular/common';
     FormatGenericValidationErrorsPipe,
     MatAnchor,
     RouterLink,
-    MatIconButton,
-    MatIcon,
     NgOptimizedImage,
+    ChangeLocaleButtonComponent,
+    IconLinkComponent,
   ],
 })
 export class LoginComponent {
@@ -43,7 +42,6 @@ export class LoginComponent {
   private destroyRef = inject(DestroyRef);
   private projectService = inject(ProjectService);
   private router = inject(Router);
-  private matDialog = inject(MatDialog);
 
   loginForm = new FormGroup({
     username: new FormControl('', [
@@ -87,9 +85,5 @@ export class LoginComponent {
       },
       error: () => this.error.set('GENERIC.ERROR_LABEL'),
     });
-  }
-
-  changeLocale(): void {
-    this.matDialog.open(ChangeLocaleDialogComponent);
   }
 }

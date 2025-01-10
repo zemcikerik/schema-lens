@@ -1,0 +1,29 @@
+@use '@angular/material' as mat;
+@import '../theme';
+@import '../utilities/breakpoints';
+
+@mixin app-404($options: ()) {
+  .error-404 {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 2rem;
+    gap: 2rem;
+
+    h2 {
+      font: mat.get-theme-typography($theme, display-large);
+      margin: 1rem;
+      text-align: center;
+    }
+
+    &__image {
+      position: relative;
+      width: 15rem;
+      aspect-ratio: 367 / 431;
+
+      @include breakpoint-down(sm) {
+        display: none;
+      }
+    }
+  }
+}

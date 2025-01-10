@@ -28,6 +28,10 @@
             (language)="changeLocale()"
             (help)="goToHelp()"
             (logout)="logout()" />
+        } @else {
+          <app-change-locale-button />
+          <button mat-button [routerLink]="['/login']">{{ ('AUTH.LOGIN_BUTTON' | translate)() }}</button>
+          <button mat-button [routerLink]="['/register']">{{ ('AUTH.REGISTER_BUTTON' | translate)() }}</button>
         }
       </app-top-bar>
     }

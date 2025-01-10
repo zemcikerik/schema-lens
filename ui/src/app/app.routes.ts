@@ -4,6 +4,7 @@ import { hasAdminRoleGuard } from './core/guards/has-role.guard';
 
 export const appRoutes: Route[] = [
   { path: '', redirectTo: 'project', pathMatch: 'full' },
+  { path: '404', loadComponent: () => import('./error-404.component').then(c => c.Error404Component) },
   {
     path: 'login',
     loadComponent: () => import('./core/auth/login.component').then(c => c.LoginComponent),
@@ -84,5 +85,6 @@ export const appRoutes: Route[] = [
         loadComponent: () => import('./admin/components/admin-faq/admin-faq.component').then(c => c.AdminFaqComponent),
       },
     ],
-  }
+  },
+  { path: '**', redirectTo: '404' },
 ];

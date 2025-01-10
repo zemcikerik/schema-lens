@@ -1,6 +1,8 @@
 {
   "APP_TITLE": "Schema Lens",
   "APP_TITLE_SHORT": "SL",
+  "404_LABEL": "404",
+  "404_DESCRIPTION": "How did we get here?",
   "GENERIC": {
     "SAVE_LABEL": "Save",
     "EDIT_LABEL": "Edit",

@@ -10,6 +10,7 @@
 @import './scss/utilities/icon';
 @import './scss/utilities/text-code';
 
+@import './scss/components/404';
 @import './scss/components/admin-faq';
 @import './scss/components/alert';
 @import './scss/components/confirmation-dialog';
@@ -41,6 +42,7 @@
 @include app-utility-icon();
 @include app-utility-text-code();
 
+@include app-404();
 @include app-admin-faq();
 @include app-alert();
 @include app-confirmation-dialog();

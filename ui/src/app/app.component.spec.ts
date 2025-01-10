@@ -12,6 +12,7 @@ import { AlertComponent } from './shared/components/alert/alert.component';
 import { TopBarComponent } from './top-bar.component';
 import { AuthService } from './core/auth/auth.service';
 import { HasRolePipe } from './core/pipes/has-role.pipe';
+import { TranslatePipe } from './core/translate/translate.pipe';
 
 describe('AppComponent', () => {
   ngMocks.faster();
@@ -31,7 +32,8 @@ describe('AppComponent', () => {
       attemptAuthFromStorage: () => of(true),
       currentUser: signal(null)
     })
-    .mock(HasRolePipe, () => signal(false)));
+    .mock(HasRolePipe, () => signal(false))
+    .mock(TranslatePipe, () => signal('')));
 
   it('should be created', () => {
     expect(MockRender(AppComponent).point.componentInstance).toBeTruthy();

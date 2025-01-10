@@ -5,7 +5,7 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { finalize, forkJoin, map, mergeMap, of } from 'rxjs';
 import { ProjectSelectorComponent } from './projects/components/project-selector/project-selector.component';
 import { TopBarComponent } from './top-bar.component';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterOutlet } from '@angular/router';
 import { RouteDataService } from './core/routing/route-data.service';
 import { ProjectService } from './projects/services/project.service';
 import { AlertComponent } from './shared/components/alert/alert.component';
@@ -15,6 +15,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { ChangeLocaleDialogComponent } from './shared/components/change-locale-dialog/change-locale-dialog.component';
 import { AdminLinkComponent } from './shared/components/admin-link/admin-link.component';
 import { HasRolePipe } from './core/pipes/has-role.pipe';
+import { MatButton } from '@angular/material/button';
+import { TranslatePipe } from './core/translate/translate.pipe';
+import { ChangeLocaleButtonComponent } from './shared/components/change-locale-button/change-locale-button.component';
 
 @Component({
   selector: 'app-root',
@@ -30,6 +33,10 @@ import { HasRolePipe } from './core/pipes/has-role.pipe';
     UserIdentifierComponent,
     AdminLinkComponent,
     HasRolePipe,
+    MatButton,
+    TranslatePipe,
+    RouterLink,
+    ChangeLocaleButtonComponent,
   ],
 })
 export class AppComponent {
