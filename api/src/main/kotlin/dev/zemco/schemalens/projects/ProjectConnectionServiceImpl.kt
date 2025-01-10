@@ -13,7 +13,9 @@ import java.sql.SQLException
 import javax.sql.DataSource
 
 @Component
-class ProjectConnectionServiceImpl : ProjectConnectionService {
+class ProjectConnectionServiceImpl(
+    private val projectConnectionEncryptor: ProjectConnectionEncryptor,
+) : ProjectConnectionService {
 
     override fun asDataSource(connectionInfo: ProjectConnectionInfo): DataSource =
         when (connectionInfo) {
@@ -26,7 +28,7 @@ class ProjectConnectionServiceImpl : ProjectConnectionService {
             DataSourceBuilder.create()
                 .url("jdbc:oracle:thin:@${escapeHost(host)}:$port/$service")
                 .username(username)
-                .password(password)
+                .password(projectConnectionEncryptor.decryptPassword(password))
                 .type(SimpleDriverDataSource::class.java)
                 .build()
         }

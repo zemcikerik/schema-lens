@@ -12,6 +12,7 @@ services:
       - spring.datasource.username=${DB_APP_USER}
       - spring.datasource.password=${DB_APP_PASSWORD}
       - storage.profile-picture.folder-path=/app/profile-pictures
+      - project.password-encryption-key=${PROJECT_PASSWORD_ENCRYPTION_KEY}
       - jwt.signing-key=${JWT_SIGNING_KEY}
     networks:
       - db

@@ -17,6 +17,9 @@ class ProjectServiceImplTest {
     @MockK
     private lateinit var projectRepository: ProjectRepository
 
+    @MockK
+    private lateinit var projectConnectionEncryptor: ProjectConnectionEncryptor
+
     @InjectMockKs
     private lateinit var projectService: ProjectServiceImpl
 

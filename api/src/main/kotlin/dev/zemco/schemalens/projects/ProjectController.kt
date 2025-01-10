@@ -35,7 +35,8 @@ class ProjectController(
                     port = it.port,
                     username = it.username,
                     password = it.password!!,
-                    service = it.service
+                    service = it.service,
+                    passwordChanged = true,
                 )
             }
         )
@@ -57,6 +58,7 @@ class ProjectController(
 
             if (projectDto.connection.password != null) {
                 connectionInfo.password = projectDto.connection.password
+                connectionInfo.passwordChanged = true
             }
         }
         return projectService.saveProject(project).mapToPropertiesDto()

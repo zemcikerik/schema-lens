@@ -282,4 +282,11 @@
       </column>
     </createTable>
   </changeSet>
+
+  <changeSet id="2025-01-10T2259-increase-oracle-project-info-password-size"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <modifyDataType tableName="oracle_project_connection_info"
+                    columnName="auth_password"
+                    newDataType="VARCHAR(256)" />
+  </changeSet>
 </databaseChangeLog>

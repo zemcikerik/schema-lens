@@ -7,6 +7,7 @@ import java.util.*
 @Service
 class ProjectServiceImpl(
     private val projectRepository: ProjectRepository,
+    private val projectConnectionEncryptor: ProjectConnectionEncryptor,
 ) : ProjectService {
 
     override fun getProjects(): List<Project> =
@@ -24,8 +25,13 @@ class ProjectServiceImpl(
     override fun deleteProjectByUuid(uuid: UUID) =
         projectRepository.deleteByUuid(uuid)
 
-    override fun saveProject(project: Project): Project =
-        projectRepository.save(project)
+    override fun saveProject(project: Project): Project {
+        if (project.connectionInfo.passwordChanged) {
+            project.connectionInfo.password = projectConnectionEncryptor.encryptPassword(project.connectionInfo.password)
+            project.connectionInfo.passwordChanged = false
+        }
+        return projectRepository.save(project)
+    }
 
     private fun Pair<Project, String>.unwrapRole(): Project =
         first.also { it.role = second[0].mapToProjectCollaborationRole() }

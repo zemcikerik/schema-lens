@@ -30,6 +30,9 @@ abstract class ProjectConnectionInfo(
     @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
     @MapsId
     var project: Project? = null,
+
+    @Transient
+    var passwordChanged: Boolean = false,
 )
 
 @Entity
@@ -43,5 +46,7 @@ class OracleProjectConnectionInfo(
 
     @NotBlank
     @Column(nullable = false, length = 128)
-    var service: String
-) : ProjectConnectionInfo(id, host, port, username, password, project)
+    var service: String,
+
+    passwordChanged: Boolean = false,
+) : ProjectConnectionInfo(id, host, port, username, password, project, passwordChanged)
