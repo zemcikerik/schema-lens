@@ -8,8 +8,8 @@ import { TranslatePipe } from '../../../../core/translate/translate.pipe';
   selector: 'app-table-constraint-check',
   template: `
     <div>
-      <span class="table-constraint__label">{{ ('TABLES.CONSTRAINTS.CONDITION_LABEL' | translate)() }}</span>
-      {{ constraint().condition }}
+      <span class="table-constraint__label">{{ ('TABLES.CONSTRAINTS.CONDITION_LABEL' | translate)() }} </span>
+      <span class="text-code">{{ constraint().condition }}</span>
     </div>
     <app-table-constraint-affected-columns [columns]="affectedColumns()" />
   `,

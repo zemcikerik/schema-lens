@@ -1,0 +1,9 @@
+@mixin app-utility-text-code($options: ()) {
+  .text-code {
+    font-family: 'JetBrains Mono', Monaco, monospace;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+    font-variant-ligatures: none;
+  }
+}

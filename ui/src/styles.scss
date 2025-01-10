@@ -8,6 +8,7 @@
 @import './scss/utilities/dimensions';
 @import './scss/utilities/display';
 @import './scss/utilities/icon';
+@import './scss/utilities/text-code';
 
 @import './scss/components/admin-faq';
 @import './scss/components/alert';
@@ -39,6 +40,7 @@
 @include app-utility-dimensions();
 @include app-utility-display();
 @include app-utility-icon();
+@include app-utility-text-code();
 
 @include app-admin-faq();
 @include app-alert();

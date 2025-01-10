@@ -4,7 +4,7 @@
     @for (column of columns(); track column.name) {
       <tr>
         <td><app-oracle-type-icon [type]="column.type" /></td>
-        <td>{{ column.name }}</td>
+        <td class="text-code">{{ column.name }}</td>
       </tr>
     }
   </table>

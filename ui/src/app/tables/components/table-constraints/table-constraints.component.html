@@ -8,7 +8,7 @@
 
   <ng-container matColumnDef="name">
     <th mat-header-cell *matHeaderCellDef>{{ ('TABLES.CONSTRAINTS.NAME_LABEL' | translate)() }}</th>
-    <td mat-cell *matCellDef="let constraint">{{ constraint.name }}</td>
+    <td mat-cell class="text-code" *matCellDef="let constraint">{{ constraint.name }}</td>
   </ng-container>
 
   <ng-container matColumnDef="type">
@@ -26,7 +26,7 @@
   <ng-container matColumnDef="expand">
     <th mat-header-cell *matHeaderCellDef></th>
     <td mat-cell *matCellDef="let constraint">
-      <button mat-icon-button (click)="toggleExpansion(constraint)">
+      <button mat-icon-button>
         <mat-icon [@indicatorRotate]="isExpanded(constraint) ? 'expanded' : 'collapsed'">keyboard_arrow_down</mat-icon>
       </button>
     </td>
