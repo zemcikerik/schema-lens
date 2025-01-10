@@ -14,7 +14,7 @@ class AdminHelpController(
 
     @GetMapping("/faq")
     fun getFaqPosts(): List<AdminFaqPostDto> =
-        faqPostService.getFaqPosts().map { it.mapToDto() }
+        faqPostService.getFaqPosts().sortedBy { it.id }.map { it.mapToDto() }
 
     @PostMapping("/faq")
     fun addFaqPost(@RequestBody @Valid faqPostDto: AdminCreateFaqPostDto): AdminFaqPostDto =

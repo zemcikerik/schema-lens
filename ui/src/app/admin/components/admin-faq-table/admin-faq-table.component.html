@@ -1,4 +1,4 @@
-<table mat-table [dataSource]="faqPosts()">
+<table mat-table class="admin-faq__table" [dataSource]="faqPosts()">
   <ng-container matColumnDef="id">
     <th mat-header-cell *matHeaderCellDef>{{ ('ADMIN.ID_LABEL' | translate)() }}</th>
     <td mat-cell *matCellDef="let faqPost">{{ faqPost.id }}</td>

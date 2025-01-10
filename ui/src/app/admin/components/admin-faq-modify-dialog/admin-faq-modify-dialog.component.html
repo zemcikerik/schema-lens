@@ -1,0 +1,40 @@
+<h2 mat-dialog-title>{{ ((faqPost ? 'ADMIN.FAQ.EDIT_LABEL' : 'ADMIN.FAQ.ADD_LABEL') | translate)() }}</h2>
+
+<mat-dialog-content>
+  <p>{{ ((faqPost ? 'ADMIN.FAQ.UPDATE_DESCRIPTION' : 'ADMIN.FAQ.CREATE_DESCRIPTION') | translate)() }}</p>
+
+  <form class="admin-faq__modify-dialog__form" [formGroup]="formGroup">
+    <mat-form-field>
+      <mat-label>{{ ('LOCALE.LABEL' | translate)() }}</mat-label>
+      <mat-select formControlName="locale">
+        @for (locale of locales; track locale) {
+          <mat-option [value]="locale">{{ locale }}</mat-option>
+        }
+      </mat-select>
+      @if (formGroup.controls.locale.invalid) {
+        <mat-error>{{ (formGroup.controls.locale.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ ('ADMIN.FAQ.TITLE_LABEL' | translate)() }}</mat-label>
+      <input matInput formControlName="title" type="text" required>
+      @if (formGroup.controls.title.invalid) {
+        <mat-error>{{ (formGroup.controls.title.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field>
+      <mat-label>{{ ('ADMIN.FAQ.ANSWER_LABEL' | translate)() }}</mat-label>
+      <textarea matInput formControlName="answer" required></textarea>
+      @if (formGroup.controls.answer.invalid) {
+        <mat-error>{{ (formGroup.controls.answer.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button [mat-dialog-close]="null">{{ ('GENERIC.CANCEL_LABEL' | translate)() }}</button>
+  <button mat-flat-button (click)="submit()">{{ ('GENERIC.CONFIRM_LABEL' | translate)() }}</button>
+</mat-dialog-actions>

@@ -13,7 +13,7 @@ class HelpController(
 
     @GetMapping("/faq/{locale}")
     fun getFaqPosts(@PathVariable locale: Locale): List<FaqPostDto> =
-        faqPostService.getFaqPostsForLocale(locale).map {
+        faqPostService.getFaqPostsForLocale(locale).sortedBy { it.id }.map {
             FaqPostDto(it.title, it.answer)
         }
 
