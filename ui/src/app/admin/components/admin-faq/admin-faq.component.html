@@ -1,3 +1,11 @@
 <app-layout-header-and-content [title]="('HELP.FAQ_LABEL' | translate)()">
-  Hello, World!
+  @if (loading()) {
+    <app-progress-spinner [center]="true" />
+  } @else if (error()) {
+    <app-alert class="d-block mt-1" type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+  } @else if (faqPosts().length > 0) {
+    <app-admin-faq-table [faqPosts]="faqPosts()" />
+  } @else {
+    <app-alert class="d-block mt-1" type="info">{{ ('FAQ_EMPTY_LABEL' | translate)() }}</app-alert>
+  }
 </app-layout-header-and-content>

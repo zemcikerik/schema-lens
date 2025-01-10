@@ -3,6 +3,7 @@
   "APP_TITLE_SHORT": "SL",
   "GENERIC": {
     "SAVE_LABEL": "Save",
+    "EDIT_LABEL": "Edit",
     "DELETE_LABEL": "Delete",
     "CONFIRM_LABEL": "Confirm",
     "CANCEL_LABEL": "Cancel",
@@ -47,6 +48,7 @@
     }
   },
   "LOCALE": {
+    "LABEL": "Locale",
     "LANGUAGE_BUTTON": "Language",
     "CHANGE_DIALOG": {
       "TITLE": "Change language",
@@ -175,8 +177,13 @@
   },
   "ADMIN": {
     "PANEL_LABEL": "Admin Panel",
+    "ID_LABEL": "Id",
     "USER_MANAGEMENT": {
       "LABEL": "User Management"
+    },
+    "FAQ": {
+      "TITLE_LABEL": "Title",
+      "ANSWER_LABEL": "Answer"
     }
   }
 }
