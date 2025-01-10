@@ -34,7 +34,6 @@ import { catchProjectConnectionError } from '../../../projects/catch-project-con
 })
 export class TableComponent {
   readonly TABLE_TABS: NavTab[] = [
-    { title: 'Properties', translateTitle: false, path: 'properties' },
     { title: 'TABLES.COLUMNS.LABEL', translateTitle: true, path: 'columns' },
     { title: 'Constraints', translateTitle: false, path: 'constraints' },
   ];

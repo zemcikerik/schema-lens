@@ -28,7 +28,6 @@
 @import './scss/components/table-columns';
 @import './scss/components/table-constraint';
 @import './scss/components/table-constraints';
-@import './scss/components/table-properties';
 @import './scss/components/top-bar';
 @import './scss/components/user-identifier';
 
@@ -60,7 +59,6 @@
 @include app-table-columns();
 @include app-table-constraint();
 @include app-table-constraints();
-@include app-table-properties();
 @include app-top-bar();
 @include app-user-identifier();
 

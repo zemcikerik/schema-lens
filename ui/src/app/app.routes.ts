@@ -47,11 +47,7 @@ export const appRoutes: Route[] = [
         path: 'table/:tableName',
         loadComponent: () => import('./tables/components/table/table.component').then(c => c.TableComponent),
         children: [
-          { path: '', redirectTo: 'properties', pathMatch: 'full' },
-          {
-            path: 'properties',
-            loadComponent: () => import('./tables/components/table-properties/table-properties.component').then(c => c.TablePropertiesComponent),
-          },
+          { path: '', redirectTo: 'columns', pathMatch: 'full' },
           {
             path: 'columns',
             loadComponent: () => import('./tables/components/table-columns/table-columns.component').then(c => c.TableColumnsComponent),
