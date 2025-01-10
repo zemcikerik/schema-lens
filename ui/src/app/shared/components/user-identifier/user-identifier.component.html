@@ -14,6 +14,9 @@
   <button mat-menu-item (click)="language.emit()">
     <mat-icon>language</mat-icon> {{ ('LOCALE.LANGUAGE_BUTTON' | translate)() }}
   </button>
+  <button mat-menu-item (click)="help.emit()">
+    <mat-icon>help</mat-icon> {{ ('HELP.LABEL' | translate)() }}
+  </button>
   <button mat-menu-item (click)="logout.emit()">
     <mat-icon>logout</mat-icon> {{ ('AUTH.LOGOUT_BUTTON' | translate)() }}
   </button>

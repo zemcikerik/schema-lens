@@ -4,8 +4,17 @@
       mat-list-item
       [routerLink]="['/admin', 'user']"
       routerLinkActive
-      #rla="routerLinkActive"
-      [activated]="rla.isActive"
+      #rlaUser="routerLinkActive"
+      [activated]="rlaUser.isActive"
     >{{ ('ADMIN.USER_MANAGEMENT.LABEL' | translate)() }}</a>
+  </mat-nav-list>
+  <mat-nav-list class="nav">
+    <a
+      mat-list-item
+      [routerLink]="['/admin', 'faq']"
+      routerLinkActive
+      #rlaFaq="routerLinkActive"
+      [activated]="rlaFaq.isActive"
+    >{{ ('HELP.FAQ_LABEL' | translate)() }}</a>
   </mat-nav-list>
 </div>

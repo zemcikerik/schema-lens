@@ -23,5 +23,6 @@ export class UserIdentifierComponent {
   user = input.required<User>();
   profile = output();
   language = output();
+  help = output();
   logout = output();
 }

@@ -22,7 +22,12 @@
 
         @let user = currentUser();
         @if (user !== null) {
-          <app-user-identifier [user]="user" (profile)="goToProfile()" (language)="changeLocale()" (logout)="logout()" />
+          <app-user-identifier
+            [user]="user"
+            (profile)="goToProfile()"
+            (language)="changeLocale()"
+            (help)="goToHelp()"
+            (logout)="logout()" />
         }
       </app-top-bar>
     }

@@ -68,6 +68,11 @@ export const appRoutes: Route[] = [
       },
     ],
   },
+  { path: 'help', redirectTo: 'help/faq' },
+  {
+    path: 'help/faq',
+    loadComponent: () => import('./help/components/help-faq/help-faq.component').then(c => c.HelpFaqComponent),
+  },
   {
     path: 'admin',
     loadComponent: () => import('./admin/components/admin/admin.component').then(c => c.AdminComponent),
@@ -77,6 +82,10 @@ export const appRoutes: Route[] = [
       {
         path: 'user',
         loadComponent: () => import('./admin/components/admin-user-management/admin-user-management.component').then(c => c.AdminUserManagementComponent),
+      },
+      {
+        path: 'faq',
+        loadComponent: () => import('./admin/components/admin-faq/admin-faq.component').then(c => c.AdminFaqComponent),
       },
     ],
   }

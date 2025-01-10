@@ -69,6 +69,10 @@ export class AppComponent {
     this.matDialog.open(ChangeLocaleDialogComponent);
   }
 
+  async goToHelp(): Promise<void> {
+    await this.router.navigate(['/help']);
+  }
+
   logout(): void {
     this.authService.logout();
     this.router.navigate(['/login']);
