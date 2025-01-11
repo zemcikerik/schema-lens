@@ -132,8 +132,3 @@ body {
     margin-bottom: 1rem;
   }
 }
-
-// https://github.com/angular/components/issues/27118
-span.mat-mdc-button-touch-target {
-  height: unset !important;
-}

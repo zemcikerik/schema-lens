@@ -1,3 +1,29 @@
+@use '@angular/material' as mat;
+@import '../theme';
+@import '../utilities/breakpoints';
+
 * {
   box-sizing: border-box;
+}
+
+h1,
+h2 {
+  font: mat.get-theme-typography($theme, headline-large);
+}
+
+h2 {
+  margin: 1rem 0;
+}
+
+h3 {
+  font: mat.get-theme-typography($theme, title-large);
+}
+
+h4 {
+  font: mat.get-theme-typography($theme, title-medium);
+}
+
+// https://github.com/angular/components/issues/27118
+span.mat-mdc-button-touch-target {
+  height: unset !important;
 }

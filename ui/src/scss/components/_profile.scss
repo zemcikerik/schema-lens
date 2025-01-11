@@ -4,6 +4,10 @@
 
 @mixin app-profile($options: ()) {
   .profile {
+    h3:not(:first-child) {
+      margin-top: 2rem;
+    }
+
     &__general {
       display: grid;
       grid-template-rows: auto 1fr;

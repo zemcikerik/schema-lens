@@ -1,6 +1,6 @@
 <div class="table__header">
   <mat-icon class="icon" [matTooltip]="('TABLES.LABEL' | translate)()">table</mat-icon>
-  <h2>{{ tableName() }}</h2>
+  <h2 class="text-code">{{ tableName() }}</h2>
 </div>
 
 <app-nav-tab-group [baseRouterLink]="['/project', projectId(), 'table', tableName()]" [tabs]="TABLE_TABS">
