@@ -17,7 +17,7 @@
     @if (faqPosts().length > 0) {
       <app-admin-faq-table [faqPosts]="faqPosts()" (edit)="update($event)" (delete)="delete($event)" />
     } @else {
-      <app-alert class="d-block mt-1" type="info">{{ ('FAQ_EMPTY_LABEL' | translate)() }}</app-alert>
+      <app-alert class="d-block mt-1" type="info">{{ ('HELP.FAQ_EMPTY_LABEL' | translate)() }}</app-alert>
     }
   }
 </app-layout-header-and-content>

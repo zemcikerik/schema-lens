@@ -75,11 +75,7 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('./admin/components/admin/admin.component').then(c => c.AdminComponent),
     canActivate: [authGuard, hasAdminRoleGuard],
     children: [
-      { path: '', redirectTo: 'user', pathMatch: 'full' },
-      {
-        path: 'user',
-        loadComponent: () => import('./admin/components/admin-user-management/admin-user-management.component').then(c => c.AdminUserManagementComponent),
-      },
+      { path: '', redirectTo: 'faq', pathMatch: 'full' },
       {
         path: 'faq',
         loadComponent: () => import('./admin/components/admin-faq/admin-faq.component').then(c => c.AdminFaqComponent),

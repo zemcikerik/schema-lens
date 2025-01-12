@@ -12,6 +12,8 @@
     "CLOSE_LABEL": "Close",
     "SUCCESS_LABEL": "Your request was performed successfully.",
     "ERROR_LABEL": "There was an error processing your request. Please try again later.",
+    "TOOLTIP_INFO_LABEL": "Information",
+    "TOOLTIP_ERROR_LABEL": "Error",
     "VALIDATION": {
       "REQUIRED": "This field is required.",
       "MIN_LENGTH": "This field has to be at least {minLength} characters long.",
@@ -181,9 +183,6 @@
   "ADMIN": {
     "PANEL_LABEL": "Admin Panel",
     "ID_LABEL": "Id",
-    "USER_MANAGEMENT": {
-      "LABEL": "User Management"
-    },
     "FAQ": {
       "ADD_LABEL": "Add FAQ",
       "EDIT_LABEL": "Edit FAQ",

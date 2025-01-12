@@ -25,7 +25,7 @@ class ProjectController(
     fun createProject(@RequestBody @Validated(OnCreate::class) projectDto: OracleProjectPropertiesDto): OracleProjectPropertiesDto {
         val user = userService.getCurrentUser()
         val project = Project(
-            name = projectDto.name,
+            name = projectDto.name.trim(),
             ownerId = user.id!!,
             owner = user,
             role = ProjectCollaborationRole.OWNER,

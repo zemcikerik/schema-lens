@@ -20,8 +20,8 @@ class AdminHelpController(
     fun addFaqPost(@RequestBody @Valid faqPostDto: AdminCreateFaqPostDto): AdminFaqPostDto =
         faqPostService.saveFaqPost(FaqPost(
             locale = faqPostDto.locale,
-            title = faqPostDto.title,
-            answer = faqPostDto.answer,
+            title = faqPostDto.title.trim(),
+            answer = faqPostDto.answer.trim(),
         )).mapToDto()
 
     @PutMapping("/faq/{postId}")
@@ -30,8 +30,8 @@ class AdminHelpController(
         @RequestBody @Valid faqPostDto: AdminUpdateFaqPostDto
     ): ResponseEntity<AdminFaqPostDto> =
         faqPostService.getFaqPostById(postId)?.let {
-            it.title = faqPostDto.title
-            it.answer = faqPostDto.answer
+            it.title = faqPostDto.title.trim()
+            it.answer = faqPostDto.answer.trim()
             ResponseEntity.ok(faqPostService.saveFaqPost(it).mapToDto())
         } ?: ResponseEntity.notFound().build()
 

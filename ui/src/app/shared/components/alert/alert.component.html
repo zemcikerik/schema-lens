@@ -7,10 +7,10 @@
     <div class="alert__icon">
       @switch (type()) {
         @case ('info') {
-          <mat-icon>info</mat-icon>
+          <mat-icon [matTooltip]="(tooltipKey() | translate)()">info</mat-icon>
         }
         @case ('error') {
-          <mat-icon>error</mat-icon>
+          <mat-icon [matTooltip]="(tooltipKey() | translate)()">error</mat-icon>
         }
       }
     </div>

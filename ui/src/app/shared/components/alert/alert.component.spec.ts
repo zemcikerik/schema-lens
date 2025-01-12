@@ -1,10 +1,13 @@
 import { MockBuilder, MockRender, ngMocks } from 'ng-mocks';
 import { AlertComponent } from './alert.component';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
+import { signal } from '@angular/core';
 
 describe('AlertComponent', () => {
   ngMocks.faster();
 
-  beforeAll(() => MockBuilder(AlertComponent));
+  beforeAll(() => MockBuilder(AlertComponent)
+    .mock(TranslatePipe, v => signal(v)));
 
   it('should be created', () => {
     const component = MockRender(AlertComponent).point.componentInstance;
