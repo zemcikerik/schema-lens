@@ -80,6 +80,7 @@ class OracleTableConstraintMetadataReader {
                 LEFT JOIN user_cons_columns ref_col ON con.r_constraint_name = ref_col.constraint_name
                     AND col.position = ref_col.position
             WHERE con.table_name = UPPER(:table_name) AND con.constraint_type IN ('P', 'R', 'U', 'C')
+            ORDER BY DECODE(con.constraint_type, 'P', 1, 'R', 2, 'U', 3, 'C', 4, 5), con.constraint_name
         """.trimIndent()
     }
 

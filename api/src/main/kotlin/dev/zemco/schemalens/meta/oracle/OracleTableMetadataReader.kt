@@ -30,7 +30,7 @@ class OracleTableMetadataReader(
     }
 
     private companion object {
-        private const val GET_TABLE_LIST_SQL_QUERY = "SELECT table_name FROM user_tables"
+        private const val GET_TABLE_LIST_SQL_QUERY = "SELECT table_name FROM user_tables ORDER BY table_name"
         private val TABLE_EXISTS_SQL_QUERY = """
             SELECT CASE WHEN EXISTS (
                 SELECT 1
