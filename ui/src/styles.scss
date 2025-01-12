@@ -17,7 +17,7 @@
 @import './scss/components/content-card';
 @import './scss/components/help-faq';
 @import './scss/components/nav';
-@import './scss/components/object-selector';
+@import './scss/components/project-object-selector';
 @import './scss/components/profile';
 @import './scss/components/profile-picture';
 @import './scss/components/project-collaborators-table';
@@ -48,13 +48,13 @@
 @include app-confirmation-dialog();
 @include app-content-card();
 @include app-help-faq();
-@include app-object-selector();
 @include app-nav();
 @include app-profile();
 @include app-profile-picture();
 @include app-project-collaborators-table();
 @include app-project-list-table();
 @include app-project-properties();
+@include app-project-object-selector();
 @include app-project-selector();
 @include app-progress-spinner();
 @include app-table();
