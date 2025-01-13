@@ -4,6 +4,8 @@
   <app-content-card>
     @if (loading()) {
       <app-progress-spinner [center]="true" />
+    } @else if (error()) {
+      <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
     } @else {
       <router-outlet />
     }

@@ -6,6 +6,8 @@ import { Router, RouterOutlet } from '@angular/router';
 import { ProjectService } from './services/project.service';
 import { finalize } from 'rxjs';
 import { ProgressSpinnerComponent } from '../shared/components/progress-spinner/progress-spinner.component';
+import { AlertComponent } from '../shared/components/alert/alert.component';
+import { TranslatePipe } from '../core/translate/translate.pipe';
 
 @Component({
   selector: 'app-project',
@@ -18,11 +20,14 @@ import { ProgressSpinnerComponent } from '../shared/components/progress-spinner/
     ProjectNavComponent,
     RouterOutlet,
     ProgressSpinnerComponent,
+    AlertComponent,
+    TranslatePipe,
   ],
 })
 export class ProjectComponent {
   projectId = input.required<string>();
   loading = signal<boolean>(false);
+  error = signal<boolean>(false);
   private router = inject(Router);
 
   constructor() {
@@ -40,9 +45,9 @@ export class ProjectComponent {
         this.loading.set(true);
 
         return projectService.getProjectProperties(projectId).pipe(
-          finalize(() => this.loading.set(false)),
-        ).subscribe(() => {
-          // todo
+          finalize(() => untracked(() => this.loading.set(false))),
+        ).subscribe({
+          error: () => this.error.set(true),
         });
       });
 
