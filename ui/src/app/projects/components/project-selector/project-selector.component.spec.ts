@@ -7,6 +7,7 @@ import { ProjectService } from '../../services/project.service';
 import { signal } from '@angular/core';
 import { Project } from '../../models/project.model';
 import { ProjectCollaborationRole } from '../../models/project-collaboration-role.model';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
 describe('ProjectSelectorComponent', () => {
   ngMocks.faster();
@@ -18,7 +19,8 @@ describe('ProjectSelectorComponent', () => {
     .mock(Router, {
       events: EMPTY,
       navigate: () => Promise.resolve(true),
-    }));
+    })
+    .mock(TranslatePipe, v => signal(v)));
 
   const render = (): ProjectSelectorComponent =>
     MockRender(ProjectSelectorComponent).point.componentInstance;

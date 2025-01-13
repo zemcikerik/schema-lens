@@ -6,6 +6,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter } from 'rxjs';
 import { Location } from '@angular/common';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
 const PROJECT_ID_REGEX = /^\/project\/([a-z-\d]{36})/;
 
@@ -20,6 +21,7 @@ const PROJECT_ID_REGEX = /^\/project\/([a-z-\d]{36})/;
     MatOption,
     MatFormField,
     MatLabel,
+    TranslatePipe,
   ],
 })
 export class ProjectSelectorComponent implements AfterViewInit {

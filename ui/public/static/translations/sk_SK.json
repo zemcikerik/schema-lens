@@ -75,6 +75,7 @@
   "PROJECTS": {
     "LIST_LABEL": "Projekty",
     "LIST_EMPTY": "Nie sú dostupné žiadne projekty! Môžete vytvoriť nový kliknutím na tlačidlo \"Vytvoriť projekt\".",
+    "SELECTOR_LABEL": "Projekt",
     "LIST_COLUMN": {
       "NAME_LABEL": "Názov",
       "DB_TYPE_LABEL": "Typ databázy",
