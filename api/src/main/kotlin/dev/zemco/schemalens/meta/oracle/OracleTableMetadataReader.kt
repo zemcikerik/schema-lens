@@ -8,7 +8,8 @@ import javax.sql.DataSource
 @Component
 class OracleTableMetadataReader(
     private val columnMetadataReader: OracleTableColumnMetadataReader,
-    private val constraintMetadataReader: OracleTableConstraintMetadataReader
+    private val constraintMetadataReader: OracleTableConstraintMetadataReader,
+    private val indexMedataReader: OracleTableIndexMetadataReader,
 ) : TableMetadataReader {
 
     override fun readTableList(dataSource: DataSource): List<String> =
@@ -21,7 +22,8 @@ class OracleTableMetadataReader(
 
         val columns = columnMetadataReader.readTableColumns(dataSource, tableName)
         val constraints = constraintMetadataReader.readTableConstraints(dataSource, tableName)
-        return TableMetadata(name = tableName, columns = columns, constraints = constraints)
+        val indexes = indexMedataReader.readTableIndexes(dataSource, tableName)
+        return TableMetadata(name = tableName, columns = columns, constraints = constraints, indexes = indexes)
     }
 
     private fun tableExists(dataSource: DataSource, tableName: String): Boolean {

@@ -105,7 +105,7 @@
       "TYPE": {
         "LABEL": "Typ",
         "PRIMARY-KEY": "Primárny kľúč",
-        "FOREIGN-KEY": "Cudzí kľúč",
+        "FOREIGN_KEY": "Cudzí kľúč",
         "CHECK": "Check",
         "UNIQUE": "Unikátne"
       },

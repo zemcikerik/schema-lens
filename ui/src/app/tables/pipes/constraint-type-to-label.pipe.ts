@@ -8,8 +8,8 @@ import { TableConstraintType } from '../models/table-constraint.model';
 })
 export class ConstraintTypeToLabelPipe implements PipeTransform {
 
-  transform(value: TableConstraintType): string {
-    return `TABLES.CONSTRAINTS.TYPE.${value.toUpperCase()}`;
+  transform(value: TableConstraintType | `${TableConstraintType}`): string {
+    return `TABLES.CONSTRAINTS.TYPE.${value}`;
   }
 
 }

@@ -9,10 +9,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
     property = "type"
 )
 @JsonSubTypes(value = [
-    JsonSubTypes.Type(value = PrimaryKeyConstraintMetadata::class, name = "primary-key"),
-    JsonSubTypes.Type(value = ForeignKeyConstraintMetadata::class, name = "foreign-key"),
-    JsonSubTypes.Type(value = UniqueConstraintMetadata::class, name = "unique"),
-    JsonSubTypes.Type(value = CheckConstraintMetadata::class, name = "check"),
+    JsonSubTypes.Type(value = PrimaryKeyConstraintMetadata::class, name = "PRIMARY_KEY"),
+    JsonSubTypes.Type(value = ForeignKeyConstraintMetadata::class, name = "FOREIGN_KEY"),
+    JsonSubTypes.Type(value = UniqueConstraintMetadata::class, name = "UNIQUE"),
+    JsonSubTypes.Type(value = CheckConstraintMetadata::class, name = "CHECK"),
 ])
 abstract class ConstraintMetadata {
     abstract val name: String

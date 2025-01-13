@@ -38,6 +38,7 @@ describe('TableService', () => {
       name: 'MOCK_TABLE',
       columns: [],
       constraints: [],
+      indexes: [],
     };
     jest.spyOn(tableHttpClient, 'getTable').mockReturnValue(of(mockTable));
 
@@ -54,6 +55,7 @@ describe('TableService', () => {
       name: 'CACHED_TABLE',
       columns: [],
       constraints: [],
+      indexes: [],
     };
     const table$ = new Subject<Table | null>();
     jest.spyOn(tableHttpClient, 'getTable').mockReturnValue(table$.asObservable());

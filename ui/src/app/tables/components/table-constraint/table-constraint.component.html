@@ -1,21 +1,21 @@
 @let constr = constraint();
 
-<div class="table-constraint {{ constr.type }}">
+<div class="table-constraint" [class.foreign-key]="constr.type === 'FOREIGN_KEY'">
   @switch (constr.type) {
-    @case ('primary-key') {
+    @case ('PRIMARY_KEY') {
       <app-table-constraint-primary-key [affectedColumns]="affectedColumns()" />
     }
-    @case ('foreign-key') {
+    @case ('FOREIGN_KEY') {
       @if (isForeignKeyConstraint(constr)) {
         <app-table-constraint-foreign-key [constraint]="constr" [affectedColumns]="affectedColumns()" />
       }
     }
-    @case ('check') {
+    @case ('CHECK') {
       @if (isCheckConstraint(constr)) {
         <app-table-constraint-check [constraint]="constr" [affectedColumns]="affectedColumns()" />
       }
     }
-    @case ('unique') {
+    @case ('UNIQUE') {
       <app-table-constraint-unique [affectedColumns]="affectedColumns()" />
     }
   }

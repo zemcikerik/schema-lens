@@ -1,8 +1,10 @@
 import { TableConstraintCheckComponent } from './table-constraint-check.component';
 import { MockBuilder, MockRender, ngMocks } from 'ng-mocks';
-import { CheckTableConstraint } from '../../../models/table-constraint.model';
+import { CheckTableConstraint, TableConstraintType } from '../../../models/table-constraint.model';
 import { TableColumn } from '../../../models/table-column.model';
-import { TableConstraintAffectedColumnsComponent } from '../table-constraint-affected-columns/table-constraint-affected-columns.component';
+import {
+  TableConstraintAffectedColumnsComponent,
+} from '../table-constraint-affected-columns/table-constraint-affected-columns.component';
 import { TranslatePipe } from '../../../../core/translate/translate.pipe';
 import { signal } from '@angular/core';
 
@@ -15,7 +17,7 @@ describe('TableConstraintCheckComponent', () => {
   it('should be created', () => {
     const constraint: CheckTableConstraint = {
       name: 'TEST_CHECK',
-      type: 'check',
+      type: TableConstraintType.CHECK,
       columnNames: [],
       condition: '1=1',
     };
@@ -28,7 +30,7 @@ describe('TableConstraintCheckComponent', () => {
   it('should render check condition', () => {
     const constraint: CheckTableConstraint = {
       name: 'TEST_CHECK',
-      type: 'check',
+      type: TableConstraintType.CHECK,
       columnNames: ['TEST_COLUMN'],
       condition: 'TEST_COLUMN IS NOT NULL',
     };
@@ -46,7 +48,7 @@ describe('TableConstraintCheckComponent', () => {
   it('should render affected columns', () => {
     const constraint: CheckTableConstraint = {
       name: 'PRICE_POSITIVE',
-      type: 'check',
+      type: TableConstraintType.CHECK,
       columnNames: ['PRICE'],
       condition: 'PRICE > 0',
     };

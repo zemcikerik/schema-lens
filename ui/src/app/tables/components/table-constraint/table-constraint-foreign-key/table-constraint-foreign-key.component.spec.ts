@@ -3,7 +3,7 @@ import { MockBuilder, MockRender, ngMocks } from 'ng-mocks';
 import { TranslatePipe } from '../../../../core/translate/translate.pipe';
 import { signal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-import { ForeignKeyTableConstraint } from '../../../models/table-constraint.model';
+import { ForeignKeyTableConstraint, TableConstraintType } from '../../../models/table-constraint.model';
 import { TableColumn } from '../../../models/table-column.model';
 
 describe('TableConstraintForeignKeyComponent', () => {
@@ -16,7 +16,7 @@ describe('TableConstraintForeignKeyComponent', () => {
   it('should be created', () => {
     const constraint: ForeignKeyTableConstraint = {
       name: 'FK_MOCK',
-      type: 'foreign-key',
+      type: TableConstraintType.FOREIGN_KEY,
       columnNames: [],
       referencedConstraintName: 'PK_MOCK_TABLE',
       referencedTableName: 'MOCK_TABLE',
@@ -31,7 +31,7 @@ describe('TableConstraintForeignKeyComponent', () => {
   it('should render row with name and referenced constraint/table/column for each column', () => {
     const constraint: ForeignKeyTableConstraint = {
       name: 'FK_ROLE_USER',
-      type: 'foreign-key',
+      type: TableConstraintType.FOREIGN_KEY,
       columnNames: ['USER_NAME', 'USER_EMAIL'],
       referencedConstraintName: 'PK_USER',
       referencedTableName: 'USER',

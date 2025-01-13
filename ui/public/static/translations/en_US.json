@@ -148,8 +148,8 @@
       "NAME_LABEL": "Name",
       "TYPE": {
         "LABEL": "Type",
-        "PRIMARY-KEY": "Primary Key",
-        "FOREIGN-KEY": "Foreign Key",
+        "PRIMARY_KEY": "Primary Key",
+        "FOREIGN_KEY": "Foreign Key",
         "CHECK": "Check",
         "UNIQUE": "Unique"
       },
@@ -159,6 +159,26 @@
       "REFERENCED_CONSTRAINT_NAME_LABEL": "Referenced Constraint Name",
       "REFERENCED_TABLE_NAME_LABEL": "Referenced Table Name",
       "REFERENCED_COLUMN_NAME_LABEL": "Referenced Column Name"
+    },
+    "INDEXES": {
+      "LABEL": "Columns",
+      "NAME_LABEL": "Name",
+      "TYPE": {
+        "LABEL": "Type",
+        "NORMAL": "Normal",
+        "NORMAL_REVERSE": "Normal Reversed",
+        "BITMAP": "Bitmap",
+        "FUNCTION_NORMAL": "Function-based Normal",
+        "FUNCTION_NORMAL_REVERSE": "Function-based Normal Reversed",
+        "FUNCTION_BITMAP": "Function-based Bitmap"
+      },
+      "UNIQUE_LABEL": "Unique",
+      "COMPRESSED_LABEL": "Compressed",
+      "LOGGED_LABEL": "Logged",
+      "INCLUDED_EXPRESSIONS_LABEL": "Included columns and functions:",
+      "FUNCTION_LABEL": "Function",
+      "ASCENDING_LABEL": "Ascending",
+      "DESCENDING_LABEL": "Descending"
     }
   },
   "PROFILE": {

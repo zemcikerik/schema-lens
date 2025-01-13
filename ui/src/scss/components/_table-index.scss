@@ -1,0 +1,33 @@
+@use '@angular/material' as mat;
+@import '../theme';
+
+@mixin app-table-index($options: ()) {
+  .table-index {
+    padding: 0.5rem;
+
+    table {
+      margin-top: 0.5rem;
+    }
+
+    td {
+      vertical-align: middle;
+
+      &:first-of-type {
+        padding-right: 1rem;
+      }
+
+      &:last-of-type {
+        padding-left: 2.5rem;
+      }
+    }
+
+    mat-icon {
+      margin-top: 0.2rem;
+      color: mat.get-theme-color($theme, secondary);
+    }
+
+    &__label {
+      font: mat.get-theme-typography($theme, label-large);
+    }
+  }
+}

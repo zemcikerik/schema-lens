@@ -1,0 +1,24 @@
+<div class="table-index">
+  <span class="table-index__label">{{ ('TABLES.INDEXES.INCLUDED_EXPRESSIONS_LABEL' | translate)() }}</span>
+  <table>
+    @for (column of includedColumns(); track column.value) {
+      <tr>
+        <td>
+          @if (column.dataType !== null) {
+            <app-oracle-type-icon [type]="column.dataType" />
+          } @else {
+            <mat-icon [matTooltip]="('TABLES.INDEXES.FUNCTION_LABEL' | translate)()">function</mat-icon>
+          }
+        </td>
+        <td class="text-code">{{ column.value }}</td>
+        <td>
+          @if (column.direction === 'ASCENDING') {
+            <mat-icon [matTooltip]="('TABLES.INDEXES.ASCENDING_LABEL' | translate)()">arrow_upward</mat-icon>
+          } @else {
+            <mat-icon [matTooltip]="('TABLES.INDEXES.DESCENDING_LABEL' | translate)()">arrow_downward</mat-icon>
+          }
+        </td>
+      </tr>
+    }
+  </table>
+</div>

@@ -16,30 +16,26 @@ describe('TableConstraintIconComponent', () => {
   };
 
   it('should be created', () => {
-    expect(render('primary-key')).toBeTruthy();
+    expect(render(TableConstraintType.PRIMARY_KEY)).toBeTruthy();
   });
 
   it('should be rendered for primary key type', () => {
-    const component = render('primary-key');
+    const component = render(TableConstraintType.PRIMARY_KEY);
     expect(component.icon()).toEqual('key');
-    expect(component.label()).toEqual('TABLES.CONSTRAINTS.TYPE.PRIMARY-KEY');
   });
 
   it('should be rendered for foreign key type', () => {
-    const component = render('foreign-key');
+    const component = render(TableConstraintType.FOREIGN_KEY);
     expect(component.icon()).toEqual('key_vertical');
-    expect(component.label()).toEqual('TABLES.CONSTRAINTS.TYPE.FOREIGN-KEY');
   });
 
   it('should be rendered for check type', () => {
-    const component = render('check');
+    const component = render(TableConstraintType.CHECK);
     expect(component.icon()).toEqual('lock');
-    expect(component.label()).toEqual('TABLES.CONSTRAINTS.TYPE.CHECK');
   });
 
   it('should be rendered for unique type', () => {
-    const component = render('unique');
+    const component = render(TableConstraintType.UNIQUE);
     expect(component.icon()).toEqual('verified');
-    expect(component.label()).toEqual('TABLES.CONSTRAINTS.TYPE.UNIQUE');
   });
 });

@@ -57,6 +57,10 @@ export const appRoutes: Route[] = [
             path: 'constraints',
             loadComponent: () => import('./tables/components/table-constraints/table-constraints.component').then(c => c.TableConstraintsComponent),
           },
+          {
+            path: 'indexes',
+            loadComponent: () => import('./tables/components/table-indexes/table-indexes.component').then(c => c.TableIndexesComponent),
+          },
         ],
       },
       {

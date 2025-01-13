@@ -28,7 +28,7 @@ describe('TableConstraintComponent', () => {
   it('should be created', () => {
     const constraint: PrimaryKeyTableConstraint = {
       name: 'PK_TEST',
-      type: 'primary-key',
+      type: TableConstraintType.PRIMARY_KEY,
       columnNames: [],
     };
     const columns: TableColumn[] = [];
@@ -40,7 +40,7 @@ describe('TableConstraintComponent', () => {
   it('should filter affected columns', () => {
     const constraint: PrimaryKeyTableConstraint = {
       name: 'PK_FAKE_TABLE',
-      type: 'primary-key',
+      type: TableConstraintType.PRIMARY_KEY,
       columnNames: ['ID1', 'OTHER'],
     };
     const columns: TableColumn[] = [
@@ -57,7 +57,7 @@ describe('TableConstraintComponent', () => {
   });
 
   it('should render primary key constraint for primary key type', () => {
-    renderWithMockConstraint('primary-key');
+    renderWithMockConstraint(TableConstraintType.PRIMARY_KEY);
     expectRenderedComponent(TableConstraintPrimaryKeyComponent).toBeTruthy();
     expectRenderedComponent(TableConstraintForeignKeyComponent).toBeFalsy();
     expectRenderedComponent(TableConstraintCheckComponent).toBeFalsy();
@@ -65,7 +65,7 @@ describe('TableConstraintComponent', () => {
   });
 
   it('should render foreign key constraint for foreign key type', () => {
-    renderWithMockConstraint('foreign-key');
+    renderWithMockConstraint(TableConstraintType.FOREIGN_KEY);
     expectRenderedComponent(TableConstraintPrimaryKeyComponent).toBeFalsy();
     expectRenderedComponent(TableConstraintForeignKeyComponent).toBeTruthy();
     expectRenderedComponent(TableConstraintCheckComponent).toBeFalsy();
@@ -73,7 +73,7 @@ describe('TableConstraintComponent', () => {
   });
 
   it('should render check constraint for check type', () => {
-    renderWithMockConstraint('check');
+    renderWithMockConstraint(TableConstraintType.CHECK);
     expectRenderedComponent(TableConstraintPrimaryKeyComponent).toBeFalsy();
     expectRenderedComponent(TableConstraintForeignKeyComponent).toBeFalsy();
     expectRenderedComponent(TableConstraintCheckComponent).toBeTruthy();
@@ -81,7 +81,7 @@ describe('TableConstraintComponent', () => {
   });
 
   it('should render unique constraint for unique type', () => {
-    renderWithMockConstraint('unique');
+    renderWithMockConstraint(TableConstraintType.UNIQUE);
     expectRenderedComponent(TableConstraintPrimaryKeyComponent).toBeFalsy();
     expectRenderedComponent(TableConstraintForeignKeyComponent).toBeFalsy();
     expectRenderedComponent(TableConstraintCheckComponent).toBeFalsy();

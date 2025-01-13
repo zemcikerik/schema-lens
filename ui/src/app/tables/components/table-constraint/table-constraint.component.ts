@@ -1,8 +1,17 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { CheckTableConstraint, ForeignKeyTableConstraint, TableConstraint } from '../../models/table-constraint.model';
+import {
+  CheckTableConstraint,
+  ForeignKeyTableConstraint,
+  TableConstraint,
+  TableConstraintType,
+} from '../../models/table-constraint.model';
 import { TableColumn } from '../../models/table-column.model';
-import { TableConstraintPrimaryKeyComponent } from './table-constraint-primary-key/table-constraint-primary-key.component';
-import { TableConstraintForeignKeyComponent } from './table-constraint-foreign-key/table-constraint-foreign-key.component';
+import {
+  TableConstraintPrimaryKeyComponent,
+} from './table-constraint-primary-key/table-constraint-primary-key.component';
+import {
+  TableConstraintForeignKeyComponent,
+} from './table-constraint-foreign-key/table-constraint-foreign-key.component';
 import { TableConstraintUniqueComponent } from './table-constraint-unique/table-constraint-unique.component';
 import { TableConstraintCheckComponent } from './table-constraint-check/table-constraint-check.component';
 
@@ -28,10 +37,10 @@ export class TableConstraintComponent {
   });
 
   isForeignKeyConstraint(constraint: TableConstraint): constraint is ForeignKeyTableConstraint {
-    return constraint.type === 'foreign-key';
+    return constraint.type === TableConstraintType.FOREIGN_KEY;
   }
 
   isCheckConstraint(constraint: TableConstraint): constraint is CheckTableConstraint {
-    return constraint.type === 'check';
+    return constraint.type === TableConstraintType.CHECK;
   }
 }

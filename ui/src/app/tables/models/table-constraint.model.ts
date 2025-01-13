@@ -1,4 +1,9 @@
-export type TableConstraintType = 'primary-key' | 'foreign-key' | 'unique' | 'check';
+export enum TableConstraintType {
+  PRIMARY_KEY = 'PRIMARY_KEY',
+  FOREIGN_KEY = 'FOREIGN_KEY',
+  UNIQUE = 'UNIQUE',
+  CHECK = 'CHECK',
+}
 
 interface BaseTableConstraint {
   name: string;
@@ -7,22 +12,22 @@ interface BaseTableConstraint {
 }
 
 export interface PrimaryKeyTableConstraint extends BaseTableConstraint {
-  type: 'primary-key';
+  type: TableConstraintType.PRIMARY_KEY;
 }
 
 export interface ForeignKeyTableConstraint extends BaseTableConstraint {
-  type: 'foreign-key';
+  type: TableConstraintType.FOREIGN_KEY;
   referencedConstraintName: string;
   referencedTableName: string;
   references: ForeignKeyColumnReference[];
 }
 
 export interface UniqueTableConstraint extends BaseTableConstraint {
-  type: 'unique';
+  type: TableConstraintType.UNIQUE;
 }
 
 export interface CheckTableConstraint extends BaseTableConstraint {
-  type: 'check';
+  type: TableConstraintType.CHECK;
   condition: string;
 }
 
