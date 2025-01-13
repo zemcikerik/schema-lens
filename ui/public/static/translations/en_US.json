@@ -147,6 +147,7 @@
     "CONSTRAINTS": {
       "LABEL": "Constraints",
       "NAME_LABEL": "Name",
+      "EMPTY_LABEL": "This table has no supported constraints.",
       "TYPE": {
         "LABEL": "Type",
         "PRIMARY_KEY": "Primary Key",
@@ -164,6 +165,7 @@
     "INDEXES": {
       "LABEL": "Indexes",
       "NAME_LABEL": "Name",
+      "EMPTY_LABEL": "This table has no supported indexes.",
       "TYPE": {
         "LABEL": "Type",
         "NORMAL": "Normal",

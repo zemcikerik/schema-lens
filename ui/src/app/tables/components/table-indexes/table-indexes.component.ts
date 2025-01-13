@@ -10,6 +10,7 @@ import { TableIndexComponent } from '../table-index/table-index.component';
 import { TableIndexIconComponent } from '../table-index-icon/table-index-icon.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { IndexTypeToLabelPipe } from '../../pipes/index-type-to-label-pipe';
+import { AlertComponent } from '../../../shared/components/alert/alert.component';
 
 @Component({
   selector: 'app-table-indexes',
@@ -25,6 +26,7 @@ import { IndexTypeToLabelPipe } from '../../pipes/index-type-to-label-pipe';
     TableIndexIconComponent,
     TranslatePipe,
     IndexTypeToLabelPipe,
+    AlertComponent,
   ],
   animations: [
     matExpansionAnimations.bodyExpansion,

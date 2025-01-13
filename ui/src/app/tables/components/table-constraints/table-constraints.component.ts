@@ -10,6 +10,7 @@ import { TableConstraint } from '../../models/table-constraint.model';
 import { matExpansionAnimations } from '@angular/material/expansion';
 import { TableConstraintComponent } from '../table-constraint/table-constraint.component';
 import { childLoadTableSignal } from '../../child-load-table.signal';
+import { AlertComponent } from '../../../shared/components/alert/alert.component';
 
 @Component({
   selector: 'app-table-constraints',
@@ -25,6 +26,7 @@ import { childLoadTableSignal } from '../../child-load-table.signal';
     MatIcon,
     MatIconButton,
     TableConstraintComponent,
+    AlertComponent,
   ],
   animations: [
     matExpansionAnimations.bodyExpansion,

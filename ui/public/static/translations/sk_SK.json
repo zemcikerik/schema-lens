@@ -147,6 +147,7 @@
     "CONSTRAINTS": {
       "LABEL": "Integritné obmedzenia",
       "NAME_LABEL": "Názov",
+      "EMPTY_LABEL": "Táto tabuľka nemá žiadne podporované integritné ombedzenia.",
       "TYPE": {
         "LABEL": "Typ",
         "PRIMARY_KEY": "Primárny kľúč",
@@ -164,6 +165,7 @@
     "INDEXES": {
       "LABEL": "Indexy",
       "NAME_LABEL": "Názov",
+      "EMPTY_LABEL": "Táto tabuľka nemá žiadne podporované indexy.",
       "TYPE": {
         "LABEL": "Typ",
         "NORMAL": "Normálny",
