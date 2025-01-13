@@ -1,4 +1,4 @@
-package dev.zemco.schemalens.projects
+package dev.zemco.schemalens.projects.collaborators
 
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Converter

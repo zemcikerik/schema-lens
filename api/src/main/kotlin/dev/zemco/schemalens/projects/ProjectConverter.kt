@@ -2,6 +2,7 @@ package dev.zemco.schemalens.projects
 
 import dev.zemco.schemalens.auth.ResourceAccessDeniedException
 import dev.zemco.schemalens.auth.UserService
+import dev.zemco.schemalens.projects.collaborators.ProjectCollaborationRole
 import org.slf4j.LoggerFactory
 import org.springframework.core.convert.TypeDescriptor
 import org.springframework.core.convert.converter.GenericConverter

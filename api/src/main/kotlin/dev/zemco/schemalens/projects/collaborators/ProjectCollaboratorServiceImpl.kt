@@ -1,6 +1,7 @@
-package dev.zemco.schemalens.projects
+package dev.zemco.schemalens.projects.collaborators
 
 import dev.zemco.schemalens.auth.User
+import dev.zemco.schemalens.projects.Project
 import org.springframework.stereotype.Service
 
 @Service
@@ -17,7 +18,8 @@ class ProjectCollaboratorServiceImpl(
             return null
         }
 
-        return projectCollaboratorRepository.save(ProjectCollaborator(
+        return projectCollaboratorRepository.save(
+            ProjectCollaborator(
             id = ProjectCollaborator.Id(
                 projectId = project.id!!,
                 userId = user.id!!
@@ -25,7 +27,8 @@ class ProjectCollaboratorServiceImpl(
             project = project,
             user = user,
             role = role,
-        ))
+        )
+        )
     }
 
     override fun deleteCollaborator(collaborator: ProjectCollaborator) =

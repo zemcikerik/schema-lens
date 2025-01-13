@@ -1,4 +1,4 @@
-package dev.zemco.schemalens.projects
+package dev.zemco.schemalens.projects.collaborators
 
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.CrudRepository

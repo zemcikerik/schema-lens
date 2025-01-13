@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.projects
 
+import dev.zemco.schemalens.projects.collaborators.ProjectCollaborationRole
 import dev.zemco.schemalens.validation.IpAddressConstraint
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank

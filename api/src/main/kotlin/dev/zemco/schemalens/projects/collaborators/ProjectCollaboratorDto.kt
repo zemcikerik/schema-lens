@@ -1,4 +1,4 @@
-package dev.zemco.schemalens.projects
+package dev.zemco.schemalens.projects.collaborators
 
 class ProjectCollaboratorDto(
     val username: String,

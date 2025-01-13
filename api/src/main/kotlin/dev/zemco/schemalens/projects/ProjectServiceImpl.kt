@@ -1,6 +1,7 @@
 package dev.zemco.schemalens.projects
 
 import dev.zemco.schemalens.auth.User
+import dev.zemco.schemalens.projects.collaborators.mapToProjectCollaborationRole
 import org.springframework.stereotype.Service
 import java.util.*
 

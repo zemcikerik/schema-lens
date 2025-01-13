@@ -1,6 +1,7 @@
-package dev.zemco.schemalens.projects
+package dev.zemco.schemalens.projects.collaborators
 
 import dev.zemco.schemalens.auth.User
+import dev.zemco.schemalens.projects.Project
 
 interface ProjectCollaboratorService {
     fun addCollaborator(project: Project, user: User, role: ProjectCollaborationRole): ProjectCollaborator?

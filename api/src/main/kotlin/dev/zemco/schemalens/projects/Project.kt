@@ -1,6 +1,8 @@
 package dev.zemco.schemalens.projects
 
 import dev.zemco.schemalens.auth.User
+import dev.zemco.schemalens.projects.collaborators.ProjectCollaborationRole
+import dev.zemco.schemalens.projects.collaborators.ProjectCollaborator
 import jakarta.persistence.*
 import java.util.*
 

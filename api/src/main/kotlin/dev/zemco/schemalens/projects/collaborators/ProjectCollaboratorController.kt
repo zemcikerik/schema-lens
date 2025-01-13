@@ -1,6 +1,8 @@
-package dev.zemco.schemalens.projects
+package dev.zemco.schemalens.projects.collaborators
 
 import dev.zemco.schemalens.auth.UserService
+import dev.zemco.schemalens.projects.Project
+import dev.zemco.schemalens.projects.ProjectRole
 import dev.zemco.schemalens.validation.UsernameConstraint
 import org.hibernate.validator.constraints.Length
 import org.springframework.http.HttpStatus

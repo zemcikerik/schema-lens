@@ -17,7 +17,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'profile',
-    loadComponent: () => import('./profile/components/profile/profile.component').then(c => c.ProfileComponent),
+    loadComponent: () => import('./profile/profile.component').then(c => c.ProfileComponent),
     canActivate: [authGuard],
   },
   {
@@ -32,7 +32,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'project/:projectId',
-    loadComponent: () => import('./projects/components/project/project.component').then(c => c.ProjectComponent),
+    loadComponent: () => import('./projects/project.component').then(c => c.ProjectComponent),
     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'properties', pathMatch: 'full' },
@@ -46,7 +46,7 @@ export const appRoutes: Route[] = [
       },
       {
         path: 'table/:tableName',
-        loadComponent: () => import('./tables/components/table/table.component').then(c => c.TableComponent),
+        loadComponent: () => import('./tables/table.component').then(c => c.TableComponent),
         children: [
           { path: '', redirectTo: 'columns', pathMatch: 'full' },
           {
@@ -76,7 +76,7 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'admin',
-    loadComponent: () => import('./admin/components/admin/admin.component').then(c => c.AdminComponent),
+    loadComponent: () => import('./admin/admin.component').then(c => c.AdminComponent),
     canActivate: [authGuard, hasAdminRoleGuard],
     children: [
       { path: '', redirectTo: 'faq', pathMatch: 'full' },

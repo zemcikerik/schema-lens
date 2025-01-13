@@ -1,8 +1,8 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { LayoutContentWithSidebarComponent } from '../../../core/layouts/layout-content-with-sidebar.component';
+import { LayoutContentWithSidebarComponent } from '../core/layouts/layout-content-with-sidebar.component';
 import { RouterOutlet } from '@angular/router';
-import { ContentCardComponent } from '../../../shared/components/content-card/content-card.component';
-import { AdminNavComponent } from '../admin-nav/admin-nav.component';
+import { ContentCardComponent } from '../shared/components/content-card/content-card.component';
+import { AdminNavComponent } from './components/admin-nav/admin-nav.component';
 
 @Component({
   selector: 'app-admin',

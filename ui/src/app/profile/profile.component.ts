@@ -1,24 +1,24 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, Signal } from '@angular/core';
-import { ContentCardComponent } from '../../../shared/components/content-card/content-card.component';
-import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
-import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { AuthService } from '../../../core/auth/auth.service';
-import { UpdateUserInfo, User } from '../../../core/models/user.model';
-import { ProfileGeneralFormComponent } from '../profile-general-form/profile-general-form.component';
+import { ContentCardComponent } from '../shared/components/content-card/content-card.component';
+import { LayoutHeaderAndContentComponent } from '../core/layouts/layout-header-and-content.component';
+import { TranslatePipe } from '../core/translate/translate.pipe';
+import { AuthService } from '../core/auth/auth.service';
+import { UpdateUserInfo, User } from '../core/models/user.model';
+import { ProfileGeneralFormComponent } from './components/profile-general-form/profile-general-form.component';
 import {
   ProfileChangePasswordFormComponent
-} from '../profile-change-password-form/profile-change-password-form.component';
+} from './components/profile-change-password-form/profile-change-password-form.component';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
-import { ChangePassword } from '../../../core/models/change-password.model';
-import { UserService } from '../../../core/auth/user.service';
+import { ProgressSpinnerComponent } from '../shared/components/progress-spinner/progress-spinner.component';
+import { ChangePassword } from '../core/models/change-password.model';
+import { UserService } from '../core/auth/user.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, filter, finalize, map, mergeMap, of, tap } from 'rxjs';
-import { AlertComponent } from '../../../shared/components/alert/alert.component';
-import { DialogService } from '../../../core/dialog.service';
+import { AlertComponent } from '../shared/components/alert/alert.component';
+import { DialogService } from '../core/dialog.service';
 import { Router } from '@angular/router';
-import { ProfileService } from '../../services/profile.service';
+import { ProfileService } from './services/profile.service';
 
 @Component({
   selector: 'app-profile',

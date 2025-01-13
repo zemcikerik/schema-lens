@@ -1,21 +1,21 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untracked } from '@angular/core';
 import { Router, RouterOutlet } from '@angular/router';
-import { NavTab, NavTabGroupComponent } from '../../../shared/components/nav-tab-group/nav-tab-group.component';
+import { NavTab, NavTabGroupComponent } from '../shared/components/nav-tab-group/nav-tab-group.component';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
-import { TableService } from '../../services/table.service';
+import { TranslatePipe } from '../core/translate/translate.pipe';
+import { ProgressSpinnerComponent } from '../shared/components/progress-spinner/progress-spinner.component';
+import { TableService } from './services/table.service';
 import { finalize, of } from 'rxjs';
 import {
   isProjectConnectionError,
   ProjectConnectionError,
   ProjectConnectionFailure,
-} from '../../../projects/models/project-connection-error.model';
+} from '../projects/models/project-connection-error.model';
 import {
   ProjectConnectionErrorAlertComponent
-} from '../../../projects/components/project-connection-error-alert/project-connection-error-alert.component';
-import { catchProjectConnectionError } from '../../../projects/catch-project-connection-error.fn';
+} from '../projects/components/project-connection-error-alert/project-connection-error-alert.component';
+import { catchProjectConnectionError } from '../projects/catch-project-connection-error.fn';
 
 @Component({
   selector: 'app-table',

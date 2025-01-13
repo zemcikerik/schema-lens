@@ -1,11 +1,11 @@
 import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untracked } from '@angular/core';
-import { LayoutContentWithSidebarComponent } from '../../../core/layouts/layout-content-with-sidebar.component';
-import { ContentCardComponent } from '../../../shared/components/content-card/content-card.component';
-import { ProjectNavComponent } from '../project-nav/project-nav.component';
+import { LayoutContentWithSidebarComponent } from '../core/layouts/layout-content-with-sidebar.component';
+import { ContentCardComponent } from '../shared/components/content-card/content-card.component';
+import { ProjectNavComponent } from './components/project-nav/project-nav.component';
 import { Router, RouterOutlet } from '@angular/router';
-import { ProjectService } from '../../services/project.service';
+import { ProjectService } from './services/project.service';
 import { finalize } from 'rxjs';
-import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
+import { ProgressSpinnerComponent } from '../shared/components/progress-spinner/progress-spinner.component';
 
 @Component({
   selector: 'app-project',

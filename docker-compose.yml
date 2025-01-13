@@ -56,7 +56,7 @@ services:
     image: gvenzl/oracle-free:slim
     restart: on-failure:3
     volumes:
-      - ./db/data:/opt/oracle/oradata
+      - ${DB_DATA_FOLDER_PATH}:/opt/oracle/oradata
     environment:
       ORACLE_PASSWORD: ${DB_ROOT_PASSWORD}
       APP_USER: ${DB_APP_USER}
