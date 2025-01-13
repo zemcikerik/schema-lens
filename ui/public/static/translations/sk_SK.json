@@ -1,19 +1,27 @@
 {
   "APP_TITLE": "Schema Lens",
   "APP_TITLE_SHORT": "SL",
+  "404_LABEL": "404",
+  "404_DESCRIPTION": "Ako sme sa sem dostali?",
   "GENERIC": {
     "SAVE_LABEL": "Uložiť",
+    "EDIT_LABEL": "Upraviť",
     "DELETE_LABEL": "Vymazať",
     "CONFIRM_LABEL": "Potvrdiť",
     "CANCEL_LABEL": "Zrušiť",
-    "ERROR_LABEL": "Pri spracovaní vašej požiadavky nastala chyba. Skúste to prosím neskôr.",
+    "CLOSE_LABEL": "Zatvoriť",
+    "SUCCESS_LABEL": "Vaša požiadavka bola úspešne vykonaná.",
+    "ERROR_LABEL": "Došlo k chybe pri spracovaní vašej požiadavky. Skúste to prosím neskôr.",
+    "TOOLTIP_INFO_LABEL": "Informácia",
+    "TOOLTIP_ERROR_LABEL": "Chyba",
     "VALIDATION": {
       "REQUIRED": "Toto pole je povinné.",
-      "MIN_LENGTH": "Toto pole musí obsahovať aspoň {minLength} znakov.",
-      "MAX_LENGTH": "Toto pole môže obsahovať maximálne {maxLength} znakov.",
+      "NO_START_END_WHITESPACE": "Toto pole nemôže začínať alebo končiť medzerou.",
+      "MIN_LENGTH": "Toto pole musí mať aspoň {minLength} znakov.",
+      "MAX_LENGTH": "Toto pole môže mať maximálne {maxLength} znakov.",
       "PATTERN": "Toto pole obsahuje nepovolené znaky.",
       "EMAIL": "Tento e-mail je neplatný.",
-      "VERIFY_PASSWORD": "Potvrdené heslo sa musí zhodovať s heslom.",
+      "VERIFY_PASSWORD": "Heslá sa musia zhodovať.",
       "UNKNOWN": "Toto pole je neplatné.",
       "IP_ADDRESS": {
         "INVALID": "Táto IP adresa je neplatná.",
@@ -33,14 +41,20 @@
     "REGISTER_BUTTON": "Registrovať",
     "LOGIN_REDIRECT": "Skúste sa prihlásiť",
     "REGISTER_REDIRECT": "Vytvoriť nový účet",
+    "CHANGE_PASSWORD_LABEL": "Zmeniť heslo",
+    "OLD_PASSWORD_LABEL": "Staré heslo",
+    "NEW_PASSWORD_LABEL": "Nové heslo",
     "LOGOUT_BUTTON": "Odhlásiť sa",
+    "CHANGE_PASSWORD_SUCCESS": "Heslo bolo úspešne zmenené.",
+    "WRONG_PASSWORD_LABEL": "Zadané staré heslo nie je správne.",
     "ERRORS": {
-      "USERNAME_TAKEN": "Toto používateľské meno už používa iný používateľ.",
-      "EMAIL_TAKEN": "Tento e-mail už používa iný používateľ.",
+      "USERNAME_TAKEN": "Toto používateľské meno už niekto používa.",
+      "EMAIL_TAKEN": "Tento e-mail už niekto používa.",
       "CREDENTIALS_WRONG": "Zadané používateľské meno alebo heslo nie je správne."
     }
   },
   "LOCALE": {
+    "LABEL": "Jazyk",
     "LANGUAGE_BUTTON": "Jazyk",
     "CHANGE_DIALOG": {
       "TITLE": "Zmeniť jazyk",
@@ -84,14 +98,45 @@
         "PORT_LABEL": "Port",
         "SERVICE_LABEL": "Služba",
         "USERNAME_LABEL": "Používateľské meno",
-        "PASSWORD_LABEL": "Heslo"
+        "PASSWORD_LABEL": "Heslo",
+        "PASSWORD_UNCHANGED_LABEL": "(nezmenené)"
       }
     },
-    "DELETE_CONFIRM_DESCRIPTION": "Naozaj chcete vymazať tento projekt? Tento krok je nevratný!"
+    "CONNECTION_ERROR": {
+      "CONNECTION_FAILURE": "Pri pokuse o pripojenie k databáze projektu došlo k chybe.",
+      "TIMEOUT": "Pripojenie k databáze projektu vypršalo.",
+      "INTEGRITY_VIOLATION": "Operáciu nebolo možné dokončiť kvôli porušeniu pravidiel integrity databázy.",
+      "PERMISSION_DENIED": "Používateľ databázy projektu nemá požadované oprávnenia.",
+      "UNKNOWN": "Pri pokuse o pripojenie k databáze projektu došlo k neznámej chybe.",
+      "DETAILS_LABEL": "Podrobnosti chyby: {message}",
+      "TITLE_LABEL": "Chyba pripojenia k projektu"
+    },
+    "DELETE_CONFIRM_DESCRIPTION": "Ste si istý, že chcete vymazať tento projekt? Táto akcia je nevratná!",
+    "COLLABORATORS": {
+      "LABEL": "Spolupracovníci",
+      "ADD_LABEL": "Pridať spolupracovníka",
+      "ADD_DESCRIPTION": "Pridať spolupracovníka, aby ste mu umožnili prístup k projektu.",
+      "ALREADY_COLLABORATOR_ERROR": "Tento používateľ je už spolupracovníkom.",
+      "USER_NOT_EXISTS_ERROR": "Zadaný používateľ neexistuje.",
+      "CHANGE_ROLE_LABEL": "Zmeniť rolu spolupracovníka",
+      "CHANGE_ROLE_DESCRIPTION": "Zmeniť rolu existujúceho spolupracovníka.",
+      "DELETE_LABEL": "Vymazať spolupracovníka",
+      "DELETE_DESCRIPTION": "Ste si istý, že chcete odstrániť tohto spolupracovníka?",
+      "ROLES": {
+        "LABEL": "Rola",
+        "OWNER_LABEL": "Vlastník",
+        "MANAGER_LABEL": "Manažér",
+        "ADMIN_LABEL": "Admin",
+        "CONTRIBUTOR_LABEL": "Prispievateľ",
+        "VIEWER_LABEL": "Pozorovateľ",
+        "CHANGE_BUTTON": "Zmeniť rolu"
+      }
+    }
   },
   "TABLES": {
     "LABEL": "Tabuľka",
     "LIST_LABEL": "Tabuľky",
+    "NOT_FOUND_LABEL": "Zadaná tabuľka v tomto projekte neexistuje.",
     "COLUMNS": {
       "LABEL": "Stĺpce",
       "NAME_LABEL": "Názov",
@@ -104,7 +149,7 @@
       "NAME_LABEL": "Názov",
       "TYPE": {
         "LABEL": "Typ",
-        "PRIMARY-KEY": "Primárny kľúč",
+        "PRIMARY_KEY": "Primárny kľúč",
         "FOREIGN_KEY": "Cudzí kľúč",
         "CHECK": "Check",
         "UNIQUE": "Unikátne"
@@ -115,6 +160,60 @@
       "REFERENCED_CONSTRAINT_NAME_LABEL": "Názov referencovaného obmedzenia",
       "REFERENCED_TABLE_NAME_LABEL": "Názov referenovanej tabuľky",
       "REFERENCED_COLUMN_NAME_LABEL": "Názov referencovaného stĺpca"
+    },
+    "INDEXES": {
+      "LABEL": "Stĺpce",
+      "NAME_LABEL": "Názov",
+      "TYPE": {
+        "LABEL": "Typ",
+        "NORMAL": "Normálny",
+        "NORMAL_REVERSE": "Obrátený normálny",
+        "BITMAP": "Bitmapa",
+        "FUNCTION_NORMAL": "Normálny funkcionálny",
+        "FUNCTION_NORMAL_REVERSE": "Obrátený normálny funkcionálny",
+        "FUNCTION_BITMAP": "Bitmapový funkcionálny"
+      },
+      "UNIQUE_LABEL": "Unikátny",
+      "COMPRESSED_LABEL": "Kompresia",
+      "LOGGED_LABEL": "Logovanie",
+      "INCLUDED_EXPRESSIONS_LABEL": "Zahrnuté stĺpce a funkcie:",
+      "FUNCTION_LABEL": "Funkcia",
+      "ASCENDING_LABEL": "Vzostupne",
+      "DESCENDING_LABEL": "Zostupne"
+    }
+  },
+  "PROFILE": {
+    "LABEL": "Profil",
+    "GENERAL_INFORMATION_LABEL": "Všeobecné informácie",
+    "DANGER_ZONE_LABEL": "Nebezpečná zóna",
+    "DELETE_ACCOUNT_LABEL": "Zmazať účet",
+    "UPDATE_SUCCESS": "Informácie boli úspešne aktualizované.",
+    "PICTURE_BAD_ERROR": "Poskytnutý obrázok nie je platný. Všeobecné informácie boli úspešne aktualizované.",
+    "PICTURE_UNKNOWN_ERROR": "Pri nahrávaní profilovej fotografie došlo k chybe. Všeobecné informácie boli úspešne aktualizované.",
+    "PICTURE_TOO_LARGE_TITLE": "Príliš veľký obrázok",
+    "PICTURE_TOO_LARGE_DESCRIPTION": "Poskytnutý obrázok je príliš veľký. Maximálna povolená veľkosť súboru je 2 MB.",
+    "DISALLOWED_MIME_TYPE_TITLE": "Nepovolený typ súboru",
+    "DISALLOWED_MIME_TYPE_DESCRIPTION": "Poskytnutý typ súboru nie je povolený. Použite prosím .png alebo .jpeg súbory.",
+    "DELETE_ACCOUNT_CONFIRM_TITLE": "Potvrdiť zmazanie účtu",
+    "DELETE_ACCOUNT_CONFIRM_DESCRIPTION": "Ste si istý, že chcete zmazať svoj účet? Táto akcia je nevratná. Všetky projekty, ktorých ste vlastníkom, budú tiež zmazané."
+  },
+  "HELP": {
+    "LABEL": "Pomoc",
+    "FAQ_LABEL": "Najčastejšie otázky",
+    "FAQ_EMPTY_LABEL": "Momentálne nie sú dostupné žiadne často kladené otázky."
+  },
+  "ADMIN": {
+    "PANEL_LABEL": "Administračný panel",
+    "ID_LABEL": "ID",
+    "FAQ": {
+      "ADD_LABEL": "Pridať otázku",
+      "EDIT_LABEL": "Upraviť otázku",
+      "TITLE_LABEL": "Názov",
+      "ANSWER_LABEL": "Odpoveď",
+      "CREATE_DESCRIPTION": "Vytvoriť novú často kladenú otázku. Táto otázka sa zobrazí iba pre zvolený jazyk.",
+      "UPDATE_DESCRIPTION": "Aktualizovať existujúcu často kladenú otázku. Táto otázka sa zobrazí iba pre aktuálny jazyk.",
+      "CONFIRM_DELETE_TITLE": "Zmazať otázku",
+      "CONFIRM_DELETE_DESCRIPTION": "Ste si istý, že chcete zmazať túto otázku?"
     }
   }
 }

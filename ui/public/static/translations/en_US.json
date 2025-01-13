@@ -98,7 +98,8 @@
         "PORT_LABEL": "Port",
         "SERVICE_LABEL": "Service",
         "USERNAME_LABEL": "Username",
-        "PASSWORD_LABEL": "Password"
+        "PASSWORD_LABEL": "Password",
+        "PASSWORD_UNCHANGED_LABEL": "(unchanged)"
       }
     },
     "CONNECTION_ERROR": {

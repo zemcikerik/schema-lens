@@ -59,7 +59,7 @@
       <mat-form-field [floatLabel]="properties() !== null ? 'always' : 'auto'">
         <mat-label>{{ ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.PASSWORD_LABEL' | translate)() }}</mat-label>
         <input matInput type="password" formControlName="password"
-               [placeholder]="properties() !== null ? '(unchanged)' : ''">
+               [placeholder]="properties() !== null ? ('PROJECTS.CONNECTION_PROPERTIES.ORACLE.PASSWORD_UNCHANGED_LABEL' | translate)() : ''">
         @if (connectionPasswordControl.invalid) {
           <mat-error>{{ (connectionPasswordControl.errors | formatGenericValidationErrors)() }}</mat-error>
         }
