@@ -162,7 +162,7 @@
       "REFERENCED_COLUMN_NAME_LABEL": "Názov referencovaného stĺpca"
     },
     "INDEXES": {
-      "LABEL": "Stĺpce",
+      "LABEL": "Indexy",
       "NAME_LABEL": "Názov",
       "TYPE": {
         "LABEL": "Typ",

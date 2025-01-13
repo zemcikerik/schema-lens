@@ -162,7 +162,7 @@
       "REFERENCED_COLUMN_NAME_LABEL": "Referenced Column Name"
     },
     "INDEXES": {
-      "LABEL": "Columns",
+      "LABEL": "Indexes",
       "NAME_LABEL": "Name",
       "TYPE": {
         "LABEL": "Type",

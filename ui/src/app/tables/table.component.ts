@@ -36,7 +36,7 @@ export class TableComponent {
   readonly TABLE_TABS: NavTab[] = [
     { title: 'TABLES.COLUMNS.LABEL', translateTitle: true, path: 'columns' },
     { title: 'TABLES.CONSTRAINTS.LABEL', translateTitle: true, path: 'constraints' },
-    { title: 'TABLE.INDEXES.LABEL', translateTitle: true, path: 'indexes' },
+    { title: 'TABLES.INDEXES.LABEL', translateTitle: true, path: 'indexes' },
   ];
 
   projectId = input.required<string>();
