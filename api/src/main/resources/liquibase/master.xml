@@ -289,4 +289,15 @@
                     columnName="auth_password"
                     newDataType="VARCHAR(256)" />
   </changeSet>
+
+  <changeSet id="2025-01-13T0912-add-default-admin-user"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <insert tableName="registered_user">
+      <column name="username">admin</column>
+      <column name="email">admin@localhost</column>
+      <column name="hashed_password">$2a$10$.Ih0GppKsPmtuDdfDNeZlenWr6OJrUlkOLGETdDIeqC8fM./XaWSC</column> <!-- adminpass -->
+      <column name="active">1</column>
+      <column name="admin">1</column>
+    </insert>
+  </changeSet>
 </databaseChangeLog>

@@ -16,6 +16,7 @@
     "TOOLTIP_ERROR_LABEL": "Error",
     "VALIDATION": {
       "REQUIRED": "This field is required.",
+      "NO_START_END_WHITESPACE": "This field cannot start or end with whitespace.",
       "MIN_LENGTH": "This field has to be at least {minLength} characters long.",
       "MAX_LENGTH": "This field has to be maximum {maxLength} characters long.",
       "PATTERN": "This field contains disallowed characters.",

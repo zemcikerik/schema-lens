@@ -8,6 +8,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { MatInput } from '@angular/material/input';
+import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 
 export interface AdminFaqModifyDialogData {
   locales: string[];
@@ -36,8 +37,18 @@ export class AdminFaqModifyDialogComponent {
 
   formGroup = new FormGroup({
     locale: new FormControl<string | null>(null, [Validators.required]),
-    title: new FormControl<string>('', [Validators.required, Validators.minLength(3), Validators.maxLength(128)]),
-    answer: new FormControl<string>('', [Validators.required, Validators.minLength(3), Validators.maxLength(2048)]),
+    title: new FormControl<string>('', [
+      Validators.required,
+      noStartEndWhitespaceValidator,
+      Validators.minLength(3),
+      Validators.maxLength(128),
+    ]),
+    answer: new FormControl<string>('', [
+      Validators.required,
+      noStartEndWhitespaceValidator,
+      Validators.minLength(3),
+      Validators.maxLength(2048),
+    ]),
   });
 
   private dialogRef = inject(MatDialogRef);

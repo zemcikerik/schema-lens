@@ -1,5 +1,7 @@
 package dev.zemco.schemalens.help
 
+import dev.zemco.schemalens.locale.Locale
+import dev.zemco.schemalens.locale.LocaleConverter
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotNull
 

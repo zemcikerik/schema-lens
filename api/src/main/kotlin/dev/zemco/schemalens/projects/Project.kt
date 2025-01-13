@@ -2,7 +2,6 @@ package dev.zemco.schemalens.projects
 
 import dev.zemco.schemalens.auth.User
 import jakarta.persistence.*
-import jakarta.validation.constraints.NotBlank
 import java.util.*
 
 @Entity
@@ -14,7 +13,6 @@ class Project(
     @Column(nullable = false, unique = true)
     var uuid: UUID = UUID.randomUUID(),
 
-    @NotBlank
     @Column(nullable = false, length = 64)
     var name: String,
 

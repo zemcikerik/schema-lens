@@ -12,6 +12,7 @@ import { ipAddressValidator } from '../../../core/validators/ip-address.validato
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { portValidator } from '../../../core/validators/port.validator';
 import { ProjectCollaborationRole } from '../../models/project-collaboration-role.model';
+import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 
 @Component({
   selector: 'app-project-properties-form',
@@ -38,7 +39,7 @@ export class ProjectPropertiesFormComponent {
   delete = output();
 
   propertiesForm = new FormGroup({
-    name: new FormControl<string>('', [Validators.required, Validators.maxLength(64)]),
+    name: new FormControl<string>('', [Validators.required, noStartEndWhitespaceValidator, Validators.maxLength(64)]),
     dbType: new FormControl<DbType | null>(null, [Validators.required]),
     oracleConnection: new FormGroup({
       host: new FormControl<string>('', [Validators.required, ipAddressValidator]),

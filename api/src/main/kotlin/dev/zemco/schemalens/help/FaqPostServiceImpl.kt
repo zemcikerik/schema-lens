@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.help
 
+import dev.zemco.schemalens.locale.Locale
 import org.springframework.stereotype.Service
 
 @Service

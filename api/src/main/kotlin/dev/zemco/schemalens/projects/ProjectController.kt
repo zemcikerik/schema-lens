@@ -49,7 +49,7 @@ class ProjectController(
         @PathVariable @ProjectRole(ProjectCollaborationRole.ADMIN) project: Project,
         @RequestBody @Validated(OnUpdate::class) projectDto: OracleProjectPropertiesDto
     ): OracleProjectPropertiesDto {
-        project.name = projectDto.name
+        project.name = projectDto.name.trim()
         (project.connectionInfo as OracleProjectConnectionInfo).let { connectionInfo ->
             connectionInfo.host = projectDto.connection.host
             connectionInfo.port = projectDto.connection.port

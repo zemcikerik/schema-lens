@@ -27,12 +27,9 @@ class SecurityConfiguration {
     ): SecurityFilterChain {
         http {
             cors { }
-            csrf {
-//       todo         csrfTokenRepository = CookieCsrfTokenRepository.withHttpOnlyFalse()
-                disable()
-            }
+            csrf { disable() }
             sessionManagement {
-                sessionCreationPolicy = SessionCreationPolicy.NEVER
+                sessionCreationPolicy = SessionCreationPolicy.STATELESS
             }
             exceptionHandling {
                 authenticationEntryPoint = jwtAuthenticationEntryPoint

@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 import jakarta.validation.Payload
 import org.apache.commons.validator.routines.InetAddressValidator
+import org.springframework.stereotype.Component
 import java.net.InetAddress
 import kotlin.reflect.KClass
 
@@ -18,6 +19,7 @@ annotation class IpAddressConstraint(
     val allowLocalAddresses: Boolean = false,
 )
 
+@Component
 class IpAddressValidator : ConstraintValidator<IpAddressConstraint, String> {
 
     private var allowLocalAddresses: Boolean = false

@@ -4,6 +4,7 @@ import jakarta.validation.Constraint
 import jakarta.validation.ConstraintValidator
 import jakarta.validation.ConstraintValidatorContext
 import jakarta.validation.Payload
+import org.springframework.stereotype.Component
 import kotlin.reflect.KClass
 
 @Constraint(validatedBy = [UsernameValidator::class])
@@ -15,6 +16,7 @@ annotation class UsernameConstraint(
     val payload: Array<KClass<out Payload>> = [],
 )
 
+@Component
 class UsernameValidator : ConstraintValidator<UsernameConstraint, String> {
 
     override fun isValid(value: String?, context: ConstraintValidatorContext?): Boolean =

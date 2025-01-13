@@ -1,6 +1,7 @@
 package dev.zemco.schemalens.admin
 
-import dev.zemco.schemalens.help.Locale
+import dev.zemco.schemalens.locale.Locale
+import dev.zemco.schemalens.validation.WhitelistedLocaleConstraint
 import jakarta.validation.constraints.NotBlank
 import org.hibernate.validator.constraints.Length
 
@@ -12,23 +13,24 @@ data class AdminFaqPostDto(
 )
 
 data class AdminCreateFaqPostDto(
+    @field:WhitelistedLocaleConstraint
     val locale: Locale,
 
-    @NotBlank
-    @Length(min = 3, max = 128)
+    @field:NotBlank
+    @field:Length(min = 3, max = 128)
     val title: String,
 
-    @NotBlank
-    @Length(min = 3, max = 2048)
+    @field:NotBlank
+    @field:Length(min = 3, max = 2048)
     val answer: String,
 )
 
 data class AdminUpdateFaqPostDto(
-    @NotBlank
-    @Length(min = 3, max = 128)
+    @field:NotBlank
+    @field:Length(min = 3, max = 128)
     val title: String,
 
-    @NotBlank
-    @Length(min = 3, max = 2048)
+    @field:NotBlank
+    @field:Length(min = 3, max = 2048)
     val answer: String,
 )

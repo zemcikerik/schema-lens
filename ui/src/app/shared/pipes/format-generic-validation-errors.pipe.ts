@@ -19,6 +19,9 @@ export class FormatGenericValidationErrorsPipe implements PipeTransform {
     if (errors['required']) {
       return this.translateService.translate('GENERIC.VALIDATION.REQUIRED');
     }
+    if (errors['noStartEndWhitespace']) {
+      return this.translateService.translate('GENERIC.VALIDATION.NO_START_END_WHITESPACE');
+    }
     if (errors['minlength']) {
       return this.translateService.translate(
         'GENERIC.VALIDATION.MIN_LENGTH',
