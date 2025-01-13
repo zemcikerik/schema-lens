@@ -3,9 +3,7 @@
     <a
       mat-tab-link
       [routerLink]="entry.routerLink"
-      routerLinkActive
-      #rla="routerLinkActive"
-      [active]="rla.isActive"
+      [active]="currentUrl() === entry.url"
     >{{ entry.translateTitle ? (entry.title | translate)() : entry.title }}</a>
   }
 </nav>
