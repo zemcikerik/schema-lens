@@ -37,6 +37,7 @@ export class TableComponent {
     { title: 'TABLES.COLUMNS.LABEL', translateTitle: true, path: 'columns' },
     { title: 'TABLES.CONSTRAINTS.LABEL', translateTitle: true, path: 'constraints' },
     { title: 'TABLES.INDEXES.LABEL', translateTitle: true, path: 'indexes' },
+    { title: 'DDL', translateTitle: false, path: 'ddl' },
   ];
 
   projectId = input.required<string>();

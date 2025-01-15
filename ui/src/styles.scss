@@ -13,6 +13,7 @@
 @import './scss/components/404';
 @import './scss/components/admin-faq';
 @import './scss/components/alert';
+@import './scss/components/code-editor';
 @import './scss/components/confirmation-dialog';
 @import './scss/components/content-card';
 @import './scss/components/help-faq';
@@ -29,6 +30,7 @@
 @import './scss/components/table-columns';
 @import './scss/components/table-constraint';
 @import './scss/components/table-constraints';
+@import './scss/components/table-ddl';
 @import './scss/components/table-index';
 @import './scss/components/table-indexes';
 @import './scss/components/top-bar';
@@ -47,6 +49,7 @@
 @include app-404();
 @include app-admin-faq();
 @include app-alert();
+@include app-code-editor();
 @include app-confirmation-dialog();
 @include app-content-card();
 @include app-help-faq();
@@ -63,6 +66,7 @@
 @include app-table-columns();
 @include app-table-constraint();
 @include app-table-constraints();
+@include app-table-ddl();
 @include app-table-index();
 @include app-table-indexes();
 @include app-top-bar();

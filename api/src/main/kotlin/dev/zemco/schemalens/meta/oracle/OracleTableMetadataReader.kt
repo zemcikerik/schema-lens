@@ -16,7 +16,7 @@ class OracleTableMetadataReader(
         dataSource.toJdbcTemplate().queryForList(GET_TABLE_LIST_SQL_QUERY, String::class.java)
 
     override fun readTableDetails(dataSource: DataSource, tableName: String): TableMetadata? {
-        if (!tableExists(dataSource, tableName)) {
+        if (!checkIfTableExists(dataSource, tableName)) {
             return null
         }
 
@@ -26,7 +26,7 @@ class OracleTableMetadataReader(
         return TableMetadata(name = tableName, columns = columns, constraints = constraints, indexes = indexes)
     }
 
-    private fun tableExists(dataSource: DataSource, tableName: String): Boolean {
+    fun checkIfTableExists(dataSource: DataSource, tableName: String): Boolean {
         val params = MapSqlParameterSource("table_name", tableName)
         return dataSource.toNamedJdbcTemplate().queryForObject(TABLE_EXISTS_SQL_QUERY, params, Boolean::class.java) == true
     }

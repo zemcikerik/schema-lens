@@ -22,4 +22,8 @@ class TableController(
     fun tableDetail(@PathVariable project: Project, @PathVariable tableName: String): ResponseEntity<TableMetadata> =
         ResponseEntity.ofNullable(tableService.getTableDetails(project, tableName))
 
+    @GetMapping("{tableName}/ddl")
+    fun generateDdl(@PathVariable project: Project, @PathVariable tableName: String): ResponseEntity<String> =
+        ResponseEntity.ofNullable(tableService.generateDdlForTable(project, tableName))
+
 }

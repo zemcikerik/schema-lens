@@ -61,6 +61,10 @@ export const appRoutes: Route[] = [
             path: 'indexes',
             loadComponent: () => import('./tables/components/table-indexes/table-indexes.component').then(c => c.TableIndexesComponent),
           },
+          {
+            path: 'ddl',
+            loadComponent: () => import('./tables/components/table-ddl/table-ddl.component').then(c => c.TableDdlComponent),
+          }
         ],
       },
       {

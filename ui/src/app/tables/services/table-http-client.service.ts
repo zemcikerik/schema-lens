@@ -21,4 +21,7 @@ export class TableHttpClientService {
     );
   }
 
+  getTableDdl(projectId: string, tableName: string): Observable<string> {
+    return this.httpClient.get(`/project/${projectId}/table/${tableName}/ddl`, { responseType: 'text' });
+  }
 }

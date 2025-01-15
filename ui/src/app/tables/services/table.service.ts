@@ -19,4 +19,8 @@ export class TableService {
     return this.tableHttpClient.getTable(projectId, tableName);
   });
 
+  getTableDdl = cacheObservable((projectId: string, tableName: string): Observable<string> => {
+    return this.tableHttpClient.getTableDdl(projectId, tableName);
+  });
+
 }

@@ -1,0 +1,11 @@
+@mixin app-code-editor($options: ()) {
+  app-code-editor {
+    display: block;
+    height: 100%;
+
+    // for some reason the Monaco wrapper library for Angular sets the height to 200px, override this
+    ngx-monaco-editor {
+      height: 100% !important;
+    }
+  }
+}

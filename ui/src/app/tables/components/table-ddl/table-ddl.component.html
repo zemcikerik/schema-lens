@@ -1,0 +1,7 @@
+@if (loading()) {
+  <app-progress-spinner [center]="true" />
+} @else {
+  <div class="table-ddl">
+    <app-code-editor [ngModel]="ddl()" language="sql" [readonly]="true" />
+  </div>
+}

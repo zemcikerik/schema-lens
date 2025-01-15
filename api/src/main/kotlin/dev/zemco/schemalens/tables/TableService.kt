@@ -6,4 +6,5 @@ import dev.zemco.schemalens.projects.Project
 interface TableService {
     fun getTableList(project: Project): List<String>
     fun getTableDetails(project: Project, tableName: String): TableMetadata?
+    fun generateDdlForTable(project: Project, tableName: String): String?
 }
