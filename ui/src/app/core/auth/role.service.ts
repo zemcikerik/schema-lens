@@ -2,8 +2,8 @@ import { inject, Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { distinctUntilChanged, map, Observable } from 'rxjs';
 import { Role } from '../models/role.model';
-import deepEqual from 'fast-deep-equal';
 import { toSignal } from '@angular/core/rxjs-interop';
+import { deepEqual } from 'fast-equals';
 
 @Injectable({
   providedIn: 'root',
