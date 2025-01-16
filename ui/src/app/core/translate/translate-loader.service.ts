@@ -1,21 +1,27 @@
-import { inject, Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { catchError, defer, Observable, shareReplay, throwError } from 'rxjs';
-import { RawTranslations } from './translate.types';
+import { Translations } from './translate.types';
+import { DescribedLocale } from '../models/described-locale.model';
 
 @Injectable({ providedIn: 'root' })
 export class TranslateLoaderService {
 
-  private httpClient = inject(HttpClient);
-  private _translationCache: Record<string, Observable<RawTranslations>> = {};
+  private _translationCache: Record<string, Observable<Translations>> = {};
 
-  loadRawTranslations(locale: string): Observable<RawTranslations> {
+  getAvailableLocales(): DescribedLocale[] {
+    return [
+      { name: 'English', code: 'en_US' },
+      { name: 'Slovensky', code: 'sk_SK' },
+    ];
+  }
+
+  loadTranslations(locale: string): Observable<Translations> {
     return defer(() => {
       if (locale in this._translationCache) {
         return this._translationCache[locale];
       }
 
-      const translations$ = this.httpClient.get<RawTranslations>(`./static/translations/${locale}.json`).pipe(
+      const translations$ = this.loadLocale(locale).pipe(
         catchError(err => {
           delete this._translationCache[locale];
           return throwError(() => err);
@@ -26,6 +32,22 @@ export class TranslateLoaderService {
       this._translationCache[locale] = translations$;
       return translations$;
     });
+  }
+
+  private loadLocale(locale: string): Observable<Translations> {
+    if (locale === 'en_US') {
+      return defer(() => this.unwrap(import(`../../../translations/en_US.json`)));
+    }
+
+    if (locale === 'sk_SK') {
+      return defer(() => this.unwrap(import(`../../../translations/sk_SK.json`)));
+    }
+
+    throw new Error('Unsupported locale');
+  }
+
+  private unwrap(promise: Promise<{ default: unknown }>): Promise<Translations> {
+    return promise.then(d => d.default) as Promise<Translations>;
   }
 
 }

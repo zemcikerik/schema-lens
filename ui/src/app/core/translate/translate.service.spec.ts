@@ -2,7 +2,6 @@ import { TranslateService } from './translate.service';
 import { MockBuilder, MockRender, ngMocks } from 'ng-mocks';
 import { TranslateLoaderService } from './translate-loader.service';
 import { lastValueFrom, of } from 'rxjs';
-import { TranslateParserService } from './translate-parser.service';
 import { Translations } from './translate.types';
 import { KeyValueStoreService } from '../persistence/key-value-store.service';
 
@@ -12,10 +11,11 @@ describe('TranslateService', () => {
 
   beforeAll(() => MockBuilder(TranslateService)
     .mock(TranslateLoaderService, {
-      loadRawTranslations: () => of({ RAW: 'yes' }),
-    })
-    .mock(TranslateParserService, {
-      parseRawTranslations: () => ({ RAW: () => 'no' }),
+      getAvailableLocales: () => [
+        { name: 'English', code: 'en_US' },
+        { name: 'Slovensky', code: 'sk_SK' },
+      ],
+      loadTranslations: () => of({ KEY: () => 'test' }),
     })
     .mock(KeyValueStoreService, {
       getStringOrDefault: () => 'en_US',
@@ -31,34 +31,30 @@ describe('TranslateService', () => {
     expect(service).toBeTruthy();
   });
 
-  describe('setLanguage', () => {
+  describe('setLocale', () => {
     it('should load translations for provided locale', async () => {
       const translateLoaderService = ngMocks.get(TranslateLoaderService);
-      jest.spyOn(translateLoaderService, 'loadRawTranslations');
-
-      const translateParserService = ngMocks.get(TranslateParserService);
-      jest.spyOn(translateParserService, 'parseRawTranslations');
+      jest.spyOn(translateLoaderService, 'loadTranslations');
 
       await lastValueFrom(service.setLocale('en_US'));
-      expect(translateLoaderService.loadRawTranslations).toHaveBeenCalledWith('en_US');
-      expect(translateParserService.parseRawTranslations).toHaveBeenCalledWith('en_US', { RAW: 'yes' });
-      expect(service.translate('RAW')()).toEqual('no');
+      expect(translateLoaderService.loadTranslations).toHaveBeenCalledWith('en_US');
+      expect(service.translate('KEY')()).toEqual('test');
     });
 
     it('should not load translations of current language', async () => {
       await lastValueFrom(service.setLocale('en_US'));
       const translateLoaderService = ngMocks.get(TranslateLoaderService);
-      jest.spyOn(translateLoaderService, 'loadRawTranslations');
+      jest.spyOn(translateLoaderService, 'loadTranslations');
 
       await lastValueFrom(service.setLocale('en_US'));
 
-      expect(translateLoaderService.loadRawTranslations).not.toHaveBeenCalled();
+      expect(translateLoaderService.loadTranslations).not.toHaveBeenCalled();
     });
   });
 
   describe('translate', () => {
     const mockTranslations = async (translations: Translations, locale = 'en_US') => {
-      jest.spyOn(ngMocks.get(TranslateParserService), 'parseRawTranslations').mockReturnValue(translations);
+      jest.spyOn(ngMocks.get(TranslateLoaderService), 'loadTranslations').mockReturnValue(of(translations));
       await lastValueFrom(service.setLocale(locale));
     };
 

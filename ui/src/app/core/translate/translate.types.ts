@@ -1,6 +1,4 @@
-import { MessageFunction } from '@messageformat/core';
-
-export type Translation = MessageFunction<'string'>;
+export type Translation = (args?: TranslationParams) => string;
 export type Translations = Record<string, Translation>;
 export type TranslationParams = Record<string, unknown> | unknown[];
 

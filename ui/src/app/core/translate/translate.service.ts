@@ -1,15 +1,10 @@
 import { computed, inject, Injectable, signal, Signal } from '@angular/core';
 import { Translation, TranslationParams, Translations } from './translate.types';
 import { TranslateLoaderService } from './translate-loader.service';
-import { TranslateParserService } from './translate-parser.service';
 import { defer, map, Observable, of, tap } from 'rxjs';
 import { DescribedLocale } from '../models/described-locale.model';
 import { KeyValueStoreService } from '../persistence/key-value-store.service';
 
-const AVAILABLE_LOCALES: DescribedLocale[] = [
-  { name: 'English', code: 'en_US' },
-  { name: 'Slovensky', code: 'sk_SK' },
-];
 const DEFAULT_LOCALE = 'en_US';
 const LOCALE_KEY = 'locale';
 
@@ -17,10 +12,9 @@ const LOCALE_KEY = 'locale';
 export class TranslateService {
 
   private translateLoader = inject(TranslateLoaderService);
-  private translateParser = inject(TranslateParserService);
   private keyValueStoreService = inject(KeyValueStoreService);
 
-  readonly _availableLocales = signal<DescribedLocale[]>(AVAILABLE_LOCALES);
+  readonly _availableLocales = signal<DescribedLocale[]>(this.translateLoader.getAvailableLocales());
   private _translations = signal<Translations>({});
   private _locale = signal<string>('');
 
@@ -51,8 +45,7 @@ export class TranslateService {
         return of(false);
       }
       
-      return this.translateLoader.loadRawTranslations(locale).pipe(
-        map(rawTranslations => this.translateParser.parseRawTranslations(locale, rawTranslations)),
+      return this.translateLoader.loadTranslations(locale).pipe(
         tap(translations => {
           this._translations.set(translations);
           this._locale.set(locale);
