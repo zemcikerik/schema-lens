@@ -19,7 +19,7 @@ You don't need to clone this entire repository in order to deploy this applicati
 ## Development
 #### Prerequisites
 - Java 21
-- Node 20 + NPM
+- Node 22 + NPM
 - Docker & Docker Compose Plugin
 
 ### Preparation
