@@ -1,11 +1,33 @@
+@use '@angular/material' as mat;
+@import '../theme';
+@import '../utilities/text-code';
+
 @mixin app-code-editor($options: ()) {
   app-code-editor {
     display: block;
     height: 100%;
 
-    // for some reason the Monaco wrapper library for Angular sets the height to 200px, override this
-    ngx-monaco-editor {
-      height: 100% !important;
+    .cm-editor {
+      height: 100%;
+
+      .cm-gutters {
+        background-color: rgba(mat.get-theme-color($theme, secondary), 0.05);
+        border-right-color: mat.get-theme-color($theme, surface-variant);
+      }
+
+      .cm-line,
+      .cm-lineNumbers {
+        @include text-code();
+        font-size: 0.8rem;
+      }
+
+      .cm-activeLine {
+        background-color: rgba(mat.get-theme-color($theme, tertiary), 0.05);
+      }
+
+      .cm-activeLineGutter {
+        background-color: rgba(mat.get-theme-color($theme, tertiary), 0.1);
+      }
     }
   }
 }

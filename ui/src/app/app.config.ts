@@ -1,7 +1,6 @@
 import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withRouterConfig } from '@angular/router';
 import { appRoutes } from './app.routes';
-import { provideMonacoEditor } from 'ngx-monaco-editor-v2';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { LOCAL_STORAGE } from './core/persistence/local-storage.token';
@@ -21,7 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([apiInterceptor, jwtInterceptor, unauthorizedInterceptor]),
     ),
-    provideMonacoEditor(),
     provideAnimationsAsync(),
     { provide: LOCAL_STORAGE, useFactory: () => window.localStorage },
     { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: { position: 'above' } },
