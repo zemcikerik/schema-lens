@@ -3,7 +3,6 @@ import { RoleService } from '../auth/role.service';
 
 @Pipe({
   name: 'hasRole',
-  standalone: true,
   pure: true,
 })
 export class HasRolePipe implements PipeTransform {

@@ -28,7 +28,6 @@ const ALLOWED_PICTURE_MIMETYPES = ['image/png', 'image/jpeg'];
   selector: 'app-file-picker-profile-picture',
   templateUrl: './file-picker-profile-picture.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatRipple,
     NgOptimizedImage,

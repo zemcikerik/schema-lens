@@ -10,7 +10,6 @@ import { ProfilePictureComponent } from '../profile-picture/profile-picture.comp
   selector: 'app-user-identifier',
   templateUrl: './user-identifier.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatRipple,
     MatMenuModule,

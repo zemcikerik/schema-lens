@@ -1,18 +1,15 @@
-// @ts-expect-error https://thymikee.github.io/jest-preset-angular/docs/getting-started/test-environment
-globalThis.ngJest = {
-  testEnvironmentOptions: {
-    errorOnUnknownElements: true,
-    errorOnUnknownProperties: true,
-  },
-};
-import 'jest-preset-angular/setup-jest';
-
+import { setupZoneTestEnv } from 'jest-preset-angular/setup-env/zone';
 import { ngMocks } from 'ng-mocks';
 import { MockService } from 'ng-mocks';
 import { CommonModule } from '@angular/common';
 import { ApplicationModule } from '@angular/core';
 import { DefaultTitleStrategy, TitleStrategy } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
+
+setupZoneTestEnv({
+  errorOnUnknownElements: true,
+  errorOnUnknownProperties: true,
+});
 
 ngMocks.autoSpy('jest');
 ngMocks.defaultMock(TitleStrategy, () => MockService(DefaultTitleStrategy));

@@ -27,7 +27,6 @@ import { SidebarCloseDirective } from '../../../core/layouts/sidebar-close.direc
   selector: 'app-project-object-selector',
   templateUrl: './project-object-selector.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatExpansionPanel,
     MatExpansionPanelHeader,

@@ -14,7 +14,6 @@ import { SidebarStateService } from './sidebar-state.service';
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
 })
 export class LayoutContentWithSidebarComponent implements OnInit, OnDestroy {
   sidebarState = inject(SidebarStateService);

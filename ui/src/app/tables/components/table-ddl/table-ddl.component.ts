@@ -19,7 +19,6 @@ import {
   selector: 'app-table-ddl',
   templateUrl: './table-ddl.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     CodeEditorComponent,
     ProgressSpinnerComponent,

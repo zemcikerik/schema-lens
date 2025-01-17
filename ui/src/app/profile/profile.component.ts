@@ -24,7 +24,6 @@ import { ProfileService } from './services/profile.service';
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     ContentCardComponent,
     LayoutHeaderAndContentComponent,

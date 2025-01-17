@@ -21,7 +21,6 @@ import { catchProjectConnectionError } from '../projects/catch-project-connectio
   selector: 'app-table',
   templateUrl: './table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     RouterOutlet,
     NavTabGroupComponent,

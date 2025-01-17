@@ -6,7 +6,6 @@ import { TableConstraintAffectedColumnsComponent } from '../table-constraint-aff
   selector: 'app-table-constraint-primary-key',
   template: `<app-table-constraint-affected-columns [columns]="affectedColumns()" />`,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [TableConstraintAffectedColumnsComponent],
 })
 export class TableConstraintPrimaryKeyComponent {

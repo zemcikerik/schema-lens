@@ -21,7 +21,6 @@ import { IconLinkComponent } from '../../shared/components/icon-link/icon-link.c
   selector: 'app-login',
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatButton,
     MatInputModule,

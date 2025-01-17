@@ -14,7 +14,6 @@ import { TranslatePipe } from '../../../../core/translate/translate.pipe';
     <app-table-constraint-affected-columns [columns]="affectedColumns()" />
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     TableConstraintAffectedColumnsComponent,
     TranslatePipe,

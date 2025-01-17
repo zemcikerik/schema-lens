@@ -13,7 +13,6 @@ import { ChangePassword } from '../../../core/models/change-password.model';
   selector: 'app-profile-change-password-form',
   templateUrl: './profile-change-password-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatFormFieldModule,
     MatInput,

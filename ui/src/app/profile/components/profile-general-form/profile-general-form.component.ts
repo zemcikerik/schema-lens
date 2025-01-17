@@ -16,7 +16,6 @@ import { DialogService } from '../../../core/dialog.service';
   selector: 'app-profile-general-form',
   templateUrl: './profile-general-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatFormFieldModule,
     MatInput,

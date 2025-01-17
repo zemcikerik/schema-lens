@@ -20,7 +20,6 @@ const INDEX_TYPE_TO_ICON: Record<TableIndexType, string> = {
     <mat-icon [matTooltip]="(type() | indexTypeToLabel | translate)()">{{ icon() }}</mat-icon>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatIcon,
     MatTooltip,

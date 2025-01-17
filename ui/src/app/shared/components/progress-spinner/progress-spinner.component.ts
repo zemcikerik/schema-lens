@@ -23,7 +23,6 @@ export const PROGRESS_SPINNER_SIZE_TO_DIAMETER: Record<ProgressSpinnerSize, numb
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatProgressSpinner],
 })
 export class ProgressSpinnerComponent {

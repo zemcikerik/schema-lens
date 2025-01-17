@@ -27,7 +27,6 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     </app-content-card>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     ProjectPropertiesFormComponent,
     ContentCardComponent,

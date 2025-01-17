@@ -14,7 +14,6 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
     </button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatIconButton,
     MatIcon,

@@ -16,7 +16,6 @@ import { TranslatePipe } from './core/translate/translate.pipe';
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     NgOptimizedImage,
     TranslatePipe,

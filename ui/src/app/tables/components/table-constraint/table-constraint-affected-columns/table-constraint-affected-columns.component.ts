@@ -7,7 +7,6 @@ import { TranslatePipe } from '../../../../core/translate/translate.pipe';
   selector: 'app-table-constraint-affected-columns',
   templateUrl: './table-constraint-affected-columns.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [OracleTypeIconComponent, TranslatePipe],
 })
 export class TableConstraintAffectedColumnsComponent {

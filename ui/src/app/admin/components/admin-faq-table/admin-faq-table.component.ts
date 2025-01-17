@@ -10,7 +10,6 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
   selector: 'app-admin-faq-table',
   templateUrl: './admin-faq-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatTableModule,
     MatMenuModule,

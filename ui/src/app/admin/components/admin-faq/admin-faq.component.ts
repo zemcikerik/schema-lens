@@ -23,7 +23,6 @@ import { DialogService } from '../../../core/dialog.service';
   selector: 'app-admin-faq',
   templateUrl: './admin-faq.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     LayoutHeaderAndContentComponent,
     TranslatePipe,

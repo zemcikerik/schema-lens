@@ -8,7 +8,6 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
 })
 export class ContentCardComponent {
 }

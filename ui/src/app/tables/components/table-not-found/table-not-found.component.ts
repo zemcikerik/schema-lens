@@ -10,7 +10,6 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
     </app-alert>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     AlertComponent,
     TranslatePipe,

@@ -39,7 +39,6 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
     </app-layout-header-and-content>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     ProjectPropertiesFormComponent,
     TranslatePipe,

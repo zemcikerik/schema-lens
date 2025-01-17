@@ -27,7 +27,6 @@ export interface AddCollaboratorDialogData {
   selector: 'app-project-add-contributor-dialog',
   templateUrl: './project-add-collaborator-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatDialogModule,
     MatFormFieldModule,

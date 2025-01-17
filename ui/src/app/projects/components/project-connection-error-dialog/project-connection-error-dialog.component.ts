@@ -19,7 +19,6 @@ import { ProjectConnectionError } from '../../models/project-connection-error.mo
     </mat-dialog-actions>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatButton,
     MatDialogModule,

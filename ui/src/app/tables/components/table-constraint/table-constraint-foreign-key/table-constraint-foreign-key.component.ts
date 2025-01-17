@@ -11,7 +11,6 @@ type TableColumnWithReferencedName = TableColumn & { referencedColumnName: strin
   selector: 'app-table-constraint-foreign-key',
   templateUrl: './table-constraint-foreign-key.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatTableModule,
     OracleTypeIconComponent,

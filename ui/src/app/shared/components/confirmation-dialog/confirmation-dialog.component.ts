@@ -24,7 +24,6 @@ export interface ConfirmationDialogData {
     </mat-dialog-actions>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatDialogModule,
     TranslatePipe,

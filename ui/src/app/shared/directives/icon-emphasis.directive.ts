@@ -5,7 +5,6 @@ export const EMPHASIS_HIGH_CLASS = 'emphasis-high';
 
 @Directive({
   selector: '[appIconEmphasis]',
-  standalone: true,
 })
 export class IconEmphasisDirective {
   emphasis = input.required<IconEmphasis>({ alias: 'appIconEmphasis' });

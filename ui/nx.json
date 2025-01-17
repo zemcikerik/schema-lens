@@ -37,6 +37,9 @@
           "codeCoverage": true
         }
       }
+    },
+    "e2e-ci--**/*": {
+      "dependsOn": ["^build"]
     }
   },
   "plugins": [
@@ -64,5 +67,6 @@
       "style": "scss"
     }
   },
-  "defaultProject": "schema-lens"
+  "defaultProject": "schema-lens",
+  "useLegacyCache": false
 }

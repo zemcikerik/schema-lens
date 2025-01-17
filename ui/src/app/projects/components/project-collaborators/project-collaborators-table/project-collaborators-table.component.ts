@@ -12,7 +12,6 @@ import { ProfilePictureComponent } from '../../../../shared/components/profile-p
   selector: 'app-project-collaborators-table',
   templateUrl: './project-collaborators-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatTableModule,
     MatIconButton,

@@ -13,7 +13,6 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
     </a>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatIconAnchor,
     MatIcon,

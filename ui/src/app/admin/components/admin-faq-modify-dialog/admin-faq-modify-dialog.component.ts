@@ -19,7 +19,6 @@ export interface AdminFaqModifyDialogData {
   selector: 'app-admin-faq-modify-dialog',
   templateUrl: './admin-faq-modify-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatDialogModule,
     MatFormFieldModule,

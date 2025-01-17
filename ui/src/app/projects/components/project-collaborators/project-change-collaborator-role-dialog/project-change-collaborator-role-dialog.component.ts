@@ -27,7 +27,6 @@ export interface ChangeCollaboratorRoleDialogData {
   selector: 'app-project-change-collaborator-role-dialog',
   templateUrl: './project-change-collaborator-role-dialog.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatDialogModule,
     MatFormFieldModule,

@@ -9,7 +9,6 @@ export const PROFILE_PICTURE_EXTENSION = 'png';
   selector: 'app-profile-picture',
   templateUrl: './profile-picture.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     NgOptimizedImage,
   ],

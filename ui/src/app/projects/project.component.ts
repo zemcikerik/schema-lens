@@ -13,7 +13,6 @@ import { TranslatePipe } from '../core/translate/translate.pipe';
   selector: 'app-project',
   templateUrl: './project.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     LayoutContentWithSidebarComponent,
     ContentCardComponent,

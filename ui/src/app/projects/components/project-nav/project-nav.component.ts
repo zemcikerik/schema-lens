@@ -9,7 +9,6 @@ import { SidebarCloseDirective } from '../../../core/layouts/sidebar-close.direc
   selector: 'app-project-nav',
   templateUrl: './project-nav.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatNavList,
     MatListItem,

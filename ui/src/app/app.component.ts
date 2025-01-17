@@ -23,7 +23,6 @@ import { ChangeLocaleButtonComponent } from './shared/components/change-locale-b
   selector: 'app-root',
   templateUrl: './app.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     ProgressSpinnerComponent,
     ProjectSelectorComponent,

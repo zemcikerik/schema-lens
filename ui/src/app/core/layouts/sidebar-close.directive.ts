@@ -3,7 +3,6 @@ import { SidebarStateService } from './sidebar-state.service';
 
 @Directive({
   selector: '[appSidebarClose]',
-  standalone: true,
 })
 export class SidebarCloseDirective {
 

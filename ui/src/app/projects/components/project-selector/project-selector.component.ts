@@ -14,7 +14,6 @@ const PROJECT_ID_REGEX = /^\/project\/([a-z-\d]{36})/;
   selector: 'app-project-selector',
   templateUrl: './project-selector.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     MatSelect,

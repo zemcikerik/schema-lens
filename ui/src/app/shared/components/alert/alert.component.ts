@@ -9,7 +9,6 @@ export type AlertType = 'info' | 'error';
   selector: 'app-alert',
   templateUrl: './alert.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatIcon, MatTooltip, TranslatePipe],
 })
 export class AlertComponent {

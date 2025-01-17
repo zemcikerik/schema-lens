@@ -19,7 +19,6 @@ import { defaultHighlightStyle, syntaxHighlighting } from '@codemirror/language'
   selector: 'app-code-editor',
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   providers: [
     { provide: NG_VALUE_ACCESSOR, useExisting: forwardRef(() => CodeEditorComponent), multi: true },
   ],

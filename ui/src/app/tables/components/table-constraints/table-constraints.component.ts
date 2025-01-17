@@ -16,7 +16,6 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
   selector: 'app-table-constraints',
   templateUrl: './table-constraints.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatTableModule,
     TableConstraintIconComponent,

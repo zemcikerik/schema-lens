@@ -6,7 +6,6 @@ import { TableColumn } from '../../../models/table-column.model';
   selector: 'app-table-constraint-unique',
   template: `<app-table-constraint-affected-columns [columns]="affectedColumns()" />`,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [TableConstraintAffectedColumnsComponent],
 })
 export class TableConstraintUniqueComponent {

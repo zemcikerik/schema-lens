@@ -3,7 +3,6 @@ import { ProjectCollaborationRole } from '../models/project-collaboration-role.m
 
 @Pipe({
   name: 'projectRoleTypeToLabel',
-  standalone: true,
   pure: true,
 })
 export class ProjectRoleTypeToLabelPipe implements PipeTransform {

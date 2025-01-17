@@ -18,7 +18,6 @@ import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start
   selector: 'app-project-properties-form',
   templateUrl: './project-properties-form.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,

@@ -3,7 +3,6 @@ import { TableIndexType } from '../models/table-index.model';
 
 @Pipe({
   name: 'indexTypeToLabel',
-  standalone: true,
   pure: true
 })
 export class IndexTypeToLabelPipe implements PipeTransform {

@@ -3,7 +3,6 @@ import { TableConstraintType } from '../models/table-constraint.model';
 
 @Pipe({
   name: 'constraintTypeToLabel',
-  standalone: true,
   pure: true,
 })
 export class ConstraintTypeToLabelPipe implements PipeTransform {

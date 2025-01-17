@@ -22,7 +22,6 @@ interface NavTabEntry {
   selector: 'app-nav-tab-group',
   templateUrl: './nav-tab-group.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatTabNav,
     MatTabLink,

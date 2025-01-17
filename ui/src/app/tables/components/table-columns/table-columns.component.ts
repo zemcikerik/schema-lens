@@ -11,7 +11,6 @@ import { childLoadTableSignal } from '../../child-load-table.signal';
   selector: 'app-table-columns',
   templateUrl: './table-columns.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatTableModule,
     OracleTypeIconComponent,

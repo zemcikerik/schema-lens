@@ -7,7 +7,6 @@ import { AlertComponent } from '../../shared/components/alert/alert.component';
   selector: 'app-layout-auth',
   templateUrl: './layout-auth.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     AlertComponent,
     MatProgressBar,

@@ -8,7 +8,6 @@ import { AdminNavComponent } from './components/admin-nav/admin-nav.component';
   selector: 'app-admin',
   templateUrl: './admin.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     LayoutContentWithSidebarComponent,
     RouterOutlet,

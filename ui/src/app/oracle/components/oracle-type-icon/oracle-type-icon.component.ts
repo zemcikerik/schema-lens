@@ -20,7 +20,6 @@ const UNKNOWN_ICON = 'help';
   selector: 'app-oracle-type-icon',
   template: '<mat-icon [matTooltip]="(categoryLabel() | translate)()">{{ icon() }}</mat-icon>',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatIcon,
     MatTooltip,

@@ -16,7 +16,6 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
   selector: 'app-table-indexes',
   templateUrl: './table-indexes.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatTableModule,
     StatusIconComponent,

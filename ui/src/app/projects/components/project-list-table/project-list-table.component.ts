@@ -9,7 +9,6 @@ import { ProfilePictureComponent } from '../../../shared/components/profile-pict
   selector: 'app-project-list-table',
   templateUrl: './project-list-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatTableModule, MatRipple, TranslatePipe, ProfilePictureComponent],
 })
 export class ProjectListTableComponent {

@@ -40,7 +40,6 @@ import { DialogService } from '../../../core/dialog.service';
   selector: 'app-project-collaborators',
   templateUrl: './project-collaborators.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     LayoutHeaderAndContentComponent,
     TranslatePipe,

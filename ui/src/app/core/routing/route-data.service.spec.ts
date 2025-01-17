@@ -10,7 +10,6 @@ import { DEFAULT_ROUTE_DATA } from '../models/route-data.model';
   selector: 'app-dummy',
   template: '',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true
 })
 class DummyComponent {
 }

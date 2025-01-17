@@ -12,7 +12,6 @@ import {
   selector: 'app-help-faq-posts',
   templateUrl: './help-faq-posts.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatAccordion,
     MatExpansionPanel,

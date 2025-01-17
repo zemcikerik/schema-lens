@@ -24,7 +24,6 @@ import { IconLinkComponent } from '../../shared/components/icon-link/icon-link.c
   selector: 'app-register',
   templateUrl: './register.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     LayoutAuthComponent,
     ReactiveFormsModule,

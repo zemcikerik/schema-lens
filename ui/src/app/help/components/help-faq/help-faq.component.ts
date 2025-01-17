@@ -15,7 +15,6 @@ import { HelpFaqPostsComponent } from '../help-faq-posts/help-faq-posts.componen
   selector: 'app-help-faq',
   templateUrl: './help-faq.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     ContentCardComponent,
     LayoutHeaderAndContentComponent,

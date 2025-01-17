@@ -73,7 +73,6 @@ describe('childLoadTableSignal', () => {
     selector: 'app-child-table-signal-host',
     template: ``,
     changeDetection: ChangeDetectionStrategy.OnPush,
-    standalone: true,
   })
   class ChildLoadTableSignalHostComponent {
     projectId = input.required<string>();

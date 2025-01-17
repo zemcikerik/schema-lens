@@ -4,7 +4,6 @@ import { TranslateService } from '../../core/translate/translate.service';
 
 @Pipe({
   name: 'formatGenericValidationErrors',
-  standalone: true,
   pure: true,
 })
 export class FormatGenericValidationErrorsPipe implements PipeTransform {

@@ -36,7 +36,8 @@
 @import './scss/components/top-bar';
 @import './scss/components/user-identifier';
 
-@include mat.core();
+@include mat.elevation-classes();
+@include mat.app-background();
 
 @include app-layout-auth();
 @include app-layout-header-and-content();
@@ -73,7 +74,8 @@
 @include app-user-identifier();
 
 html {
-  @include mat.core-theme($theme);
+  @include mat.elevation-classes();
+  @include mat.app-background();
 
   @include mat.button-theme($theme);
   @include mat.dialog-theme($theme);

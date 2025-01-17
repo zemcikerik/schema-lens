@@ -16,7 +16,6 @@ const TYPE_TO_ICON: Record<TableConstraintType, string> = {
   selector: 'app-table-constraint-icon',
   template: `<mat-icon [matTooltip]="(type() | constraintTypeToLabel | translate)()">{{ icon() }}</mat-icon>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatIcon,
     MatTooltip,

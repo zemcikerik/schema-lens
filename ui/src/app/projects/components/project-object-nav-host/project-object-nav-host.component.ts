@@ -20,7 +20,6 @@ import { ProjectConnectionError } from '../../models/project-connection-error.mo
     }
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     ProjectObjectSelectorComponent,
     TranslatePipe,

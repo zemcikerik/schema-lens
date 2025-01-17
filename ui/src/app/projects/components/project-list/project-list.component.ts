@@ -15,7 +15,6 @@ import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-he
   selector: 'app-project-list',
   templateUrl: './project-list.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     ContentCardComponent,
     ProjectListTableComponent,

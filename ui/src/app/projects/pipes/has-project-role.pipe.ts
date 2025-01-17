@@ -6,7 +6,6 @@ type Role = 'OWNER' | 'ADMIN' | 'MANAGER' | 'CONTRIBUTOR' | 'VIEWER';
 
 @Pipe({
   name: 'hasProjectRole',
-  standalone: true,
   pure: true,
 })
 export class HasProjectRolePipe implements PipeTransform {

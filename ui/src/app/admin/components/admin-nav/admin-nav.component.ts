@@ -14,7 +14,6 @@ interface AdminNavEntry {
   selector: 'app-admin-nav',
   templateUrl: './admin-nav.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     CommonModule,
     MatNavList,

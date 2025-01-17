@@ -16,7 +16,6 @@ interface IncludedColumn {
   selector: 'app-table-index',
   templateUrl: './table-index.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     OracleTypeIconComponent,
     MatIcon,

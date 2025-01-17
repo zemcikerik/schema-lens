@@ -14,7 +14,6 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
     </div>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
 })
 export class LayoutHeaderAndContentComponent {
   title = input.required<string>();

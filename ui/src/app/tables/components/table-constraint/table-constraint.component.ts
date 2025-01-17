@@ -19,7 +19,6 @@ import { TableConstraintCheckComponent } from './table-constraint-check/table-co
   selector: 'app-table-constraint',
   templateUrl: './table-constraint.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     TableConstraintPrimaryKeyComponent,
     TableConstraintForeignKeyComponent,

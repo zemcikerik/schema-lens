@@ -5,7 +5,6 @@ import { MatIcon } from '@angular/material/icon';
   selector: 'app-status-icon',
   template: `<mat-icon>{{ status() ? 'check' : 'close' }}</mat-icon>`,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [MatIcon],
 })
 export class StatusIconComponent {

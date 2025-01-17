@@ -25,7 +25,6 @@ import { AuthService } from './core/auth/auth.service';
     </mat-toolbar>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  standalone: true,
   imports: [
     MatToolbar,
     TranslatePipe,
