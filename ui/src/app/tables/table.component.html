@@ -6,7 +6,7 @@
 <app-nav-tab-group [baseRouterLink]="['/project', projectId(), 'table', tableName()]" [tabs]="TABLE_TABS">
   <div class="table__content-host">
     @if (loading()) {
-      <app-progress-spinner [center]="true" />
+      <app-progress-spinner class="d-block mt-1" [center]="true" />
     } @else {
       @let err = error();
       @if (err !== null) {

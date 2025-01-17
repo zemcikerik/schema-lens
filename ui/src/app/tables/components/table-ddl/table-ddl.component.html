@@ -1,7 +1,13 @@
 @if (loading()) {
-  <app-progress-spinner [center]="true" />
+  <app-progress-spinner class="d-block mt-1" [center]="true" />
 } @else {
-  <div class="table-ddl">
-    <app-code-editor [ngModel]="ddl()" />
-  </div>
+  @let err = error();
+
+  @if (err === null) {
+    <div class="table-ddl">
+      <app-code-editor [ngModel]="ddl()" />
+    </div>
+  } @else {
+    <app-project-connection-error-alert class="d-block mt-1" [error]="err" />
+  }
 }

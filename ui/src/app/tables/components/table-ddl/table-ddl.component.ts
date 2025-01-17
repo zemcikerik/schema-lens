@@ -3,8 +3,17 @@ import { CodeEditorComponent } from '../../../shared/components/code-editor/code
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { TableService } from '../../services/table.service';
 import { childLoadTableSignal } from '../../child-load-table.signal';
-import { finalize } from 'rxjs';
+import { finalize, of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
+import {
+  isProjectConnectionError,
+  ProjectConnectionError,
+  ProjectConnectionFailure,
+} from '../../../projects/models/project-connection-error.model';
+import { catchProjectConnectionError } from '../../../projects/catch-project-connection-error.fn';
+import {
+  ProjectConnectionErrorAlertComponent
+} from '../../../projects/components/project-connection-error-alert/project-connection-error-alert.component';
 
 @Component({
   selector: 'app-table-ddl',
@@ -15,6 +24,7 @@ import { FormsModule } from '@angular/forms';
     CodeEditorComponent,
     ProgressSpinnerComponent,
     FormsModule,
+    ProjectConnectionErrorAlertComponent,
   ],
 })
 export class TableDdlComponent {
@@ -22,6 +32,7 @@ export class TableDdlComponent {
   tableName = input.required<string>();
 
   loading = signal(true);
+  error = signal<ProjectConnectionError | null>(null);
   ddl = signal<string>('');
 
   constructor() {
@@ -41,8 +52,18 @@ export class TableDdlComponent {
         this.loading.set(true);
 
         return tableService.getTableDdl(projectId, tableName).pipe(
+          catchProjectConnectionError(err => of(err)),
           finalize(() => untracked(() => this.loading.set(false))),
-        ).subscribe(ddl => this.ddl.set(ddl));
+        ).subscribe({
+          next: result => {
+            if (!isProjectConnectionError(result)) {
+              this.ddl.set(result);
+            } else {
+              this.error.set(result);
+            }
+          },
+          error: () => this.error.set({ type: ProjectConnectionFailure.UNKNOWN, message: null }),
+        });
       });
 
       onCleanup(() => subscription.unsubscribe());
