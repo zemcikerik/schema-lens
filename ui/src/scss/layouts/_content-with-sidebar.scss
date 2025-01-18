@@ -27,7 +27,7 @@
       grid-template-columns: 1fr;
 
       &__sidebar {
-        visibility: hidden;
+        display: none;
       }
 
       &__content {
@@ -35,11 +35,11 @@
       }
 
       &.is-open &__sidebar {
-        visibility: visible;
+        display: block;
       }
 
       &.is-open &__content {
-        visibility: hidden;
+        display: none;
       }
     }
   }
