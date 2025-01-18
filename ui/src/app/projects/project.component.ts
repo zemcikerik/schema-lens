@@ -8,6 +8,7 @@ import { finalize } from 'rxjs';
 import { ProgressSpinnerComponent } from '../shared/components/progress-spinner/progress-spinner.component';
 import { AlertComponent } from '../shared/components/alert/alert.component';
 import { TranslatePipe } from '../core/translate/translate.pipe';
+import { ProjectProperties } from './models/project-properties.model';
 
 @Component({
   selector: 'app-project',
@@ -25,6 +26,7 @@ import { TranslatePipe } from '../core/translate/translate.pipe';
 })
 export class ProjectComponent {
   projectId = input.required<string>();
+  project = signal<ProjectProperties | null>(null);
   loading = signal<boolean>(false);
   error = signal<boolean>(false);
   private router = inject(Router);
@@ -46,6 +48,7 @@ export class ProjectComponent {
         return projectService.getProjectProperties(projectId).pipe(
           finalize(() => untracked(() => this.loading.set(false))),
         ).subscribe({
+          next: project => this.project.set(project),
           error: () => this.error.set(true),
         });
       });

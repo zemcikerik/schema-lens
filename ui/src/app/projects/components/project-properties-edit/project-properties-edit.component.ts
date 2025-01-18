@@ -1,13 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  DestroyRef,
-  effect,
-  inject,
-  input,
-  signal,
-  untracked,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, linkedSignal, Signal, signal } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { ProjectService } from '../../services/project.service';
 import { filter, finalize, switchMap, tap } from 'rxjs';
@@ -19,6 +10,7 @@ import { ProgressSpinnerComponent } from '../../../shared/components/progress-sp
 import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
 import { HasProjectRolePipe } from '../../pipes/has-project-role.pipe';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
+import { ROUTER_OUTLET_DATA } from '@angular/router';
 
 @Component({
   selector: 'app-project-properties-edit',
@@ -50,33 +42,15 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
 })
 export class ProjectPropertiesEditComponent {
   projectId = input.required<string>();
+  baseProjectProperties = inject(ROUTER_OUTLET_DATA) as Signal<ProjectProperties | null>;
+
   loading = signal<boolean>(false);
   error = signal<boolean>(false);
-  projectProperties = signal<ProjectProperties | null>(null);
+  projectProperties = linkedSignal(() => this.baseProjectProperties());
 
   private dialogService = inject(DialogService);
   private projectService = inject(ProjectService);
   private destroyRef = inject(DestroyRef);
-
-  constructor() {
-    effect(onCleanup => {
-      const projectId = this.projectId();
-
-      const subscription = untracked(() => {
-        this.loading.set(true);
-        this.error.set(false);
-
-        return this.projectService.getProjectProperties(projectId)
-          .pipe(finalize(() => untracked(() => this.loading.set(false))))
-          .subscribe({
-            next: properties => this.projectProperties.set(properties),
-            error: () => this.error.set(true),
-          });
-      });
-
-      onCleanup(() => subscription.unsubscribe());
-    });
-  }
 
   updateProperties(properties: ProjectProperties): void {
     this.loading.set(true);

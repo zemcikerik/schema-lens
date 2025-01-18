@@ -12,7 +12,7 @@
       @if (err !== null) {
         <app-project-connection-error-alert class="d-block mt-1" [error]="err" />
       } @else {
-        <router-outlet />
+        <router-outlet [routerOutletData]="table()" />
       }
     }
   </div>

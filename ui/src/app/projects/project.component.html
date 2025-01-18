@@ -7,7 +7,7 @@
     } @else if (error()) {
       <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
     } @else {
-      <router-outlet />
+      <router-outlet [routerOutletData]="project()" />
     }
   </app-content-card>
 </app-layout-content-with-sidebar>

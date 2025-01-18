@@ -1,8 +1,7 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input, signal, untracked } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input, Signal, signal, untracked } from '@angular/core';
 import { CodeEditorComponent } from '../../../shared/components/code-editor/code-editor.component';
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { TableService } from '../../services/table.service';
-import { childLoadTableSignal } from '../../child-load-table.signal';
 import { finalize, of } from 'rxjs';
 import { FormsModule } from '@angular/forms';
 import {
@@ -14,6 +13,8 @@ import { catchProjectConnectionError } from '../../../projects/catch-project-con
 import {
   ProjectConnectionErrorAlertComponent
 } from '../../../projects/components/project-connection-error-alert/project-connection-error-alert.component';
+import { ROUTER_OUTLET_DATA } from '@angular/router';
+import { Table } from '../../models/table.model';
 
 @Component({
   selector: 'app-table-ddl',
@@ -36,7 +37,7 @@ export class TableDdlComponent {
 
   constructor() {
     const tableService = inject(TableService);
-    const table = childLoadTableSignal(this.projectId, this.tableName);
+    const table = inject(ROUTER_OUTLET_DATA) as Signal<Table | null>;
 
     effect(onCleanup => {
       // wait until table is loaded by parent

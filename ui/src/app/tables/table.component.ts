@@ -16,6 +16,7 @@ import {
   ProjectConnectionErrorAlertComponent
 } from '../projects/components/project-connection-error-alert/project-connection-error-alert.component';
 import { catchProjectConnectionError } from '../projects/catch-project-connection-error.fn';
+import { Table } from './models/table.model';
 
 @Component({
   selector: 'app-table',
@@ -45,6 +46,7 @@ export class TableComponent {
 
   loading = signal<boolean>(false);
   error = signal<ProjectConnectionError | null>(null);
+  table = signal<Table | null>(null);
 
   constructor() {
     const tableService = inject(TableService);
@@ -69,11 +71,13 @@ export class TableComponent {
     });
   }
 
-  private async handleResult(result: unknown): Promise<void> {
+  private async handleResult(result: Table | ProjectConnectionError | null): Promise<void> {
     if (result === null) {
       await this.router.navigate(['/project', this.projectId(), 'table', '404']);
     } else if (isProjectConnectionError(result)) {
       this.error.set(result);
+    } else {
+      this.table.set(result);
     }
   }
 }

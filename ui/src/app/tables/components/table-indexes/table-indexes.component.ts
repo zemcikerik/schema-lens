@@ -1,6 +1,5 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, Signal, signal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
-import { childLoadTableSignal } from '../../child-load-table.signal';
 import { StatusIconComponent } from '../../../shared/components/status-icon/status-icon.component';
 import { TableIndex } from '../../models/table-index.model';
 import { matExpansionAnimations } from '@angular/material/expansion';
@@ -11,6 +10,8 @@ import { TableIndexIconComponent } from '../table-index-icon/table-index-icon.co
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { IndexTypeToLabelPipe } from '../../pipes/index-type-to-label-pipe';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
+import { ROUTER_OUTLET_DATA } from '@angular/router';
+import { Table } from '../../models/table.model';
 
 @Component({
   selector: 'app-table-indexes',
@@ -35,10 +36,7 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
 export class TableIndexesComponent {
   readonly DISPLAYED_COLUMNS = ['icon', 'name', 'type', 'unique', 'compressed', 'logged', 'expand'];
 
-  projectId = input.required<string>();
-  tableName = input.required<string>();
-
-  table = childLoadTableSignal(this.projectId, this.tableName);
+  table = inject(ROUTER_OUTLET_DATA) as Signal<Table | null>;
   tableIndexes = computed(() => this.table()?.indexes ?? []);
   tableColumns = computed(() => this.table()?.columns ?? []);
   expandedIndex = signal<TableIndex | null>(null);

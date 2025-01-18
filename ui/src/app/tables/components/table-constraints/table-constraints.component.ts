@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, computed, input, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, Signal, signal } from '@angular/core';
 import { MatTableModule } from '@angular/material/table';
 import { TableConstraintIconComponent } from '../table-constraint-icon/table-constraint-icon.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
@@ -9,8 +9,9 @@ import { MatIconButton } from '@angular/material/button';
 import { TableConstraint } from '../../models/table-constraint.model';
 import { matExpansionAnimations } from '@angular/material/expansion';
 import { TableConstraintComponent } from '../table-constraint/table-constraint.component';
-import { childLoadTableSignal } from '../../child-load-table.signal';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
+import { ROUTER_OUTLET_DATA } from '@angular/router';
+import { Table } from '../../models/table.model';
 
 @Component({
   selector: 'app-table-constraints',
@@ -35,10 +36,7 @@ import { AlertComponent } from '../../../shared/components/alert/alert.component
 export class TableConstraintsComponent {
   readonly DISPLAYED_COLUMNS = ['icon', 'name', 'type', 'enabled', 'expand'];
 
-  projectId = input.required<string>();
-  tableName = input.required<string>();
-
-  table = childLoadTableSignal(this.projectId, this.tableName);
+  table = inject(ROUTER_OUTLET_DATA) as Signal<Table | null>;
   tableColumns = computed(() => this.table()?.columns ?? []);
   tableConstraints = computed(() => this.table()?.constraints ?? []);
   expandedConstraint = signal<TableConstraint | null>(null);
