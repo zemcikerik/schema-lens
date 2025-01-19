@@ -1,12 +1,12 @@
-import { setupZoneTestEnv } from 'jest-preset-angular/setup-env/zone';
 import { ngMocks } from 'ng-mocks';
 import { MockService } from 'ng-mocks';
 import { CommonModule } from '@angular/common';
 import { ApplicationModule } from '@angular/core';
 import { DefaultTitleStrategy, TitleStrategy } from '@angular/router';
 import { BrowserModule } from '@angular/platform-browser';
+import { setupZonelessTestEnv } from 'jest-preset-angular/setup-env/zoneless';
 
-setupZoneTestEnv({
+setupZonelessTestEnv({
   errorOnUnknownElements: true,
   errorOnUnknownProperties: true,
 });

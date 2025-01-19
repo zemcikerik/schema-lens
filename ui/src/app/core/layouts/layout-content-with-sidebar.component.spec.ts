@@ -50,13 +50,13 @@ describe('LayoutContentWithSidebarComponent', () => {
     expect(layoutElement.classList).not.toContain('is-open');
   });
 
-  it('should be open when state changes externally', () => {
+  it('should be open when state changes externally', async () => {
     const fixture = MockRender(LayoutContentWithSidebarComponent);
     const layoutElement = ngMocks.find('.layout-content-with-sidebar').nativeElement as HTMLDivElement;
     const sidebarState = ngMocks.get(SidebarStateService);
 
     sidebarState.open();
-    fixture.detectChanges();
+    await fixture.whenRenderingDone();
 
     expect(layoutElement.classList).toContain('is-open');
   });

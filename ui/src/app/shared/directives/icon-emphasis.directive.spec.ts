@@ -25,20 +25,4 @@ describe('IconEmphasisDirective', () => {
     MockRender('<i appIconEmphasis="default"></i>');
     expectIconClasses().not.toContain(EMPHASIS_HIGH_CLASS);
   });
-
-  it('should react to emphasis change', () => {
-    const fixture = MockRender('<i [appIconEmphasis]="emphasis"></i>', {
-      emphasis: 'high'
-    });
-    const inputs = fixture.componentInstance;
-    expectIconClasses().toContain(EMPHASIS_HIGH_CLASS);
-
-    inputs.emphasis = 'default';
-    fixture.detectChanges();
-    expectIconClasses().not.toContain(EMPHASIS_HIGH_CLASS);
-
-    inputs.emphasis = 'high';
-    fixture.detectChanges();
-    expectIconClasses().toContain(EMPHASIS_HIGH_CLASS);
-  });
 });

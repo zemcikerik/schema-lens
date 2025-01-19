@@ -53,7 +53,7 @@ describe('AppComponent', () => {
     expect(loadProjectsSpy).toHaveBeenCalled();
   });
 
-  it('should show loading spinner while initialization is running', () => {
+  it('should show loading spinner while initialization is running', async () => {
     const loadProjects$ = new Subject();
     MockInstance(ProjectService, 'loadProjects', () => loadProjects$.asObservable());
 
@@ -63,12 +63,13 @@ describe('AppComponent', () => {
 
     loadProjects$.next(null);
     loadProjects$.complete();
-    fixture.detectChanges();
+    await fixture.whenRenderingDone();
+
     expect(ngMocks.find(ProgressSpinnerComponent, null)).toBeNull();
     expect(ngMocks.find(RouterOutlet)).toBeTruthy();
   });
 
-  it('should show error alert when error was emitted during initialization', () => {
+  it('should show error alert when error was emitted during initialization', async () => {
     const setLocale$ = new Subject();
     MockInstance(TranslateService, 'trySetLocaleFromStorageOrDefault', () => setLocale$.asObservable());
 
@@ -76,11 +77,11 @@ describe('AppComponent', () => {
     expect(ngMocks.find(AlertComponent, null)).toBeNull();
 
     setLocale$.error(new Error('test error'));
-    fixture.detectChanges();
+    await fixture.whenRenderingDone();
     expect(ngMocks.find(AlertComponent)).toBeTruthy();
   });
 
-  it('should render top bar conditionally when it is not disabled by route data', () => {
+  it('should render top bar conditionally when it is not disabled by route data', async () => {
     const routeDataMock = signal<RouteData>({ ...DEFAULT_ROUTE_DATA, disableTopBar: false });
     MockInstance(RouteDataService, 'routeData', routeDataMock.asReadonly());
 
@@ -88,7 +89,7 @@ describe('AppComponent', () => {
     expect(ngMocks.find(TopBarComponent)).toBeTruthy();
 
     routeDataMock.update(data => ({ ...data, disableTopBar: true }));
-    fixture.detectChanges();
+    await fixture.whenRenderingDone();
     expect(ngMocks.find(TopBarComponent, null)).toBeNull();
   });
 });
