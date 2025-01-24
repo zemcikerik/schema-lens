@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
-@import '../utilities/text-code';
+@use '../utilities/text-code' as code;
 
 app-code-editor {
   display: block;
@@ -16,7 +16,7 @@ app-code-editor {
 
     .cm-line,
     .cm-lineNumbers {
-      @include text-code();
+      @include code.text-code();
       font-size: 0.8rem;
     }
 

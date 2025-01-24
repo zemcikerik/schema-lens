@@ -3,11 +3,12 @@
 @use '../utilities/breakpoints' as breakpoints;
 
 .top-bar {
+  gap: 0.5em;
+  user-select: none;
+
   @include mat.toolbar-overrides((
     container-background-color: mat.get-theme-color(t.$theme, surface-container),
   ));
-  gap: 0.5em;
-  user-select: none;
 
   &__app-name,
   &__app-name-short {
