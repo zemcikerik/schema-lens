@@ -1,18 +1,18 @@
 @use '@angular/material' as mat;
+@use '../theme' as t;
 @import '../utilities/breakpoints';
-@import '../theme';
 
 @mixin app-top-bar($options: ()) {
   .top-bar {
     @include mat.toolbar-overrides((
-      container-background-color: mat.get-theme-color($theme, surface-container),
+      container-background-color: mat.get-theme-color(t.$theme, surface-container),
     ));
     gap: 0.5em;
     user-select: none;
 
     &__app-name,
     &__app-name-short {
-      color: mat.get-theme-color($theme, on-surface);
+      color: mat.get-theme-color(t.$theme, on-surface);
       text-decoration: none;
     }
 

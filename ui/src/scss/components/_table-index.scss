@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import '../theme';
+@use '../theme' as t;
 
 @mixin app-table-index($options: ()) {
   .table-index {
@@ -23,11 +23,11 @@
 
     mat-icon {
       margin-top: 0.2rem;
-      color: mat.get-theme-color($theme, secondary);
+      color: mat.get-theme-color(t.$theme, secondary);
     }
 
     &__label {
-      font: mat.get-theme-typography($theme, label-large);
+      font: mat.get-theme-typography(t.$theme, label-large);
     }
   }
 }

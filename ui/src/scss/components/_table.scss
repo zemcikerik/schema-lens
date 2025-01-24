@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import '../theme';
+@use '../theme' as t;
 
 @mixin app-table($options: ()) {
   .table {
@@ -9,7 +9,7 @@
       gap: 0.5rem;
 
       > .icon {
-        color: mat.get-theme-color($theme, secondary);
+        color: mat.get-theme-color(t.$theme, secondary);
         font-size: 2rem;
         width: 2rem;
         height: 2rem;

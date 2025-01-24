@@ -1,12 +1,12 @@
 @use '@angular/material' as mat;
-@import '../theme';
+@use '../theme' as t;
 @import '../utilities/breakpoints';
 
 @mixin app-layout-auth($options: ()) {
   .layout-auth {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    background-color: mat.get-theme-color($theme, surface);
+    background-color: mat.get-theme-color(t.$theme, surface);
     margin: 0 0.5rem;
     border-radius: 48px;
     width: 100%;

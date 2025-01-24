@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import '../theme';
+@use '../theme' as t;
 
 @mixin app-profile-picture($options: ()) {
   .profile-picture {
@@ -32,7 +32,7 @@
     &__filter {
       position: absolute;
       inset: 0;
-      background-color: mat.get-theme-color($theme, neutral, 40);
+      background-color: mat.get-theme-color(t.$theme, neutral, 40);
       opacity: 0;
       transition: opacity 100ms;
       pointer-events: none;

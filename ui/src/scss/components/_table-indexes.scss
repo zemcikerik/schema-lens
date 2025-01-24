@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import '../theme';
+@use '../theme' as t;
 
 @mixin app-table-indexes($options: ()) {
   .table-indexes {
@@ -8,7 +8,7 @@
       .mat-column-unique,
       .mat-column-compressed,
       .mat-column-logged {
-        color: mat.get-theme-color($theme, secondary);
+        color: mat.get-theme-color(t.$theme, secondary);
         width: 3rem;
         text-align: center;
       }
@@ -19,7 +19,7 @@
     }
 
      &__index-row:hover {
-       background-color: mat.get-theme-color($theme, surface-container-low);
+       background-color: mat.get-theme-color(t.$theme, surface-container-low);
        cursor: pointer;
     }
 

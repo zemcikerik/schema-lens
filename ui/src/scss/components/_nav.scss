@@ -1,5 +1,4 @@
 @use '@angular/material' as mat;
-@import '../theme';
 
 @mixin app-nav($options: ()) {
   .nav {

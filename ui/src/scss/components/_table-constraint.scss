@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import '../theme';
+@use '../theme' as t;
 
 @mixin app-table-constraint($options: ()) {
   .table-constraint {
@@ -12,7 +12,7 @@
     }
 
     &__label {
-      font: mat.get-theme-typography($theme, label-large, font);
+      font: mat.get-theme-typography(t.$theme, label-large, font);
     }
 
     &__affected-columns {
@@ -22,7 +22,7 @@
 
       mat-icon {
         margin-right: 1rem;
-        color: mat.get-theme-color($theme, secondary);
+        color: mat.get-theme-color(t.$theme, secondary);
       }
     }
   }

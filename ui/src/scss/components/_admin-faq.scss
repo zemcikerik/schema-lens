@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import '../theme';
+@use '../theme' as t;
 
 @mixin app-admin-faq($options: ()) {
   .admin-faq {
@@ -10,7 +10,7 @@
       }
 
       td.mat-column-id {
-        font: mat.get-theme-typography($theme, label-large);
+        font: mat.get-theme-typography(t.$theme, label-large);
       }
     }
 

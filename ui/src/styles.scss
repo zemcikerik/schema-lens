@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import './scss/theme';
+@use './scss/theme' as t;
 @import './scss/base/reset';
 
 @import './scss/layouts/auth';
@@ -77,23 +77,23 @@ html {
   @include mat.elevation-classes();
   @include mat.app-background();
 
-  @include mat.button-theme($theme);
-  @include mat.dialog-theme($theme);
-  @include mat.expansion-theme($theme);
-  @include mat.form-field-theme($theme);
-  @include mat.icon-theme($theme);
-  @include mat.icon-button-theme($theme);
-  @include mat.list-theme($theme);
-  @include mat.menu-theme($theme);
-  @include mat.progress-bar-theme($theme);
-  @include mat.progress-spinner-theme($theme);
-  @include mat.ripple-theme($theme);
-  @include mat.select-theme($theme);
-  @include mat.sort-theme($theme);
-  @include mat.table-theme($theme);
-  @include mat.tabs-theme($theme);
-  @include mat.toolbar-theme($theme);
-  @include mat.tooltip-theme($theme);
+  @include mat.button-theme(t.$theme);
+  @include mat.dialog-theme(t.$theme);
+  @include mat.expansion-theme(t.$theme);
+  @include mat.form-field-theme(t.$theme);
+  @include mat.icon-theme(t.$theme);
+  @include mat.icon-button-theme(t.$theme);
+  @include mat.list-theme(t.$theme);
+  @include mat.menu-theme(t.$theme);
+  @include mat.progress-bar-theme(t.$theme);
+  @include mat.progress-spinner-theme(t.$theme);
+  @include mat.ripple-theme(t.$theme);
+  @include mat.select-theme(t.$theme);
+  @include mat.sort-theme(t.$theme);
+  @include mat.table-theme(t.$theme);
+  @include mat.tabs-theme(t.$theme);
+  @include mat.toolbar-theme(t.$theme);
+  @include mat.tooltip-theme(t.$theme);
 }
 
 html, body {
@@ -107,7 +107,7 @@ body {
 
 .app-root {
   height: 100vh;
-  background-color: mat.get-theme-color($theme, surface-container);
+  background-color: mat.get-theme-color(t.$theme, surface-container);
   overflow: hidden;
 }
 

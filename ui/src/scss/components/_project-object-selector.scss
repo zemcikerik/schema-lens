@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import '../theme';
+@use '../theme' as t;
 
 @mixin app-project-object-selector($options: ()) {
   .project-object-selector {
@@ -33,7 +33,7 @@
       }
 
       > button {
-        @include mat.icon-button-color($theme, $color-variant: error);
+        @include mat.icon-button-color(t.$theme, $color-variant: error);
       }
     }
   }

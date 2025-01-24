@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
+@use '../theme' as t;
 @import '../utilities/breakpoints';
-@import '../theme';
 
 @mixin app-project-properties($options: ()) {
   .project-properties {
@@ -58,7 +58,7 @@
 
       gap: 1rem;
       > :not([type="submit"]) {
-        @include mat.button-color($theme, $color-variant: error);
+        @include mat.button-color(t.$theme, $color-variant: error);
       }
     }
   }

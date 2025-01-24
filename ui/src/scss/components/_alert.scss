@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import '../theme';
+@use '../theme' as t;
 
 @mixin app-alert($options: ()) {
   .alert {
@@ -10,21 +10,21 @@
     gap: 0.5rem;
 
     &--info {
-      background-color: mat.get-theme-color($theme, secondary-container);
-      color: mat.get-theme-color($theme, on-secondary-container);
+      background-color: mat.get-theme-color(t.$theme, secondary-container);
+      color: mat.get-theme-color(t.$theme, on-secondary-container);
     }
 
     &--info &__icon {
-      color: mat.get-theme-color($theme, secondary);
+      color: mat.get-theme-color(t.$theme, secondary);
     }
 
     &--error {
-      background-color: mat.get-theme-color($theme, error-container);
-      color: mat.get-theme-color($theme, on-error-container);
+      background-color: mat.get-theme-color(t.$theme, error-container);
+      color: mat.get-theme-color(t.$theme, on-error-container);
     }
 
     &--error &__icon {
-      color: mat.get-theme-color($theme, error);
+      color: mat.get-theme-color(t.$theme, error);
     }
 
     &__content {

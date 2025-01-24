@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import '../theme';
+@use '../theme' as t;
 @import '../utilities/text-code';
 
 @mixin app-code-editor($options: ()) {
@@ -11,8 +11,8 @@
       height: 100%;
 
       .cm-gutters {
-        background-color: rgba(mat.get-theme-color($theme, secondary), 0.05);
-        border-right-color: mat.get-theme-color($theme, surface-variant);
+        background-color: rgba(mat.get-theme-color(t.$theme, secondary), 0.05);
+        border-right-color: mat.get-theme-color(t.$theme, surface-variant);
       }
 
       .cm-line,
@@ -22,11 +22,11 @@
       }
 
       .cm-activeLine {
-        background-color: rgba(mat.get-theme-color($theme, tertiary), 0.05);
+        background-color: rgba(mat.get-theme-color(t.$theme, tertiary), 0.05);
       }
 
       .cm-activeLineGutter {
-        background-color: rgba(mat.get-theme-color($theme, tertiary), 0.1);
+        background-color: rgba(mat.get-theme-color(t.$theme, tertiary), 0.1);
       }
     }
   }

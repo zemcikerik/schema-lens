@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import '../theme';
+@use '../theme' as t;
 @import '../utilities/breakpoints';
 
 @mixin app-user-identifier($options: ()) {
@@ -23,7 +23,7 @@
       position: absolute;
       inset: 0;
       border-radius: 48px;
-      background-color: mat.get-theme-color($theme, neutral, 40);
+      background-color: mat.get-theme-color(t.$theme, neutral, 40);
       opacity: 0;
       transition: opacity 100ms;
     }
@@ -34,13 +34,13 @@
 
     &__username {
       grid-area: username;
-      font: mat.get-theme-typography($theme, body-medium, font);
+      font: mat.get-theme-typography(t.$theme, body-medium, font);
       vertical-align: bottom;
     }
 
     &__email {
       grid-area: email;
-      font: mat.get-theme-typography($theme, body-small, font);
+      font: mat.get-theme-typography(t.$theme, body-small, font);
     }
 
     &__username,

@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
+@use '../theme' as t;
 @import '../utilities/breakpoints';
-@import '../theme';
 
 @mixin app-layout-content-with-sidebar($options: ()) {
   .layout-content-with-sidebar {
@@ -10,7 +10,7 @@
     height: 100%;
 
     &__sidebar {
-      background: mat.get-theme-color($theme, surface-container);
+      background: mat.get-theme-color(t.$theme, surface-container);
       grid-row: 1;
       grid-column: 1;
       min-height: 0;

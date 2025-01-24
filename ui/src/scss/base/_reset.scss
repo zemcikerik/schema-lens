@@ -1,6 +1,5 @@
 @use '@angular/material' as mat;
-@import '../theme';
-@import '../utilities/breakpoints';
+@use '../theme' as t;
 
 * {
   box-sizing: border-box;
@@ -8,7 +7,7 @@
 
 h1,
 h2 {
-  font: mat.get-theme-typography($theme, headline-large);
+  font: mat.get-theme-typography(t.$theme, headline-large);
 }
 
 h2 {
@@ -16,11 +15,11 @@ h2 {
 }
 
 h3 {
-  font: mat.get-theme-typography($theme, title-large);
+  font: mat.get-theme-typography(t.$theme, title-large);
 }
 
 h4 {
-  font: mat.get-theme-typography($theme, title-medium);
+  font: mat.get-theme-typography(t.$theme, title-medium);
 }
 
 // https://github.com/angular/components/issues/27118

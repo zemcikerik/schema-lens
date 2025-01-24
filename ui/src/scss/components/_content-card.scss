@@ -1,11 +1,11 @@
 @use '@angular/material' as mat;
+@use '../theme' as t;
 @import '../utilities/breakpoints';
-@import '../theme';
 
 @mixin app-content-card($options: ()) {
   .content-card {
     --content-card-bottom-spacing: 0px;
-    background-color: mat.get-theme-color($theme, surface);
+    background-color: mat.get-theme-color(t.$theme, surface);
     padding: 1rem;
     height: calc(100% - var(--content-card-bottom-spacing));
 

@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
+@use '../theme' as t;
 @import '../utilities/breakpoints';
-@import '../theme';
 
 @mixin app-table-columns($options: ()) {
   .table-columns {
@@ -14,11 +14,11 @@
 
     .mat-column-icon,
     tbody .mat-column-nullable {
-      color: mat.get-theme-color($theme, secondary);
+      color: mat.get-theme-color(t.$theme, secondary);
     }
 
     .mat-column-primary-key {
-      color: mat.get-theme-color($theme, primary);
+      color: mat.get-theme-color(t.$theme, primary);
     }
 
     @include breakpoint-down(sm) {

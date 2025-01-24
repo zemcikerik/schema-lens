@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@import '../theme';
+@use '../theme' as t;
 @import '../utilities/breakpoints';
 
 @mixin app-profile($options: ()) {
@@ -98,7 +98,7 @@
     }
 
     &__delete {
-      @include mat.button-color($theme, $color-variant: error);
+      @include mat.button-color(t.$theme, $color-variant: error);
     }
   }
 }
