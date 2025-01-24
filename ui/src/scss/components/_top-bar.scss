@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
-@import '../utilities/breakpoints';
+@use '../utilities/breakpoints' as breakpoints;
 
 @mixin app-top-bar($options: ()) {
   .top-bar {
@@ -20,7 +20,7 @@
       display: none;
     }
 
-    @include breakpoint-down(sm) {
+    @include breakpoints.breakpoint-down(sm) {
       &__app-name {
         display: none;
       }
@@ -37,7 +37,7 @@
     &__sidebar-toggle__wrapper {
       display: none;
 
-      @include breakpoint-down(lg) {
+      @include breakpoints.breakpoint-down(lg) {
         display: block;
       }
     }

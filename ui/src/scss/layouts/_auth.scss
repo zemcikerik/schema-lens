@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
-@import '../utilities/breakpoints';
+@use '../utilities/breakpoints' as breakpoints;
 
 @mixin app-layout-auth($options: ()) {
   .layout-auth {
@@ -30,7 +30,7 @@
       }
     }
 
-    @include breakpoint-down(md) {
+    @include breakpoints.breakpoint-down(md) {
       grid-template-columns: 1fr;
       margin: 0;
 

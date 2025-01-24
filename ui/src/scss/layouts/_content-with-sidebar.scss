@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
-@import '../utilities/breakpoints';
+@use '../utilities/breakpoints' as breakpoints;
 
 @mixin app-layout-content-with-sidebar($options: ()) {
   .layout-content-with-sidebar {
@@ -23,7 +23,7 @@
       min-height: 0;
     }
 
-    @include breakpoint-down(lg) {
+    @include breakpoints.breakpoint-down(lg) {
       grid-template-columns: 1fr;
 
       &__sidebar {

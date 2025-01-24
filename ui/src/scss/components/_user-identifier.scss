@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
-@import '../utilities/breakpoints';
+@use '../utilities/breakpoints' as breakpoints;
 
 @mixin app-user-identifier($options: ()) {
   .user-identifier {
@@ -50,7 +50,7 @@
       overflow: hidden;
     }
 
-    @include breakpoint-down(md) {
+    @include breakpoints.breakpoint-down(md) {
       column-gap: 0;
       padding-right: 0;
 

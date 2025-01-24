@@ -1,5 +1,6 @@
 @use '@angular/material' as mat;
 @use './scss/theme' as t;
+@use './scss/utilities/breakpoints' as breakpoints;
 @import './scss/base/reset';
 
 @import './scss/layouts/auth';
@@ -133,8 +134,8 @@ body {
   > * {
     width: 100%;
 
-    @include breakpoint-up(md) {
-      width: get-breakpoint-size(md);
+    @include breakpoints.breakpoint-up(md) {
+      width: breakpoints.get-breakpoint-size(md);
     }
   }
 

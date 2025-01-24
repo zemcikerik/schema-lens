@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
-@import '../utilities/breakpoints';
+@use '../utilities/breakpoints' as breakpoints;
 
 @mixin app-404($options: ()) {
   .error-404 {
@@ -21,7 +21,7 @@
       width: 15rem;
       aspect-ratio: 367 / 431;
 
-      @include breakpoint-down(sm) {
+      @include breakpoints.breakpoint-down(sm) {
         display: none;
       }
     }

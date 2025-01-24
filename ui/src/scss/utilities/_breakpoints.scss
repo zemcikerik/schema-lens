@@ -1,10 +1,11 @@
-@use 'sass:math';
-@import '../base/variables';
+@use 'sass:map' as map;
+@use 'sass:math' as math;
+@use '../base/variables' as vars;
 
 $_infinity: 1e20px;
 
 @function get-breakpoint-size($breakpoint) {
-  $size: map-get($breakpoints, $breakpoint);
+  $size: map.get(vars.$breakpoints, $breakpoint);
 
   @if ($size == null) {
     @error "Cannot find breakpoint #{ $breakpoint }!";
@@ -22,7 +23,7 @@ $_infinity: 1e20px;
   $nextBreakpointKey: null;
   $nextBreakpointSize: $_infinity;
 
-  @each $key, $size in $breakpoints {
+  @each $key, $size in vars.$breakpoints {
     @if ($breakpointSize < $size and $size < $nextBreakpointSize) {
       $nextBreakpointKey: $key;
       $nextBreakpointSize: $size;
@@ -67,11 +68,11 @@ $_infinity: 1e20px;
 }
 
 @function _is-smallest-breakpoint($breakpoint) {
-  $breakpoint-values: map-values($breakpoints);
+  $breakpoint-values: map.values(vars.$breakpoints);
   @return get-breakpoint-size($breakpoint) == math.min($breakpoint-values...);
 }
 
 @function _is-largest-breakpoint($breakpoint) {
-  $breakpoint-values: map-values($breakpoints);
+  $breakpoint-values: map.values(vars.$breakpoints);
   @return get-breakpoint-size($breakpoint) == math.max($breakpoint-values...);
 }

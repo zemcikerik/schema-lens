@@ -1,4 +1,4 @@
-@import '../utilities/breakpoints';
+@use '../utilities/breakpoints' as breakpoints;
 
 @mixin app-project-collaborators-table($options: ()) {
   .project-collaborators-table {
@@ -10,7 +10,7 @@
       width: 2rem;
     }
 
-    @include breakpoint-down(sm) {
+    @include breakpoints.breakpoint-down(sm) {
       .mat-column-email {
         display: none;
       }

@@ -1,6 +1,6 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
-@import '../utilities/breakpoints';
+@use '../utilities/breakpoints' as breakpoints;
 
 @mixin app-table-columns($options: ()) {
   .table-columns {
@@ -21,7 +21,7 @@
       color: mat.get-theme-color(t.$theme, primary);
     }
 
-    @include breakpoint-down(sm) {
+    @include breakpoints.breakpoint-down(sm) {
       .mat-column-order {
         display: none;
       }
