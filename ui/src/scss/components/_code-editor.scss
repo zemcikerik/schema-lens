@@ -2,32 +2,30 @@
 @use '../theme' as t;
 @import '../utilities/text-code';
 
-@mixin app-code-editor($options: ()) {
-  app-code-editor {
-    display: block;
+app-code-editor {
+  display: block;
+  height: 100%;
+
+  .cm-editor {
     height: 100%;
 
-    .cm-editor {
-      height: 100%;
+    .cm-gutters {
+      background-color: rgba(mat.get-theme-color(t.$theme, secondary), 0.05);
+      border-right-color: mat.get-theme-color(t.$theme, surface-variant);
+    }
 
-      .cm-gutters {
-        background-color: rgba(mat.get-theme-color(t.$theme, secondary), 0.05);
-        border-right-color: mat.get-theme-color(t.$theme, surface-variant);
-      }
+    .cm-line,
+    .cm-lineNumbers {
+      @include text-code();
+      font-size: 0.8rem;
+    }
 
-      .cm-line,
-      .cm-lineNumbers {
-        @include text-code();
-        font-size: 0.8rem;
-      }
+    .cm-activeLine {
+      background-color: rgba(mat.get-theme-color(t.$theme, tertiary), 0.05);
+    }
 
-      .cm-activeLine {
-        background-color: rgba(mat.get-theme-color(t.$theme, tertiary), 0.05);
-      }
-
-      .cm-activeLineGutter {
-        background-color: rgba(mat.get-theme-color(t.$theme, tertiary), 0.1);
-      }
+    .cm-activeLineGutter {
+      background-color: rgba(mat.get-theme-color(t.$theme, tertiary), 0.1);
     }
   }
 }

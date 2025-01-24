@@ -1,35 +1,33 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
 
-@mixin app-alert($options: ()) {
-  .alert {
-    display: flex;
-    border-radius: 16px;
-    padding: 1rem;
-    width: 100%;
-    gap: 0.5rem;
+.alert {
+  display: flex;
+  border-radius: 16px;
+  padding: 1rem;
+  width: 100%;
+  gap: 0.5rem;
 
-    &--info {
-      background-color: mat.get-theme-color(t.$theme, secondary-container);
-      color: mat.get-theme-color(t.$theme, on-secondary-container);
-    }
+  &--info {
+    background-color: mat.get-theme-color(t.$theme, secondary-container);
+    color: mat.get-theme-color(t.$theme, on-secondary-container);
+  }
 
-    &--info &__icon {
-      color: mat.get-theme-color(t.$theme, secondary);
-    }
+  &--info &__icon {
+    color: mat.get-theme-color(t.$theme, secondary);
+  }
 
-    &--error {
-      background-color: mat.get-theme-color(t.$theme, error-container);
-      color: mat.get-theme-color(t.$theme, on-error-container);
-    }
+  &--error {
+    background-color: mat.get-theme-color(t.$theme, error-container);
+    color: mat.get-theme-color(t.$theme, on-error-container);
+  }
 
-    &--error &__icon {
-      color: mat.get-theme-color(t.$theme, error);
-    }
+  &--error &__icon {
+    color: mat.get-theme-color(t.$theme, error);
+  }
 
-    &__content {
-      padding: 0.25rem 0 0 0;
-      flex-grow: 1;
-    }
+  &__content {
+    padding: 0.25rem 0 0 0;
+    flex-grow: 1;
   }
 }

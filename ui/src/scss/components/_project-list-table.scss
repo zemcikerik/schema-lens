@@ -1,11 +1,9 @@
-@mixin app-project-list-table($options: ()) {
-  .project-list-table {
-    .mat-mdc-row:hover {
-      cursor: pointer;
-    }
+.project-list-table {
+  .mat-mdc-row:hover {
+    cursor: pointer;
+  }
 
-    &__profile-picture {
-      margin: 0.2rem 0.5rem 0.2rem 0;
-    }
+  &__profile-picture {
+    margin: 0.2rem 0.5rem 0.2rem 0;
   }
 }

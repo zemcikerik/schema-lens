@@ -2,44 +2,42 @@
 @use '../theme' as t;
 @use '../utilities/breakpoints' as breakpoints;
 
-@mixin app-top-bar($options: ()) {
-  .top-bar {
-    @include mat.toolbar-overrides((
-      container-background-color: mat.get-theme-color(t.$theme, surface-container),
-    ));
-    gap: 0.5em;
-    user-select: none;
+.top-bar {
+  @include mat.toolbar-overrides((
+    container-background-color: mat.get-theme-color(t.$theme, surface-container),
+  ));
+  gap: 0.5em;
+  user-select: none;
 
-    &__app-name,
-    &__app-name-short {
-      color: mat.get-theme-color(t.$theme, on-surface);
-      text-decoration: none;
-    }
+  &__app-name,
+  &__app-name-short {
+    color: mat.get-theme-color(t.$theme, on-surface);
+    text-decoration: none;
+  }
 
-    &__app-name-short {
+  &__app-name-short {
+    display: none;
+  }
+
+  @include breakpoints.breakpoint-down(sm) {
+    &__app-name {
       display: none;
     }
 
-    @include breakpoints.breakpoint-down(sm) {
-      &__app-name {
-        display: none;
-      }
-
-      &__app-name-short {
-        display: inline;
-      }
+    &__app-name-short {
+      display: inline;
     }
+  }
 
-    &__separator {
-      flex: 1 1 auto;
-    }
+  &__separator {
+    flex: 1 1 auto;
+  }
 
-    &__sidebar-toggle__wrapper {
-      display: none;
+  &__sidebar-toggle__wrapper {
+    display: none;
 
-      @include breakpoints.breakpoint-down(lg) {
-        display: block;
-      }
+    @include breakpoints.breakpoint-down(lg) {
+      display: block;
     }
   }
 }

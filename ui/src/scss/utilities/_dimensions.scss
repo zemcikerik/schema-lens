@@ -1,13 +1,11 @@
-@mixin app-utility-dimensions($options: ()) {
-  .w-100 {
-    width: 100%;
-  }
+.w-100 {
+  width: 100%;
+}
 
-  .mb-1 {
-    margin-bottom: 1rem;
-  }
+.mb-1 {
+  margin-bottom: 1rem;
+}
 
-  .mt-1 {
-    margin-top: 1rem;
-  }
+.mt-1 {
+  margin-top: 1rem;
 }

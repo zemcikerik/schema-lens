@@ -2,66 +2,64 @@
 @use '../theme' as t;
 @use '../utilities/breakpoints' as breakpoints;
 
-@mixin app-user-identifier($options: ()) {
-  .user-identifier {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    grid-template-rows: repeat(2, auto);
-    grid-template-areas:
-      "photo username"
-      "photo email";
-    column-gap: 0.5rem;
-    max-width: 15rem;
-    height: 2.75rem;
-    cursor: pointer;
+.user-identifier {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: repeat(2, auto);
+  grid-template-areas:
+    "photo username"
+    "photo email";
+  column-gap: 0.5rem;
+  max-width: 15rem;
+  height: 2.75rem;
+  cursor: pointer;
+  border-radius: 48px;
+  padding-right: 1rem;
+  transition: color 100ms;
+  position: relative;
+
+  &__filter {
+    position: absolute;
+    inset: 0;
     border-radius: 48px;
-    padding-right: 1rem;
-    transition: color 100ms;
-    position: relative;
+    background-color: mat.get-theme-color(t.$theme, neutral, 40);
+    opacity: 0;
+    transition: opacity 100ms;
+  }
 
-    &__filter {
-      position: absolute;
-      inset: 0;
-      border-radius: 48px;
-      background-color: mat.get-theme-color(t.$theme, neutral, 40);
-      opacity: 0;
-      transition: opacity 100ms;
-    }
+  &__photo {
+    grid-area: photo;
+  }
 
-    &__photo {
-      grid-area: photo;
-    }
+  &__username {
+    grid-area: username;
+    font: mat.get-theme-typography(t.$theme, body-medium, font);
+    vertical-align: bottom;
+  }
 
-    &__username {
-      grid-area: username;
-      font: mat.get-theme-typography(t.$theme, body-medium, font);
-      vertical-align: bottom;
-    }
+  &__email {
+    grid-area: email;
+    font: mat.get-theme-typography(t.$theme, body-small, font);
+  }
 
-    &__email {
-      grid-area: email;
-      font: mat.get-theme-typography(t.$theme, body-small, font);
-    }
+  &__username,
+  &__email {
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+
+  @include breakpoints.breakpoint-down(md) {
+    column-gap: 0;
+    padding-right: 0;
 
     &__username,
     &__email {
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      overflow: hidden;
+      display: none;
     }
+  }
 
-    @include breakpoints.breakpoint-down(md) {
-      column-gap: 0;
-      padding-right: 0;
-
-      &__username,
-      &__email {
-        display: none;
-      }
-    }
-
-    &:hover &__filter {
-      opacity: 20%;
-    }
+  &:hover &__filter {
+    opacity: 20%;
   }
 }

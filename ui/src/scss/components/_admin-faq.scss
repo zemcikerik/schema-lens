@@ -1,24 +1,22 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
 
-@mixin app-admin-faq($options: ()) {
-  .admin-faq {
-    &__table {
-      .mat-column-id,
-      .mat-column-actions {
-        width: 3rem;
-      }
-
-      td.mat-column-id {
-        font: mat.get-theme-typography(t.$theme, label-large);
-      }
+.admin-faq {
+  &__table {
+    .mat-column-id,
+    .mat-column-actions {
+      width: 3rem;
     }
 
-    &__modify-dialog__form {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
-      gap: 1rem;
+    td.mat-column-id {
+      font: mat.get-theme-typography(t.$theme, label-large);
     }
+  }
+
+  &__modify-dialog__form {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 1rem;
   }
 }

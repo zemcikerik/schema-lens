@@ -1,6 +1,4 @@
-@mixin app-table-ddl($options: ()) {
-  .table-ddl {
-    // TODO: figure out how to do this cleaner without breaking other views or modifying Monaco editor
-    height: calc(100vh - 10rem - var(--app-top-bar-height) - var(--content-card-bottom-spacing));
-  }
+.table-ddl {
+  // TODO: figure out how to do this cleaner without breaking other views or modifying Monaco editor
+  height: calc(100vh - 10rem - var(--app-top-bar-height) - var(--content-card-bottom-spacing));
 }

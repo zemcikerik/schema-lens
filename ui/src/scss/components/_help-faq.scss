@@ -1,11 +1,9 @@
-@mixin app-help-faq($options: ()) {
-  .help-faq {
-    &__posts {
-      padding: 0 1rem 1rem 1rem;
-    }
+.help-faq {
+  &__posts {
+    padding: 0 1rem 1rem 1rem;
+  }
 
-    &__answer {
-      white-space: pre-line;
-    }
+  &__answer {
+    white-space: pre-line;
   }
 }

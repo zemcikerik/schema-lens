@@ -1,24 +1,22 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
 
-@mixin app-layout-header-and-content($options: ()) {
-  .layout-header-and-content {
-    height: 100%;
+.layout-header-and-content {
+  height: 100%;
 
-    &__header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid mat.get-theme-color(t.$theme, outline-variant);
-    }
+  &__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid mat.get-theme-color(t.$theme, outline-variant);
+  }
 
-    &__content {
-      max-height: calc(100% - 5rem);
-      overflow-y: auto;
-    }
+  &__content {
+    max-height: calc(100% - 5rem);
+    overflow-y: auto;
+  }
 
-    &.include-spacing &__content {
-      padding-top: 0.5rem;
-    }
+  &.include-spacing &__content {
+    padding-top: 0.5rem;
   }
 }

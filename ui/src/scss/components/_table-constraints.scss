@@ -1,33 +1,31 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
 
-@mixin app-table-constraints($options: ()) {
-  .table-constraints {
-    .mat-column-icon,
-    .mat-column-enabled,
-    .mat-column-expand {
-      width: 3rem;
-      text-align: center;
-    }
+.table-constraints {
+  .mat-column-icon,
+  .mat-column-enabled,
+  .mat-column-expand {
+    width: 3rem;
+    text-align: center;
+  }
 
-    .mat-column-icon,
-    tbody .mat-column-enabled,
-    .mat-column-expand {
-      color: mat.get-theme-color(t.$theme, secondary);
-    }
+  .mat-column-icon,
+  tbody .mat-column-enabled,
+  .mat-column-expand {
+    color: mat.get-theme-color(t.$theme, secondary);
+  }
 
-    &__constraint-row:hover {
-      background-color: mat.get-theme-color(t.$theme, surface-container-low);
-      cursor: pointer;
-    }
+  &__constraint-row:hover {
+    background-color: mat.get-theme-color(t.$theme, surface-container-low);
+    cursor: pointer;
+  }
 
-    &__detail-row {
-      display: none;
-      height: 0;
+  &__detail-row {
+    display: none;
+    height: 0;
 
-      &.is-expanded {
-        display: table-row;
-      }
+    &.is-expanded {
+      display: table-row;
     }
   }
 }

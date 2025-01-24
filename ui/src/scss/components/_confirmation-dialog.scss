@@ -1,10 +1,8 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
 
-@mixin app-confirmation-dialog($options: ()) {
-  .confirmation-dialog {
-    &__button--danger {
-      @include mat.button-color(t.$theme, $color-variant: error);
-    }
+.confirmation-dialog {
+  &__button--danger {
+    @include mat.button-color(t.$theme, $color-variant: error);
   }
 }

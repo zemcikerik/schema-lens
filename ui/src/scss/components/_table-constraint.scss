@@ -1,29 +1,27 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
 
-@mixin app-table-constraint($options: ()) {
-  .table-constraint {
-    &.foreign-key {
-      @include mat.table-density(-2);
+.table-constraint {
+  &.foreign-key {
+    @include mat.table-density(-2);
+  }
+
+  &:not(.foreign-key) {
+    padding: 0.5rem;
+  }
+
+  &__label {
+    font: mat.get-theme-typography(t.$theme, label-large, font);
+  }
+
+  &__affected-columns {
+    table {
+      margin-top: 0.5rem;
     }
 
-    &:not(.foreign-key) {
-      padding: 0.5rem;
-    }
-
-    &__label {
-      font: mat.get-theme-typography(t.$theme, label-large, font);
-    }
-
-    &__affected-columns {
-      table {
-        margin-top: 0.5rem;
-      }
-
-      mat-icon {
-        margin-right: 1rem;
-        color: mat.get-theme-color(t.$theme, secondary);
-      }
+    mat-icon {
+      margin-right: 1rem;
+      color: mat.get-theme-color(t.$theme, secondary);
     }
   }
 }

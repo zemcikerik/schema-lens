@@ -6,8 +6,6 @@
   font-variant-ligatures: none;
 }
 
-@mixin app-utility-text-code($options: ()) {
-  .text-code {
-    @include text-code();
-  }
+.text-code {
+  @include text-code();
 }

@@ -2,64 +2,62 @@
 @use '../theme' as t;
 @use '../utilities/breakpoints' as breakpoints;
 
-@mixin app-project-properties($options: ()) {
-  .project-properties {
-    &__main {
-      display: grid;
-      gap: 0.5rem 1.5rem;
-      grid-template-columns: repeat(3, 1fr);
+.project-properties {
+  &__main {
+    display: grid;
+    gap: 0.5rem 1.5rem;
+    grid-template-columns: repeat(3, 1fr);
 
-      & > :first-child {
-        grid-column: 1 / 3;
-      }
-
-      @include breakpoints.breakpoint(md) {
-        grid-template-columns: 2fr 1fr 2fr;
-      }
-
-      @include breakpoints.breakpoint-down(md) {
-        grid-template-rows: auto auto;
-        grid-template-columns: auto;
-
-        & > :first-child {
-          grid-column: 1;
-        }
-      }
+    & > :first-child {
+      grid-column: 1 / 3;
     }
 
-    &__connection {
-      display: grid;
-      gap: 0.5rem 1.5rem;
+    @include breakpoints.breakpoint(md) {
+      grid-template-columns: 2fr 1fr 2fr;
+    }
+
+    @include breakpoints.breakpoint-down(md) {
+      grid-template-rows: auto auto;
+      grid-template-columns: auto;
+
+      & > :first-child {
+        grid-column: 1;
+      }
+    }
+  }
+
+  &__connection {
+    display: grid;
+    gap: 0.5rem 1.5rem;
+    grid-template-rows: repeat(3, auto);
+    grid-template-columns: repeat(3, 1fr);
+
+    & > :first-child {
+      grid-column: 1 / 3;
+    }
+
+    @include breakpoints.breakpoint-down(xl) {
       grid-template-rows: repeat(3, auto);
-      grid-template-columns: repeat(3, 1fr);
-
-      & > :first-child {
-        grid-column: 1 / 3;
-      }
-
-      @include breakpoints.breakpoint-down(xl) {
-        grid-template-rows: repeat(3, auto);
-        grid-template-columns: repeat(2, 1fr);
-      }
-
-      @include breakpoints.breakpoint-down(md) {
-        grid-template-rows: repeat(5, auto);
-        grid-template-columns: auto;
-
-        & > :first-child {
-          grid-column: 1;
-        }
-      }
+      grid-template-columns: repeat(2, 1fr);
     }
 
-    &__control {
-      display: flex;
-      justify-content: right;
+    @include breakpoints.breakpoint-down(md) {
+      grid-template-rows: repeat(5, auto);
+      grid-template-columns: auto;
 
-      gap: 1rem;
-      > :not([type="submit"]) {
-        @include mat.button-color(t.$theme, $color-variant: error);
+      & > :first-child {
+        grid-column: 1;
       }
+    }
+  }
+
+  &__control {
+    display: flex;
+    justify-content: right;
+
+    gap: 1rem;
+    > :not([type="submit"]) {
+      @include mat.button-color(t.$theme, $color-variant: error);
     }
   }
 }

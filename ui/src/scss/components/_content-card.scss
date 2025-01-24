@@ -2,21 +2,19 @@
 @use '../theme' as t;
 @use '../utilities/breakpoints' as breakpoints;
 
-@mixin app-content-card($options: ()) {
-  .content-card {
-    --content-card-bottom-spacing: 0px;
-    background-color: mat.get-theme-color(t.$theme, surface);
-    padding: 1rem;
-    height: calc(100% - var(--content-card-bottom-spacing));
+.content-card {
+  --content-card-bottom-spacing: 0px;
+  background-color: mat.get-theme-color(t.$theme, surface);
+  padding: 1rem;
+  height: calc(100% - var(--content-card-bottom-spacing));
 
-    @include breakpoints.breakpoint-up(md) {
-      padding: 1rem 2rem;
-    }
+  @include breakpoints.breakpoint-up(md) {
+    padding: 1rem 2rem;
+  }
 
-    @include breakpoints.breakpoint-up(lg) {
-      --content-card-bottom-spacing: 1rem;
-      border-radius: 16px;
-      margin: 0 1rem;
-    }
+  @include breakpoints.breakpoint-up(lg) {
+    --content-card-bottom-spacing: 1rem;
+    border-radius: 16px;
+    margin: 0 1rem;
   }
 }

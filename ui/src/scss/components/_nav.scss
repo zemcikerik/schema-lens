@@ -1,15 +1,13 @@
 @use '@angular/material' as mat;
 
-@mixin app-nav($options: ()) {
-  .nav {
-    &__container {
-      height: 100%;
-      overflow-y: auto;
-      padding-left: 0.5rem;
-    }
+.nav {
+  &__container {
+    height: 100%;
+    overflow-y: auto;
+    padding-left: 0.5rem;
+  }
 
-    > a {
-      --mdc-list-list-item-label-text-weight: 500;
-    }
+  > a {
+    --mdc-list-list-item-label-text-weight: 500;
   }
 }

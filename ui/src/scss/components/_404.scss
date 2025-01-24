@@ -2,28 +2,26 @@
 @use '../theme' as t;
 @use '../utilities/breakpoints' as breakpoints;
 
-@mixin app-404($options: ()) {
-  .error-404 {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 2rem;
-    gap: 2rem;
+.error-404 {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2rem;
+  gap: 2rem;
 
-    h2 {
-      font: mat.get-theme-typography(t.$theme, display-large);
-      margin: 1rem;
-      text-align: center;
-    }
+  h2 {
+    font: mat.get-theme-typography(t.$theme, display-large);
+    margin: 1rem;
+    text-align: center;
+  }
 
-    &__image {
-      position: relative;
-      width: 15rem;
-      aspect-ratio: 367 / 431;
+  &__image {
+    position: relative;
+    width: 15rem;
+    aspect-ratio: 367 / 431;
 
-      @include breakpoints.breakpoint-down(sm) {
-        display: none;
-      }
+    @include breakpoints.breakpoint-down(sm) {
+      display: none;
     }
   }
 }

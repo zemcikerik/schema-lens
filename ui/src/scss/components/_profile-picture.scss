@@ -1,45 +1,43 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
 
-@mixin app-profile-picture($options: ()) {
-  .profile-picture {
+.profile-picture {
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+  pointer-events: none;
+
+  &__picker {
     position: absolute;
     inset: 0;
-    object-fit: cover;
+    opacity: 0;
+    cursor: pointer;
+  }
+
+  &__wrapper {
+    position: relative;
+    overflow: hidden;
+    border-radius: 2.75rem;
+    width: 2.75rem;
+    height: 2.75rem;
+  }
+
+  &__wrapper.large {
+    border-radius: 10rem;
+    width: 10rem;
+    height: 10rem;
+  }
+
+  &__filter {
+    position: absolute;
+    inset: 0;
+    background-color: mat.get-theme-color(t.$theme, neutral, 40);
+    opacity: 0;
+    transition: opacity 100ms;
     pointer-events: none;
+  }
 
-    &__picker {
-      position: absolute;
-      inset: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    &__wrapper {
-      position: relative;
-      overflow: hidden;
-      border-radius: 2.75rem;
-      width: 2.75rem;
-      height: 2.75rem;
-    }
-
-    &__wrapper.large {
-      border-radius: 10rem;
-      width: 10rem;
-      height: 10rem;
-    }
-
-    &__filter {
-      position: absolute;
-      inset: 0;
-      background-color: mat.get-theme-color(t.$theme, neutral, 40);
-      opacity: 0;
-      transition: opacity 100ms;
-      pointer-events: none;
-    }
-
-    &__wrapper:hover &__filter {
-      opacity: 20%;
-    }
+  &__wrapper:hover &__filter {
+    opacity: 20%;
   }
 }

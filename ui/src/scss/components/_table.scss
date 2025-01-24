@@ -1,24 +1,22 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
 
-@mixin app-table($options: ()) {
-  .table {
-    &__header {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
+.table {
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
 
-      > .icon {
-        color: mat.get-theme-color(t.$theme, secondary);
-        font-size: 2rem;
-        width: 2rem;
-        height: 2rem;
-      }
+    > .icon {
+      color: mat.get-theme-color(t.$theme, secondary);
+      font-size: 2rem;
+      width: 2rem;
+      height: 2rem;
     }
+  }
 
-    &__content-host {
-      max-height: calc(100% - 8rem);
-      overflow: auto;
-    }
+  &__content-host {
+    max-height: calc(100% - 8rem);
+    overflow: auto;
   }
 }

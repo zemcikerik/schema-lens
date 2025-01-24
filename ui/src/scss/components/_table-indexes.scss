@@ -1,35 +1,33 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
 
-@mixin app-table-indexes($options: ()) {
-  .table-indexes {
-    tbody {
-      .mat-column-icon,
-      .mat-column-unique,
-      .mat-column-compressed,
-      .mat-column-logged {
-        color: mat.get-theme-color(t.$theme, secondary);
-        width: 3rem;
-        text-align: center;
-      }
-    }
-
-    .mat-column-expand {
+.table-indexes {
+  tbody {
+    .mat-column-icon,
+    .mat-column-unique,
+    .mat-column-compressed,
+    .mat-column-logged {
+      color: mat.get-theme-color(t.$theme, secondary);
       width: 3rem;
+      text-align: center;
     }
+  }
 
-     &__index-row:hover {
-       background-color: mat.get-theme-color(t.$theme, surface-container-low);
-       cursor: pointer;
-    }
+  .mat-column-expand {
+    width: 3rem;
+  }
 
-    &__detail-row {
-      display: none;
-      height: 0;
+   &__index-row:hover {
+     background-color: mat.get-theme-color(t.$theme, surface-container-low);
+     cursor: pointer;
+  }
 
-      &.is-expanded {
-        display: table-row;
-      }
+  &__detail-row {
+    display: none;
+    height: 0;
+
+    &.is-expanded {
+      display: table-row;
     }
   }
 }
