@@ -39,6 +39,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-jackson:0.12.6")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.12.6")
     implementation("commons-validator:commons-validator:1.9.0")
+    implementation("com.github.vertical-blank:sql-formatter:2.0.5")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
 	runtimeOnly("com.oracle.database.jdbc:ojdbc11")
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")

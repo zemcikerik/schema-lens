@@ -1,6 +1,7 @@
 package dev.zemco.schemalens.tables
 
 import dev.zemco.schemalens.meta.TableMetadata
+import dev.zemco.schemalens.meta.oracle.OracleSqlFormatter
 import dev.zemco.schemalens.meta.oracle.OracleTableDdlGenerator
 import dev.zemco.schemalens.meta.oracle.OracleTableMetadataReader
 import dev.zemco.schemalens.projects.Project
@@ -12,6 +13,7 @@ class TableServiceImpl(
     private val connectionService: ProjectConnectionService,
     private val oracleTableMetadataReader: OracleTableMetadataReader,
     private val oracleTableDdlGenerator: OracleTableDdlGenerator,
+    private val oracleSqlFormatter: OracleSqlFormatter,
 ) : TableService {
 
     override fun getTableList(project: Project): List<String> =
@@ -27,6 +29,6 @@ class TableServiceImpl(
     override fun generateDdlForTable(project: Project, tableName: String): String? =
         connectionService.withDataSource(project.connectionInfo) {
             oracleTableDdlGenerator.generateDdlForTable(it, tableName)
-        }
+        }?.let { oracleSqlFormatter.formatSql(it) }
 
 }
