@@ -16,6 +16,7 @@ services:
       - storage.profile-picture.folder-path=/app/profile-pictures
       - project.password-encryption-key=${PROJECT_PASSWORD_ENCRYPTION_KEY}
       - jwt.signing-key=${JWT_SIGNING_KEY}
+      - oracle.format.api-base-url=http://formatter:8000
     networks:
       - db
       - formatter

@@ -1,7 +1,7 @@
 package dev.zemco.schemalens.tables
 
 import dev.zemco.schemalens.meta.TableMetadata
-import dev.zemco.schemalens.meta.oracle.OracleSqlFormatter
+import dev.zemco.schemalens.meta.oracle.format.OracleSqlFormatter
 import dev.zemco.schemalens.meta.oracle.OracleTableDdlGenerator
 import dev.zemco.schemalens.meta.oracle.OracleTableMetadataReader
 import dev.zemco.schemalens.projects.Project
