@@ -1,0 +1,36 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.table-objects {
+  > tbody {
+    .column-icon {
+      color: mat.get-theme-color(t.$theme, secondary);
+      text-align: center;
+    }
+
+    .column-icon,
+    .column-expand {
+      width: 3rem;
+    }
+
+    .column-primary {
+      color: mat.get-theme-color(t.$theme, primary);
+    }
+  }
+
+  &.is-interactable > tbody {
+    > tr:nth-child(odd):hover {
+      background-color: mat.get-theme-color(t.$theme, surface-container-low);
+      cursor: pointer;
+    }
+
+    > tr:nth-child(even) {
+      display: none;
+      height: 0;
+
+      &.is-expanded {
+        display: table-row;
+      }
+    }
+  }
+}
