@@ -21,7 +21,7 @@ import { Table } from '../../models/table.model';
   ],
 })
 export class TableColumnsComponent {
-  readonly DISPLAYED_COLUMNS = ['icon', 'primary-key', 'name', 'type', 'position', 'nullable'];
+  readonly ALL_COLUMNS = ['icon', 'primary-key', 'name', 'type', 'position', 'nullable'];
 
   table = inject(ROUTER_OUTLET_DATA) as Signal<Table | null>;
   tableColumns = computed(() => this.table()?.columns ?? []);
@@ -31,5 +31,10 @@ export class TableColumnsComponent {
     const table = this.table();
     const pkColumns = table ? this.tableColumnService.getPrimaryKeyColumns(table) : [];
     return pkColumns.map(column => column.name);
+  });
+
+  displayedColumns = computed(() => {
+    const primaryKeys = this.primaryKeyColumns();
+    return primaryKeys.length > 0 ? this.ALL_COLUMNS : this.ALL_COLUMNS.filter(col => col !== 'primary-key');
   });
 }

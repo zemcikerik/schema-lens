@@ -15,7 +15,8 @@ class OracleTableConstraintMetadataReader {
                 name = rs.getString("constraint_name"),
                 type = rs.getString("constraint_type"),
                 searchCondition = rs.getString("search_condition"),
-                enabled = rs.getString("status") == STATUS_ENABLED,
+                enabled = rs.getBoolean("status"),
+                invalid = rs.getBoolean("invalid"),
                 columnName = rs.getString("column_name"),
                 referencedConstraintName = rs.getString("ref_constraint_name"),
                 referencedTableName = rs.getString("ref_table_name"),
@@ -27,18 +28,20 @@ class OracleTableConstraintMetadataReader {
     }
 
     private fun mapToConstraint(constraintEntries: List<ConstraintEntry>): ConstraintMetadata {
-        val (name, type, searchCondition, enabled, _, referencedConstraintName, referencedTableName) = constraintEntries.first()
+        val (name, type, searchCondition, enabled, invalid, _, referencedConstraintName, referencedTableName) = constraintEntries.first()
 
         return when (type) {
             "P" -> PrimaryKeyConstraintMetadata(
                 name = name,
                 columnNames = constraintEntries.map { it.columnName },
                 enabled = enabled,
+                invalid = invalid,
             )
 
             "R" -> ForeignKeyConstraintMetadata(
                 name = name,
                 enabled = enabled,
+                invalid = invalid,
                 referencedConstraintName = referencedConstraintName
                     ?: throw IllegalArgumentException("Missing referenced constraint name for foreign key constraint '$name'!"),
                 referencedTableName = referencedTableName
@@ -55,6 +58,7 @@ class OracleTableConstraintMetadataReader {
             "U" -> UniqueConstraintMetadata(
                 name = name,
                 columnNames = constraintEntries.map { it.columnName },
+                invalid = invalid,
                 enabled = enabled,
             )
 
@@ -62,6 +66,7 @@ class OracleTableConstraintMetadataReader {
                 name = name,
                 columnNames = constraintEntries.map { it.columnName },
                 enabled = enabled,
+                invalid = invalid,
                 condition = searchCondition
                     ?: throw IllegalArgumentException("Missing search condition for check constraint '$name'!"),
             )
@@ -71,10 +76,9 @@ class OracleTableConstraintMetadataReader {
     }
 
     private companion object {
-        private const val STATUS_ENABLED = "ENABLED"
-
         private val GET_CONSTRAINTS_SQL_QUERY = """
-            SELECT con.constraint_name, con.constraint_type, con.search_condition, con.status, col.column_name, con.r_constraint_name ref_constraint_name, ref_col.table_name ref_table_name, ref_col.column_name ref_column_name
+            SELECT con.constraint_name, con.constraint_type, con.search_condition, DECODE(con.status, 'ENABLED', 1, 0) as status, DECODE(con.INVALID, 'INVALID', 1, 0) as invalid,
+                col.column_name, con.r_constraint_name ref_constraint_name, ref_col.table_name ref_table_name, ref_col.column_name ref_column_name
             FROM user_constraints con
                 LEFT JOIN user_cons_columns col ON con.constraint_name = col.constraint_name
                 LEFT JOIN user_cons_columns ref_col ON con.r_constraint_name = ref_col.constraint_name
@@ -91,6 +95,7 @@ private data class ConstraintEntry(
     val type: String,
     val searchCondition: String?,
     val enabled: Boolean,
+    val invalid: Boolean,
     val columnName: String,
     val referencedConstraintName: String?,
     val referencedTableName: String?,

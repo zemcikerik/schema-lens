@@ -18,17 +18,20 @@ abstract class ConstraintMetadata {
     abstract val name: String
     abstract val columnNames: List<String>
     abstract val enabled: Boolean
+    abstract val invalid: Boolean
 }
 
 data class PrimaryKeyConstraintMetadata(
     override val name: String,
     override val columnNames: List<String>,
     override val enabled: Boolean,
+    override val invalid: Boolean,
 ): ConstraintMetadata()
 
 data class ForeignKeyConstraintMetadata(
     override val name: String,
     override val enabled: Boolean,
+    override val invalid: Boolean,
     val referencedConstraintName: String,
     val referencedTableName: String,
     val references: List<ColumnReference>,
@@ -46,11 +49,13 @@ data class UniqueConstraintMetadata(
     override val name: String,
     override val columnNames: List<String>,
     override val enabled: Boolean,
+    override val invalid: Boolean,
 ): ConstraintMetadata()
 
 data class CheckConstraintMetadata(
     override val name: String,
     override val columnNames: List<String>,
     override val enabled: Boolean,
+    override val invalid: Boolean,
     val condition: String,
 ): ConstraintMetadata()

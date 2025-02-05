@@ -2,7 +2,6 @@ import { ChangeDetectionStrategy, Component, computed, inject, Signal, signal } 
 import { MatTableModule } from '@angular/material/table';
 import { StatusIconComponent } from '../../../shared/components/status-icon/status-icon.component';
 import { TableIndex } from '../../models/table-index.model';
-import { matExpansionAnimations } from '@angular/material/expansion';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { TableIndexComponent } from '../table-index/table-index.component';
@@ -27,10 +26,6 @@ import { Table } from '../../models/table.model';
     TranslatePipe,
     IndexTypeToLabelPipe,
     AlertComponent,
-  ],
-  animations: [
-    matExpansionAnimations.bodyExpansion,
-    matExpansionAnimations.indicatorRotate
   ],
 })
 export class TableIndexesComponent {

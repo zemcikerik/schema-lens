@@ -3,25 +3,39 @@
 
 .table-objects {
   > tbody {
-    .column-icon {
-      color: mat.get-theme-color(t.$theme, secondary);
-      text-align: center;
-    }
-
     .column-icon,
     .column-expand {
       width: 3rem;
     }
 
+    .column-icon {
+      color: mat.get-theme-color(t.$theme, secondary);
+      text-align: center;
+    }
+
     .column-primary {
       color: mat.get-theme-color(t.$theme, primary);
+    }
+
+    .column-alert {
+      color: mat.get-theme-color(t.$theme, error);
+    }
+
+    .column-expand mat-icon {
+      transition: transform 225ms cubic-bezier(0.4, 0, 0.2, 1)
     }
   }
 
   &.is-interactable > tbody {
-    > tr:nth-child(odd):hover {
-      background-color: mat.get-theme-color(t.$theme, surface-container-low);
-      cursor: pointer;
+    > tr:nth-child(odd) {
+      &:hover {
+        background-color: mat.get-theme-color(t.$theme, surface-container-low);
+        cursor: pointer;
+      }
+
+      &.is-expanded .column-expand mat-icon {
+        transform: rotate(180deg);
+      }
     }
 
     > tr:nth-child(even) {

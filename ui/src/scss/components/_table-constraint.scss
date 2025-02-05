@@ -14,6 +14,10 @@
     font: mat.get-theme-typography(t.$theme, label-large, font);
   }
 
+  mat-icon {
+    color: mat.get-theme-color(t.$theme, secondary);
+  }
+
   &__affected-columns {
     table {
       margin-top: 0.5rem;
@@ -21,7 +25,6 @@
 
     mat-icon {
       margin-right: 1rem;
-      color: mat.get-theme-color(t.$theme, secondary);
     }
   }
 }

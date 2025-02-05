@@ -18,6 +18,8 @@ describe('TableConstraintForeignKeyComponent', () => {
       name: 'FK_MOCK',
       type: TableConstraintType.FOREIGN_KEY,
       columnNames: [],
+      enabled: true,
+      invalid: false,
       referencedConstraintName: 'PK_MOCK_TABLE',
       referencedTableName: 'MOCK_TABLE',
       references: [],
@@ -33,6 +35,8 @@ describe('TableConstraintForeignKeyComponent', () => {
       name: 'FK_ROLE_USER',
       type: TableConstraintType.FOREIGN_KEY,
       columnNames: ['USER_NAME', 'USER_EMAIL'],
+      enabled: true,
+      invalid: false,
       referencedConstraintName: 'PK_USER',
       referencedTableName: 'USER',
       references: [

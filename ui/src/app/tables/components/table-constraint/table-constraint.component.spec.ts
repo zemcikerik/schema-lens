@@ -30,6 +30,8 @@ describe('TableConstraintComponent', () => {
       name: 'PK_TEST',
       type: TableConstraintType.PRIMARY_KEY,
       columnNames: [],
+      enabled: true,
+      invalid: false,
     };
     const columns: TableColumn[] = [];
 
@@ -42,6 +44,8 @@ describe('TableConstraintComponent', () => {
       name: 'PK_FAKE_TABLE',
       type: TableConstraintType.PRIMARY_KEY,
       columnNames: ['ID1', 'OTHER'],
+      enabled: true,
+      invalid: false,
     };
     const columns: TableColumn[] = [
       { name: 'ID1', type: 'NUMBER(4,0)', nullable: false, position: 1 },

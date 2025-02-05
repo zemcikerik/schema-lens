@@ -9,6 +9,8 @@ interface BaseTableConstraint {
   name: string;
   type: TableConstraintType;
   columnNames: string[];
+  enabled: boolean;
+  invalid: boolean;
 }
 
 export interface PrimaryKeyTableConstraint extends BaseTableConstraint {

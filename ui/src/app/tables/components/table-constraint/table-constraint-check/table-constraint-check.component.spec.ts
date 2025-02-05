@@ -19,6 +19,8 @@ describe('TableConstraintCheckComponent', () => {
       name: 'TEST_CHECK',
       type: TableConstraintType.CHECK,
       columnNames: [],
+      enabled: true,
+      invalid: false,
       condition: '1=1',
     };
     const affectedColumns: TableColumn[] = [];
@@ -32,6 +34,8 @@ describe('TableConstraintCheckComponent', () => {
       name: 'TEST_CHECK',
       type: TableConstraintType.CHECK,
       columnNames: ['TEST_COLUMN'],
+      enabled: true,
+      invalid: false,
       condition: 'TEST_COLUMN IS NOT NULL',
     };
     const affectedColumns: TableColumn[] = [
@@ -50,6 +54,8 @@ describe('TableConstraintCheckComponent', () => {
       name: 'PRICE_POSITIVE',
       type: TableConstraintType.CHECK,
       columnNames: ['PRICE'],
+      enabled: true,
+      invalid: false,
       condition: 'PRICE > 0',
     };
     const affectedColumns: TableColumn[] = [

@@ -157,6 +157,7 @@
         "UNIQUE": "Unique"
       },
       "ENABLED_LABEL": "Enabled",
+      "INVALID_LABEL": "Invalid",
       "COLUMNS_LABEL": "Affected columns:",
       "CONDITION_LABEL": "Condition:",
       "REFERENCED_CONSTRAINT_NAME_LABEL": "Referenced Constraint Name",

@@ -7,11 +7,11 @@ import { StatusIconComponent } from '../../../shared/components/status-icon/stat
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { TableConstraint } from '../../models/table-constraint.model';
-import { matExpansionAnimations } from '@angular/material/expansion';
 import { TableConstraintComponent } from '../table-constraint/table-constraint.component';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { ROUTER_OUTLET_DATA } from '@angular/router';
 import { Table } from '../../models/table.model';
+import { MatTooltip } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-table-constraints',
@@ -27,19 +27,21 @@ import { Table } from '../../models/table.model';
     MatIconButton,
     TableConstraintComponent,
     AlertComponent,
+    MatTooltip,
   ],
-  animations: [
-    matExpansionAnimations.bodyExpansion,
-    matExpansionAnimations.indicatorRotate
-  ]
 })
 export class TableConstraintsComponent {
-  readonly DISPLAYED_COLUMNS = ['icon', 'name', 'type', 'enabled', 'expand'];
+  readonly ALL_COLUMNS = ['icon', 'invalid', 'name', 'type', 'enabled', 'expand'];
 
   table = inject(ROUTER_OUTLET_DATA) as Signal<Table | null>;
   tableColumns = computed(() => this.table()?.columns ?? []);
   tableConstraints = computed(() => this.table()?.constraints ?? []);
   expandedConstraint = signal<TableConstraint | null>(null);
+
+  displayedColumns = computed(() => {
+    const hasInvalid = this.tableConstraints().some(constraint => constraint.invalid);
+    return hasInvalid ? this.ALL_COLUMNS : this.ALL_COLUMNS.filter(col => col !== 'invalid');
+  });
 
   toggleExpansion(constraint: TableConstraint): void {
     this.expandedConstraint.update(c => c !== constraint ? constraint : null);

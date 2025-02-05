@@ -7,6 +7,15 @@
       </td>
     </ng-container>
 
+    <ng-container matColumnDef="invalid">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell class="column-icon column-alert" *matCellDef="let constraint">
+        @if (constraint.invalid) {
+          <mat-icon [matTooltip]="('TABLES.CONSTRAINTS.INVALID_LABEL' | translate)()">report</mat-icon>
+        }
+      </td>
+    </ng-container>
+
     <ng-container matColumnDef="name">
       <th mat-header-cell *matHeaderCellDef>{{ ('TABLES.CONSTRAINTS.NAME_LABEL' | translate)() }}</th>
       <td mat-cell class="text-code" *matCellDef="let constraint">{{ constraint.name }}</td>
@@ -28,22 +37,22 @@
       <th mat-header-cell *matHeaderCellDef></th>
       <td mat-cell class="column-expand" *matCellDef="let constraint">
         <button mat-icon-button>
-          <mat-icon [@indicatorRotate]="isExpanded(constraint) ? 'expanded' : 'collapsed'">keyboard_arrow_down</mat-icon>
+          <mat-icon>keyboard_arrow_down</mat-icon>
         </button>
       </td>
     </ng-container>
 
     <ng-container matColumnDef="expandedContent">
-      <td mat-cell [attr.colspan]="DISPLAYED_COLUMNS.length" *matCellDef="let constraint"
-          [@bodyExpansion]="isExpanded(constraint) ? 'expanded' : 'collapsed'">
+      <td mat-cell [attr.colspan]="displayedColumns().length" *matCellDef="let constraint">
         @if (isExpanded(constraint)) {
           <app-table-constraint [constraint]="constraint" [columns]="tableColumns()" />
         }
       </td>
     </ng-container>
 
-    <tr mat-header-row *matHeaderRowDef="DISPLAYED_COLUMNS"></tr>
-    <tr mat-row *matRowDef="let constraint; columns: DISPLAYED_COLUMNS" (click)="toggleExpansion(constraint)"></tr>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
+    <tr mat-row *matRowDef="let constraint; columns: displayedColumns()"
+        [class.is-expanded]="isExpanded(constraint)" (click)="toggleExpansion(constraint)"></tr>
     <tr mat-row *matRowDef="let constraint; columns: ['expandedContent']" [class.is-expanded]="isExpanded(constraint)"></tr>
   </table>
 } @else {

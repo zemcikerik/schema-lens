@@ -156,7 +156,8 @@
         "CHECK": "Check",
         "UNIQUE": "Unikátne"
       },
-      "ENABLED_LABEL": "Povolené",
+      "ENABLED_LABEL": "Povolený",
+      "INVALID_LABEL": "Neplatný",
       "COLUMNS_LABEL": "Ovplyvnené stĺpce:",
       "CONDITION_LABEL": "Podmienka:",
       "REFERENCED_CONSTRAINT_NAME_LABEL": "Názov referencovaného obmedzenia",
