@@ -1,5 +1,6 @@
 {
   "tasks": {
+    "check": "deno check --frozen --all main.ts",
     "dev": "deno serve --cached-only --check=all --port=8000 --watch --allow-net main.ts",
     "run": "deno serve --cached-only --allow-net --port=8000 main.ts"
   },

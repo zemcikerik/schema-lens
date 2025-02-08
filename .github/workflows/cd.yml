@@ -148,6 +148,10 @@ jobs:
         run: deno install
         working-directory: ./formatter
 
+      - name: Check
+        run: deno task check
+        working-directory: ./formatter
+
       - name: Test
         run: deno test
         working-directory: ./formatter

@@ -1,5 +1,6 @@
 import { format } from 'sql-formatter';
 
+const healthPattern = new URLPattern({ pathname: '/health' });
 const oraclePattern = new URLPattern({ pathname: '/oracle' });
 
 const handleOracleSql = async (req: Request): Promise<Response> => {
@@ -41,6 +42,17 @@ const tryFormatOracleSql = (sql: string): string | null => {
 export default {
   async fetch(req: Request): Promise<Response> {
     const url = new URL(req.url);
+
+    if (healthPattern.test(url)) {
+      if (req.method !== 'GET') {
+        return new Response(null, { status: 405 });
+      }
+
+      return new Response('{"status":"UP"}', {
+        status: 200,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
 
     if (!oraclePattern.test(url)) {
       return new Response(null, { status: 404 });

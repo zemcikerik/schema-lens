@@ -7,6 +7,19 @@ Deno.test(async function notFound() {
   expect(res.status).toEqual(404);
 });
 
+Deno.test(async function healthUnsupportedMethod() {
+  const req = new Request('https://example.org/health', { method: 'POST' });
+  const res = await server.fetch(req);
+  expect(res.status).toEqual(405);
+});
+
+Deno.test(async function healthSuccess() {
+  const req = new Request('https://example.org/health');
+  const res = await server.fetch(req);
+  expect(res.status).toEqual(200);
+  expect(JSON.parse(await res.text())).toEqual({ status: 'UP' });
+});
+
 Deno.test(async function oracleUnsupportedMethod() {
   const req = new Request('https://example.org/oracle', { method: 'GET' });
   const res = await server.fetch(req);
