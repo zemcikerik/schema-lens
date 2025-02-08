@@ -35,6 +35,7 @@ class SecurityConfiguration {
                 authenticationEntryPoint = jwtAuthenticationEntryPoint
             }
             authorizeRequests {
+                authorize(GET, "/actuator/health/**", permitAll)
                 authorize(POST, "/user", permitAll)
                 authorize(POST, "/user/login", permitAll)
                 authorize(POST, "/user/login/refresh", permitAll)
