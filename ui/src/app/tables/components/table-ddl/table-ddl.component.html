@@ -4,7 +4,7 @@
   @let err = error();
 
   @if (err === null) {
-    <div class="table-ddl">
+    <div class="table__content--full-height">
       <app-code-editor [ngModel]="ddl()" />
     </div>
   } @else {

@@ -80,6 +80,6 @@ export class CodeEditorComponent implements ControlValueAccessor, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    this.view.destroy();
+    this.ngZone.runOutsideAngular(() => this.view.destroy());
   }
 }

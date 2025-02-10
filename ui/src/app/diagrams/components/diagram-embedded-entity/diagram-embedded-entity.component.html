@@ -1,0 +1,12 @@
+<div class="diagram-entity-relationship__entity text-code">
+  <span class="diagram-entity-relationship__entity__name">{{ entity().name }}</span>
+  <table class="diagram-entity-relationship__entity__columns">
+    @for (column of entity().columns; track column.name) {
+      <tr>
+        <td>{{ column.name }}</td>
+        <td>{{ column.type }}</td>
+        <td>{{ column.nullable ? '' : 'NOT NULL' }}</td>
+      </tr>
+    }
+  </table>
+</div>

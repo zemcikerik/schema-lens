@@ -38,6 +38,7 @@ export class TableComponent {
     { title: 'TABLES.CONSTRAINTS.LABEL', translateTitle: true, path: 'constraints' },
     { title: 'TABLES.INDEXES.LABEL', translateTitle: true, path: 'indexes' },
     { title: 'DDL', translateTitle: false, path: 'ddl' },
+    { title: 'Relationships', translateTitle: false, path: 'relationships' }, // todo
   ];
 
   projectId = input.required<string>();

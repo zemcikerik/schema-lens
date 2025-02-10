@@ -17,6 +17,7 @@
 @use './scss/components/code-editor';
 @use './scss/components/confirmation-dialog';
 @use './scss/components/content-card';
+@use './scss/components/diagram-entity-relationship';
 @use './scss/components/help-faq';
 @use './scss/components/nav';
 @use './scss/components/project-object-selector';
@@ -29,7 +30,6 @@
 @use './scss/components/progress-spinner';
 @use './scss/components/table';
 @use './scss/components/table-constraint';
-@use './scss/components/table-ddl';
 @use './scss/components/table-index';
 @use './scss/components/table-objects';
 @use './scss/components/top-bar';

@@ -1,0 +1,25 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.diagram-entity-relationship {
+  &__entity {
+    user-select: none;
+
+    &__name {
+      font: mat.get-theme-typography(t.$theme, label-large);
+      padding-left: 0.5rem;
+    }
+
+    &__columns {
+      background-color: mat.get-theme-color(t.$theme, secondary-container);
+      color: mat.get-theme-color(t.$theme, on-secondary-container);
+      border-radius: 0.5rem;
+      padding: 0.5rem;
+      width: 100%;
+
+      td:not(:first-child) {
+        padding-left: 1rem;
+      }
+    }
+  }
+}

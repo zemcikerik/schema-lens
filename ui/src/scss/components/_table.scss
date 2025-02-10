@@ -19,4 +19,9 @@
     max-height: calc(100% - 8rem);
     overflow: auto;
   }
+
+  &__content--full-height {
+    // TODO: figure out how to do this cleaner
+    height: calc(100vh - 10rem - var(--app-top-bar-height) - var(--content-card-bottom-spacing));
+  }
 }

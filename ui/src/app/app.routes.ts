@@ -64,7 +64,11 @@ export const appRoutes: Route[] = [
           {
             path: 'ddl',
             loadComponent: () => import('./tables/components/table-ddl/table-ddl.component').then(c => c.TableDdlComponent),
-          }
+          },
+          {
+            path: 'relationships',
+            loadComponent: () => import('./tables/components/table-relationships/table-relationships.component').then(c => c.TableRelationshipsComponent),
+          },
         ],
       },
       {
