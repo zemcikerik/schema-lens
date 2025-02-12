@@ -4,6 +4,13 @@
     <table class="diagram-entity-relationship__entity__columns">
       @for (column of entity().columns; track column.name) {
         <tr>
+          @if (hasPrimaryKey()) {
+            <td class="primary-key">
+              @if (column.primaryKey) {
+                <mat-icon>key</mat-icon>
+              }
+            </td>
+          }
           <td>{{ column.name }}</td>
           <td>{{ column.type }}</td>
           @if (hasNotNullColumn()) {

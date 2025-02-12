@@ -1,38 +1,51 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { Entity, EntityColumn } from '../../models/entity.model';
+import { MatIcon } from '@angular/material/icon';
 
+const WIDTH_PRIMARY_KEY = 20;
 const WIDTH_PER_ROW_LETTER = 9.6;
 
 const HEIGHT_TITLE_SIZE = 20;
-const HEIGHT_BETWEEN_TITLE_AND_TABLE = 2;
-const HEIGHT_ROW_SIZE = 21;
+const HEIGHT_ROW_SIZE = 24;
 
 const TABLE_PADDING = 8;
 const CELL_PADDING = 1;
-const CELL_LEFT_PADDING_NOT_FIRST = 16;
+const CELL_LEFT_PADDING_AFTER_PRIMARY_KEY = 8;
+const CELL_LEFT_PADDING_NEXT = 16;
 
 @Component({
   selector: 'app-diagram-embedded-entity',
   templateUrl: './diagram-embedded-entity.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [MatIcon],
 })
 export class DiagramEmbeddedEntityComponent {
   entity = input.required<Entity>();
-  hasNotNullColumn = computed(() => DiagramEmbeddedEntityComponent.hasNotNullColumn(this.entity().columns));
+  hasPrimaryKey = computed(() => DiagramEmbeddedEntityComponent.hasPrimaryKey(this.entity()))
+  hasNotNullColumn = computed(() => DiagramEmbeddedEntityComponent.hasNotNullColumn(this.entity()));
 
   static estimateDimensions(entity: Entity): { width: number, height: number } {
     const { columns } = entity;
+    const hasPrimaryKey = this.hasPrimaryKey(entity);
+    const hasNotNullColumns = this.hasNotNullColumn(entity);
 
     const nameLength = this.findLongestString(columns, 'name').length;
     const typeLength = this.findLongestString(columns, 'type').length;
-    const [notNullLength, cellsPerRow] = this.hasNotNullColumn(columns) ? ['NOT NULL'.length, 3] : [0, 2];
+    const notNullLength = hasNotNullColumns ? 'NOT NULL'.length : 0;
     const letters = nameLength + typeLength + notNullLength;
-    const tableWidthSpacing = 2 * TABLE_PADDING + cellsPerRow * CELL_PADDING
-      + (cellsPerRow - 1) * CELL_LEFT_PADDING_NOT_FIRST + CELL_PADDING;
-    const width = Math.ceil(WIDTH_PER_ROW_LETTER * letters) + tableWidthSpacing;
+
+    const cellsPerRow = 2 + this.countTrueValues([hasPrimaryKey, hasNotNullColumns]);
+    const cellsWithoutPrimaryKey = cellsPerRow - (hasPrimaryKey ? 1 : 0);
+
+    const leftCellPrimaryKeyPadding = hasPrimaryKey ? CELL_LEFT_PADDING_AFTER_PRIMARY_KEY : 0;
+    const leftCellPaddings = CELL_PADDING + leftCellPrimaryKeyPadding + (cellsWithoutPrimaryKey - 1) * CELL_LEFT_PADDING_NEXT;
+    const rightCellPaddings = cellsPerRow * CELL_PADDING;
+
+    const tableWidthSpacing = 2 * TABLE_PADDING + leftCellPaddings + rightCellPaddings;
+    const width = Math.ceil(WIDTH_PER_ROW_LETTER * letters) + (hasPrimaryKey ? WIDTH_PRIMARY_KEY : 0) + tableWidthSpacing;
 
     const tableHeight = (HEIGHT_ROW_SIZE + 2 * CELL_PADDING) * columns.length + 2 * TABLE_PADDING;
-    const height = HEIGHT_TITLE_SIZE + HEIGHT_BETWEEN_TITLE_AND_TABLE + tableHeight;
+    const height = HEIGHT_TITLE_SIZE + tableHeight;
 
     return { width, height };
   }
@@ -44,7 +57,15 @@ export class DiagramEmbeddedEntityComponent {
     );
   }
 
-  private static hasNotNullColumn(columns: EntityColumn[]): boolean {
-    return columns.some(column => !column.nullable);
+  private static countTrueValues(values: boolean[]): number {
+    return values.reduce((count, value) => count + (value ? 1 : 0), 0);
+  }
+
+  private static hasPrimaryKey(entity: Entity): boolean {
+    return entity.columns.some(column => column.primaryKey);
+  }
+
+  private static hasNotNullColumn(entity: Entity): boolean {
+    return entity.columns.some(column => !column.nullable);
   }
 }

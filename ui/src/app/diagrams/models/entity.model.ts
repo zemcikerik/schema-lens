@@ -7,4 +7,5 @@ export interface EntityColumn {
   name: string;
   type: string;
   nullable: boolean;
+  primaryKey: boolean;
 }
