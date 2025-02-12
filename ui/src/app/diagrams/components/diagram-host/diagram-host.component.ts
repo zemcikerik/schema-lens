@@ -13,6 +13,7 @@ import Diagram from 'diagram-js';
 import ModelingModule from 'diagram-js/lib/features/modeling';
 import MoveModule from 'diagram-js/lib/features/move';
 import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
+import ResizeModule from 'diagram-js/lib/features/resize';
 import RuleModule from 'diagram-js/lib/features/rules';
 import SelectionModule from 'diagram-js/lib/features/selection';
 import ZoomScrollModule from 'diagram-js/lib/navigation/zoomscroll';
@@ -47,6 +48,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
         ModelingModule,
         MoveModule,
         MoveCanvasModule,
+        ResizeModule,
         RuleModule,
         SelectionModule,
         ZoomScrollModule,

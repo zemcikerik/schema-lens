@@ -8,6 +8,7 @@ const WIDTH_PER_ROW_LETTER = 9.6;
 const HEIGHT_TITLE_SIZE = 20;
 const HEIGHT_ROW_SIZE = 24;
 
+const TABLE_BORDER = 1;
 const TABLE_PADDING = 8;
 const CELL_PADDING = 1;
 const CELL_LEFT_PADDING_AFTER_PRIMARY_KEY = 8;
@@ -41,10 +42,10 @@ export class DiagramEmbeddedEntityComponent {
     const leftCellPaddings = CELL_PADDING + leftCellPrimaryKeyPadding + (cellsWithoutPrimaryKey - 1) * CELL_LEFT_PADDING_NEXT;
     const rightCellPaddings = cellsPerRow * CELL_PADDING;
 
-    const tableWidthSpacing = 2 * TABLE_PADDING + leftCellPaddings + rightCellPaddings;
+    const tableWidthSpacing = 2 * (TABLE_PADDING + TABLE_BORDER) + leftCellPaddings + rightCellPaddings;
     const width = Math.ceil(WIDTH_PER_ROW_LETTER * letters) + (hasPrimaryKey ? WIDTH_PRIMARY_KEY : 0) + tableWidthSpacing;
 
-    const tableHeight = (HEIGHT_ROW_SIZE + 2 * CELL_PADDING) * columns.length + 2 * TABLE_PADDING;
+    const tableHeight = (HEIGHT_ROW_SIZE + 2 * CELL_PADDING) * columns.length + 2 * (TABLE_PADDING + TABLE_BORDER);
     const height = HEIGHT_TITLE_SIZE + tableHeight;
 
     return { width, height };

@@ -3,7 +3,14 @@
 
 .diagram-entity-relationship {
   &__entity {
+    display: flex;
+    flex-direction: column;
     user-select: none;
+    height: 100%;
+
+    .djs-dragging & {
+      display: none;
+    }
 
     &__name {
       display: block;
@@ -18,7 +25,9 @@
       border-collapse: collapse;
 
       &__wrapper {
+        flex-grow: 1;
         background-color: mat.get-theme-color(t.$theme, secondary-container);
+        border: 1px solid mat.get-theme-color(t.$theme, outline-variant);
         color: mat.get-theme-color(t.$theme, on-secondary-container);
         border-radius: 0.5rem;
         padding: 0.5rem;

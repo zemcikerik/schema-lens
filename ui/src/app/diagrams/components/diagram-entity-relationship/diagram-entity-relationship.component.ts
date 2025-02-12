@@ -4,6 +4,9 @@ import AngularComponentShapeRendererFactory from '../../modules/angular-componen
 import type { AngularComponentShapeRenderer } from '../../modules/angular-component-shape.renderer';
 import { DiagramEmbeddedEntityComponent } from '../diagram-embedded-entity/diagram-embedded-entity.component';
 import { Entity } from '../../models/entity.model';
+import { EntityShapeTemplate } from '../../shapes/entity.shape';
+import EntityMoveModule from '../../modules/entity-move.module';
+import EntityResizeModule from '../../modules/entity-resize.module';
 
 @Component({
   selector: 'app-diagram-entity-relationship',
@@ -18,6 +21,8 @@ export class DiagramEntityRelationshipComponent implements AfterViewInit {
     AngularComponentShapeRendererFactory.create({
       entity: DiagramEmbeddedEntityComponent,
     }),
+    EntityMoveModule,
+    EntityResizeModule,
   ];
 
   entities = input.required<Entity[]>();
@@ -27,12 +32,17 @@ export class DiagramEntityRelationshipComponent implements AfterViewInit {
     const diagramHost = this.diagramHost();
 
     const angularRenderer = diagramHost.runInDiagramContext<AngularComponentShapeRenderer>(
-      diagram => diagram.get('angularComponentShapeRenderer')
+      diagram => diagram.get('angularComponentShapeRenderer'),
     );
 
     this.entities().forEach((entity, index) => {
       const { width, height } = DiagramEmbeddedEntityComponent.estimateDimensions(entity);
-      const shape = diagramHost.addShape({ id: `entity_${index}`, x: 10, y: 10, width, height });
+
+      const shape = diagramHost.addShape({
+        id: `entity_${index}`, x: 10, y: 10, width, height,
+        minDimensions: { width, height },
+      } satisfies EntityShapeTemplate);
+
       diagramHost.runInDiagramContext(() => angularRenderer.setShapeInput(shape, 'entity', entity));
     });
   }

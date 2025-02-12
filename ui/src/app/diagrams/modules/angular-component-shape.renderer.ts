@@ -1,25 +1,28 @@
 import { ComponentRef, NgZone, Type, ViewContainerRef } from '@angular/core';
 import BaseRenderer from 'diagram-js/lib/draw/BaseRenderer';
+import { create as svgCreate, append as svgAppend } from 'tiny-svg';
 import type { ElementLike, Shape } from 'diagram-js/lib/model/Types';
 import type EventBus from 'diagram-js/lib/core/EventBus';
 import type ElementRegistry from 'diagram-js/lib/core/ElementRegistry';
 import type { ModuleDeclaration } from 'didi';
-import { create as svgCreate, append as svgAppend } from 'tiny-svg';
+import AngularElementTrackerModule, { AngularElementTracker } from './angular-element-tracker.module';
 
-const COMPONENT_REF_KEY = 'ng_componentRef';
 const COMPONENT_WRAPPER_KEY = 'ng_componentWrapper';
 
 export type AngularComponentMap = Partial<Record<string, Type<unknown>>>;
 
 export abstract class AngularComponentShapeRenderer extends BaseRenderer {
 
-  static readonly $inject = ['eventBus', 'elementRegistry', 'viewContainerRef', 'ngZone'];
+  static readonly $inject = [
+    'eventBus', 'elementRegistry', 'viewContainerRef', 'ngZone', 'angularElementTracker'
+  ];
 
   constructor(
     private readonly eventBus: EventBus,
     private readonly elementRegistry: ElementRegistry,
     private readonly viewContainerRef: ViewContainerRef,
     private readonly ngZone: NgZone,
+    private readonly angularElementTracker: AngularElementTracker,
   ) {
     super(eventBus, 1500);
     this.listenForShapeRemoval();
@@ -54,34 +57,30 @@ export abstract class AngularComponentShapeRenderer extends BaseRenderer {
     foreignObject.setAttribute('height', String(shape.height));
     svgAppend(visuals, foreignObject);
 
-    const componentRef: ComponentRef<unknown> = shape[COMPONENT_REF_KEY]
+    const componentRef: ComponentRef<unknown> = this.angularElementTracker.getComponentRef(shape)
       ?? this.ngZone.run(() => this.viewContainerRef.createComponent(component));
 
     foreignObject.appendChild(componentRef.location.nativeElement);
 
     shape[COMPONENT_WRAPPER_KEY] = foreignObject;
-    shape[COMPONENT_REF_KEY] = componentRef;
+    this.angularElementTracker.attachComponentRef(shape, componentRef);
     return visuals;
   }
 
-  getBackingComponent<T extends Type<unknown>>(shape: Shape): T | null {
-    const componentRef: ComponentRef<unknown> | undefined = shape[COMPONENT_REF_KEY];
-    return (componentRef?.instance as T | undefined) ?? null;
-  }
-
   setShapeInput(shape: Shape, name: string, value: unknown): boolean {
-    if (!shape[COMPONENT_REF_KEY]) {
+    const componentRef = this.angularElementTracker.getComponentRef(shape);
+
+    if (componentRef === null) {
       return false;
     }
 
-    const componentRef: ComponentRef<unknown> = shape[COMPONENT_REF_KEY];
     this.ngZone.run(() => componentRef.setInput(name, value));
     return true;
   }
 
   private listenForShapeRemoval(): void {
     this.eventBus.on('shape.remove', 3000, event => {
-      const shape = (event as Record<string, unknown>)['element'] as Shape | undefined;
+      const shape = (event as Record<string, unknown>)['element'] as Shape;
       this.tryDestroyBackingAngularComponent(shape);
     });
   }
@@ -94,14 +93,15 @@ export abstract class AngularComponentShapeRenderer extends BaseRenderer {
     });
   }
 
-  private tryDestroyBackingAngularComponent(element?: ElementLike | null): void {
-    if (!element || !element[COMPONENT_REF_KEY]) {
+  private tryDestroyBackingAngularComponent(element: ElementLike): void {
+    const componentRef = this.angularElementTracker.getComponentRef(element);
+
+    if (componentRef === null) {
       return;
     }
 
-    const componentRef: ComponentRef<unknown> = element[COMPONENT_REF_KEY];
     this.ngZone.run(() => componentRef.destroy());
-    delete element[COMPONENT_REF_KEY];
+    this.angularElementTracker.detachComponentRef(element);
   }
 
 }
@@ -110,6 +110,7 @@ export default class AngularComponentShapeRendererFactory {
 
   static create(components: AngularComponentMap): ModuleDeclaration {
     return {
+      __depends__: [AngularElementTrackerModule],
       __init__: ['angularComponentShapeRenderer'],
       angularComponentShapeRenderer: ['type', class extends AngularComponentShapeRenderer {
         override getComponents = () => components;
