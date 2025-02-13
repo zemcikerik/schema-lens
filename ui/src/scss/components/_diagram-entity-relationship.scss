@@ -12,6 +12,10 @@
       display: none;
     }
 
+    &__resizer .djs-resizer-visual {
+      fill: mat.get-theme-color(t.$theme, outline);
+    }
+
     &__name {
       display: block;
       font: mat.get-theme-typography(t.$theme, label-large);

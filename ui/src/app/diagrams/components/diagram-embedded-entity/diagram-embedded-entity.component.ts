@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 import { Entity, EntityColumn } from '../../models/entity.model';
 import { MatIcon } from '@angular/material/icon';
+import { ResizerOffsets } from '../../models/resizer-offsets.model';
 
 const WIDTH_PRIMARY_KEY = 20;
 const WIDTH_PER_ROW_LETTER = 9.6;
@@ -49,6 +50,22 @@ export class DiagramEmbeddedEntityComponent {
     const height = HEIGHT_TITLE_SIZE + tableHeight;
 
     return { width, height };
+  }
+
+  static calculateResizerHandleOffsets({ width, height }: { width: number, height: number }): ResizerOffsets {
+    const horizontalMiddle = width / 2;
+    const verticalMiddle = (height - HEIGHT_TITLE_SIZE) / 2 + HEIGHT_TITLE_SIZE;
+
+    return {
+      top: { x: horizontalMiddle, y: HEIGHT_TITLE_SIZE },
+      right: { x: width, y: verticalMiddle },
+      bottom: { x: horizontalMiddle, y: height },
+      left: { x: 0, y: verticalMiddle },
+      topLeft: { x: 0, y: HEIGHT_TITLE_SIZE },
+      topRight: { x: width, y: HEIGHT_TITLE_SIZE },
+      bottomLeft: { x: 0, y: height },
+      bottomRight: { x: width, y: height },
+    };
   }
 
   private static findLongestString(columns: EntityColumn[], property: 'name' | 'type'): string {
