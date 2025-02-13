@@ -7,8 +7,6 @@ import type ElementRegistry from 'diagram-js/lib/core/ElementRegistry';
 import type { ModuleDeclaration } from 'didi';
 import AngularElementTrackerModule, { AngularElementTracker } from './angular-element-tracker.module';
 
-const COMPONENT_WRAPPER_KEY = 'ng_componentWrapper';
-
 export type AngularComponentMap = Partial<Record<string, Type<unknown>>>;
 
 export abstract class AngularComponentShapeRenderer extends BaseRenderer {
@@ -47,22 +45,19 @@ export abstract class AngularComponentShapeRenderer extends BaseRenderer {
       return visuals;
     }
 
-    if (shape[COMPONENT_WRAPPER_KEY]) {
-      const oldForeignObject: SVGForeignObjectElement = shape[COMPONENT_WRAPPER_KEY];
-      oldForeignObject.remove();
-    }
+    this.angularElementTracker.getComponentWrapper(shape)?.remove();
 
-    const foreignObject = svgCreate('foreignObject');
-    foreignObject.setAttribute('width', String(shape.width));
-    foreignObject.setAttribute('height', String(shape.height));
-    svgAppend(visuals, foreignObject);
+    const wrapper = svgCreate('foreignObject');
+    wrapper.setAttribute('width', String(shape.width));
+    wrapper.setAttribute('height', String(shape.height));
+    svgAppend(visuals, wrapper);
 
     const componentRef: ComponentRef<unknown> = this.angularElementTracker.getComponentRef(shape)
       ?? this.ngZone.run(() => this.viewContainerRef.createComponent(component));
 
-    foreignObject.appendChild(componentRef.location.nativeElement);
+    wrapper.appendChild(componentRef.location.nativeElement);
 
-    shape[COMPONENT_WRAPPER_KEY] = foreignObject;
+    this.angularElementTracker.attachComponentWrapper(shape, wrapper);
     this.angularElementTracker.attachComponentRef(shape, componentRef);
     return visuals;
   }
@@ -79,9 +74,8 @@ export abstract class AngularComponentShapeRenderer extends BaseRenderer {
   }
 
   private listenForShapeRemoval(): void {
-    this.eventBus.on('shape.remove', 3000, event => {
-      const shape = (event as Record<string, unknown>)['element'] as Shape;
-      this.tryDestroyBackingAngularComponent(shape);
+    this.eventBus.on('shape.remove', 3000, (event: { element: Shape }) => {
+      this.tryDestroyBackingAngularComponent(event.element);
     });
   }
 

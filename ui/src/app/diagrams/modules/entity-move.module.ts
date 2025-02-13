@@ -10,13 +10,13 @@ export class EntityMoveHandler {
 
   constructor(canvas: Canvas, eventBus: EventBus) {
     // prevent entity from being a parent (fixes entity nested in itself error)
-    eventBus.on('shape.move.move', (event: Record<string, unknown>) => {
-      const hover = event['hover'] as ElementLike | null;
+    eventBus.on('shape.move.move', (event: { hover: ElementLike | null, hoverGfx: SVGElement | null }) => {
+      const hover = event.hover;
 
       if (hover && isEntityElement(hover) && hover.parent) {
         const graphics = canvas.getGraphics(hover.parent.id);
-        event['hover'] = hover.parent;
-        event['hoverGfx'] = graphics;
+        event.hover = hover.parent;
+        event.hoverGfx = graphics;
       }
     });
   }
