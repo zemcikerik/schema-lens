@@ -42,7 +42,7 @@ export abstract class AngularComponentShapeRenderer extends BaseRenderer {
     const component = this.getComponent(shape.id);
 
     if (!component) {
-      return visuals;
+      return super.drawShape(visuals, shape);
     }
 
     this.angularElementTracker.getComponentWrapper(shape)?.remove();

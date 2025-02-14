@@ -62,4 +62,11 @@
       }
     }
   }
+
+  &__relationship {
+    fill: none;
+    stroke: mat.get-theme-color(t.$theme, on-surface-variant);
+    stroke-width: 0.125rem;
+    shape-rendering: geometricPrecision;
+  }
 }
