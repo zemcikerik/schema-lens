@@ -12,7 +12,7 @@ class OracleTableDdlGenerator(
 ) {
 
     fun generateDdlForTable(dataSource: DataSource, tableName: String): String? {
-        if (!oracleTableMetadataReader.checkIfTableExists(dataSource, tableName)) {
+        if (!oracleTableMetadataReader.checkIfTablesExist(dataSource, setOf(tableName))) {
             return null
         }
 

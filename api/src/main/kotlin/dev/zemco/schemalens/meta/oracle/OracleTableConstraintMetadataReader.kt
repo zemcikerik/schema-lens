@@ -1,15 +1,13 @@
 package dev.zemco.schemalens.meta.oracle
 
 import dev.zemco.schemalens.meta.*
+import dev.zemco.schemalens.meta.oracle.OracleTableRelationship.RelationshipType
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.stereotype.Component
 import javax.sql.DataSource
 
 @Component
 class OracleTableConstraintMetadataReader {
-
-    fun readConstraintsForTable(dataSource: DataSource, tableName: String): List<ConstraintMetadata> =
-        readConstraintsForTables(dataSource, setOf(tableName))[tableName] ?: emptyList()
 
     fun readConstraintsForTables(dataSource: DataSource, tableNames: Set<String>): Map<String, List<ConstraintMetadata>> {
         val params = MapSqlParameterSource("table_names", tableNames)
@@ -87,6 +85,18 @@ class OracleTableConstraintMetadataReader {
             }
         }
 
+    fun readDirectRelationshipsForTable(dataSource: DataSource, tableName: String): List<OracleTableRelationship> {
+        val params = MapSqlParameterSource("table_name", tableName)
+
+        return dataSource.toNamedJdbcTemplate().query(GET_RELATIONSHIPS_QUERY, params) { rs, _ ->
+            OracleTableRelationship(
+                tableName = rs.getString("table_name"),
+                type = if (rs.getBoolean("dependency_direction"))
+                    RelationshipType.PARENT else RelationshipType.CHILD
+            )
+        }
+    }
+
     private companion object {
         private val GET_CONSTRAINTS_SQL_QUERY = """
             SELECT con.table_name, con.constraint_name, con.constraint_type, con.search_condition, DECODE(con.status, 'ENABLED', 1, 0) as status, DECODE(con.INVALID, 'INVALID', 1, 0) as invalid,
@@ -97,6 +107,15 @@ class OracleTableConstraintMetadataReader {
                     AND col.position = ref_col.position
             WHERE con.table_name IN (:table_names) AND con.constraint_type IN ('P', 'R', 'U', 'C')
             ORDER BY DECODE(con.constraint_type, 'P', 1, 'R', 2, 'U', 3, 'C', 4, 5), con.constraint_name
+        """.trimIndent()
+
+        private val GET_RELATIONSHIPS_QUERY = """
+            SELECT DISTINCT
+                DECODE(con.table_name, :table_name, ref_con.table_name, con.table_name) as table_name,
+                DECODE(con.table_name, :table_name, 1, 0) as dependency_direction
+            FROM user_constraints con
+                INNER JOIN user_constraints ref_con ON (con.r_constraint_name = ref_con.constraint_name)
+            WHERE con.constraint_type = 'R' AND :table_name IN (con.table_name, ref_con.table_name)
         """.trimIndent()
     }
 

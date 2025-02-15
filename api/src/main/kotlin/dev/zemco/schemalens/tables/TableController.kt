@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.tables
 
+import dev.zemco.schemalens.meta.RelatedTablesMetadata
 import dev.zemco.schemalens.meta.TableMetadata
 import dev.zemco.schemalens.projects.Project
 import org.springframework.http.ResponseEntity
@@ -21,6 +22,13 @@ class TableController(
     @GetMapping("{tableName}")
     fun tableDetail(@PathVariable project: Project, @PathVariable tableName: String): ResponseEntity<TableMetadata> =
         ResponseEntity.ofNullable(tableService.getTableDetails(project, tableName))
+
+    @GetMapping("{tableName}/related")
+    fun getRelatedTableDetails(
+        @PathVariable project: Project,
+        @PathVariable tableName: String
+    ): ResponseEntity<RelatedTablesMetadata> =
+        ResponseEntity.ofNullable(tableService.getRelatedTableDetails(project, tableName))
 
     @GetMapping("{tableName}/ddl")
     fun generateDdl(@PathVariable project: Project, @PathVariable tableName: String): ResponseEntity<String> =

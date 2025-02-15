@@ -11,9 +11,6 @@ import javax.sql.DataSource
 @Component
 class OracleTableColumnMetadataReader {
 
-    fun readColumnsForTable(dataSource: DataSource, tableName: String): List<ColumnMetadata> =
-        readColumnsForTables(dataSource, setOf(tableName))[tableName] ?: emptyList()
-
     fun readColumnsForTables(dataSource: DataSource, tableNames: Set<String>): Map<String, List<ColumnMetadata>> {
         val params = MapSqlParameterSource("table_names", tableNames)
 

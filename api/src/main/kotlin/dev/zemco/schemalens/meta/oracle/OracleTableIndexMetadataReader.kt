@@ -11,10 +11,7 @@ import javax.sql.DataSource
 @Component
 class OracleTableIndexMetadataReader {
 
-    fun readIndexesOfTable(dataSource: DataSource, tableName: String): List<IndexMetadata> =
-        readIndexesOfTables(dataSource, setOf(tableName))[tableName] ?: emptyList()
-
-    fun readIndexesOfTables(dataSource: DataSource, tableNames: Set<String>): Map<String, List<IndexMetadata>> {
+    fun readIndexesForTables(dataSource: DataSource, tableNames: Set<String>): Map<String, List<IndexMetadata>> {
         val params = MapSqlParameterSource("table_names", tableNames)
 
         val entries = dataSource.toNamedJdbcTemplate().query(GET_INDEXES_SQL_QUERY, params) { rs, _ ->
