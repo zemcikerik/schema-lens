@@ -11,17 +11,23 @@ import javax.sql.DataSource
 @Component
 class OracleTableColumnMetadataReader {
 
-    fun readTableColumns(dataSource: DataSource, tableName: String): List<ColumnMetadata> {
-        val params = MapSqlParameterSource("table_name", tableName)
+    fun readColumnsForTable(dataSource: DataSource, tableName: String): List<ColumnMetadata> =
+        readColumnsForTables(dataSource, setOf(tableName))[tableName] ?: emptyList()
+
+    fun readColumnsForTables(dataSource: DataSource, tableNames: Set<String>): Map<String, List<ColumnMetadata>> {
+        val params = MapSqlParameterSource("table_names", tableNames)
 
         return dataSource.toNamedJdbcTemplate().query(GET_COLUMNS_SQL_QUERY, params) { rs, _ ->
-            ColumnMetadata(
-                name = rs.getString("column_name"),
-                position = rs.getInt("column_id"),
-                type = rs.extractColumnType(),
-                nullable = rs.getBoolean("nullable"),
+            Pair(
+                rs.getString("table_name"),
+                ColumnMetadata(
+                    name = rs.getString("column_name"),
+                    position = rs.getInt("column_id"),
+                    type = rs.extractColumnType(),
+                    nullable = rs.getBoolean("nullable"),
+                )
             )
-        }
+        }.groupBy({ it.first }, { it.second })
     }
 
     private fun ResultSet.extractColumnType(): String {
@@ -77,9 +83,9 @@ class OracleTableColumnMetadataReader {
 
         private val GET_COLUMNS_SQL_QUERY =
             """
-                SELECT column_name, column_id, data_type, data_length, data_precision, data_scale, nullable, char_length, char_used
+                SELECT table_name, column_name, column_id, data_type, data_length, data_precision, data_scale, nullable, char_length, char_used
                 FROM user_tab_columns
-                WHERE table_name = UPPER(:table_name)
+                WHERE table_name IN (:table_names)
                 ORDER BY column_id
             """.trimIndent()
     }

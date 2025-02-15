@@ -11,23 +11,36 @@ import javax.sql.DataSource
 @Component
 class OracleTableIndexMetadataReader {
 
-    fun readTableIndexes(dataSource: DataSource, tableName: String): List<IndexMetadata> {
-        val params = MapSqlParameterSource("table_name", tableName)
-        val entries = dataSource.toNamedJdbcTemplate().query(GET_INDEXES_BY_TABLE_QUERY, params) { rs, _ ->
-            IndexEntry(
-                name = rs.getString("index_name"),
-                type = rs.getString("index_type"),
-                unique = rs.getBoolean("uniqueness"),
-                logged = rs.getBoolean("logging"),
-                compressed = rs.getBoolean("compression"),
-                columnPosition = rs.getInt("column_position"),
-                descend = rs.getBoolean("descend"),
-                columnName = rs.getString("column_name"),
-                columnExpression = rs.getString("column_expression"),
+    fun readIndexesOfTable(dataSource: DataSource, tableName: String): List<IndexMetadata> =
+        readIndexesOfTables(dataSource, setOf(tableName))[tableName] ?: emptyList()
+
+    fun readIndexesOfTables(dataSource: DataSource, tableNames: Set<String>): Map<String, List<IndexMetadata>> {
+        val params = MapSqlParameterSource("table_names", tableNames)
+
+        val entries = dataSource.toNamedJdbcTemplate().query(GET_INDEXES_SQL_QUERY, params) { rs, _ ->
+            Pair(
+                rs.getString("table_name"),
+                IndexEntry(
+                    name = rs.getString("index_name"),
+                    type = rs.getString("index_type"),
+                    unique = rs.getBoolean("uniqueness"),
+                    logged = rs.getBoolean("logging"),
+                    compressed = rs.getBoolean("compression"),
+                    columnPosition = rs.getInt("column_position"),
+                    descend = rs.getBoolean("descend"),
+                    columnName = rs.getString("column_name"),
+                    columnExpression = rs.getString("column_expression"),
+                )
             )
         }
 
-        return entries.groupBy { it.name }.map { mapToIndex(it.value) }
+        return entries
+            .groupBy({ it.first }, { it.second })
+            .mapValues {
+                it.value
+                    .groupBy { entry -> entry.name }
+                    .map { entry -> mapToIndex(entry.value) }
+            }
     }
 
     private fun mapToIndex(indexEntries: List<IndexEntry>): IndexMetadata =
@@ -61,14 +74,14 @@ class OracleTableIndexMetadataReader {
         }
 
     private companion object {
-        private val GET_INDEXES_BY_TABLE_QUERY = """
-            SELECT ind.index_name, ind.index_type, DECODE(ind.uniqueness, 'UNIQUE', 1, 0) as uniqueness, DECODE(ind.compression, 'ENABLED', 1, 0) as compression,
+        private val GET_INDEXES_SQL_QUERY = """
+            SELECT ind.table_name, ind.index_name, ind.index_type, DECODE(ind.uniqueness, 'UNIQUE', 1, 0) as uniqueness, DECODE(ind.compression, 'ENABLED', 1, 0) as compression,
                 DECODE(ind.logging, 'YES', 1, 0) as logging, ind_col.column_position, DECODE(ind_col.descend, 'DESC', 1, 0) as descend, ind_col.column_name, ind_exp.column_expression
             FROM user_indexes ind
                 LEFT JOIN user_ind_columns ind_col ON ind.index_name = ind_col.index_name
                 LEFT JOIN user_ind_expressions ind_exp ON ind_col.index_name = ind_exp.index_name
                     AND ind_col.column_position = ind_exp.column_position
-            WHERE ind.table_name = UPPER(:table_name) AND ind.TABLE_TYPE = 'TABLE'
+            WHERE ind.table_name IN (:table_names) AND ind.TABLE_TYPE = 'TABLE'
                 AND ind.index_type IN ('NORMAL', 'NORMAL/REV', 'BITMAP', 'FUNCTION-BASED NORMAL', 'FUNCTION-BASED NORMAL/REV', 'FUNCTION-BASED BITMAP')
             ORDER BY ind.index_name, ind_col.column_position
         """.trimIndent()

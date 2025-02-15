@@ -8,82 +8,94 @@ import javax.sql.DataSource
 @Component
 class OracleTableConstraintMetadataReader {
 
-    fun readTableConstraints(dataSource: DataSource, tableName: String): List<ConstraintMetadata> {
-        val params = MapSqlParameterSource("table_name", tableName)
+    fun readConstraintsForTable(dataSource: DataSource, tableName: String): List<ConstraintMetadata> =
+        readConstraintsForTables(dataSource, setOf(tableName))[tableName] ?: emptyList()
+
+    fun readConstraintsForTables(dataSource: DataSource, tableNames: Set<String>): Map<String, List<ConstraintMetadata>> {
+        val params = MapSqlParameterSource("table_names", tableNames)
+
         val entries = dataSource.toNamedJdbcTemplate().query(GET_CONSTRAINTS_SQL_QUERY, params) { rs, _ ->
-            ConstraintEntry(
-                name = rs.getString("constraint_name"),
-                type = rs.getString("constraint_type"),
-                searchCondition = rs.getString("search_condition"),
-                enabled = rs.getBoolean("status"),
-                invalid = rs.getBoolean("invalid"),
-                columnName = rs.getString("column_name"),
-                referencedConstraintName = rs.getString("ref_constraint_name"),
-                referencedTableName = rs.getString("ref_table_name"),
-                referencedColumnName = rs.getString("ref_column_name"),
+            Pair(
+                rs.getString("table_name"),
+                ConstraintEntry(
+                    name = rs.getString("constraint_name"),
+                    type = rs.getString("constraint_type"),
+                    searchCondition = rs.getString("search_condition"),
+                    enabled = rs.getBoolean("status"),
+                    invalid = rs.getBoolean("invalid"),
+                    columnName = rs.getString("column_name"),
+                    referencedConstraintName = rs.getString("ref_constraint_name"),
+                    referencedTableName = rs.getString("ref_table_name"),
+                    referencedColumnName = rs.getString("ref_column_name"),
+                )
             )
         }
 
-        return entries.groupBy { it.name }.map { mapToConstraint(it.value) }
+        return entries
+            .groupBy({ it.first }, { it.second })
+            .mapValues {
+                it.value
+                    .groupBy { entry -> entry.name }
+                    .map { entry -> mapToConstraint(entry.value) }
+            }
     }
 
-    private fun mapToConstraint(constraintEntries: List<ConstraintEntry>): ConstraintMetadata {
-        val (name, type, searchCondition, enabled, invalid, _, referencedConstraintName, referencedTableName) = constraintEntries.first()
+    private fun mapToConstraint(constraintEntries: List<ConstraintEntry>): ConstraintMetadata =
+        constraintEntries.first().run {
+            when (type) {
+                "P" -> PrimaryKeyConstraintMetadata(
+                    name = name,
+                    columnNames = constraintEntries.map { it.columnName },
+                    enabled = enabled,
+                    invalid = invalid,
+                )
 
-        return when (type) {
-            "P" -> PrimaryKeyConstraintMetadata(
-                name = name,
-                columnNames = constraintEntries.map { it.columnName },
-                enabled = enabled,
-                invalid = invalid,
-            )
+                "R" -> ForeignKeyConstraintMetadata(
+                    name = name,
+                    enabled = enabled,
+                    invalid = invalid,
+                    referencedConstraintName = referencedConstraintName
+                        ?: throw IllegalArgumentException("Missing referenced constraint name for foreign key constraint '$name'!"),
+                    referencedTableName = referencedTableName
+                        ?: throw IllegalArgumentException("Missing referenced table name for foreign key constraint '$name'!"),
+                    references = constraintEntries.map {
+                        ForeignKeyConstraintMetadata.ColumnReference(
+                            columnName = it.columnName,
+                            referencedColumnName = it.referencedColumnName
+                                ?: throw IllegalArgumentException("Missing referenced column name for foreign key constraint '$name'!"),
+                        )
+                    }
+                )
 
-            "R" -> ForeignKeyConstraintMetadata(
-                name = name,
-                enabled = enabled,
-                invalid = invalid,
-                referencedConstraintName = referencedConstraintName
-                    ?: throw IllegalArgumentException("Missing referenced constraint name for foreign key constraint '$name'!"),
-                referencedTableName = referencedTableName
-                    ?: throw IllegalArgumentException("Missing referenced table name for foreign key constraint '$name'!"),
-                references = constraintEntries.map {
-                    ForeignKeyConstraintMetadata.ColumnReference(
-                        columnName = it.columnName,
-                        referencedColumnName = it.referencedColumnName
-                            ?: throw IllegalArgumentException("Missing referenced column name for foreign key constraint '$name'!"),
-                    )
-                }
-            )
+                "U" -> UniqueConstraintMetadata(
+                    name = name,
+                    columnNames = constraintEntries.map { it.columnName },
+                    invalid = invalid,
+                    enabled = enabled,
+                )
 
-            "U" -> UniqueConstraintMetadata(
-                name = name,
-                columnNames = constraintEntries.map { it.columnName },
-                invalid = invalid,
-                enabled = enabled,
-            )
+                "C" -> CheckConstraintMetadata(
+                    name = name,
+                    columnNames = constraintEntries.map { it.columnName },
+                    enabled = enabled,
+                    invalid = invalid,
+                    condition = searchCondition
+                        ?: throw IllegalArgumentException("Missing search condition for check constraint '$name'!"),
+                )
 
-            "C" -> CheckConstraintMetadata(
-                name = name,
-                columnNames = constraintEntries.map { it.columnName },
-                enabled = enabled,
-                invalid = invalid,
-                condition = searchCondition
-                    ?: throw IllegalArgumentException("Missing search condition for check constraint '$name'!"),
-            )
-
-            else -> throw IllegalArgumentException("Unsupported Oracle constraint type: '$type'!")
+                else -> throw IllegalArgumentException("Unsupported Oracle constraint type: '$type'!")
+            }
         }
-    }
 
     private companion object {
         private val GET_CONSTRAINTS_SQL_QUERY = """
-            SELECT con.constraint_name, con.constraint_type, con.search_condition, DECODE(con.status, 'ENABLED', 1, 0) as status, DECODE(con.INVALID, 'INVALID', 1, 0) as invalid,
+            SELECT con.table_name, con.constraint_name, con.constraint_type, con.search_condition, DECODE(con.status, 'ENABLED', 1, 0) as status, DECODE(con.INVALID, 'INVALID', 1, 0) as invalid,
                 col.column_name, con.r_constraint_name ref_constraint_name, ref_col.table_name ref_table_name, ref_col.column_name ref_column_name
             FROM user_constraints con
                 LEFT JOIN user_cons_columns col ON con.constraint_name = col.constraint_name
                 LEFT JOIN user_cons_columns ref_col ON con.r_constraint_name = ref_col.constraint_name
                     AND col.position = ref_col.position
-            WHERE con.table_name = UPPER(:table_name) AND con.constraint_type IN ('P', 'R', 'U', 'C')
+            WHERE con.table_name IN (:table_names) AND con.constraint_type IN ('P', 'R', 'U', 'C')
             ORDER BY DECODE(con.constraint_type, 'P', 1, 'R', 2, 'U', 3, 'C', 4, 5), con.constraint_name
         """.trimIndent()
     }

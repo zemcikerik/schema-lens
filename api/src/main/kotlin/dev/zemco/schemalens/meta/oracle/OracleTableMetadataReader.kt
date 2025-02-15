@@ -5,6 +5,8 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.stereotype.Component
 import javax.sql.DataSource
 
+// todo: more than 1000 tables?
+
 @Component
 class OracleTableMetadataReader(
     private val columnMetadataReader: OracleTableColumnMetadataReader,
@@ -16,13 +18,15 @@ class OracleTableMetadataReader(
         dataSource.toJdbcTemplate().queryForList(GET_TABLE_LIST_SQL_QUERY, String::class.java)
 
     override fun readTableDetails(dataSource: DataSource, tableName: String): TableMetadata? {
-        if (!checkIfTableExists(dataSource, tableName)) {
+        val effectiveTableName = tableName.uppercase()
+
+        if (!checkIfTableExists(dataSource, effectiveTableName)) {
             return null
         }
 
-        val columns = columnMetadataReader.readTableColumns(dataSource, tableName)
-        val constraints = constraintMetadataReader.readTableConstraints(dataSource, tableName)
-        val indexes = indexMedataReader.readTableIndexes(dataSource, tableName)
+        val columns = columnMetadataReader.readColumnsForTable(dataSource, effectiveTableName)
+        val constraints = constraintMetadataReader.readConstraintsForTable(dataSource, effectiveTableName)
+        val indexes = indexMedataReader.readIndexesOfTable(dataSource, effectiveTableName)
         return TableMetadata(name = tableName, columns = columns, constraints = constraints, indexes = indexes)
     }
 
@@ -37,7 +41,7 @@ class OracleTableMetadataReader(
             SELECT CASE WHEN EXISTS (
                 SELECT 1
                 FROM user_tables
-                WHERE table_name = UPPER(:table_name)
+                WHERE table_name = :table_name
             ) THEN 1 ELSE 0 END
             FROM DUAL
         """.trimIndent()
