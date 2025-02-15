@@ -7,7 +7,7 @@ import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.dao.PermissionDeniedDataAccessException
 import org.springframework.dao.QueryTimeoutException
 import org.springframework.jdbc.CannotGetJdbcConnectionException
-import org.springframework.jdbc.datasource.SimpleDriverDataSource
+import org.springframework.jdbc.datasource.SingleConnectionDataSource
 import org.springframework.stereotype.Component
 import java.sql.SQLException
 import javax.sql.DataSource
@@ -17,27 +17,35 @@ class ProjectConnectionServiceImpl(
     private val projectConnectionEncryptor: ProjectConnectionEncryptor,
 ) : ProjectConnectionService {
 
-    override fun asDataSource(connectionInfo: ProjectConnectionInfo): DataSource =
+    override fun <T> withDataSource(connectionInfo: ProjectConnectionInfo, function: (DataSource) -> T): T =
+        asLazySingleConnectionDataSource(connectionInfo).let {
+            try {
+                function(it)
+            } catch (ex: DataAccessException) {
+                throw ProjectConnectionException(
+                    mapExceptionToFailureStatus(ex),
+                    extractSqlExceptionMessage(ex)?.trim(),
+                    ex
+                )
+            } finally {
+                it.destroy()
+            }
+        }
+
+    private fun asLazySingleConnectionDataSource(connectionInfo: ProjectConnectionInfo): SingleConnectionDataSource =
         when (connectionInfo) {
-            is OracleProjectConnectionInfo -> asDataSource(connectionInfo)
+            is OracleProjectConnectionInfo -> asLazySingleConnectionDataSource(connectionInfo)
             else -> throw UnsupportedOperationException("Unsupported connection type")
         }
 
-    private fun asDataSource(connectionInfo: OracleProjectConnectionInfo): DataSource =
+    private fun asLazySingleConnectionDataSource(connectionInfo: OracleProjectConnectionInfo): SingleConnectionDataSource =
         connectionInfo.run {
             DataSourceBuilder.create()
                 .url("jdbc:oracle:thin:@${escapeHost(host)}:$port/$service")
                 .username(username)
                 .password(projectConnectionEncryptor.decryptPassword(password))
-                .type(SimpleDriverDataSource::class.java)
-                .build()
-        }
-
-    override fun <T> withDataSource(connectionInfo: ProjectConnectionInfo, function: (DataSource) -> T): T =
-        try {
-            function(asDataSource(connectionInfo))
-        } catch (ex: DataAccessException) {
-            throw ProjectConnectionException(mapExceptionToFailureStatus(ex), extractSqlExceptionMessage(ex)?.trim(), ex)
+                .type(SingleConnectionDataSource::class.java)
+                .build() as SingleConnectionDataSource
         }
 
     private fun mapExceptionToFailureStatus(ex: DataAccessException) =
