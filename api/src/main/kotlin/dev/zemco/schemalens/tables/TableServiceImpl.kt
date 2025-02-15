@@ -1,7 +1,7 @@
 package dev.zemco.schemalens.tables
 
-import dev.zemco.schemalens.meta.RelatedTablesMetadata
 import dev.zemco.schemalens.meta.TableMetadata
+import dev.zemco.schemalens.meta.TableRelationshipsMetadata
 import dev.zemco.schemalens.meta.oracle.format.OracleSqlFormatter
 import dev.zemco.schemalens.meta.oracle.OracleTableDdlGenerator
 import dev.zemco.schemalens.meta.oracle.OracleTableMetadataReader
@@ -27,7 +27,7 @@ class TableServiceImpl(
             oracleTableMetadataReader.readTableDetails(it, tableName)
         }
 
-    override fun getRelatedTableDetails(project: Project, tableName: String): RelatedTablesMetadata? =
+    override fun getRelatedTableDetails(project: Project, tableName: String): TableRelationshipsMetadata? =
         connectionService.withDataSource(project.connectionInfo) {
             oracleTableMetadataReader.readDetailsOfDirectlyRelatedTables(it, tableName)
         }

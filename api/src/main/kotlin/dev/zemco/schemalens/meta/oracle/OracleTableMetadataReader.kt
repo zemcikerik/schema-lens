@@ -2,7 +2,6 @@ package dev.zemco.schemalens.meta.oracle
 
 import dev.zemco.schemalens.meta.*
 import dev.zemco.schemalens.meta.oracle.OracleTableRelationship.RelationshipType
-import org.springframework.dao.DataIntegrityViolationException
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.stereotype.Component
 import javax.sql.DataSource
@@ -25,30 +24,66 @@ class OracleTableMetadataReader(
             internalReadDetailsForTables(dataSource, setOf(tableName))[tableName]
         else null
 
-    override fun readDetailsOfDirectlyRelatedTables(dataSource: DataSource, tableName: String): RelatedTablesMetadata? {
-        val effectiveTableName = tableName.uppercase()
-
-        if (!checkIfTablesExist(dataSource, setOf(effectiveTableName))) {
+    override fun readDetailsOfDirectlyRelatedTables(dataSource: DataSource, tableName: String): TableRelationshipsMetadata? {
+        if (!checkIfTablesExist(dataSource, setOf(tableName))) {
             return null
         }
 
-        val relationships = constraintMetadataReader.readDirectRelationshipsForTable(dataSource, effectiveTableName)
-        val allRelatedTables = relationships.asSequence().map { it.tableName }.toSet()
+        val distinctRelationships = constraintMetadataReader.readDistinctDirectRelationshipsForTable(
+            dataSource,
+            tableName,
+        )
+        val distinctRelationshipsWithoutSelf = distinctRelationships.filter { it.tableName != tableName }
+        val allRelatedTables = distinctRelationships.asSequence().map { it.tableName }.toSet()
+        val tables = internalReadDetailsForTables(dataSource, allRelatedTables + tableName)
 
-        if (!checkIfTablesExist(dataSource, allRelatedTables)) {
-            // todo: other schema?
-            throw DataIntegrityViolationException("Table in a relationship with '$tableName' was not found")
-        }
+        val sourceTable = tables.getValue(tableName)
+        val sourceTableUniqueColumns = processUniqueColumns(sourceTable.indexes)
 
-        val tableDetails = internalReadDetailsForTables(dataSource, allRelatedTables)
+        val relationshipsToParents = sourceTable.constraints.asSequence()
+            .filterIsInstance<ForeignKeyConstraintMetadata>()
+            .map {
+                RelationshipMetadata(
+                    parentName = it.referencedTableName,
+                    childName = tableName,
+                    unique = isUnique(it, sourceTableUniqueColumns),
+                )
+            }
 
-        return relationships.groupBy { it.type }.let {
-            RelatedTablesMetadata(
-                parents = it[RelationshipType.PARENT]?.map { r -> tableDetails.getValue(r.tableName) } ?: emptyList(),
-                children = it[RelationshipType.CHILD]?.map { r -> tableDetails.getValue(r.tableName) } ?: emptyList(),
-            )
-        }
+        val relationshipsFromChildren = distinctRelationshipsWithoutSelf.asSequence()
+            .filter { it.type == RelationshipType.CHILD }
+            .flatMap {
+                val table = tables.getValue(it.tableName)
+                val uniqueColumns = processUniqueColumns(table.indexes)
+
+                table.constraints.asSequence()
+                    .filterIsInstance<ForeignKeyConstraintMetadata>()
+                    .filter { foreignKey -> foreignKey.referencedTableName == tableName }
+                    .map { foreignKey ->
+                        RelationshipMetadata(
+                            parentName = tableName,
+                            childName = it.tableName,
+                            unique = isUnique(foreignKey, uniqueColumns),
+                        )
+                    }
+            }
+
+        return TableRelationshipsMetadata(
+            tables = tables.map { it.value },
+            relationships = (relationshipsToParents + relationshipsFromChildren).toList(),
+        )
     }
+
+    private fun processUniqueColumns(indexes: List<IndexMetadata>): Set<Set<String>> =
+        indexes.asSequence().filter { it.unique }.map {
+            it.columns.asSequence().map { column -> column.name }.toSet() // todo: name is not null?
+        }.toSet()
+
+    private fun isUnique(foreignKey: ForeignKeyConstraintMetadata, uniqueColumns: Set<Set<String>>): Boolean =
+        foreignKey.references.asSequence()
+            .map { reference -> reference.columnName }
+            .toSet()
+            .let { uniqueColumns.contains(it) }
 
     private fun internalReadDetailsForTables(
         dataSource: DataSource,

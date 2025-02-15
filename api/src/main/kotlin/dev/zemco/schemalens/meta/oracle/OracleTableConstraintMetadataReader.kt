@@ -85,7 +85,7 @@ class OracleTableConstraintMetadataReader {
             }
         }
 
-    fun readDirectRelationshipsForTable(dataSource: DataSource, tableName: String): List<OracleTableRelationship> {
+    fun readDistinctDirectRelationshipsForTable(dataSource: DataSource, tableName: String): List<OracleTableRelationship> {
         val params = MapSqlParameterSource("table_name", tableName)
 
         return dataSource.toNamedJdbcTemplate().query(GET_RELATIONSHIPS_QUERY, params) { rs, _ ->
