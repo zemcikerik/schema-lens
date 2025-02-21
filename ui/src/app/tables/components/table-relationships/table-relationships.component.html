@@ -1,3 +1,9 @@
 <div class="table__content--full-height">
-  <app-diagram-entity-relationship [entities]="[entity()]" />
+  @if (tableRelationshipsResource.isLoading()) {
+    <app-progress-spinner [center]="true" />
+  } @else if (tableRelationshipsResource.error()) {
+    <!-- todo: proper error handling -->
+  } @else {
+    <app-diagram-entity-relationship [entities]="entities()" [relationships]="relationships()" />
+  }
 </div>

@@ -1,11 +1,9 @@
 import type { ElementLike, Shape } from 'diagram-js/lib/model/Types';
+import type { Dimensions } from 'diagram-js/lib/util/Types';
 
 export interface EntityShape extends Shape {
   id: `entity_${string}`,
-  minDimensions: {
-    width: number,
-    height: number,
-  };
+  minDimensions: Dimensions;
 }
 
 export type EntityShapeTemplate = Pick<EntityShape, 'id' | 'x' | 'y' | 'width' | 'height' | 'minDimensions'>;

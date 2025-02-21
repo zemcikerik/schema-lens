@@ -2,6 +2,9 @@
 @use '../theme' as t;
 
 .diagram-entity-relationship {
+  position: relative;
+  height: 100%;
+
   &__entity {
     display: flex;
     flex-direction: column;
@@ -68,5 +71,20 @@
     stroke: mat.get-theme-color(t.$theme, on-surface-variant);
     stroke-width: 0.125rem;
     shape-rendering: geometricPrecision;
+
+    &__one-side,
+    &__many-side {
+      stroke: mat.get-theme-color(t.$theme, on-surface-variant);
+    }
+
+    &__one-side {
+      stroke-width: 1rem;
+    }
+  }
+
+  &__zoom {
+    position: absolute;
+    right: 0;
+    bottom: 0;
   }
 }

@@ -1,29 +1,43 @@
-import { ChangeDetectionStrategy, Component, computed, inject, Signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, input } from '@angular/core';
 import {
   DiagramEntityRelationshipComponent
-} from '../../../diagrams/components/diagram-entity-relationship/diagram-entity-relationship.component';
-import { ROUTER_OUTLET_DATA } from '@angular/router';
-import { Table } from '../../models/table.model';
+} from '../../../diagrams/entity-relationship/diagram-entity-relationship.component';
 import { TableColumnService } from '../../services/table-column.service';
-import { Entity } from '../../../diagrams/models/entity.model';
+import { TableService } from '../../services/table.service';
+import { TableRelationships } from '../../models/table-relationships.model';
+import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
+import { rxResource } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-table-relationships',
   templateUrl: './table-relationships.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DiagramEntityRelationshipComponent],
+  imports: [DiagramEntityRelationshipComponent, ProgressSpinnerComponent],
 })
 export class TableRelationshipsComponent {
-  table = inject<Signal<Table>>(ROUTER_OUTLET_DATA);
+  projectId = input.required<string>();
+  tableName = input.required<string>();
+
+  private tableService = inject(TableService);
   private tableColumnService = inject(TableColumnService);
 
-  entity = computed<Entity>(() => {
-    const table = this.table();
-    const primaryKeyColumns = this.tableColumnService.getPrimaryKeyColumns(table);
+  tableRelationshipsResource = rxResource({
+    request: () => ({ projectId: this.projectId(), tableName: this.tableName() }),
+    loader: ({ request }) =>
+      this.tableService.getRelatedTables(request.projectId, request.tableName),
+  });
 
+  tableRelationships = computed<TableRelationships>(() =>
+    this.tableRelationshipsResource.value() ?? { tables: [], relationships: [] });
+
+  entities = computed(() => this.tableRelationships().tables.map(table => {
+    const primaryKeyColumns = this.tableColumnService.getPrimaryKeyColumns(table);
     return {
       name: table.name,
-      columns: table.columns.map(column => ({ ...column, primaryKey: primaryKeyColumns.includes(column) }))
+      columns: table.columns.map(
+        column => ({ ...column, primaryKey: primaryKeyColumns.includes(column) })
+      ),
     };
-  });
+  }));
+  relationships = computed(() => this.tableRelationships().relationships);
 }

@@ -1,8 +1,7 @@
-import type { ModuleDeclaration } from 'didi';
 import type Canvas from 'diagram-js/lib/core/Canvas';
 import type EventBus from 'diagram-js/lib/core/EventBus';
 import type { ElementLike } from 'diagram-js/lib/model/Types';
-import { isEntityElement } from '../shapes/entity.shape';
+import { isEntityElement } from './entity.shape';
 
 export class EntityMoveHandler {
 
@@ -22,8 +21,3 @@ export class EntityMoveHandler {
   }
 
 }
-
-export default {
-  __init__: ['entityMoveHandler'],
-  entityMoveHandler: ['type', EntityMoveHandler],
-} satisfies ModuleDeclaration;

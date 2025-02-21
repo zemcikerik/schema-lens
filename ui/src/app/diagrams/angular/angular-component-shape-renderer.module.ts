@@ -4,8 +4,8 @@ import { create as svgCreate, append as svgAppend } from 'tiny-svg';
 import type { ElementLike, Shape } from 'diagram-js/lib/model/Types';
 import type EventBus from 'diagram-js/lib/core/EventBus';
 import type ElementRegistry from 'diagram-js/lib/core/ElementRegistry';
+import { AngularElementTracker, AngularElementTrackerModule } from './angular-element-tracker.module';
 import type { ModuleDeclaration } from 'didi';
-import AngularElementTrackerModule, { AngularElementTracker } from './angular-element-tracker.module';
 
 export type AngularComponentMap = Partial<Record<string, Type<unknown>>>;
 
@@ -100,12 +100,12 @@ export abstract class AngularComponentShapeRenderer extends BaseRenderer {
 
 }
 
-export default class AngularComponentShapeRendererFactory {
+export class AngularComponentShapeRendererFactory {
 
   static create(components: AngularComponentMap): ModuleDeclaration {
     return {
-      __depends__: [AngularElementTrackerModule],
       __init__: ['angularComponentShapeRenderer'],
+      __depends__: [AngularElementTrackerModule],
       angularComponentShapeRenderer: ['type', class extends AngularComponentShapeRenderer {
         override getComponents = () => components;
       }],

@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { Entity, EntityColumn } from '../../models/entity.model';
+import { Entity, EntityColumn } from './entity.model';
 import { MatIcon } from '@angular/material/icon';
-import { ResizerOffsets } from '../../models/resizer-offsets.model';
+import { ResizerOffsets } from './resizer-offsets.model';
 
 const WIDTH_PRIMARY_KEY = 20;
 const WIDTH_PER_ROW_LETTER = 9.6;
@@ -16,15 +16,15 @@ const CELL_LEFT_PADDING_AFTER_PRIMARY_KEY = 8;
 const CELL_LEFT_PADDING_NEXT = 16;
 
 @Component({
-  selector: 'app-diagram-embedded-entity',
-  templateUrl: './diagram-embedded-entity.component.html',
+  selector: 'app-embedded-entity',
+  templateUrl: './entity.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatIcon],
 })
-export class DiagramEmbeddedEntityComponent {
+export class EntityComponent {
   entity = input.required<Entity>();
-  hasPrimaryKey = computed(() => DiagramEmbeddedEntityComponent.hasPrimaryKey(this.entity()))
-  hasNotNullColumn = computed(() => DiagramEmbeddedEntityComponent.hasNotNullColumn(this.entity()));
+  hasPrimaryKey = computed(() => EntityComponent.hasPrimaryKey(this.entity()))
+  hasNotNullColumn = computed(() => EntityComponent.hasNotNullColumn(this.entity()));
 
   static estimateDimensions(entity: Entity): { width: number, height: number } {
     const { columns } = entity;

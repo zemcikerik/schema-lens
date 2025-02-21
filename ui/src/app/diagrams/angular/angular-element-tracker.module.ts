@@ -37,7 +37,7 @@ export class AngularElementTracker {
 
 }
 
-export default {
+export const AngularElementTrackerModule = {
   __init__: ['angularElementTracker'],
   angularElementTracker: ['type', AngularElementTracker],
 } satisfies ModuleDeclaration;

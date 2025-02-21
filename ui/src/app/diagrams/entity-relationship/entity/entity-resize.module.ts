@@ -1,16 +1,13 @@
 import type Canvas from 'diagram-js/lib/core/Canvas';
 import type EventBus from 'diagram-js/lib/core/EventBus';
-import type { ModuleDeclaration } from 'didi';
 import type { ElementLike, Shape } from 'diagram-js/lib/model/Types';
 import type { Dimensions, Direction, Rect } from 'diagram-js/lib/util/Types';
-import { EntityShape, isEntityElement } from '../shapes/entity.shape';
+import { EntityShape, isEntityElement } from './entity.shape';
 import { translate } from 'diagram-js/lib/util/SvgTransformUtil';
-import AngularElementTrackerModule, { AngularElementTracker } from './angular-element-tracker.module';
-import {
-  DiagramEmbeddedEntityComponent
-} from '../components/diagram-embedded-entity/diagram-embedded-entity.component';
-import { ResizerOffset, ResizerOffsets } from '../models/resizer-offsets.model';
+import { EntityComponent } from './entity.component';
+import { ResizerOffset, ResizerOffsets } from './resizer-offsets.model';
 import { create as svgCreate, replace as svgReplace } from 'tiny-svg';
+import type { AngularElementTracker } from '../../angular/angular-element-tracker.module';
 
 interface SelectionChangedEvent extends Event {
   newSelection: ElementLike[];
@@ -105,7 +102,7 @@ export class EntityResizeHandler {
 
       const [entity] = event.newSelection;
       const resizers = this.canvas.getLayer('resizers');
-      const resizerOffsets = DiagramEmbeddedEntityComponent.calculateResizerHandleOffsets(entity);
+      const resizerOffsets = EntityComponent.calculateResizerHandleOffsets(entity);
 
       Object.entries(RESIZER_OFFSETS_MAPPINGS).map(([direction, offsetsKey]) => {
         const resizer = resizers.getElementsByClassName(`${RESIZER_CLASS_PREFIX}${direction}`)[0];
@@ -137,9 +134,3 @@ export class EntityResizeHandler {
   }
 
 }
-
-export default {
-  __depends__: [AngularElementTrackerModule],
-  __init__: ['entityResizeHandler'],
-  entityResizeHandler: ['type', EntityResizeHandler],
-} satisfies ModuleDeclaration;
