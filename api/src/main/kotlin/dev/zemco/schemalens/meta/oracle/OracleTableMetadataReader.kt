@@ -38,7 +38,7 @@ class OracleTableMetadataReader(
         val tables = internalReadDetailsForTables(dataSource, allRelatedTables + tableName)
 
         val sourceTable = tables.getValue(tableName)
-        val sourceTableUniqueColumns = processUniqueColumns(sourceTable.indexes)
+        val sourceTableUniqueColumns = processUniqueColumns(sourceTable.constraints)
 
         val relationshipsToParents = sourceTable.constraints.asSequence()
             .filterIsInstance<ForeignKeyConstraintMetadata>()
@@ -54,7 +54,7 @@ class OracleTableMetadataReader(
             .filter { it.type == RelationshipType.CHILD }
             .flatMap {
                 val table = tables.getValue(it.tableName)
-                val uniqueColumns = processUniqueColumns(table.indexes)
+                val uniqueColumns = processUniqueColumns(table.constraints)
 
                 table.constraints.asSequence()
                     .filterIsInstance<ForeignKeyConstraintMetadata>()
@@ -74,10 +74,11 @@ class OracleTableMetadataReader(
         )
     }
 
-    private fun processUniqueColumns(indexes: List<IndexMetadata>): Set<Set<String>> =
-        indexes.asSequence().filter { it.unique }.map {
-            it.columns.asSequence().map { column -> column.name }.toSet() // todo: name is not null?
-        }.toSet()
+    private fun processUniqueColumns(constraints: List<ConstraintMetadata>): Set<Set<String>> =
+        constraints.asSequence()
+            .filter { it is PrimaryKeyConstraintMetadata || it is UniqueConstraintMetadata }
+            .map { it.columnNames.toSet() }
+            .toSet()
 
     private fun isUnique(foreignKey: ForeignKeyConstraintMetadata, uniqueColumns: Set<Set<String>>): Boolean =
         foreignKey.references.asSequence()
