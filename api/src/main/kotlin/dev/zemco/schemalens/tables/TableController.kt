@@ -30,7 +30,7 @@ class TableController(
     ): ResponseEntity<TableRelationshipsMetadata> =
         ResponseEntity.ofNullable(tableService.getRelatedTableDetails(project, tableName))
 
-    @GetMapping("{tableName}/ddl")
+    @GetMapping("{tableName}/ddl", produces = ["application/sql"])
     fun generateDdl(@PathVariable project: Project, @PathVariable tableName: String): ResponseEntity<String> =
         ResponseEntity.ofNullable(tableService.generateDdlForTable(project, tableName))
 
