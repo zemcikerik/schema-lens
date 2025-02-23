@@ -184,6 +184,12 @@
       "FUNCTION_LABEL": "Funkcia",
       "ASCENDING_LABEL": "Vzostupne",
       "DESCENDING_LABEL": "Zostupne"
+    },
+    "DDL": {
+      "LABEL": "DDL"
+    },
+    "RELATIONSHIPS": {
+      "LABEL": "Vzťahy"
     }
   },
   "PROFILE": {

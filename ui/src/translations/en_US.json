@@ -184,6 +184,12 @@
       "FUNCTION_LABEL": "Function",
       "ASCENDING_LABEL": "Ascending",
       "DESCENDING_LABEL": "Descending"
+    },
+    "DDL": {
+      "LABEL": "DDL"
+    },
+    "RELATIONSHIPS": {
+      "LABEL": "Relationships"
     }
   },
   "PROFILE": {
