@@ -1,3 +1,7 @@
+.djs-parent > svg:focus {
+  outline: none;
+}
+
 .djs-resizer-hit {
   fill: none;
   pointer-events: all;
