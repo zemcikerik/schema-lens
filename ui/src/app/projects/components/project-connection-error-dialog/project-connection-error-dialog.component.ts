@@ -5,7 +5,6 @@ import {
 } from '../project-connection-error-alert/project-connection-error-alert.component';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { ProjectConnectionError } from '../../models/project-connection-error.model';
 
 @Component({
   selector: 'app-project-connection-error-dialog',
@@ -27,5 +26,5 @@ import { ProjectConnectionError } from '../../models/project-connection-error.mo
   ],
 })
 export class ProjectConnectionErrorDialogComponent {
-  error = inject<ProjectConnectionError>(MAT_DIALOG_DATA);
+  error = inject<unknown>(MAT_DIALOG_DATA);
 }

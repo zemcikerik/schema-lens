@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { ProjectConnectionError } from '../../models/project-connection-error.model';
+import { isProjectConnectionError } from '../../models/project-connection-error.model';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
@@ -7,11 +7,16 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
   selector: 'app-project-connection-error-alert',
   template: `
     <app-alert type="error">
-      <div>{{ (errorLabelKey() | translate)() }}</div>
+      @let connectionErr = connectionError();
       
-      @let message = error().message;
-      @if (message) {
-        <div>{{ ('PROJECTS.CONNECTION_ERROR.DETAILS_LABEL' | translate: { message })() }}</div>
+      @if (connectionErr !== null) {
+        <div>{{ (errorLabelKey() | translate)() }}</div>
+
+        @if (connectionErr.message) {
+          <div>{{ ('PROJECTS.CONNECTION_ERROR.DETAILS_LABEL' | translate: { message: connectionErr.message })() }}</div>
+        }
+      } @else {
+        {{ ('GENERIC.ERROR_LABEL' | translate)() }}
       }
     </app-alert>
   `,
@@ -22,6 +27,15 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
   ],
 })
 export class ProjectConnectionErrorAlertComponent {
-  error = input.required<ProjectConnectionError>();
-  errorLabelKey = computed(() => `PROJECTS.CONNECTION_ERROR.${this.error().type}`);
+  error = input.required<unknown>();
+
+  connectionError = computed(() => {
+    const error = this.error();
+    return isProjectConnectionError(error) ? error : null;
+  });
+
+  errorLabelKey = computed(() => {
+    const connectionError = this.connectionError();
+    return connectionError ? `PROJECTS.CONNECTION_ERROR.${connectionError.type}` : '';
+  });
 }

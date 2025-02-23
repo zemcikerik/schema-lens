@@ -5,15 +5,12 @@
 
 <app-nav-tab-group [baseRouterLink]="['/project', projectId(), 'table', tableName()]" [tabs]="TABLE_TABS">
   <div class="table__content-host">
-    @if (loading()) {
+    @if (tableResource.isLoading()) {
       <app-progress-spinner class="d-block mt-1" [center]="true" />
+    } @else if (tableResource.error()) {
+      <app-project-connection-error-alert class="d-block mt-1" [error]="tableResource.error()" />
     } @else {
-      @let err = error();
-      @if (err !== null) {
-        <app-project-connection-error-alert class="d-block mt-1" [error]="err" />
-      } @else {
-        <router-outlet [routerOutletData]="table()" />
-      }
+      <router-outlet [routerOutletData]="tableResource.value()" />
     }
   </div>
 </app-nav-tab-group>

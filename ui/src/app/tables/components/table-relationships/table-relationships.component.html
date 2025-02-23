@@ -1,9 +1,9 @@
-<div class="table__content--full-height">
-  @if (tableRelationshipsResource.isLoading()) {
-    <app-progress-spinner [center]="true" />
-  } @else if (tableRelationshipsResource.error()) {
-    <!-- todo: proper error handling -->
-  } @else {
+@if (tableRelationshipsResource.isLoading()) {
+  <app-progress-spinner class="d-block mt-1" [center]="true" />
+} @else if (tableRelationshipsResource.error()) {
+  <app-project-connection-error-alert class="d-block mt-1" [error]="tableRelationshipsResource.error()" />
+} @else {
+  <div class="table__content--full-height">
     <app-diagram-entity-relationship [entities]="entities()" [relationships]="relationships()" />
-  }
-</div>
+  </div>
+}

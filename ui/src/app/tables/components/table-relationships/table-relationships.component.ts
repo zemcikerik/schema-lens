@@ -7,12 +7,16 @@ import { TableService } from '../../services/table.service';
 import { TableRelationships } from '../../models/table-relationships.model';
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { rxResource } from '@angular/core/rxjs-interop';
+import { unwrapProjectConnectionError } from '../../../projects/catch-project-connection-error.fn';
+import {
+  ProjectConnectionErrorAlertComponent
+} from '../../../projects/components/project-connection-error-alert/project-connection-error-alert.component';
 
 @Component({
   selector: 'app-table-relationships',
   templateUrl: './table-relationships.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DiagramEntityRelationshipComponent, ProgressSpinnerComponent],
+  imports: [DiagramEntityRelationshipComponent, ProgressSpinnerComponent, ProjectConnectionErrorAlertComponent],
 })
 export class TableRelationshipsComponent {
   projectId = input.required<string>();
@@ -24,7 +28,7 @@ export class TableRelationshipsComponent {
   tableRelationshipsResource = rxResource({
     request: () => ({ projectId: this.projectId(), tableName: this.tableName() }),
     loader: ({ request }) =>
-      this.tableService.getRelatedTables(request.projectId, request.tableName),
+      this.tableService.getRelatedTables(request.projectId, request.tableName).pipe(unwrapProjectConnectionError()),
   });
 
   tableRelationships = computed<TableRelationships>(() =>

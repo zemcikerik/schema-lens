@@ -3,7 +3,8 @@ import {
   Component,
   computed,
   effect,
-  input, output,
+  input,
+  output,
   signal,
   untracked,
   viewChild,
@@ -12,15 +13,10 @@ import { MatExpansionPanel, MatExpansionPanelContent, MatExpansionPanelHeader } 
 import { MatListItem } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
-import { finalize, Observable, of, Subject, switchMap, tap } from 'rxjs';
-import {
-  isProjectConnectionError,
-  ProjectConnectionError,
-  ProjectConnectionFailure,
-} from '../../models/project-connection-error.model';
+import { finalize, Observable, Subject, switchMap, tap } from 'rxjs';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { catchProjectConnectionError } from '../../catch-project-connection-error.fn';
+import { unwrapProjectConnectionError } from '../../catch-project-connection-error.fn';
 import { SidebarCloseDirective } from '../../../core/layouts/sidebar-close.directive';
 
 @Component({
@@ -44,12 +40,12 @@ export class ProjectObjectSelectorComponent {
   title = input.required<string>();
   baseRouterLink = input.required<string[]>();
   loadAction = input.required<() => Observable<string[]>>();
-  displayError = output<ProjectConnectionError>();
+  displayError = output<unknown>();
   expansionPanel = viewChild.required(MatExpansionPanel);
 
   objects = signal<string[] | null>(null);
   loading = signal<boolean>(false);
-  error = signal<ProjectConnectionError | null>(null);
+  error = signal<unknown | null>(null);
   private reload$ = new Subject<void>();
 
   objectListEntries = computed(() => {
@@ -73,18 +69,12 @@ export class ProjectObjectSelectorComponent {
         this.reload$.pipe(
           tap(() => this.loading.set(true)),
           switchMap(() => loadAction().pipe(
-            catchProjectConnectionError(err => of(err)),
+            unwrapProjectConnectionError(),
             finalize(() => untracked(() => this.loading.set(false))),
           )),
         ).subscribe({
-          next: result => {
-            if (!isProjectConnectionError(result)) {
-              this.objects.set(result);
-            } else {
-              this.error.set(result);
-            }
-          },
-          error: () => this.error.set({ type: ProjectConnectionFailure.UNKNOWN, message: null }),
+          next: objects => this.objects.set(objects),
+          error: err => this.error.set(err),
         }),
       );
 

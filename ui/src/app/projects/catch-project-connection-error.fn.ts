@@ -10,3 +10,6 @@ export const catchProjectConnectionError = <T, O>(selector: ProjectConnectionErr
       ? selector(err.error, caught)
       : throwError(() => err)
   );
+
+export const unwrapProjectConnectionError = <T>() =>
+  catchProjectConnectionError<T, T>(err => throwError(() => err));

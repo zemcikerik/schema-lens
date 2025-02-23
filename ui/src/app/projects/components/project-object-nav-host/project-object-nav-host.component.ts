@@ -6,7 +6,6 @@ import { MatDialog } from '@angular/material/dialog';
 import {
   ProjectConnectionErrorDialogComponent
 } from '../project-connection-error-dialog/project-connection-error-dialog.component';
-import { ProjectConnectionError } from '../../models/project-connection-error.model';
 
 @Component({
   selector: 'app-project-object-nav-host',
@@ -32,7 +31,7 @@ export class ProjectObjectNavHostComponent {
   private projectObjectNavService = inject(ProjectObjectNavService);
   objectDefinitions = computed(() => this.projectObjectNavService.getObjectDefinitionsFor(this.projectId()));
 
-  displayError(error: ProjectConnectionError): void {
+  displayError(error: unknown): void {
     this.matDialog.open(ProjectConnectionErrorDialogComponent, { data: error });
   }
 }
