@@ -2,6 +2,8 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { DiagramHostComponent } from './diagram-host.component';
+import { MatTooltip } from '@angular/material/tooltip';
+import { TranslatePipe } from '../core/translate/translate.pipe';
 
 const MIN_ZOOM_LEVEL = 0.2;
 const MAX_ZOOM_LEVEL = 4;
@@ -11,7 +13,7 @@ const ZOOM_LEVEL_STEP = 0.2;
   selector: 'app-diagram-zoom-control',
   templateUrl: './diagram-zoom-control.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatIcon, MatIconButton],
+  imports: [MatIcon, MatIconButton, MatTooltip, TranslatePipe],
 })
 export class DiagramZoomControlComponent {
   diagramHost = input.required<DiagramHostComponent>();

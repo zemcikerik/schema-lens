@@ -212,6 +212,10 @@
     "FAQ_LABEL": "Najčastejšie otázky",
     "FAQ_EMPTY_LABEL": "Momentálne nie sú dostupné žiadne často kladené otázky."
   },
+  "DIAGRAM": {
+    "ZOOM_IN_LABEL": "Priblížiť",
+    "ZOOM_OUT_LABEL": "Oddialiť"
+  },
   "ADMIN": {
     "PANEL_LABEL": "Administračný panel",
     "ID_LABEL": "ID",

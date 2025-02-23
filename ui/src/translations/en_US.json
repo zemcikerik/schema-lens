@@ -212,6 +212,10 @@
     "FAQ_LABEL": "Frequently Asked Questions",
     "FAQ_EMPTY_LABEL": "There are currently no frequently asked questions available."
   },
+  "DIAGRAM": {
+    "ZOOM_IN_LABEL": "Zoom in",
+    "ZOOM_OUT_LABEL": "Zoom out"
+  },
   "ADMIN": {
     "PANEL_LABEL": "Admin Panel",
     "ID_LABEL": "Id",
