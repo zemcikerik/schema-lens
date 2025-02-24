@@ -4,8 +4,10 @@ import type EventBus from 'diagram-js/lib/core/EventBus';
 import { createLine } from 'diagram-js/lib/util/RenderUtil';
 import { append as svgAppend, create as svgCreate } from 'tiny-svg';
 import { isRelationshipConnection, RelationshipConnection } from './relationship.connection';
+import { Relationship } from './relationship.model';
 
 const RELATIONSHIP_CLASS = 'diagram-entity-relationship__relationship';
+const RELATIONSHIP_NON_IDENTIFYING_CLASS = 'non-identifying';
 const RELATIONSHIP_CORNER_RADIUS = 16;
 
 const RELATIONSHIP_ONE_SIDE_MARKER_CLASS = 'diagram-entity-relationship__relationship__one-side';
@@ -24,40 +26,51 @@ export class RelationshipRenderer extends BaseRenderer {
   }
 
   override drawConnection(visuals: SVGElement, connection: RelationshipConnection): SVGElement {
+    const { id, relationship } = connection;
     const defs = svgCreate('defs');
     svgAppend(visuals, defs);
 
-    const parentMarker = this.createOneSideMarker(defs, connection.id);
-    const childMarker = connection.relationship.unique ? parentMarker : this.createManySideMarker(defs, connection.id);
+    const parentMarkerId = `${id}__parent`;
+    const childMarkerId = `${id}__child`;
+    this.appendOneSideMarker(defs, parentMarkerId, relationship.mandatory);
+
+    if (relationship.unique) {
+      this.appendOneSideMarker(defs, childMarkerId);
+    } else {
+      this.appendManySideMarker(defs, childMarkerId);
+    }
 
     svgAppend(visuals, createLine(connection.waypoints, {
-      class: RELATIONSHIP_CLASS,
-      markerStart: `url(#${parentMarker.id})`,
-      markerEnd: `url(#${childMarker.id})`,
+      class: this.computeRelationshipClasses(connection.relationship).join(' '),
+      markerStart: `url(#${parentMarkerId})`,
+      markerEnd: `url(#${childMarkerId})`,
     }, RELATIONSHIP_CORNER_RADIUS));
 
     return visuals;
   }
 
-  private createOneSideMarker(defs: SVGDefsElement, id: string): SVGMarkerElement {
+  private appendOneSideMarker(defs: SVGDefsElement, id: string, mandatory = true): void {
     const marker = svgCreate('marker', {
-      id: `${id}__one-side`,
+      id,
       class: RELATIONSHIP_ONE_SIDE_MARKER_CLASS,
       orient: 'auto-start-reverse',
-      markerWidth: '1',
+      markerWidth: '8',
       markerHeight: '8',
       refX: '8',
       refY: '4',
     });
-    svgAppend(marker, svgCreate('line', { y1: '0', y2: '8' }));
 
+    if (!mandatory) {
+      svgAppend(marker, svgCreate('circle', { cx: '4', cy: '4', r: '2' }));
+    }
+
+    svgAppend(marker, svgCreate('line', { x1: '1', x2: '1', y1: '0', y2: '8' }));
     svgAppend(defs, marker);
-    return marker;
   }
 
-  private createManySideMarker(defs: SVGDefsElement, id: string): SVGMarkerElement {
+  private appendManySideMarker(defs: SVGDefsElement, id: string): void {
     const marker = svgCreate('marker', {
-      id: `${id}__many-side`,
+      id,
       class: RELATIONSHIP_MANY_SIDE_MARKER_CLASS,
       orient: 'auto-start-reverse',
       markerWidth: '8',
@@ -65,11 +78,15 @@ export class RelationshipRenderer extends BaseRenderer {
       refX: '8',
       refY: '5',
     });
-    svgAppend(marker, svgCreate('line', { y1: '5', x2: '8', y2: '1' }));
-    svgAppend(marker, svgCreate('line', { y1: '5', x2: '8', y2: '9' }));
 
+    svgAppend(marker, svgCreate('line', { y1: '5', x2: '8', y2: '1' }));
+    svgAppend(marker, svgCreate('line', { y1: '5', x2: '8', y2: '5' }));
+    svgAppend(marker, svgCreate('line', { y1: '5', x2: '8', y2: '9' }));
     svgAppend(defs, marker);
-    return marker;
+  }
+
+  private computeRelationshipClasses(relationship: Relationship): string[] {
+    return relationship.identifying ? [RELATIONSHIP_CLASS] : [RELATIONSHIP_CLASS, RELATIONSHIP_NON_IDENTIFYING_CLASS];
   }
 
 }

@@ -72,13 +72,17 @@
     stroke-width: 0.125rem;
     shape-rendering: geometricPrecision;
 
+    &.non-identifying {
+      stroke-dasharray: 8 4;
+    }
+
     &__one-side,
     &__many-side {
       stroke: mat.get-theme-color(t.$theme, on-surface-variant);
     }
 
-    &__one-side {
-      stroke-width: 1rem;
+    &__one-side > circle {
+      fill: mat.get-theme-color(t.$theme, surface);
     }
   }
 

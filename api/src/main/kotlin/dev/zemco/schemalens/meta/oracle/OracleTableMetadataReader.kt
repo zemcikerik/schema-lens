@@ -6,9 +6,6 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.stereotype.Component
 import javax.sql.DataSource
 
-// todo: more than 1000 tables?
-// todo: uppercase?
-
 @Component
 class OracleTableMetadataReader(
     private val columnMetadataReader: OracleTableColumnMetadataReader,
@@ -38,7 +35,9 @@ class OracleTableMetadataReader(
         val tables = internalReadDetailsForTables(dataSource, allRelatedTables + tableName)
 
         val sourceTable = tables.getValue(tableName)
-        val sourceTableUniqueColumns = processUniqueColumns(sourceTable.constraints)
+        val sourceTablePrimaryKeyColumnNames = extractPrimaryKeyColumnNames(sourceTable.constraints)
+        val sourceTableNullableColumnNames = extractNullableColumnNames(sourceTable.columns)
+        val sourceTableUniqueColumnNames = extractUniqueColumnNames(sourceTable.constraints)
 
         val relationshipsToParents = sourceTable.constraints.asSequence()
             .filterIsInstance<ForeignKeyConstraintMetadata>()
@@ -46,7 +45,9 @@ class OracleTableMetadataReader(
                 RelationshipMetadata(
                     parentName = it.referencedTableName,
                     childName = tableName,
-                    unique = isUnique(it, sourceTableUniqueColumns),
+                    identifying = isIdentifying(it, sourceTablePrimaryKeyColumnNames),
+                    mandatory = isRequired(it, sourceTableNullableColumnNames),
+                    unique = isUnique(it, sourceTableUniqueColumnNames),
                 )
             }
 
@@ -54,7 +55,9 @@ class OracleTableMetadataReader(
             .filter { it.type == RelationshipType.CHILD }
             .flatMap {
                 val table = tables.getValue(it.tableName)
-                val uniqueColumns = processUniqueColumns(table.constraints)
+                val primaryKeyColumnNames = extractPrimaryKeyColumnNames(table.constraints)
+                val nullableColumnNames = extractNullableColumnNames(table.columns)
+                val uniqueColumnNames = extractUniqueColumnNames(table.constraints)
 
                 table.constraints.asSequence()
                     .filterIsInstance<ForeignKeyConstraintMetadata>()
@@ -63,7 +66,9 @@ class OracleTableMetadataReader(
                         RelationshipMetadata(
                             parentName = tableName,
                             childName = it.tableName,
-                            unique = isUnique(foreignKey, uniqueColumns),
+                            identifying = isIdentifying(foreignKey, primaryKeyColumnNames),
+                            mandatory = isRequired(foreignKey, nullableColumnNames),
+                            unique = isUnique(foreignKey, uniqueColumnNames),
                         )
                     }
             }
@@ -74,17 +79,33 @@ class OracleTableMetadataReader(
         )
     }
 
-    private fun processUniqueColumns(constraints: List<ConstraintMetadata>): Set<Set<String>> =
+    private fun extractPrimaryKeyColumnNames(constraints: List<ConstraintMetadata>): Set<String> =
+        constraints.asSequence()
+            .filterIsInstance<PrimaryKeyConstraintMetadata>()
+            .firstOrNull()?.columnNames?.toSet() ?: emptySet()
+
+    private fun extractUniqueColumnNames(constraints: List<ConstraintMetadata>): Set<Set<String>> =
         constraints.asSequence()
             .filter { it is PrimaryKeyConstraintMetadata || it is UniqueConstraintMetadata }
             .map { it.columnNames.toSet() }
             .toSet()
 
-    private fun isUnique(foreignKey: ForeignKeyConstraintMetadata, uniqueColumns: Set<Set<String>>): Boolean =
+    private fun extractNullableColumnNames(columns: List<ColumnMetadata>): Set<String> =
+        columns.asSequence().filter { it.nullable }.map { it.name }.toSet()
+
+    private fun isIdentifying(foreignKey: ForeignKeyConstraintMetadata, primaryKeyColumnNames: Set<String>): Boolean =
+        primaryKeyColumnNames.containsAll(foreignKey.columnNames)
+
+    private fun isUnique(foreignKey: ForeignKeyConstraintMetadata, uniqueColumnNames: Set<Set<String>>): Boolean =
         foreignKey.references.asSequence()
             .map { reference -> reference.columnName }
             .toSet()
-            .let { uniqueColumns.contains(it) }
+            .let { uniqueColumnNames.contains(it) }
+
+    private fun isRequired(foreignKey: ForeignKeyConstraintMetadata, nullableColumnNames: Set<String>): Boolean =
+        foreignKey.references.asSequence()
+            .map { it.columnName }
+            .none { nullableColumnNames.contains(it) }
 
     private fun internalReadDetailsForTables(
         dataSource: DataSource,
