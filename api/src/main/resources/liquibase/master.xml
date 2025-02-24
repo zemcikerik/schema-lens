@@ -300,4 +300,34 @@
       <column name="admin">1</column>
     </insert>
   </changeSet>
+
+  <changeSet id="2025-02-24T1850-registered-user-username-unique-ignore-case--drop-existing"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <dropUniqueConstraint tableName="registered_user"
+                          constraintName="uc_registered_user_username" />
+  </changeSet>
+
+  <changeSet id="2025-02-24T1851-registered-user-username-unique-ignore-case--create-new"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createIndex tableName="registered_user"
+                 indexName="uc_registered_user_username_ignore_case"
+                 unique="true">
+      <column name="LOWER(username)" />
+    </createIndex>
+  </changeSet>
+
+  <changeSet id="2025-02-24T1852-registered-user-email-unique-ignore-case--drop-existing"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <dropUniqueConstraint tableName="registered_user"
+                          constraintName="uc_registered_user_email" />
+  </changeSet>
+
+  <changeSet id="2025-02-24T1853-registered-user-email-unique-ignore-case--create-new"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createIndex tableName="registered_user"
+                 indexName="uc_registered_user_email_ignore_case"
+                 unique="true">
+      <column name="LOWER(email)" />
+    </createIndex>
+  </changeSet>
 </databaseChangeLog>
