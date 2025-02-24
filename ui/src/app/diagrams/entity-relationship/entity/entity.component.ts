@@ -27,16 +27,17 @@ export class EntityComponent {
   hasNotNullAttribute = computed(() => EntityComponent.hasNotNullAttribute(this.entity()));
 
   static estimateDimensions(entity: Entity): { width: number, height: number } {
-    const { attributes } = entity;
+    const { attributes, uniqueGroups } = entity;
     const hasPrimaryKey = this.hasPrimaryKey(entity);
     const hasNotNullAttributes = this.hasNotNullAttribute(entity);
 
     const nameLength = this.findLongestString(attributes, 'name').length;
     const typeLength = this.findLongestString(attributes, 'type').length;
-    const notNullLength = hasNotNullAttributes ? 'NOT NULL'.length : 0;
-    const letters = nameLength + typeLength + notNullLength;
+    const notNullLength = hasNotNullAttributes ? 'NN'.length : 0;
+    const uniqueLength = this.calculateUniqueGroupsLetterCount(uniqueGroups);
+    const letters = nameLength + typeLength + notNullLength + uniqueLength;
 
-    const cellsPerRow = 2 + this.countTrueValues([hasPrimaryKey, hasNotNullAttributes]);
+    const cellsPerRow = 2 + this.countTrueValues([hasPrimaryKey, hasNotNullAttributes]) + uniqueGroups.length;
     const cellsWithoutPrimaryKey = cellsPerRow - (hasPrimaryKey ? 1 : 0);
 
     const leftCellPrimaryKeyPadding = hasPrimaryKey ? CELL_LEFT_PADDING_AFTER_PRIMARY_KEY : 0;
@@ -68,9 +69,19 @@ export class EntityComponent {
     };
   }
 
+  private static calculateUniqueGroupsLetterCount(uniqueGroups: string[][]): number {
+    if (uniqueGroups.length <= 1) {
+      return uniqueGroups.length;
+    }
+
+    return uniqueGroups
+      .map((_, index) => 'U'.length + String(index + 1).length)
+      .reduce((acc, length) => acc + length, 0);
+  }
+
   private static findLongestString(attributes: EntityAttribute[], property: 'name' | 'type'): string {
     return attributes.reduce((longest, attribute) =>
-        attribute[property].length > longest.length ? attribute[property] : longest, '');
+      attribute[property].length > longest.length ? attribute[property] : longest, '');
   }
 
   private static countTrueValues(values: boolean[]): number {
@@ -83,5 +94,9 @@ export class EntityComponent {
 
   private static hasNotNullAttribute(entity: Entity): boolean {
     return entity.attributes.some(attribute => !attribute.nullable);
+  }
+
+  formatUniqueGroupText(index: number, count: number): string {
+    return count === 1 ? 'U' : `U${index + 1}`;
   }
 }

@@ -1,6 +1,7 @@
 export interface Entity {
   name: string;
   attributes: EntityAttribute[];
+  uniqueGroups: string[][];
 }
 
 export interface EntityAttribute {

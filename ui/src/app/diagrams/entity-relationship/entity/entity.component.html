@@ -14,7 +14,10 @@
           <td>{{ attribute.name }}</td>
           <td>{{ attribute.type }}</td>
           @if (hasNotNullAttribute()) {
-            <td>{{ attribute.nullable ? '' : 'NOT NULL' }}</td>
+            <td>{{ attribute.nullable ? '' : 'NN' }}</td>
+          }
+          @for (uniqueGroup of entity().uniqueGroups; track uniqueGroup; let index = $index; let count = $count) {
+            <td>{{ uniqueGroup.includes(attribute.name) ? formatUniqueGroupText(index, count) : '' }}</td>
           }
         </tr>
       }

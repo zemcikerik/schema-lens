@@ -11,6 +11,8 @@ import { unwrapProjectConnectionError } from '../../../projects/catch-project-co
 import {
   ProjectConnectionErrorAlertComponent
 } from '../../../projects/components/project-connection-error-alert/project-connection-error-alert.component';
+import { Entity } from '../../../diagrams/entity-relationship/entity/entity.model';
+import { Relationship } from '../../../diagrams/entity-relationship/relationship/relationship.model';
 
 @Component({
   selector: 'app-table-relationships',
@@ -34,14 +36,15 @@ export class TableRelationshipsComponent {
   tableRelationships = computed<TableRelationships>(() =>
     this.tableRelationshipsResource.value() ?? { tables: [], relationships: [] });
 
-  entities = computed(() => this.tableRelationships().tables.map(table => {
+  entities = computed<Entity[]>(() => this.tableRelationships().tables.map(table => {
     const primaryKeyColumns = this.tableColumnService.getPrimaryKeyColumns(table);
     return {
       name: table.name,
       attributes: table.columns.map(
         column => ({ ...column, primaryKey: primaryKeyColumns.includes(column) })
       ),
+      uniqueGroups: this.tableColumnService.getUniqueColumnGroupNamesWithoutPrimaryKey(table),
     };
   }));
-  relationships = computed(() => this.tableRelationships().relationships);
+  relationships = computed<Relationship[]>(() => this.tableRelationships().relationships);
 }
