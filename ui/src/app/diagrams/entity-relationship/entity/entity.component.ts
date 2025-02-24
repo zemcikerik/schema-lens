@@ -1,5 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
-import { Entity, EntityColumn } from './entity.model';
+import { Entity, EntityAttribute } from './entity.model';
 import { MatIcon } from '@angular/material/icon';
 import { ResizerOffsets } from './resizer-offsets.model';
 
@@ -24,19 +24,19 @@ const CELL_LEFT_PADDING_NEXT = 16;
 export class EntityComponent {
   entity = input.required<Entity>();
   hasPrimaryKey = computed(() => EntityComponent.hasPrimaryKey(this.entity()))
-  hasNotNullColumn = computed(() => EntityComponent.hasNotNullColumn(this.entity()));
+  hasNotNullAttribute = computed(() => EntityComponent.hasNotNullAttribute(this.entity()));
 
   static estimateDimensions(entity: Entity): { width: number, height: number } {
-    const { columns } = entity;
+    const { attributes } = entity;
     const hasPrimaryKey = this.hasPrimaryKey(entity);
-    const hasNotNullColumns = this.hasNotNullColumn(entity);
+    const hasNotNullAttributes = this.hasNotNullAttribute(entity);
 
-    const nameLength = this.findLongestString(columns, 'name').length;
-    const typeLength = this.findLongestString(columns, 'type').length;
-    const notNullLength = hasNotNullColumns ? 'NOT NULL'.length : 0;
+    const nameLength = this.findLongestString(attributes, 'name').length;
+    const typeLength = this.findLongestString(attributes, 'type').length;
+    const notNullLength = hasNotNullAttributes ? 'NOT NULL'.length : 0;
     const letters = nameLength + typeLength + notNullLength;
 
-    const cellsPerRow = 2 + this.countTrueValues([hasPrimaryKey, hasNotNullColumns]);
+    const cellsPerRow = 2 + this.countTrueValues([hasPrimaryKey, hasNotNullAttributes]);
     const cellsWithoutPrimaryKey = cellsPerRow - (hasPrimaryKey ? 1 : 0);
 
     const leftCellPrimaryKeyPadding = hasPrimaryKey ? CELL_LEFT_PADDING_AFTER_PRIMARY_KEY : 0;
@@ -46,7 +46,7 @@ export class EntityComponent {
     const tableWidthSpacing = 2 * (TABLE_PADDING + TABLE_BORDER) + leftCellPaddings + rightCellPaddings;
     const width = Math.ceil(WIDTH_PER_ROW_LETTER * letters) + (hasPrimaryKey ? WIDTH_PRIMARY_KEY : 0) + tableWidthSpacing;
 
-    const tableHeight = (HEIGHT_ROW_SIZE + 2 * CELL_PADDING) * columns.length + 2 * (TABLE_PADDING + TABLE_BORDER);
+    const tableHeight = (HEIGHT_ROW_SIZE + 2 * CELL_PADDING) * attributes.length + 2 * (TABLE_PADDING + TABLE_BORDER);
     const height = HEIGHT_TITLE_SIZE + tableHeight;
 
     return { width, height };
@@ -68,11 +68,9 @@ export class EntityComponent {
     };
   }
 
-  private static findLongestString(columns: EntityColumn[], property: 'name' | 'type'): string {
-    return columns.reduce(
-      (longest, column) => column[property].length > longest.length ? column[property] : longest,
-      ''
-    );
+  private static findLongestString(attributes: EntityAttribute[], property: 'name' | 'type'): string {
+    return attributes.reduce((longest, attribute) =>
+        attribute[property].length > longest.length ? attribute[property] : longest, '');
   }
 
   private static countTrueValues(values: boolean[]): number {
@@ -80,10 +78,10 @@ export class EntityComponent {
   }
 
   private static hasPrimaryKey(entity: Entity): boolean {
-    return entity.columns.some(column => column.primaryKey);
+    return entity.attributes.some(attribute => attribute.primaryKey);
   }
 
-  private static hasNotNullColumn(entity: Entity): boolean {
-    return entity.columns.some(column => !column.nullable);
+  private static hasNotNullAttribute(entity: Entity): boolean {
+    return entity.attributes.some(attribute => !attribute.nullable);
   }
 }

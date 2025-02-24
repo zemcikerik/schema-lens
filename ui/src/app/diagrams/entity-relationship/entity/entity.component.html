@@ -1,20 +1,20 @@
 <div class="diagram-entity-relationship__entity text-code">
   <span class="diagram-entity-relationship__entity__name">{{ entity().name }}</span>
-  <div class="diagram-entity-relationship__entity__columns__wrapper">
-    <table class="diagram-entity-relationship__entity__columns">
-      @for (column of entity().columns; track column.name) {
+  <div class="diagram-entity-relationship__entity__attributes__wrapper">
+    <table class="diagram-entity-relationship__entity__attributes">
+      @for (attribute of entity().attributes; track attribute.name) {
         <tr>
           @if (hasPrimaryKey()) {
             <td class="primary-key">
-              @if (column.primaryKey) {
+              @if (attribute.primaryKey) {
                 <mat-icon>key</mat-icon>
               }
             </td>
           }
-          <td>{{ column.name }}</td>
-          <td>{{ column.type }}</td>
-          @if (hasNotNullColumn()) {
-            <td>{{ column.nullable ? '' : 'NOT NULL' }}</td>
+          <td>{{ attribute.name }}</td>
+          <td>{{ attribute.type }}</td>
+          @if (hasNotNullAttribute()) {
+            <td>{{ attribute.nullable ? '' : 'NOT NULL' }}</td>
           }
         </tr>
       }

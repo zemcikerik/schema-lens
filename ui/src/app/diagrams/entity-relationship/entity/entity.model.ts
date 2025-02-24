@@ -1,9 +1,9 @@
 export interface Entity {
   name: string;
-  columns: EntityColumn[];
+  attributes: EntityAttribute[];
 }
 
-export interface EntityColumn {
+export interface EntityAttribute {
   name: string;
   type: string;
   nullable: boolean;

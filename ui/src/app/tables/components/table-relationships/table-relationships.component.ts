@@ -38,7 +38,7 @@ export class TableRelationshipsComponent {
     const primaryKeyColumns = this.tableColumnService.getPrimaryKeyColumns(table);
     return {
       name: table.name,
-      columns: table.columns.map(
+      attributes: table.columns.map(
         column => ({ ...column, primaryKey: primaryKeyColumns.includes(column) })
       ),
     };
