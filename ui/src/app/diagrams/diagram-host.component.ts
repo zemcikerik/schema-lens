@@ -10,6 +10,7 @@ import {
   ViewContainerRef,
 } from '@angular/core';
 import Diagram from 'diagram-js';
+import BendpointsModule from 'diagram-js/lib/features/bendpoints';
 import ModelingModule from 'diagram-js/lib/features/modeling';
 import MoveModule from 'diagram-js/lib/features/move';
 import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
@@ -51,6 +52,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
           container: this.elementRef.nativeElement,
         },
         modules: [
+          BendpointsModule,
           ModelingModule,
           MoveModule,
           MoveCanvasModule,

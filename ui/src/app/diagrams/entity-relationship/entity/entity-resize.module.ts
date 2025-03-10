@@ -33,7 +33,6 @@ interface DraggingResizeCancelEvent extends Event {
 
 const RESIZER_CLASS_PREFIX = 'djs-resizer-';
 const RESIZER_VISUAL_CLASS = 'djs-resizer-visual';
-const ENTITY_RESIZER_CLASS = 'diagram-entity-relationship__entity__resizer';
 const ENTITY_RESIZER_RADIUS = 4;
 
 const RESIZER_OFFSETS_MAPPINGS: Record<Direction, keyof ResizerOffsets> = {
@@ -115,9 +114,7 @@ export class EntityResizeHandler {
   }
 
   private updateEntityResizer(entity: EntityShape, resizer: SVGElement, offset: ResizerOffset): void {
-    resizer.classList.add(ENTITY_RESIZER_CLASS);
     translate(resizer, entity.x + offset.x, entity.y + offset.y);
-
     const originalVisual = resizer.getElementsByClassName(RESIZER_VISUAL_CLASS)[0];
 
     if (!originalVisual) {

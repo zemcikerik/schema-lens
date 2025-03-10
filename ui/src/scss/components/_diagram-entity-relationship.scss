@@ -5,6 +5,21 @@
   position: relative;
   height: 100%;
 
+  .djs-bendpoint,
+  .djs-segment-dragger {
+    .djs-visual {
+      fill: mat.get-theme-color(t.$theme, tertiary);
+      stroke: mat.get-theme-color(t.$theme, surface);
+      stroke-width: 1px;
+    }
+  }
+
+  .djs-resizer-visual {
+    fill: mat.get-theme-color(t.$theme, tertiary);
+    stroke: mat.get-theme-color(t.$theme, surface);
+    stroke-width: 1px;
+  }
+
   &__entity {
     display: flex;
     flex-direction: column;
@@ -13,10 +28,6 @@
 
     .djs-dragging & {
       display: none;
-    }
-
-    &__resizer .djs-resizer-visual {
-      fill: mat.get-theme-color(t.$theme, outline);
     }
 
     &__name {

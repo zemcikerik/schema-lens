@@ -2,27 +2,65 @@
   outline: none;
 }
 
+.djs-bendpoint,
+.djs-segment-dragger {
+  display: none;
+}
+
+.djs-bendpoint:hover,
+.djs-segment-dragger:hover {
+  display: block;
+}
+
+.djs-segment-dragger {
+  .djs-visual {
+    display: none;
+  }
+
+  &:hover .djs-visual {
+    display: block;
+  }
+}
+
+.djs-bendpoints:is(.hover, .selected) {
+  .djs-bendpoint,
+  .djs-segment-dragger {
+    display: block;
+  }
+}
+
+.djs-drag-active .djs-bendpoints {
+  display: none;
+}
+
+.djs-bendpoints:not(.hover) .floating {
+  display: none;
+}
+
+.djs-bendpoint.floating :is(.djs-hit, .djs-visual) {
+  pointer-events: none;
+}
+
+:is(.djs-bendpoint, .djs-segment-dragger) .djs-hit,
 .djs-resizer-hit {
   fill: none;
   pointer-events: all;
 }
 
-.djs-resizer-n,
-.djs-resizer-s {
+.djs-segment-dragger.horizontal .djs-hit,
+:is(.djs-resizer-n, .djs-resizer-s) .djs-resizer-hit {
   cursor: ns-resize;
 }
 
-.djs-resizer-e,
-.djs-resizer-w {
+.djs-segment-dragger.vertical .djs-hit,
+:is(.djs-resizer-e, .djs-resizer-w) .djs-resizer-hit {
   cursor: ew-resize;
 }
 
-.djs-resizer-ne,
-.djs-resizer-sw {
+:is(.djs-resizer-ne, .djs-resizer-sw) .djs-resizer-hit {
   cursor: nesw-resize;
 }
 
-.djs-resizer-nw,
-.djs-resizer-se {
+:is(.djs-resizer-se, .djs-resizer-nw) .djs-resizer-hit {
   cursor: nwse-resize;
 }
