@@ -45,6 +45,12 @@ class OracleTableMetadataReader(
                 RelationshipMetadata(
                     parentName = it.referencedTableName,
                     childName = tableName,
+                    references = it.references.map { ref ->
+                        RelationshipMetadata.ColumnReference(
+                            parentColumnName = ref.referencedColumnName,
+                            childColumnName = ref.columnName,
+                        )
+                    },
                     identifying = isIdentifying(it, sourceTablePrimaryKeyColumnNames),
                     mandatory = isRequired(it, sourceTableNullableColumnNames),
                     unique = isUnique(it, sourceTableUniqueColumnNames),
@@ -66,6 +72,12 @@ class OracleTableMetadataReader(
                         RelationshipMetadata(
                             parentName = tableName,
                             childName = it.tableName,
+                            references = foreignKey.references.map { ref ->
+                                RelationshipMetadata.ColumnReference(
+                                    parentColumnName = ref.referencedColumnName,
+                                    childColumnName = ref.columnName,
+                                )
+                            },
                             identifying = isIdentifying(foreignKey, primaryKeyColumnNames),
                             mandatory = isRequired(foreignKey, nullableColumnNames),
                             unique = isUnique(foreignKey, uniqueColumnNames),

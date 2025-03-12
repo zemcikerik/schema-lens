@@ -55,6 +55,12 @@
         height: 1.625rem;
         padding: 1px;
 
+        mat-icon {
+          width: 1.25rem;
+          height: 1.25rem;
+          font-size: 1.25rem;
+        }
+
         & + td {
           padding-left: 1rem;
         }
@@ -63,15 +69,18 @@
           color: mat.get-theme-color(t.$theme, primary);
           padding: 0 1px;
 
-          mat-icon {
-            width: 1.25rem;
-            height: 1.25rem;
-            font-size: 1.25rem;
+          & + td {
+            padding-left: 0.5rem;
           }
         }
 
-        &.primary-key + td {
-          padding-left: 0.5rem;
+        &.reference {
+          color: mat.get-theme-color(t.$theme, secondary);
+          padding: 0 1px 0 0.5rem;
+
+          & + td {
+            padding-left: 0.25rem;
+          }
         }
       }
     }
@@ -95,6 +104,10 @@
     &__one-side > circle {
       fill: mat.get-theme-color(t.$theme, surface);
     }
+  }
+
+  &__tooltip {
+    pointer-events: none;
   }
 
   &__zoom {

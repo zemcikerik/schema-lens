@@ -12,7 +12,10 @@ import {
   ProjectConnectionErrorAlertComponent
 } from '../../../projects/components/project-connection-error-alert/project-connection-error-alert.component';
 import { Entity } from '../../../diagrams/entity-relationship/entity/entity.model';
-import { Relationship } from '../../../diagrams/entity-relationship/relationship/relationship.model';
+import {
+  Relationship,
+  RelationshipReference,
+} from '../../../diagrams/entity-relationship/relationship/relationship.model';
 
 @Component({
   selector: 'app-table-relationships',
@@ -46,5 +49,13 @@ export class TableRelationshipsComponent {
       uniqueGroups: this.tableColumnService.getUniqueColumnGroupNamesWithoutPrimaryKey(table),
     };
   }));
-  relationships = computed<Relationship[]>(() => this.tableRelationships().relationships);
+
+  relationships = computed<Relationship[]>(() => this.tableRelationships().relationships.map(relationship => {
+    const references: RelationshipReference[] = relationship.references.map(ref => ({
+      parentAttributeName: ref.parentColumnName,
+      childAttributeName: ref.childColumnName,
+    }));
+
+    return { ...relationship, references };
+  }));
 }

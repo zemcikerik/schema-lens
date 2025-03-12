@@ -214,7 +214,11 @@
   },
   "DIAGRAM": {
     "ZOOM_IN_LABEL": "Priblížiť",
-    "ZOOM_OUT_LABEL": "Oddialiť"
+    "ZOOM_OUT_LABEL": "Oddialiť",
+    "ENTITY_RELATIONSHIP": {
+      "PRIMARY_KEY": "Primárny kľúč",
+      "FOREIGN_KEY": "Cudzí kľúč #{position}"
+    }
   },
   "ADMIN": {
     "PANEL_LABEL": "Administračný panel",

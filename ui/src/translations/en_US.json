@@ -214,7 +214,11 @@
   },
   "DIAGRAM": {
     "ZOOM_IN_LABEL": "Zoom in",
-    "ZOOM_OUT_LABEL": "Zoom out"
+    "ZOOM_OUT_LABEL": "Zoom out",
+    "ENTITY_RELATIONSHIP": {
+      "PRIMARY_KEY": "Primary Key",
+      "FOREIGN_KEY": "Foreign Key #{position}"
+    }
   },
   "ADMIN": {
     "PANEL_LABEL": "Admin Panel",

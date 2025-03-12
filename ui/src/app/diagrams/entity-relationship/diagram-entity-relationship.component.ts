@@ -36,14 +36,16 @@ export class DiagramEntityRelationshipComponent implements AfterViewInit {
       diagram => diagram.get('angularComponentShapeRenderer'),
     );
 
-    const entitiesWithDimensions = this.entities().map(entity => {
-      const { width, height } = EntityComponent.estimateDimensions(entity);
-      return { id: `entity_${entity.name}` as const, width, height, entity };
-    });
-
-    const relationshipsWithIds = this.relationships().map(
+    const relationships = this.relationships();
+    const relationshipsWithIds = relationships.map(
       (relationship, index) => ({ id: `relationship_${index}`, ...relationship }),
     );
+
+    const entitiesWithContext = this.entities().map(entity => {
+      const relationshipsToDirectParents = relationships.filter(r => r.childName === entity.name);
+      const { width, height } = EntityComponent.estimateDimensions(entity, relationshipsToDirectParents);
+      return { id: `entity_${entity.name}` as const, width, height, entity, relationshipsToDirectParents };
+    });
 
     const edges: Edge[] = relationshipsWithIds.map(({ parentName, childName }, index) => {
       return { id: `relationship_${index}`, fromId: `entity_${parentName}`, toId: `entity_${childName}` };
@@ -52,16 +54,17 @@ export class DiagramEntityRelationshipComponent implements AfterViewInit {
     const {
       nodes: laidOutEntities,
       edges: laidOutRelationships
-    } = this.diagramLayoutService.layoutDigraph(entitiesWithDimensions, edges);
+    } = this.diagramLayoutService.layoutDigraph(entitiesWithContext, edges);
 
     const entityShapeMappings: Record<string, EntityShape> = {};
 
-    entitiesWithDimensions.forEach(({ id, entity, width, height } ) => {
+    entitiesWithContext.forEach(({ id, entity, width, height, relationshipsToDirectParents } ) => {
       const { x, y } = laidOutEntities[id];
       const template: EntityShapeTemplate = { id, x, y, width, height, minDimensions: { width, height } };
 
       const shape = diagramHost.addShape(template) as EntityShape;
-      diagramHost.runInDiagramContext(() => angularRenderer.setShapeInput(shape, 'entity', entity));
+      angularRenderer.setShapeInput(shape, 'entity', entity);
+      angularRenderer.setShapeInput(shape, 'relationshipsToDirectParents', relationshipsToDirectParents);
       entityShapeMappings[id] = shape;
     });
 
