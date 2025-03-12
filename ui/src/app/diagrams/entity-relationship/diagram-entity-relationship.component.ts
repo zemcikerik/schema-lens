@@ -52,15 +52,18 @@ export class DiagramEntityRelationshipComponent implements AfterViewInit {
       (relationship, index) => ({ id: `relationship_${index}`, ...relationship }),
     );
 
-    const entitiesWithContext = this.entities().map(entity => {
+    const entities = this.entities();
+    const entitiesWithContext = entities.map(entity => {
       const relationshipsToDirectParents = relationshipsWithIds.filter(r => r.childName === entity.name);
       const { width, height } = EntityComponent.estimateDimensions(entity, relationshipsToDirectParents);
       return { id: `entity_${entity.name}` as const, width, height, entity, relationshipsToDirectParents };
     });
 
-    const edges: Edge[] = relationshipsWithIds.map(({ parentName, childName }, index) => {
-      return { id: `relationship_${index}`, fromId: `entity_${parentName}`, toId: `entity_${childName}` };
-    });
+    const fullRelationships = relationshipsWithIds.filter(({ parentName, childName }) =>
+      entities.some(entity => entity.name === parentName) && entities.some(entity => childName === entity.name));
+
+    const edges: Edge[] = fullRelationships.map(({ id, parentName, childName }) =>
+      ({ id, fromId: `entity_${parentName}`, toId: `entity_${childName}` }));
 
     const {
       nodes: laidOutEntities,
@@ -80,7 +83,7 @@ export class DiagramEntityRelationshipComponent implements AfterViewInit {
     const edgeMappings: Record<string, Edge> = {};
     edges.forEach(edge => edgeMappings[edge.id] = edge);
 
-    relationshipsWithIds.forEach(relationship => {
+    fullRelationships.forEach(relationship => {
       const { id, fromId, toId } = edgeMappings[relationship.id];
 
       diagramHost.addConnection({

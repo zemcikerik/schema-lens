@@ -1,7 +1,6 @@
 package dev.zemco.schemalens.meta.oracle
 
 import dev.zemco.schemalens.meta.*
-import dev.zemco.schemalens.meta.oracle.OracleTableRelationship.RelationshipType
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.stereotype.Component
 import javax.sql.DataSource
@@ -85,16 +84,9 @@ class OracleTableConstraintMetadataReader {
             }
         }
 
-    fun readDistinctDirectRelationshipsForTable(dataSource: DataSource, tableName: String): List<OracleTableRelationship> {
+    fun readDirectlyRelatedTableNames(dataSource: DataSource, tableName: String): List<String> {
         val params = MapSqlParameterSource("table_name", tableName)
-
-        return dataSource.toNamedJdbcTemplate().query(GET_RELATIONSHIPS_QUERY, params) { rs, _ ->
-            OracleTableRelationship(
-                tableName = rs.getString("table_name"),
-                type = if (rs.getBoolean("dependency_direction"))
-                    RelationshipType.PARENT else RelationshipType.CHILD
-            )
-        }
+        return dataSource.toNamedJdbcTemplate().queryForList(GET_RELATIONSHIPS_QUERY, params, String::class.java)
     }
 
     private companion object {
@@ -111,8 +103,7 @@ class OracleTableConstraintMetadataReader {
 
         private val GET_RELATIONSHIPS_QUERY = """
             SELECT DISTINCT
-                DECODE(con.table_name, :table_name, ref_con.table_name, con.table_name) as table_name,
-                DECODE(con.table_name, :table_name, 1, 0) as dependency_direction
+                DECODE(con.table_name, :table_name, ref_con.table_name, con.table_name) as table_name
             FROM user_constraints con
                 INNER JOIN user_constraints ref_con ON (con.r_constraint_name = ref_con.constraint_name)
             WHERE con.constraint_type = 'R' AND :table_name IN (con.table_name, ref_con.table_name)

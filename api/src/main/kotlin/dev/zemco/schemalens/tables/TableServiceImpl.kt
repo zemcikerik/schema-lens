@@ -5,6 +5,7 @@ import dev.zemco.schemalens.meta.TableRelationshipsMetadata
 import dev.zemco.schemalens.meta.oracle.format.OracleSqlFormatter
 import dev.zemco.schemalens.meta.oracle.OracleTableDdlGenerator
 import dev.zemco.schemalens.meta.oracle.OracleTableMetadataReader
+import dev.zemco.schemalens.meta.oracle.OracleTableRelationshipResolver
 import dev.zemco.schemalens.projects.Project
 import dev.zemco.schemalens.projects.ProjectConnectionService
 import org.springframework.stereotype.Service
@@ -13,6 +14,7 @@ import org.springframework.stereotype.Service
 class TableServiceImpl(
     private val connectionService: ProjectConnectionService,
     private val oracleTableMetadataReader: OracleTableMetadataReader,
+    private val oracleTableRelationshipResolver: OracleTableRelationshipResolver,
     private val oracleTableDdlGenerator: OracleTableDdlGenerator,
     private val oracleSqlFormatter: OracleSqlFormatter,
 ) : TableService {
@@ -29,7 +31,7 @@ class TableServiceImpl(
 
     override fun getRelatedTableDetails(project: Project, tableName: String): TableRelationshipsMetadata? =
         connectionService.withDataSource(project.connectionInfo) {
-            oracleTableMetadataReader.readDetailsOfDirectlyRelatedTables(it, tableName)
+            oracleTableRelationshipResolver.readDetailsOfDirectlyRelatedTables(it, tableName)
         }
 
     override fun generateDdlForTable(project: Project, tableName: String): String? =
