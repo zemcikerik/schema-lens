@@ -2,9 +2,10 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
 import { Entity, EntityAttribute } from './entity.model';
 import { MatIcon } from '@angular/material/icon';
 import { ResizerOffsets } from './resizer-offsets.model';
-import { Relationship } from '../relationship/relationship.model';
+import { RelationshipWithId } from '../relationship/relationship.model';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
+import { IconEmphasisDirective } from '../../../shared/directives/icon-emphasis.directive';
 
 const WIDTH_KEY = 20;
 const WIDTH_PER_ROW_LETTER = 9.6;
@@ -21,14 +22,16 @@ const CELL_LEFT_PADDING_REFERENCE = 4;
 const CELL_LEFT_PADDING_REFERENCE_START = 8;
 
 @Component({
-  selector: 'app-embedded-entity',
+  selector: 'app-entity',
   templateUrl: './entity.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatIcon, MatTooltip, TranslatePipe],
+  imports: [MatIcon, MatTooltip, TranslatePipe, IconEmphasisDirective],
 })
 export class EntityComponent {
   entity = input.required<Entity>();
-  relationshipsToDirectParents = input<Relationship[]>([]);
+  relationshipsToDirectParents = input<RelationshipWithId[]>([]);
+  highlightRelationshipIds = input<string[]>([]);
+
   hasPrimaryKey = computed(() => EntityComponent.hasPrimaryKey(this.entity()))
   hasNotNullAttribute = computed(() => EntityComponent.hasNotNullAttribute(this.entity()));
 
@@ -36,11 +39,11 @@ export class EntityComponent {
     return count === 1 ? 'U' : `U${index + 1}`;
   }
 
-  isReferencedInRelationship(relationship: Relationship, attributeName: string): boolean {
+  isReferencedInRelationship(relationship: RelationshipWithId, attributeName: string): boolean {
     return relationship.references.some(ref => ref.childAttributeName === attributeName);
   }
 
-  static estimateDimensions(entity: Entity, relationshipsToDirectParents: Relationship[]): { width: number, height: number } {
+  static estimateDimensions(entity: Entity, relationshipsToDirectParents: RelationshipWithId[]): { width: number, height: number } {
     const { attributes, uniqueGroups } = entity;
     const hasPrimaryKey = this.hasPrimaryKey(entity);
     const hasNotNullAttributes = this.hasNotNullAttribute(entity);
@@ -96,7 +99,7 @@ export class EntityComponent {
       .reduce((acc, length) => acc + length, 0);
   }
 
-  private static calculateReferencePadding(relationshipsToDirectParents: Relationship[]): number {
+  private static calculateReferencePadding(relationshipsToDirectParents: RelationshipWithId[]): number {
     if (relationshipsToDirectParents.length < 1) {
       return 0;
     }

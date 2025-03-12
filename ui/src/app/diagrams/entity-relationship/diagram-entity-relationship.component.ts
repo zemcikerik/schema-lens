@@ -4,11 +4,15 @@ import { AngularComponentShapeRenderer, AngularComponentShapeRendererFactory } f
 import { EntityComponent } from './entity/entity.component';
 import { Entity } from './entity/entity.model';
 import { EntityShape, EntityShapeTemplate } from './entity/entity.shape';
-import { Relationship } from './relationship/relationship.model';
+import { Relationship, RelationshipWithId } from './relationship/relationship.model';
 import { DiagramZoomControlComponent } from '../diagram-zoom-control.component';
 import { Edge, DiagramLayoutService } from '../diagram-layout.service';
 import { EntityModule } from './entity/entity.module';
 import { RelationshipModule } from './relationship/relationship.module';
+import { AngularSelectionSupportModuleFactory } from '../angular/angular-selection-support.module';
+import { Connection, ElementLike } from 'diagram-js/lib/model/Types';
+import { isConnection } from 'diagram-js/lib/util/ModelUtil';
+import { isRelationshipConnection, RelationshipConnection } from './relationship/relationship.connection';
 
 @Component({
   selector: 'app-diagram-entity-relationship',
@@ -19,30 +23,37 @@ import { RelationshipModule } from './relationship/relationship.module';
 export class DiagramEntityRelationshipComponent implements AfterViewInit {
   readonly MODULES = [
     AngularComponentShapeRendererFactory.create({ entity: EntityComponent }),
+    AngularSelectionSupportModuleFactory.create({
+      selectionChange: (_, newSelection) => this.updateRelationshipHighlightFromSelection(newSelection),
+    }),
     EntityModule,
     RelationshipModule,
   ];
 
   entities = input.required<Entity[]>();
   relationships = input.required<Relationship[]>();
-
   diagramHost = viewChild.required(DiagramHostComponent);
+
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  private angularRenderer: AngularComponentShapeRenderer = null!; // initialized after view init
   private diagramLayoutService = inject(DiagramLayoutService);
+
+  entityShapeMappings: Record<string, EntityShape> = {};
+  entityShapeIdsWithRelationshipHighlight = new Set<string>();
 
   ngAfterViewInit(): void {
     const diagramHost = this.diagramHost();
 
-    const angularRenderer = diagramHost.runInDiagramContext<AngularComponentShapeRenderer>(
+    this.angularRenderer = diagramHost.runInDiagramContext<AngularComponentShapeRenderer>(
       diagram => diagram.get('angularComponentShapeRenderer'),
     );
 
-    const relationships = this.relationships();
-    const relationshipsWithIds = relationships.map(
+    const relationshipsWithIds: RelationshipWithId[] = this.relationships().map(
       (relationship, index) => ({ id: `relationship_${index}`, ...relationship }),
     );
 
     const entitiesWithContext = this.entities().map(entity => {
-      const relationshipsToDirectParents = relationships.filter(r => r.childName === entity.name);
+      const relationshipsToDirectParents = relationshipsWithIds.filter(r => r.childName === entity.name);
       const { width, height } = EntityComponent.estimateDimensions(entity, relationshipsToDirectParents);
       return { id: `entity_${entity.name}` as const, width, height, entity, relationshipsToDirectParents };
     });
@@ -56,16 +67,14 @@ export class DiagramEntityRelationshipComponent implements AfterViewInit {
       edges: laidOutRelationships
     } = this.diagramLayoutService.layoutDigraph(entitiesWithContext, edges);
 
-    const entityShapeMappings: Record<string, EntityShape> = {};
-
     entitiesWithContext.forEach(({ id, entity, width, height, relationshipsToDirectParents } ) => {
       const { x, y } = laidOutEntities[id];
       const template: EntityShapeTemplate = { id, x, y, width, height, minDimensions: { width, height } };
 
       const shape = diagramHost.addShape(template) as EntityShape;
-      angularRenderer.setShapeInput(shape, 'entity', entity);
-      angularRenderer.setShapeInput(shape, 'relationshipsToDirectParents', relationshipsToDirectParents);
-      entityShapeMappings[id] = shape;
+      this.angularRenderer.setShapeInput(shape, 'entity', entity);
+      this.angularRenderer.setShapeInput(shape, 'relationshipsToDirectParents', relationshipsToDirectParents);
+      this.entityShapeMappings[id] = shape;
     });
 
     const edgeMappings: Record<string, Edge> = {};
@@ -77,10 +86,38 @@ export class DiagramEntityRelationshipComponent implements AfterViewInit {
       diagramHost.addConnection({
         id,
         waypoints: laidOutRelationships[id],
-        source: entityShapeMappings[fromId],
-        target: entityShapeMappings[toId],
+        source: this.entityShapeMappings[fromId],
+        target: this.entityShapeMappings[toId],
         relationship: relationship,
       });
     });
+  }
+
+  private updateRelationshipHighlightFromSelection(selection: ElementLike[]): void {
+    const highlightUpdates: Record<string, string[]> = {};
+
+    this.entityShapeIdsWithRelationshipHighlight.forEach(id => highlightUpdates[id] = []);
+    this.entityShapeIdsWithRelationshipHighlight = new Set();
+
+    this.resolveSelectedRelationshipConnections(selection).forEach(connection => {
+      const entityId = `entity_${connection.relationship.childName}`;
+
+      if (!(entityId in highlightUpdates)) {
+        highlightUpdates[entityId] = [];
+      }
+
+      highlightUpdates[entityId].push(connection.id);
+      this.entityShapeIdsWithRelationshipHighlight.add(entityId);
+    });
+
+    Object.entries(highlightUpdates).forEach(([entityId, highlightRelationshipIds]) => {
+      const entityShape = this.entityShapeMappings[entityId];
+      this.angularRenderer.setShapeInput(entityShape, 'highlightRelationshipIds', highlightRelationshipIds);
+    });
+  }
+
+  private resolveSelectedRelationshipConnections(selection: ElementLike[]): RelationshipConnection[] {
+    return selection.some(element => !isConnection(element) || !isRelationshipConnection(element as Connection))
+      ? [] : selection as RelationshipConnection[];
   }
 }

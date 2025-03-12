@@ -7,6 +7,10 @@ export interface Relationship {
   unique: boolean;
 }
 
+export interface RelationshipWithId extends Relationship {
+  id: `relationship_${string}`;
+}
+
 export interface RelationshipReference {
   parentAttributeName: string;
   childAttributeName: string;
