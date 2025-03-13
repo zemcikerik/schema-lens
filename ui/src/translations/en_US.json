@@ -218,6 +218,22 @@
     "ENTITY_RELATIONSHIP": {
       "PRIMARY_KEY": "Primary Key",
       "FOREIGN_KEY": "Foreign Key #{position}"
+    },
+    "EXPORT": {
+      "LABEL": "Export",
+      "FILE_NAME": "diagram.{extension}",
+      "FORMAT": {
+        "LABEL": "Format",
+        "PNG_LABEL": "PNG",
+        "JPEG_LABEL": "JPEG"
+      },
+      "TRANSPARENT_LABEL": "Transparent background",
+      "QUALITY_LABEL": "Quality",
+      "DIALOG": {
+        "TITLE": "Export as Image",
+        "DESCRIPTION": "Export the current state of the diagram as an image. PNG and JPEG formats are supported.",
+        "SUCCESS_LABEL": "Diagram was exported successfully."
+      }
     }
   },
   "ADMIN": {

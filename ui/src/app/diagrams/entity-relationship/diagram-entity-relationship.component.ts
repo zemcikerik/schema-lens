@@ -13,12 +13,13 @@ import { AngularSelectionSupportModuleFactory } from '../angular/angular-selecti
 import { Connection, ElementLike } from 'diagram-js/lib/model/Types';
 import { isConnection } from 'diagram-js/lib/util/ModelUtil';
 import { isRelationshipConnection, RelationshipConnection } from './relationship/relationship.connection';
+import { DiagramExportControlComponent } from '../export/diagram-export-control.component';
 
 @Component({
   selector: 'app-diagram-entity-relationship',
   templateUrl: 'diagram-entity-relationship.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DiagramHostComponent, DiagramZoomControlComponent],
+  imports: [DiagramHostComponent, DiagramZoomControlComponent, DiagramExportControlComponent],
 })
 export class DiagramEntityRelationshipComponent implements AfterViewInit {
   readonly MODULES = [

@@ -1,0 +1,48 @@
+<div class="diagram-export__dialog">
+  <h2 mat-dialog-title>{{ ('DIAGRAM.EXPORT.DIALOG.TITLE' | translate)() }}</h2>
+
+  <mat-dialog-content>
+    @if (state() === 'loading') {
+      <app-progress-spinner [center]="true" />
+    } @else if (state() === 'success') {
+      {{ ('DIAGRAM.EXPORT.DIALOG.SUCCESS_LABEL' | translate)() }}
+    } @else {
+      @if (state() === 'error') {
+        <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+      }
+
+      <p>{{ ('DIAGRAM.EXPORT.DIALOG.DESCRIPTION' | translate)() }}</p>
+
+      <form [formGroup]="optionsForm">
+        <mat-form-field>
+          <mat-label>{{ ('DIAGRAM.EXPORT.FORMAT.LABEL' | translate)() }}</mat-label>
+          <mat-select formControlName="format">
+            @for (format of FORMATS; track format.mimeType) {
+              <mat-option [value]="format">{{ (('DIAGRAM.EXPORT.FORMAT.' + format.extension.toUpperCase() + '_LABEL') | translate)() }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+
+        @if (optionsForm.controls.format.value?.mimeType === 'image/png') {
+          <mat-checkbox formControlName="transparent">{{ ('DIAGRAM.EXPORT.TRANSPARENT_LABEL' | translate)() }}</mat-checkbox>
+        } @else {
+          <div class="diagram-export__dialog__quality">
+            <mat-label>{{ ('DIAGRAM.EXPORT.QUALITY_LABEL' | translate)() }}</mat-label>
+            <mat-slider [min]="0.5" [max]="1" [step]="0.01" discrete [displayWith]="formatPercentageLabel">
+              <input formControlName="quality" matSliderThumb>
+            </mat-slider>
+          </div>
+        }
+      </form>
+    }
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    @if (state() !== 'success') {
+      <button mat-button [mat-dialog-close]="false" [disabled]="state() === 'loading'">{{ ('GENERIC.CANCEL_LABEL' | translate)() }}</button>
+      <button mat-flat-button (click)="export()" [disabled]="state() === 'loading'">{{ ('DIAGRAM.EXPORT.LABEL' | translate)() }}</button>
+    } @else {
+      <button mat-button [mat-dialog-close]="true">{{ ('GENERIC.CLOSE_LABEL' | translate)() }}</button>
+    }
+  </mat-dialog-actions>
+</div>

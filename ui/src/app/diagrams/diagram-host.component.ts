@@ -96,6 +96,10 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  getDiagramRoot(): HTMLElement {
+    return this.ngZone.runOutsideAngular(() => this.canvas.getContainer());
+  }
+
   getZoomLevel(): number {
     return this.ngZone.runOutsideAngular(() => this.canvas.zoom());
   }

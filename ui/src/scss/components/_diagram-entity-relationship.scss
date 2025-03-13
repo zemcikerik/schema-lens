@@ -110,13 +110,23 @@
     }
   }
 
-  &__tooltip {
-    pointer-events: none;
+  &__export {
+    background-color: mat.get-theme-color(t.$theme, surface);
+
+    &.transparent {
+      background-color: transparent;
+    }
   }
 
-  &__zoom {
+  &__controls {
+    display: flex;
+    gap: 0.5rem;
     position: absolute;
     right: 0;
     bottom: 0;
+  }
+
+  &__tooltip {
+    pointer-events: none;
   }
 }

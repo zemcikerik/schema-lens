@@ -19,6 +19,7 @@
 @use './scss/components/content-card';
 @use './scss/components/diagram';
 @use './scss/components/diagram-entity-relationship';
+@use './scss/components/diagram-export';
 @use './scss/components/diagram-zoom-control';
 @use './scss/components/help-faq';
 @use './scss/components/nav';
@@ -45,6 +46,7 @@ html {
   @include mat.app-background();
 
   @include mat.button-theme(t.$theme);
+  @include mat.checkbox-theme(t.$theme);
   @include mat.dialog-theme(t.$theme);
   @include mat.expansion-theme(t.$theme);
   @include mat.form-field-theme(t.$theme);
@@ -56,7 +58,7 @@ html {
   @include mat.progress-spinner-theme(t.$theme);
   @include mat.ripple-theme(t.$theme);
   @include mat.select-theme(t.$theme);
-  @include mat.sort-theme(t.$theme);
+  @include mat.slider-theme(t.$theme);
   @include mat.table-theme(t.$theme);
   @include mat.tabs-theme(t.$theme);
   @include mat.toolbar-theme(t.$theme);

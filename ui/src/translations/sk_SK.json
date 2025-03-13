@@ -218,6 +218,22 @@
     "ENTITY_RELATIONSHIP": {
       "PRIMARY_KEY": "Primárny kľúč",
       "FOREIGN_KEY": "Cudzí kľúč #{position}"
+    },
+    "EXPORT": {
+      "LABEL": "Exportovať",
+      "FILE_NAME": "diagram.{extension}",
+      "FORMAT": {
+        "LABEL": "Formát",
+        "PNG_LABEL": "PNG",
+        "JPEG_LABEL": "JPEG"
+      },
+      "TRANSPARENT_LABEL": "Priehľadné pozadie",
+      "QUALITY_LABEL": "Kvalita",
+      "DIALOG": {
+        "TITLE": "Exportovať ako obrázok",
+        "DESCRIPTION": "Exportujte aktuálny stav diagramu ako obrázok. Podporované sú formáty PNG a JPEG.",
+        "SUCCESS_LABEL": "Diagram bol úspešne exportovaný."
+      }
     }
   },
   "ADMIN": {

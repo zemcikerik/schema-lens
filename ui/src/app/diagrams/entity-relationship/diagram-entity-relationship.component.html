@@ -1,6 +1,7 @@
 <div class="diagram-entity-relationship">
   <app-diagram-host #diagramHost [modules]="MODULES" />
-  <div class="diagram-entity-relationship__zoom">
+  <div class="diagram-entity-relationship__controls">
+    <app-diagram-export-control [diagramHost]="diagramHost" [additionalClasses]="['diagram-entity-relationship__export']" />
     <app-diagram-zoom-control [diagramHost]="diagramHost" />
   </div>
 </div>
