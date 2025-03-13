@@ -215,6 +215,8 @@
   "DIAGRAM": {
     "ZOOM_IN_LABEL": "Priblížiť",
     "ZOOM_OUT_LABEL": "Oddialiť",
+    "FULLSCREEN_ENTER_LABEL": "Celá obrazovka",
+    "FULLSCREEN_EXIT_LABEL": "Ukončiť celú obrazovku",
     "ENTITY_RELATIONSHIP": {
       "PRIMARY_KEY": "Primárny kľúč",
       "FOREIGN_KEY": "Cudzí kľúč #{position}"

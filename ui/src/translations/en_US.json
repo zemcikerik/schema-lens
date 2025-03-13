@@ -215,6 +215,8 @@
   "DIAGRAM": {
     "ZOOM_IN_LABEL": "Zoom in",
     "ZOOM_OUT_LABEL": "Zoom out",
+    "FULLSCREEN_ENTER_LABEL": "Fullscreen",
+    "FULLSCREEN_EXIT_LABEL": "Exit Fullscreen",
     "ENTITY_RELATIONSHIP": {
       "PRIMARY_KEY": "Primary Key",
       "FOREIGN_KEY": "Foreign Key #{position}"

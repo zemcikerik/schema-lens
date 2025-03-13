@@ -14,12 +14,20 @@ import { Connection, ElementLike } from 'diagram-js/lib/model/Types';
 import { isConnection } from 'diagram-js/lib/util/ModelUtil';
 import { isRelationshipConnection, RelationshipConnection } from './relationship/relationship.connection';
 import { DiagramExportControlComponent } from '../export/diagram-export-control.component';
+import { DiagramFullscreenControlComponent } from '../diagram-fullscreen-control.component';
+import { FullscreenDirective } from '../../core/directives/fullscreen.directive';
 
 @Component({
   selector: 'app-diagram-entity-relationship',
   templateUrl: 'diagram-entity-relationship.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DiagramHostComponent, DiagramZoomControlComponent, DiagramExportControlComponent],
+  imports: [
+    DiagramHostComponent,
+    DiagramZoomControlComponent,
+    DiagramExportControlComponent,
+    DiagramFullscreenControlComponent,
+    FullscreenDirective,
+  ],
 })
 export class DiagramEntityRelationshipComponent implements AfterViewInit {
   readonly MODULES = [

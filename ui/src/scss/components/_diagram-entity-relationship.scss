@@ -2,8 +2,13 @@
 @use '../theme' as t;
 
 .diagram-entity-relationship {
+  background-color: mat.get-theme-color(t.$theme, surface);
   position: relative;
   height: 100%;
+
+  &.transparent {
+    background-color: transparent;
+  }
 
   .djs-bendpoint,
   .djs-segment-dragger {
@@ -110,20 +115,17 @@
     }
   }
 
-  &__export {
-    background-color: mat.get-theme-color(t.$theme, surface);
-
-    &.transparent {
-      background-color: transparent;
-    }
-  }
-
   &__controls {
     display: flex;
     gap: 0.5rem;
     position: absolute;
     right: 0;
     bottom: 0;
+  }
+
+  &.fullscreen &__controls {
+    right: 1rem;
+    bottom: 1rem;
   }
 
   &__tooltip {

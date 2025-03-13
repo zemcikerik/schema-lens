@@ -9,6 +9,7 @@ import { MAT_TOOLTIP_DEFAULT_OPTIONS } from '@angular/material/tooltip';
 import { MAT_ICON_DEFAULT_OPTIONS } from '@angular/material/icon';
 import { unauthorizedInterceptor } from './core/interceptors/unauthorized.interceptor';
 import { jwtInterceptor } from './core/interceptors/jwt.interceptor';
+import { FullscreenOverlayContainer, OverlayContainer } from '@angular/cdk/overlay';
 
 export const appConfig: ApplicationConfig = {
   providers: [
@@ -24,5 +25,6 @@ export const appConfig: ApplicationConfig = {
     { provide: LOCAL_STORAGE, useFactory: () => window.localStorage },
     { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: { position: 'above' } },
     { provide: MAT_ICON_DEFAULT_OPTIONS, useValue: { fontSet: 'material-symbols-outlined' } },
+    { provide: OverlayContainer, useClass: FullscreenOverlayContainer },
   ],
 };

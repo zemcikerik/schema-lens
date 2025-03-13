@@ -1,0 +1,8 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.diagram-fullscreen {
+  background-color: mat.get-theme-color(t.$theme, surface-container-low);
+  border: 1px solid mat.get-theme-color(t.$theme, outline-variant);
+  border-radius: 2rem;
+}
