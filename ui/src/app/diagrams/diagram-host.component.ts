@@ -23,6 +23,7 @@ import type ElementFactory from 'diagram-js/lib/core/ElementFactory';
 import type Canvas from 'diagram-js/lib/core/Canvas';
 import type { Connection, Shape } from 'diagram-js/lib/model/Types';
 import { AngularHostContextModuleFactory } from './angular/angular-host-context.module';
+import { UnfocusModule } from './util/unfocus.module';
 
 @Component({
   selector: 'app-diagram-host',
@@ -59,6 +60,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
           ResizeModule,
           RuleModule,
           SelectionModule,
+          UnfocusModule,
           ZoomScrollModule,
           AngularHostContextModuleFactory.create({
             ngZone: this.ngZone,
