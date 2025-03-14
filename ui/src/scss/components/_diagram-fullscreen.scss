@@ -5,4 +5,8 @@
   background-color: mat.get-theme-color(t.$theme, surface-container-low);
   border: 1px solid mat.get-theme-color(t.$theme, outline-variant);
   border-radius: 2rem;
+
+  button[disabled] {
+    pointer-events: all;
+  }
 }

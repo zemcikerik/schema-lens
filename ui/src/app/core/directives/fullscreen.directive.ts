@@ -1,7 +1,6 @@
 import { DestroyRef, Directive, effect, ElementRef, inject, Renderer2 } from '@angular/core';
 import { FullscreenService } from '../services/fullscreen.service';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { tap } from 'rxjs';
 
 @Directive({
   selector: '[appFullscreen]',
@@ -15,6 +14,7 @@ export class FullscreenDirective {
   private renderer2 = inject(Renderer2);
 
   readonly isActive = this.fullscreenService.isFullscreen;
+  readonly isAvailable = this.fullscreenService.fullscreenSupported;
 
   constructor() {
     effect(() => {
@@ -28,8 +28,8 @@ export class FullscreenDirective {
 
   toggle(): void {
     const fullscreen$ = this.fullscreenService.isFullscreen()
-      ? this.fullscreenService.exitFullscreen().pipe(tap(() => this.unmarkFullscreen()))
-      : this.fullscreenService.requestFullscreen(this.elementRef.nativeElement).pipe(tap(() => this.markFullscreen()));
+      ? this.fullscreenService.exitFullscreen()
+      : this.fullscreenService.requestFullscreen(this.elementRef.nativeElement);
 
     fullscreen$.pipe(takeUntilDestroyed(this.destroyRef)).subscribe();
   }

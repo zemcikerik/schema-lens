@@ -9,7 +9,12 @@ import { TranslatePipe } from '../core/translate/translate.pipe';
   selector: 'app-diagram-fullscreen-control',
   template: `
     <div class="diagram-fullscreen">
-      <button mat-icon-button [matTooltip]="(tooltipKey() | translate)()" (click)="fullscreenHost().toggle()">
+      <button
+        mat-icon-button
+        [disabled]="!fullscreenHost().isAvailable"
+        [matTooltip]="(tooltipKey() | translate)()"
+        (click)="fullscreenHost().toggle()"
+      >
         <mat-icon>{{ icon() }}</mat-icon>
       </button>
     </div>
@@ -24,6 +29,13 @@ import { TranslatePipe } from '../core/translate/translate.pipe';
 })
 export class DiagramFullscreenControlComponent {
   fullscreenHost = input.required<FullscreenDirective>();
-  tooltipKey = computed(() => `DIAGRAM.FULLSCREEN_${this.fullscreenHost().isActive() ? 'EXIT' : 'ENTER'}_LABEL`);
+  tooltipKey = computed(() => `DIAGRAM.FULLSCREEN_${this.getFullscreenStateKey(this.fullscreenHost())}_LABEL`);
   icon = computed(() => this.fullscreenHost().isActive() ? 'close_fullscreen' : 'open_in_full');
+
+  private getFullscreenStateKey(host: FullscreenDirective): string {
+    if (!host.isAvailable) {
+      return 'UNAVAILABLE';
+    }
+    return host.isActive() ? 'EXIT' : 'ENTER';
+  }
 }
