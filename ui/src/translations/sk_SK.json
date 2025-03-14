@@ -220,7 +220,7 @@
     "FULLSCREEN_UNAVAILABLE_LABEL": "Režim celej obrazovky nie je vo vašom prehliadači dostupný.",
     "ENTITY_RELATIONSHIP": {
       "PRIMARY_KEY": "Primárny kľúč",
-      "FOREIGN_KEY": "Cudzí kľúč #{position}"
+      "FOREIGN_KEY": "Cudzí kľúč{count, plural, =1 {} other { '#'{position}}}"
     },
     "EXPORT": {
       "LABEL": "Exportovať",

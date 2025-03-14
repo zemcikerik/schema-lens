@@ -20,7 +20,7 @@ export const icuTranslatePlugin = {
       const reducedTranslations = reduceTranslationKeys(JSON.parse(contents));
       const translations = compileModule(format, reducedTranslations);
 
-      return { contents: translations, loader: 'js' };
+      return { contents: translations, loader: 'js', resolveDir: path.resolve(args.path, '..') };
     });
   }
 };

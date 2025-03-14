@@ -22,14 +22,14 @@
           @for (uniqueGroup of entity().uniqueGroups; track uniqueGroup; let index = $index; let count = $count) {
             <td>{{ uniqueGroup.includes(attribute.name) ? formatUniqueGroupText(index, count) : '' }}</td>
           }
-          @for (relationship of relationshipsToDirectParents(); track relationship.id; let index = $index) {
+          @for (relationship of relationshipsToDirectParents(); track relationship.id; let index = $index; let count = $count) {
             @let highlight = highlightRelationshipIds().includes(relationship.id);
 
             <td class="reference" [class.highlight]="highlight">
               @if (isReferencedInRelationship(relationship, attribute.name)) {
                 <mat-icon
                   [appIconEmphasis]="highlight ? 'high' : 'default'"
-                  [matTooltip]="('DIAGRAM.ENTITY_RELATIONSHIP.FOREIGN_KEY' | translate: { position: index + 1 })()"
+                  [matTooltip]="('DIAGRAM.ENTITY_RELATIONSHIP.FOREIGN_KEY' | translate: { position: index + 1, count })()"
                   [matTooltipClass]="['diagram-entity-relationship__tooltip']"
                 >key</mat-icon>
               }
