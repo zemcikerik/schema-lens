@@ -1,5 +1,7 @@
 package dev.zemco.schemalens.meta.oracle
 
+import dev.zemco.schemalens.meta.oracle.format.OracleSqlFormatter
+import dev.zemco.schemalens.meta.spi.TableDdlGenerator
 import dev.zemco.schemalens.meta.toJdbcTemplate
 import org.springframework.stereotype.Component
 import java.sql.Connection
@@ -9,9 +11,10 @@ import javax.sql.DataSource
 @Component
 class OracleTableDdlGenerator(
     private val oracleTableMetadataReader: OracleTableMetadataReader,
-) {
+    private val oracleSqlFormatter: OracleSqlFormatter,
+) : TableDdlGenerator {
 
-    fun generateDdlForTable(dataSource: DataSource, tableName: String): String? {
+    override fun generateDdlForTable(dataSource: DataSource, tableName: String): String? {
         if (!oracleTableMetadataReader.checkIfTablesExist(dataSource, setOf(tableName))) {
             return null
         }
@@ -23,7 +26,7 @@ class OracleTableDdlGenerator(
                 execute()
                 getString(1)
             }
-        }
+        }?.let { oracleSqlFormatter.formatSql(it) }
     }
 
     private companion object {

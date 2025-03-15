@@ -1,5 +1,6 @@
-package dev.zemco.schemalens.meta
+package dev.zemco.schemalens.meta.spi
 
+import dev.zemco.schemalens.meta.TableMetadata
 import javax.sql.DataSource
 
 interface TableMetadataReader {

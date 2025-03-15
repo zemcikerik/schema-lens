@@ -1,11 +1,15 @@
 package dev.zemco.schemalens.meta.oracle
 
 import dev.zemco.schemalens.meta.*
+import dev.zemco.schemalens.meta.TableMetadata
+import dev.zemco.schemalens.meta.spi.TableMetadataReader
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.stereotype.Component
 import javax.sql.DataSource
 
 @Component
+@Qualifier("oracle")
 class OracleTableMetadataReader(
     private val columnMetadataReader: OracleTableColumnMetadataReader,
     private val constraintMetadataReader: OracleTableConstraintMetadataReader,
