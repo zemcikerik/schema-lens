@@ -18,21 +18,13 @@ export class DiagramExportService {
 
   exportDiagram(diagramRoot: HTMLElement, { format, transparent, quality, additionalClasses }: DiagramExportOptions): Observable<Blob> {
     return defer(() => of(diagramRoot.cloneNode(true) as HTMLElement)).pipe(mergeMap(rootCopy => {
-      const wrapper: HTMLDivElement = this.document.createElement('div');
-      wrapper.style.position = 'absolute';
-      wrapper.appendChild(rootCopy);
-      this.document.body.appendChild(wrapper);
-
+      const wrapper = this.wrapWithAbsolutePositionedWrapper(rootCopy);
       const diagramSvg = rootCopy.querySelector('.djs-parent > svg') as SVGElement;
       const viewport = diagramSvg.querySelector('g.viewport') as SVGGraphicsElement;
-      viewport.setAttribute('transform', '');
 
-      const { width, height } = viewport.getBoundingClientRect();
-      wrapper.style.width = diagramSvg.style.width = `${width}px`;
-      wrapper.style.height = diagramSvg.style.height = `${height}px`;
-      wrapper.style.left = `${-width * 2}px`;
-      wrapper.style.top = `${-height * 2}px`;
-
+      this.resetDiagramOffsetAndZoom(viewport);
+      this.moveWrapperOutOfViewAndFitDiagram(wrapper, viewport);
+      this.fixViewportPositioningWithNegativeCoordinates(viewport);
       additionalClasses.forEach(c => rootCopy.classList.add(c));
 
       if (transparent) {
@@ -54,4 +46,28 @@ export class DiagramExportService {
     }));
   }
 
+  private wrapWithAbsolutePositionedWrapper(rootCopy: HTMLElement): HTMLElement {
+    const wrapper: HTMLDivElement = this.document.createElement('div');
+    wrapper.style.position = 'absolute';
+    wrapper.appendChild(rootCopy);
+    this.document.body.appendChild(wrapper);
+    return wrapper;
+  }
+
+  private resetDiagramOffsetAndZoom(viewport: SVGGraphicsElement): void {
+    viewport.setAttribute('transform', '');
+  }
+
+  private moveWrapperOutOfViewAndFitDiagram(wrapper: HTMLElement, viewport: SVGGraphicsElement): void {
+    const { width, height } = viewport.getBoundingClientRect();
+    wrapper.style.width = `${width}px`;
+    wrapper.style.height = `${height}px`;
+    wrapper.style.left = `${-width * 2}px`;
+    wrapper.style.top = `${-height * 2}px`;
+  }
+
+  private fixViewportPositioningWithNegativeCoordinates(viewport: SVGGraphicsElement): void {
+    const { x, y } = viewport.getBBox();
+    viewport.setAttribute('transform', `translate(${-x}, ${-y})`);
+  }
 }
