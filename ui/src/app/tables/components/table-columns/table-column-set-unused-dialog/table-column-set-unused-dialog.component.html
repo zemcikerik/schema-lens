@@ -1,5 +1,6 @@
 <h2 mat-dialog-title>{{ ('TABLES.COLUMNS.SET_UNUSED.DIALOG.TITLE' | translate)() }}</h2>
 
+<!-- TODO: maybe display project connection errors -->
 <mat-dialog-content>
   <div class="table-modifying-dialog">
     @if (statusResource.isLoading()) {
@@ -39,19 +40,19 @@
       </form>
 
       <div class="table-modifying-dialog__preview">
-        <h4>Preview</h4>
+        <h4>{{ ('TABLES.COLUMNS.SET_UNUSED.DIALOG.PREVIEW' | translate)() }}</h4>
         @defer (on immediate) {
           @if (previewSqlDebounce() || previewSqlResource.isLoading()) {
             <app-progress-spinner [center]="true" size="small" />
           } @else if (previewSqlResource.error()) {
-            <app-alert type="error">There was an error trying to generate preview SQL.</app-alert>
+            <app-alert type="error">{{ ('TABLES.COLUMNS.SET_UNUSED.DIALOG.PREVIEW_GENERATE_ERROR' | translate)() }}</app-alert>
           } @else {
             <app-code-editor [ngModel]="previewSqlResource.value()" />
           }
         } @loading {
           <app-progress-spinner [center]="true" size="small" />
         } @error {
-          <app-alert type="error">There was an error trying to load the preview editor.</app-alert>
+          <app-alert type="error">{{ ('TABLES.COLUMNS.SET_UNUSED.DIALOG.PREVIEW_EDITOR_LOAD_ERROR' | translate)() }}</app-alert>
         }
       </div>
     }

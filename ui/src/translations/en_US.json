@@ -152,7 +152,10 @@
           "REFERENCED_BY_TABLES_ALERT_HTML": "This column is referenced by foreign keys in other tables.<br>These tables are:{listHtml}Please remove mentioned relationships or use the cascade constraints option.",
           "USED_IN_MULTI_COLUMN_CONSTRAINTS_ALERT_HTML": "This column is referenced in a multi-column constraint of this table.<br>These constraints are:{listHtml}Please remove mentioned constraints or use the cascade constraints option.",
           "CASCADE_CONSTRAINTS": "Cascade constraints",
-          "INVALID_OPTIONS_COMMENT": "-- invalid options"
+          "INVALID_OPTIONS_COMMENT": "-- invalid options",
+          "PREVIEW": "Preview",
+          "PREVIEW_EDITOR_LOAD_ERROR": "There was an error trying to load the preview editor.",
+          "PREVIEW_GENERATE_ERROR": "There was an error trying to generate preview SQL."
         }
       }
     },

@@ -152,7 +152,10 @@
           "REFERENCED_BY_TABLES_ALERT_HTML": "Tento stĺpec je referencovaný cudzími kľúčmi v iných tabuľkách.<br>Tieto tabuľky sú:{listHtml}Prosím, odstráňte uvedené vzťahy alebo použite možnosť kaskády obmedzení.",
           "USED_IN_MULTI_COLUMN_CONSTRAINTS_ALERT_HTML": "Tento stĺpec je použitý vo viacstĺpcovom obmedzení tejto tabuľky.<br>Tieto obmedzenia sú:{listHtml}Prosím, odstráňte uvedené obmedzenia alebo použite možnosť kaskády obmedzení.",
           "CASCADE_CONSTRAINTS": "Kaskádovať obmedzenia",
-          "INVALID_OPTIONS_COMMENT": "-- neplatné možnosti"
+          "INVALID_OPTIONS_COMMENT": "-- neplatné možnosti",
+          "PREVIEW": "Náhľad",
+          "PREVIEW_EDITOR_LOAD_ERROR": "Vyskytla sa chyba pri pokuse o načítanie editora náhľadu.",
+          "PREVIEW_GENERATE_ERROR": "Vyskytla sa chyba pri pokuse o generovanie náhľadového SQL."
         }
       }
     },
