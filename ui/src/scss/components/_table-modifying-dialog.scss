@@ -1,0 +1,31 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.table-modifying-dialog {
+  // TODO: low width support
+  width: calc(var(--mat-dialog-container-max-width) - 3rem);
+
+  app-alert + app-alert {
+    display: block;
+    margin-top: 0.25rem;
+  }
+
+  form {
+    margin-top: 0.5rem;
+  }
+
+  &__preview {
+    background-color: var(--mdc-dialog-container-color);
+    position: sticky;
+    left: 0;
+    bottom: 0;
+
+    h4 {
+      margin: 0.25rem 0;
+    }
+  }
+
+  &__action__danger {
+    @include mat.button-color(t.$theme, $color-variant: error);
+  }
+}

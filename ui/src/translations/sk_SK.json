@@ -143,7 +143,18 @@
       "NAME_LABEL": "Názov",
       "TYPE_LABEL": "Typ",
       "POSITION_LABEL": "#",
-      "NULLABLE_LABEL": "Nullable"
+      "NULLABLE_LABEL": "Nullable",
+      "SET_UNUSED": {
+        "LABEL": "Označiť ako nepoužívané",
+        "DIALOG": {
+          "TITLE": "Nastaviť stĺpec ako nepoužívaný",
+          "DESCRIPTION": "Nastaví stĺpec ako nepoužívaný. Nepoužívané stĺpce umožňujú odstránenie stĺpcov bez úpravy dát na úrovni blokov. Tento priestor by mal byť následne uvoľnený manuálnym odstránením nepoužívaných stĺpcov.",
+          "REFERENCED_BY_TABLES_ALERT_HTML": "Tento stĺpec je referencovaný cudzími kľúčmi v iných tabuľkách.<br>Tieto tabuľky sú:{listHtml}Prosím, odstráňte uvedené vzťahy alebo použite možnosť kaskády obmedzení.",
+          "USED_IN_MULTI_COLUMN_CONSTRAINTS_ALERT_HTML": "Tento stĺpec je použitý vo viacstĺpcovom obmedzení tejto tabuľky.<br>Tieto obmedzenia sú:{listHtml}Prosím, odstráňte uvedené obmedzenia alebo použite možnosť kaskády obmedzení.",
+          "CASCADE_CONSTRAINTS": "Kaskádovať obmedzenia",
+          "INVALID_OPTIONS_COMMENT": "-- neplatné možnosti"
+        }
+      }
     },
     "CONSTRAINTS": {
       "LABEL": "Integritné obmedzenia",

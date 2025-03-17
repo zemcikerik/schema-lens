@@ -1,7 +1,7 @@
 package dev.zemco.schemalens.meta.oracle
 
 import dev.zemco.schemalens.meta.*
-import dev.zemco.schemalens.meta.TableMetadata
+import dev.zemco.schemalens.meta.models.TableMetadata
 import dev.zemco.schemalens.meta.spi.TableMetadataReader
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
@@ -16,11 +16,14 @@ class OracleTableMetadataReader(
     private val indexMedataReader: OracleTableIndexMetadataReader,
 ) : TableMetadataReader {
 
+    override fun checkIfTableExists(dataSource: DataSource, tableName: String): Boolean =
+        checkIfTablesExists(dataSource, setOf(tableName))
+
     override fun readTableList(dataSource: DataSource): List<String> =
         dataSource.toJdbcTemplate().queryForList(GET_TABLE_LIST_SQL_QUERY, String::class.java)
 
     override fun readTableDetails(dataSource: DataSource, tableName: String): TableMetadata? =
-        if (checkIfTablesExist(dataSource, setOf(tableName)))
+        if (checkIfTablesExists(dataSource, setOf(tableName)))
             readTableDetails(dataSource, setOf(tableName))[tableName]
         else null
 
@@ -39,7 +42,7 @@ class OracleTableMetadataReader(
         }
     }
 
-    fun checkIfTablesExist(dataSource: DataSource, tableNames: Set<String>): Boolean {
+    fun checkIfTablesExists(dataSource: DataSource, tableNames: Set<String>): Boolean {
         val params = MapSqlParameterSource("table_names", tableNames)
         val existingTableCount = dataSource.toNamedJdbcTemplate().queryForObject(TABLES_EXIST_SQL_QUERY, params, Int::class.java)
         return existingTableCount == tableNames.size

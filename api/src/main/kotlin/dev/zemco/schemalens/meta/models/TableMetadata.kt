@@ -1,4 +1,4 @@
-package dev.zemco.schemalens.meta
+package dev.zemco.schemalens.meta.models
 
 data class TableMetadata(
     val name: String,

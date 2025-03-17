@@ -15,7 +15,7 @@ class OracleTableDdlGenerator(
 ) : TableDdlGenerator {
 
     override fun generateDdlForTable(dataSource: DataSource, tableName: String): String? {
-        if (!oracleTableMetadataReader.checkIfTablesExist(dataSource, setOf(tableName))) {
+        if (!oracleTableMetadataReader.checkIfTableExists(dataSource, tableName)) {
             return null
         }
 

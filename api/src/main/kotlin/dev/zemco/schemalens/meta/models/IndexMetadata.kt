@@ -1,4 +1,4 @@
-package dev.zemco.schemalens.meta
+package dev.zemco.schemalens.meta.models
 
 data class IndexMetadata(
     val name: String,

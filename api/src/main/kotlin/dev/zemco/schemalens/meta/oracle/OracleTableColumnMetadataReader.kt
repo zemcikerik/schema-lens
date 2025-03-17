@@ -1,17 +1,29 @@
 package dev.zemco.schemalens.meta.oracle
 
-import dev.zemco.schemalens.meta.ColumnMetadata
+import dev.zemco.schemalens.meta.models.ColumnMetadata
 import dev.zemco.schemalens.meta.getNullableInt
+import dev.zemco.schemalens.meta.spi.TableColumnMetadataReader
 import dev.zemco.schemalens.meta.toNamedJdbcTemplate
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.stereotype.Component
 import java.sql.ResultSet
 import javax.sql.DataSource
 
 @Component
-class OracleTableColumnMetadataReader {
+@Qualifier("oracle")
+class OracleTableColumnMetadataReader : TableColumnMetadataReader {
 
-    fun readColumnsForTables(dataSource: DataSource, tableNames: Set<String>): Map<String, List<ColumnMetadata>> {
+    override fun checkIfTableColumnExists(dataSource: DataSource, tableName: String, columnName: String): Boolean {
+        val params = MapSqlParameterSource(mapOf(
+            "table_name" to tableName,
+            "column_name" to columnName
+        ))
+
+        return dataSource.toNamedJdbcTemplate().queryForObject(COLUMN_EXISTS_SQL_QUERY, params, Boolean::class.java) ?: false
+    }
+
+    override fun readColumnsForTables(dataSource: DataSource, tableNames: Set<String>): Map<String, List<ColumnMetadata>> {
         val params = MapSqlParameterSource("table_names", tableNames)
 
         return dataSource.toNamedJdbcTemplate().query(GET_COLUMNS_SQL_QUERY, params) { rs, _ ->
@@ -77,6 +89,16 @@ class OracleTableColumnMetadataReader {
         private const val DEFAULT_NUMBER_SCALE = 0
         private const val DEFAULT_FLOAT_PRECISION = 126
         private const val DEFAULT_UROWID_SIZE = 4000
+
+        private val COLUMN_EXISTS_SQL_QUERY =
+            """
+                SELECT CASE WHEN EXISTS (
+                    SELECT 'X'
+                    FROM user_tab_columns
+                    WHERE table_name = :table_name AND column_name = :column_name
+                ) THEN 1 ELSE 0 END AS table_exists
+                FROM DUAL
+            """.trimIndent()
 
         private val GET_COLUMNS_SQL_QUERY =
             """

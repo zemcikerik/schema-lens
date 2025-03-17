@@ -1,0 +1,74 @@
+<h2 mat-dialog-title>{{ ('TABLES.COLUMNS.SET_UNUSED.DIALOG.TITLE' | translate)() }}</h2>
+
+<mat-dialog-content>
+  <div class="table-modifying-dialog">
+    @if (statusResource.isLoading()) {
+      <app-progress-spinner [center]="true" />
+    } @else if (statusResource.error()) {
+      <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+    } @else {
+      <p>{{ ('TABLES.COLUMNS.SET_UNUSED.DIALOG.DESCRIPTION' | translate)() }}</p>
+      @let status = statusResource.value();
+
+      @if (status?.referencedByTables?.length) {
+        <app-alert type="info">
+          <div [innerHTML]="(
+            'TABLES.COLUMNS.SET_UNUSED.DIALOG.REFERENCED_BY_TABLES_ALERT_HTML' | translate:
+            { listHtml: referencedByTablesList() }
+          )() | safeHtml"></div>
+        </app-alert>
+      }
+
+      @if (status?.usedInMultiColumnConstraints?.length) {
+        <app-alert type="info">
+          <div [innerHTML]="(
+            'TABLES.COLUMNS.SET_UNUSED.DIALOG.USED_IN_MULTI_COLUMN_CONSTRAINTS_ALERT_HTML' | translate:
+            { listHtml: usedInMultiColumnConstraintsList() }
+          )() | safeHtml"></div>
+        </app-alert>
+      }
+
+      @if (modificationError()) {
+        <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+      }
+
+      <form [formGroup]="optionsForm">
+        <mat-checkbox formControlName="cascadeConstraints">
+          {{ ('TABLES.COLUMNS.SET_UNUSED.DIALOG.CASCADE_CONSTRAINTS' | translate)() }}
+        </mat-checkbox>
+      </form>
+
+      <div class="table-modifying-dialog__preview">
+        <h4>Preview</h4>
+        @defer (on immediate) {
+          @if (previewSqlDebounce() || previewSqlResource.isLoading()) {
+            <app-progress-spinner [center]="true" size="small" />
+          } @else if (previewSqlResource.error()) {
+            <app-alert type="error">There was an error trying to generate preview SQL.</app-alert>
+          } @else {
+            <app-code-editor [ngModel]="previewSqlResource.value()" />
+          }
+        } @loading {
+          <app-progress-spinner [center]="true" size="small" />
+        } @error {
+          <app-alert type="error">There was an error trying to load the preview editor.</app-alert>
+        }
+      </div>
+    }
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    mat-button
+    [matDialogClose]="false"
+    [disabled]="modificationRunning()"
+  >{{ ('GENERIC.CANCEL_LABEL' | translate)() }}</button>
+
+  <button
+    mat-flat-button
+    class="table-modifying-dialog__action__danger"
+    [disabled]="!statusResource.value() || optionsForm.invalid || modificationRunning()"
+    (click)="setUnused()"
+  >{{ ('GENERIC.CONFIRM_LABEL' | translate)() }}</button>
+</mat-dialog-actions>

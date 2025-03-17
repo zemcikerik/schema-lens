@@ -143,7 +143,18 @@
       "NAME_LABEL": "Name",
       "TYPE_LABEL": "Type",
       "POSITION_LABEL": "#",
-      "NULLABLE_LABEL": "Nullable"
+      "NULLABLE_LABEL": "Nullable",
+      "SET_UNUSED": {
+        "LABEL": "Set unused",
+        "DIALOG": {
+          "TITLE": "Set column unused",
+          "DESCRIPTION": "Sets the column as unused. Unused columns allow for deletion of columns without modifying data at the block level. This space should be reclaimed later by dropping the unused columns manually.",
+          "REFERENCED_BY_TABLES_ALERT_HTML": "This column is referenced by foreign keys in other tables.<br>These tables are:{listHtml}Please remove mentioned relationships or use the cascade constraints option.",
+          "USED_IN_MULTI_COLUMN_CONSTRAINTS_ALERT_HTML": "This column is referenced in a multi-column constraint of this table.<br>These constraints are:{listHtml}Please remove mentioned constraints or use the cascade constraints option.",
+          "CASCADE_CONSTRAINTS": "Cascade constraints",
+          "INVALID_OPTIONS_COMMENT": "-- invalid options"
+        }
+      }
     },
     "CONSTRAINTS": {
       "LABEL": "Constraints",

@@ -11,7 +11,7 @@ const COLLABORATION_ROLE_ORDER: Record<ProjectCollaborationRole, number> = {
   [ProjectCollaborationRole.MANAGER]: 1,
   [ProjectCollaborationRole.ADMIN]: 2,
   [ProjectCollaborationRole.CONTRIBUTOR]: 3,
-  [ProjectCollaborationRole.VIEWER]: 3,
+  [ProjectCollaborationRole.VIEWER]: 4,
 };
 
 @Injectable({

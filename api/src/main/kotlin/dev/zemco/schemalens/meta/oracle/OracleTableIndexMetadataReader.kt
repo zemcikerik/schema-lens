@@ -1,8 +1,8 @@
 package dev.zemco.schemalens.meta.oracle
 
-import dev.zemco.schemalens.meta.IndexMetadata
-import dev.zemco.schemalens.meta.IndexMetadata.IndexColumnDirection
-import dev.zemco.schemalens.meta.IndexMetadata.IndexType
+import dev.zemco.schemalens.meta.models.IndexMetadata
+import dev.zemco.schemalens.meta.models.IndexMetadata.IndexColumnDirection
+import dev.zemco.schemalens.meta.models.IndexMetadata.IndexType
 import dev.zemco.schemalens.meta.toNamedJdbcTemplate
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
 import org.springframework.stereotype.Component

@@ -4,13 +4,14 @@
 .table-objects {
   > tbody {
     .column-icon,
-    .column-expand {
+    .column-expand,
+    .column-actions {
       width: 3rem;
+      text-align: center;
     }
 
     .column-icon {
       color: mat.get-theme-color(t.$theme, secondary);
-      text-align: center;
     }
 
     .column-primary {

@@ -1,7 +1,7 @@
 package dev.zemco.schemalens.tables
 
-import dev.zemco.schemalens.meta.TableMetadata
-import dev.zemco.schemalens.meta.TableRelationshipsMetadata
+import dev.zemco.schemalens.meta.models.TableMetadata
+import dev.zemco.schemalens.meta.models.TableRelationshipsMetadata
 import dev.zemco.schemalens.projects.Project
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.GetMapping

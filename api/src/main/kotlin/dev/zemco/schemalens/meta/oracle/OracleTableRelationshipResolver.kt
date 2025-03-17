@@ -1,6 +1,6 @@
 package dev.zemco.schemalens.meta.oracle
 
-import dev.zemco.schemalens.meta.*
+import dev.zemco.schemalens.meta.models.*
 import dev.zemco.schemalens.meta.spi.*
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.stereotype.Component
@@ -10,15 +10,15 @@ import javax.sql.DataSource
 @Qualifier("oracle")
 class OracleTableRelationshipResolver(
     private val tableMetadataReader: OracleTableMetadataReader,
-    private val constraintMetadataReader: OracleTableConstraintMetadataReader,
+    private val tableRelationshipMetadataReader: OracleTableRelationshipMetadataReader
 ) : TableRelationshipResolver {
 
     override fun readDetailsOfDirectlyRelatedTables(dataSource: DataSource, tableName: String): TableRelationshipsMetadata? {
-        if (!tableMetadataReader.checkIfTablesExist(dataSource, setOf(tableName))) {
+        if (!tableMetadataReader.checkIfTablesExists(dataSource, setOf(tableName))) {
             return null
         }
 
-        val relatedTableNames = constraintMetadataReader.readDirectlyRelatedTableNames(
+        val relatedTableNames = tableRelationshipMetadataReader.readDirectlyRelatedTableNames(
             dataSource,
             tableName,
         )

@@ -1,4 +1,4 @@
-package dev.zemco.schemalens.meta
+package dev.zemco.schemalens.meta.models
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo

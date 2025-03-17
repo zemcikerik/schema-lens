@@ -37,6 +37,23 @@
     </td>
   </ng-container>
 
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell class="column-actions" *matCellDef="let column">
+      <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{ column }">
+        <mat-icon>more_vert</mat-icon>
+      </button>
+    </td>
+  </ng-container>
+
   <tr mat-header-row *matHeaderRowDef="displayedColumns()"></tr>
   <tr mat-row *matRowDef="let row; columns: displayedColumns();"></tr>
 </table>
+
+<mat-menu #actionsMenu xPosition="before">
+  <ng-template matMenuContent let-column="column">
+    <button mat-menu-item [disabled]="(table()?.columns?.length ?? 0) <= 1" (click)="setColumnUnused(column.name)">
+      <mat-icon>delete</mat-icon> {{ ('TABLES.COLUMNS.SET_UNUSED.LABEL' | translate)() }}
+    </button>
+  </ng-template>
+</mat-menu>
