@@ -13,18 +13,24 @@ class OracleTableRelationshipResolver(
     private val tableRelationshipMetadataReader: OracleTableRelationshipMetadataReader
 ) : TableRelationshipResolver {
 
-    override fun readDetailsOfDirectlyRelatedTables(dataSource: DataSource, tableName: String): TableRelationshipsMetadata? {
-        if (!tableMetadataReader.checkIfTablesExists(dataSource, setOf(tableName))) {
+    override fun readDetailsOfTable(dataSource: DataSource, tableName: String): TableRelationshipsMetadata? =
+        readDetailsOfTables(dataSource, setOf(tableName))
+
+    override fun readDetailsOfTables(dataSource: DataSource, tableNames: Set<String>): TableRelationshipsMetadata? {
+        if (!tableMetadataReader.checkIfTablesExists(dataSource, tableNames)) {
             return null
         }
 
         val relatedTableNames = tableRelationshipMetadataReader.readDirectlyRelatedTableNames(
             dataSource,
-            tableName,
+            tableNames,
         )
-        val tableNames = relatedTableNames.asSequence().plus(tableName).toSet()
-        val tables = tableMetadataReader.readTableDetails(dataSource, tableNames)
+        val includedTableNames = relatedTableNames.asSequence().plus(tableNames).toSet()
+        val tables = tableMetadataReader.readTableDetails(dataSource, includedTableNames)
+        return internalReadDetailsOfTables(tables)
+    }
 
+    private fun internalReadDetailsOfTables(tables: Map<String, TableMetadata>): TableRelationshipsMetadata {
         val relationships = tables.values.flatMap { table ->
             val primaryKeyColumnNames = extractPrimaryKeyColumnNames(table.constraints)
             val nullableColumnNames = extractNullableColumnNames(table.columns)

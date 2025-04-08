@@ -1,0 +1,13 @@
+<h3 class="table-selection-list__header">{{ ('TABLES.LIST_LABEL' | translate)() }}</h3>
+
+<mat-selection-list
+  [disabled]="disabled()"
+  [ngModel]="selectedTableNames"
+  (ngModelChange)="onSelectionChange($event)"
+  (focusin)="onInteraction()"
+  (focusout)="onInteraction()"
+>
+  @for (tableName of tableNames(); track tableName) {
+    <mat-list-option togglePosition="before" [value]="tableName">{{ tableName }}</mat-list-option>
+  }
+</mat-selection-list>

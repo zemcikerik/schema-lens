@@ -1,0 +1,26 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.table-all-relationships {
+  & .table-selection-list__header,
+  &__actions {
+    position: sticky;
+    left: 0;
+    right: 0;
+    background-color: mat.get-theme-color(t.$theme, surface);
+  }
+
+  .table-selection-list__header {
+    top: 0;
+    margin: 0;
+    padding: 1rem 0;
+    z-index: 1;
+  }
+
+  &__actions {
+    display: flex;
+    justify-content: end;
+    bottom: 0;
+    padding-top: 0.5rem;
+  }
+}

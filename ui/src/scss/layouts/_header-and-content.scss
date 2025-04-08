@@ -19,4 +19,9 @@
   &.include-spacing &__content {
     padding-top: 0.5rem;
   }
+
+  &.full-height &__content {
+    height: 100%;
+    overflow-y: hidden;
+  }
 }

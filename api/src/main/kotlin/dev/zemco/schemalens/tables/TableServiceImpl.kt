@@ -31,10 +31,17 @@ class TableServiceImpl(
             }
         }
 
-    override fun getRelatedTableDetails(project: Project, tableName: String): TableRelationshipsMetadata? =
+    override fun getRelationshipsOfTable(project: Project, tableName: String): TableRelationshipsMetadata? =
         databaseMetadataService.getForConnection<TableRelationshipResolver>(project.connectionInfo).let { relationshipResolver ->
             connectionService.withDataSource(project.connectionInfo) {
-                relationshipResolver.readDetailsOfDirectlyRelatedTables(it, tableName)
+                relationshipResolver.readDetailsOfTable(it, tableName)
+            }
+        }
+
+    override fun getRelationshipsOfTables(project: Project, tableNames: List<String>): TableRelationshipsMetadata? =
+        databaseMetadataService.getForConnection<TableRelationshipResolver>(project.connectionInfo).let { relationshipResolver ->
+            connectionService.withDataSource(project.connectionInfo) {
+                relationshipResolver.readDetailsOfTables(it, tableNames.toSet())
             }
         }
 

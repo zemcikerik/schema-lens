@@ -72,6 +72,10 @@ export const appRoutes: Route[] = [
         ],
       },
       {
+        path: 'table-relationships',
+        loadComponent: () => import('./tables/components/table-all-relationships/table-all-relationships.component').then(c => c.TableAllRelationshipsComponent),
+      },
+      {
         path: 'collaborators',
         loadComponent: () => import('./projects/components/project-collaborators/project-collaborators.component').then(c => c.ProjectCollaboratorsComponent),
       },

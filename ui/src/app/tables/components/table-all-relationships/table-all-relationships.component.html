@@ -1,0 +1,20 @@
+@let relationshipRes = relationshipsResource();
+
+<app-layout-header-and-content
+  class="table-all-relationships"
+  [title]="('TABLES.RELATIONSHIPS.LABEL' | translate)()"
+  [fullHeight]="relationshipRes !== null"
+>
+  @if (tableNamesResource.isLoading()) {
+    <app-progress-spinner class="d-block pt-1" [center]="true" />
+  } @else if (tableNamesResource.error()) {
+    <app-project-connection-error-alert class="d-block pt-1" [error]="tableNamesResource.error()" />
+  } @else if (relationshipRes === null) {
+    <app-table-selection-list [formControl]="tablesControl" [tableNames]="tableNamesResource.value() ?? []" />
+    <div class="table-all-relationships__actions">
+      <button mat-flat-button [disabled]="tablesControl.invalid" (click)="showDiagram()">{{ ('GENERIC.CONFIRM_LABEL' | translate)() }}</button>
+    </div>
+  } @else {
+    <app-table-relationships-diagram [relationshipsResource]="relationshipRes" />
+  }
+</app-layout-header-and-content>

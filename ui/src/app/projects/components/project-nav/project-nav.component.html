@@ -11,10 +11,18 @@
     <app-project-object-nav-host [projectId]="projectId()" />
     <a
       mat-list-item
-      [routerLink]="['/project', projectId(), 'collaborators']"
+      [routerLink]="['/project', projectId(), 'table-relationships']"
       routerLinkActive
       #rla1="routerLinkActive"
       [activated]="rla1.isActive"
+      appSidebarClose
+    >{{ ('TABLES.RELATIONSHIPS.LABEL' | translate)() }}</a>
+    <a
+      mat-list-item
+      [routerLink]="['/project', projectId(), 'collaborators']"
+      routerLinkActive
+      #rla2="routerLinkActive"
+      [activated]="rla2.isActive"
       appSidebarClose
     >{{ ('PROJECTS.COLLABORATORS.LABEL' | translate)() }}</a>
   </mat-nav-list>

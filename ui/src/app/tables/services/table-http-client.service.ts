@@ -3,7 +3,6 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { Table } from '../models/table.model';
 import { catchSpecificHttpStatusError } from '../../core/rxjs-pipes';
-import { TableRelationships } from '../models/table-relationships.model';
 
 @Injectable({
   providedIn: 'root'
@@ -20,10 +19,6 @@ export class TableHttpClientService {
     return this.httpClient.get<Table>(`/project/${projectId}/table/${tableName}`).pipe(
       catchSpecificHttpStatusError(404, () => of(null)),
     );
-  }
-
-  getRelatedTables(projectId: string, tableName: string): Observable<TableRelationships> {
-    return this.httpClient.get<TableRelationships>(`/project/${projectId}/table/${tableName}/related`);
   }
 
   getTableDdl(projectId: string, tableName: string): Observable<string> {

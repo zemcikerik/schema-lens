@@ -3,7 +3,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 @Component({
   selector: 'app-layout-header-and-content',
   template: `
-    <div class="layout-header-and-content" [class.include-spacing]="includeSpacing()">
+    <div class="layout-header-and-content" [class.include-spacing]="includeSpacing()" [class.full-height]="fullHeight()">
       <div class="layout-header-and-content__header">
         <h2>{{ title() }}</h2>
         <ng-content select="header-action" />
@@ -18,4 +18,5 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 export class LayoutHeaderAndContentComponent {
   title = input.required<string>();
   includeSpacing = input<boolean>(false);
+  fullHeight = input<boolean>(false);
 }

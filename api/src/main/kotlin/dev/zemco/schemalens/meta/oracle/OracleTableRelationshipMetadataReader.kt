@@ -20,8 +20,8 @@ class OracleTableRelationshipMetadataReader : TableRelationshipMetadataReader {
         return dataSource.toNamedJdbcTemplate().queryForList(GET_DEPENDANT_ON_COLUMN_QUERY, params, String::class.java)
     }
 
-    fun readDirectlyRelatedTableNames(dataSource: DataSource, tableName: String): List<String> {
-        val params = MapSqlParameterSource("table_name", tableName)
+    fun readDirectlyRelatedTableNames(dataSource: DataSource, tableNames: Set<String>): List<String> {
+        val params = MapSqlParameterSource("table_names", tableNames)
         return dataSource.toNamedJdbcTemplate().queryForList(GET_DIRECT_RELATIONSHIPS_QUERY, params, String::class.java)
     }
 
@@ -35,11 +35,20 @@ class OracleTableRelationshipMetadataReader : TableRelationshipMetadataReader {
         """.trimIndent()
 
         private val GET_DIRECT_RELATIONSHIPS_QUERY = """
-            SELECT DISTINCT
-                DECODE(con.table_name, :table_name, ref_con.table_name, con.table_name) as table_name
-            FROM user_constraints con
-                INNER JOIN user_constraints ref_con ON (con.r_constraint_name = ref_con.constraint_name)
-            WHERE con.constraint_type = 'R' AND :table_name IN (con.table_name, ref_con.table_name)
+            SELECT DISTINCT table_name
+            FROM (
+                SELECT
+                    con.table_name AS source_table_name,
+                    ref_con.table_name AS ref_table_name
+                FROM user_constraints con
+                    INNER JOIN user_constraints ref_con ON (con.r_constraint_name = ref_con.constraint_name)
+                WHERE con.constraint_type = 'R' AND (con.table_name IN (:table_names) OR ref_con.table_name IN (:table_names))
+            ) UNPIVOT EXCLUDE NULLS (
+                table_name FOR direction IN (
+                    source_table_name AS 'S',
+                    ref_table_name AS 'R'
+                )
+            )
         """.trimIndent()
     }
 

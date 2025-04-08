@@ -30,8 +30,8 @@ export class ProjectConnectionErrorAlertComponent {
   error = input.required<unknown>();
 
   connectionError = computed(() => {
-    const error = this.error();
-    return isProjectConnectionError(error) ? error : null;
+    const error = this.error() as Record<string, unknown>;
+    return isProjectConnectionError(error['error']) ? error['error'] : null;
   });
 
   errorLabelKey = computed(() => {

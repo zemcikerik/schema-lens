@@ -4,5 +4,6 @@ import dev.zemco.schemalens.meta.models.TableRelationshipsMetadata
 import javax.sql.DataSource
 
 interface TableRelationshipResolver {
-    fun readDetailsOfDirectlyRelatedTables(dataSource: DataSource, tableName: String): TableRelationshipsMetadata?
+    fun readDetailsOfTable(dataSource: DataSource, tableName: String): TableRelationshipsMetadata?
+    fun readDetailsOfTables(dataSource: DataSource, tableNames: Set<String>): TableRelationshipsMetadata?
 }
