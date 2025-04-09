@@ -20,6 +20,9 @@ import { TableColumnService } from '../../../services/table-column.service';
 import { escapeHtml } from '../../../../core/escape-html.fn';
 import { SafeHtmlPipe } from '../../../../core/pipes/safe-html.pipe';
 import { TranslateService } from '../../../../core/translate/translate.service';
+import {
+  ProjectConnectionErrorAlertComponent
+} from '../../../../projects/components/project-connection-error-alert/project-connection-error-alert.component';
 
 export interface SetUnusedColumnDialogData {
   projectId: string;
@@ -45,6 +48,7 @@ export interface SetUnusedColumnDialogData {
     ReactiveFormsModule,
     AlertComponent,
     SafeHtmlPipe,
+    ProjectConnectionErrorAlertComponent,
   ],
 })
 export class TableColumnSetUnusedDialogComponent {

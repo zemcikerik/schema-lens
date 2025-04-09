@@ -10,6 +10,7 @@
     "CONFIRM_LABEL": "Confirm",
     "CANCEL_LABEL": "Cancel",
     "CLOSE_LABEL": "Close",
+    "BACK_LABEL": "Back",
     "SUCCESS_LABEL": "Your request was performed successfully.",
     "ERROR_LABEL": "There was an error processing your request. Please try again later.",
     "TOOLTIP_INFO_LABEL": "Information",
@@ -203,7 +204,9 @@
       "LABEL": "DDL"
     },
     "RELATIONSHIPS": {
-      "LABEL": "Relationships"
+      "LABEL": "Relationships",
+      "SELECTION_DESCRIPTION": "Selected tables will be added to the diagram including directly related tables.",
+      "SELECTION_NOT_FOUND": "The selected tables were not found."
     }
   },
   "PROFILE": {

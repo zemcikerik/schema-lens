@@ -9,11 +9,11 @@ export class TableRelationshipService {
 
   private tableRelationshipHttpClient = inject(TableRelationshipHttpClientService);
 
-  getRelationshipsOfTable = cacheObservable((projectId: string, tableName: string): Observable<TableRelationships> => {
+  getRelationshipsOfTable = cacheObservable((projectId: string, tableName: string): Observable<TableRelationships | null> => {
     return this.tableRelationshipHttpClient.getRelationshipsOfTable(projectId, tableName);
   });
 
-  getRelationshipsOfTables(projectId: string, tableNames: string[]): Observable<TableRelationships> {
+  getRelationshipsOfTables(projectId: string, tableNames: string[]): Observable<TableRelationships | null> {
     return this.tableRelationshipHttpClient.getRelationshipsOfTables(projectId, tableNames);
   }
 

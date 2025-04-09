@@ -17,6 +17,10 @@
     z-index: 1;
   }
 
+  &__tables-description {
+    font: mat.get-theme-typography(t.$theme, body-medium)
+  }
+
   &__actions {
     display: flex;
     justify-content: end;

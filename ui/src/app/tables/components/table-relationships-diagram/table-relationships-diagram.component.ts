@@ -13,6 +13,8 @@ import {
 import {
   DiagramEntityRelationshipComponent
 } from '../../../diagrams/entity-relationship/diagram-entity-relationship.component';
+import { AlertComponent } from '../../../shared/components/alert/alert.component';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
 @Component({
   selector: 'app-table-relationships-diagram',
@@ -22,10 +24,12 @@ import {
     ProgressSpinnerComponent,
     ProjectConnectionErrorAlertComponent,
     DiagramEntityRelationshipComponent,
+    AlertComponent,
+    TranslatePipe,
   ],
 })
 export class TableRelationshipsDiagramComponent {
-  relationshipsResource = input.required<Resource<TableRelationships>>();
+  relationshipsResource = input.required<Resource<TableRelationships | null>>();
   private tableColumnService = inject(TableColumnService);
 
   tableRelationships = computed<TableRelationships>(() =>

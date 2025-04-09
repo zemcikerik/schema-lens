@@ -5,10 +5,27 @@
   height: 100%;
 
   &__header {
-    display: flex;
+    display: grid;
     align-items: center;
-    justify-content: space-between;
     border-bottom: 1px solid mat.get-theme-color(t.$theme, outline-variant);
+    grid-template-columns: auto auto 1fr auto;
+    grid-template-areas: "prefix header spacer action";
+
+    &__prefix {
+      grid-area: prefix;
+
+      a {
+        margin-right: 0.5rem;
+      }
+    }
+
+    h2 {
+      grid-area: header;
+    }
+
+    &__action {
+      grid-area: action;
+    }
   }
 
   &__content {

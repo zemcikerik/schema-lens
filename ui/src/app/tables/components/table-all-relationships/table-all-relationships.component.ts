@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, Injector, input, Resource, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
 import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
 import { rxResource } from '@angular/core/rxjs-interop';
 import { TableService } from '../../services/table.service';
@@ -7,14 +7,10 @@ import { ProgressSpinnerComponent } from '../../../shared/components/progress-sp
 import { FormControl, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { TableRelationships } from '../../models/table-relationships.model';
-import {
-  TableRelationshipsDiagramComponent
-} from '../table-relationships-diagram/table-relationships-diagram.component';
-import { TableRelationshipService } from '../../services/table-relationship.service';
 import {
   ProjectConnectionErrorAlertComponent
 } from '../../../projects/components/project-connection-error-alert/project-connection-error-alert.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-table-all-relationships',
@@ -27,23 +23,19 @@ import {
     ReactiveFormsModule,
     MatButton,
     TranslatePipe,
-    TableRelationshipsDiagramComponent,
     ProjectConnectionErrorAlertComponent,
   ],
 })
 export class TableAllRelationshipsComponent {
   projectId = input.required<string>();
-  private injector = inject(Injector);
+  private router = inject(Router);
   private tableService = inject(TableService);
-  private tableRelationshipService = inject(TableRelationshipService);
 
+  tablesControl = new FormControl<string[]>([], [Validators.minLength(1)]);
   tableNamesResource = rxResource({
     request: () => ({ projectId: this.projectId() }),
     loader: ({ request }) => this.tableService.getTableNames(request.projectId),
   });
-
-  tablesControl = new FormControl<string[]>([], [Validators.minLength(1)]);
-  relationshipsResource = signal<Resource<TableRelationships> | null>(null);
 
   constructor() {
     effect(() => {
@@ -51,12 +43,9 @@ export class TableAllRelationshipsComponent {
     });
   }
 
-  showDiagram(): void {
-    const tables = this.tablesControl.value ?? [];
-
-    this.relationshipsResource.set(rxResource({
-      loader: () => this.tableRelationshipService.getRelationshipsOfTables(this.projectId(), tables),
-      injector: this.injector,
-    }));
+  async showDiagram(): Promise<void> {
+    const tableArray = this.tablesControl.value ?? [];
+    const tables = encodeURIComponent(tableArray.map(t => t.replaceAll(',', '\\,')).join(','));
+    await this.router.navigate(['/project', this.projectId(), 'table-relationships', 'view'], { queryParams: { tables } });
   }
 }

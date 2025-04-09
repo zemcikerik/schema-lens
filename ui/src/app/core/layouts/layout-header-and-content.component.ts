@@ -5,8 +5,13 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
   template: `
     <div class="layout-header-and-content" [class.include-spacing]="includeSpacing()" [class.full-height]="fullHeight()">
       <div class="layout-header-and-content__header">
+        <div class="layout-header-and-content__header__prefix">
+          <ng-content select="header-prefix" />
+        </div>
         <h2>{{ title() }}</h2>
-        <ng-content select="header-action" />
+        <div class="layout-header-and-content__header__action">
+          <ng-content select="header-action" />
+        </div>
       </div>
       <div class="layout-header-and-content__content">
         <ng-content />

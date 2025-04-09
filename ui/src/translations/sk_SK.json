@@ -10,6 +10,7 @@
     "CONFIRM_LABEL": "Potvrdiť",
     "CANCEL_LABEL": "Zrušiť",
     "CLOSE_LABEL": "Zatvoriť",
+    "BACK_LABEL": "Naspäť",
     "SUCCESS_LABEL": "Vaša požiadavka bola úspešne vykonaná.",
     "ERROR_LABEL": "Došlo k chybe pri spracovaní vašej požiadavky. Skúste to prosím neskôr.",
     "TOOLTIP_INFO_LABEL": "Informácia",
@@ -203,7 +204,9 @@
       "LABEL": "DDL"
     },
     "RELATIONSHIPS": {
-      "LABEL": "Vzťahy"
+      "LABEL": "Vzťahy",
+      "SELECTION_DESCRIPTION": "Zvolené tabuľky budú pridané do diagramu spolu s príbuznými tabuľkami.",
+      "SELECTION_NOT_FOUND": "Zvolené tabuľky neboli nájdené."
     }
   },
   "PROFILE": {

@@ -1,0 +1,8 @@
+<app-layout-header-and-content [title]="('TABLES.RELATIONSHIPS.LABEL' | translate)()" [fullHeight]="true">
+  <ng-container ngProjectAs="header-prefix">
+    <a mat-icon-button [matTooltip]="('GENERIC.BACK_LABEL' | translate)()" [routerLink]="['..']">
+      <mat-icon>arrow_back</mat-icon>
+    </a>
+  </ng-container>
+  <app-table-relationships-diagram [relationshipsResource]="relationshipsResource" />
+</app-layout-header-and-content>
