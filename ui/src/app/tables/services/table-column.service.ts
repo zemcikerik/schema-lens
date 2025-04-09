@@ -3,13 +3,15 @@ import { TableColumn } from '../models/table-column.model';
 import { Table } from '../models/table.model';
 import { TableConstraintType } from '../models/table-constraint.model';
 import { TableColumnSetUnusedOptions, TableColumnSetUnusedStatus } from '../models/table-column-set-unused.model';
-import { Observable } from 'rxjs';
+import { Observable, tap } from 'rxjs';
 import { TableColumnHttpClientService } from './table-column-http-client.service';
+import { TableCacheService } from './table-cache.service';
 
 @Injectable({ providedIn: 'root' })
 export class TableColumnService {
 
   private tableColumnHttpClient = inject(TableColumnHttpClientService);
+  private tableCacheService = inject(TableCacheService);
 
   getPrimaryKeyColumns(table: Table): TableColumn[] {
     const constraint = table.constraints.find(c => c.type === TableConstraintType.PRIMARY_KEY) ?? null;
@@ -31,7 +33,9 @@ export class TableColumnService {
   }
 
   setColumnUnused(projectId: string, options: TableColumnSetUnusedOptions): Observable<unknown> {
-    return this.tableColumnHttpClient.setColumnUnused(projectId, options);
+    return this.tableColumnHttpClient.setColumnUnused(projectId, options).pipe(
+      tap(() => this.tableCacheService.invalidateTable(projectId, options.tableName)),
+    );
   }
 
 }

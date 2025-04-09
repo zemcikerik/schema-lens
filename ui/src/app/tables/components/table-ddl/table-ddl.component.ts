@@ -3,7 +3,6 @@ import { CodeEditorComponent } from '../../../shared/components/code-editor/code
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { TableService } from '../../services/table.service';
 import { FormsModule } from '@angular/forms';
-import { unwrapProjectConnectionError } from '../../../projects/catch-project-connection-error.fn';
 import {
   ProjectConnectionErrorAlertComponent
 } from '../../../projects/components/project-connection-error-alert/project-connection-error-alert.component';
@@ -27,7 +26,6 @@ export class TableDdlComponent {
 
   ddlResource = rxResource({
     request: () => ({ projectId: this.projectId(), tableName: this.tableName() }),
-    loader: ({ request }) =>
-      this.tableService.getTableDdl(request.projectId, request.tableName).pipe(unwrapProjectConnectionError()),
+    loader: ({ request }) => this.tableService.getTableDdl(request.projectId, request.tableName),
   });
 }

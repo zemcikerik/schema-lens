@@ -16,7 +16,6 @@ import { ProgressSpinnerComponent } from '../../../shared/components/progress-sp
 import { finalize, Observable, Subject, switchMap, tap } from 'rxjs';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { unwrapProjectConnectionError } from '../../catch-project-connection-error.fn';
 import { SidebarCloseDirective } from '../../../core/layouts/sidebar-close.directive';
 
 @Component({
@@ -69,7 +68,6 @@ export class ProjectObjectSelectorComponent {
         this.reload$.pipe(
           tap(() => this.loading.set(true)),
           switchMap(() => loadAction().pipe(
-            unwrapProjectConnectionError(),
             finalize(() => untracked(() => this.loading.set(false))),
           )),
         ).subscribe({

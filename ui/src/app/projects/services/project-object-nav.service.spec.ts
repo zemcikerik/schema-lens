@@ -20,7 +20,7 @@ describe('ProjectObjectNavService', () => {
 
   it('should include object definition for tables for a given project id', async () => {
     const tableService = ngMocks.get(TableService);
-    jest.spyOn(tableService, 'getTableNames').mockReturnValue(of(['MOCK_TABLE_NAME']));
+    tableService.getTableNames = jest.fn(() => of(['MOCK_TABLE_NAME'])) as any;
 
     const mockProjectId = 'fcb2f45e-0668-4e55-bf62-8f7235d6e900';
     const result = service.getObjectDefinitionsFor(mockProjectId);

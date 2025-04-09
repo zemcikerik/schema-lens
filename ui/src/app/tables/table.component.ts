@@ -6,13 +6,13 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe } from '../core/translate/translate.pipe';
 import { ProgressSpinnerComponent } from '../shared/components/progress-spinner/progress-spinner.component';
 import { TableService } from './services/table.service';
-import { tap } from 'rxjs';
+import { filter, tap } from 'rxjs';
 import {
   ProjectConnectionErrorAlertComponent
 } from '../projects/components/project-connection-error-alert/project-connection-error-alert.component';
-import { unwrapProjectConnectionError } from '../projects/catch-project-connection-error.fn';
 import { Table } from './models/table.model';
-import { rxResource } from '@angular/core/rxjs-interop';
+import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { TableCacheService } from './services/table-cache.service';
 
 @Component({
   selector: 'app-table',
@@ -48,9 +48,15 @@ export class TableComponent {
     loader: ({ request }) =>
       this.tableService.getTableDetails(request.projectId, request.tableName).pipe(
         tap(table => this.redirectIfNotFound(table)),
-        unwrapProjectConnectionError(),
       ),
   });
+
+  constructor() {
+    inject(TableCacheService).invalidateTable$.pipe(
+      filter(({ projectId, tableName }) => projectId === this.projectId() && tableName === this.tableName()),
+      takeUntilDestroyed(),
+    ).subscribe(() => this.tableResource.reload());
+  }
 
   private async redirectIfNotFound(result: Table | null): Promise<void> {
     if (result === null) {
