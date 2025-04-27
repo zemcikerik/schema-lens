@@ -1,9 +1,11 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
+@use '../utilities/breakpoints' as breakpoints;
 
 .table-modifying-dialog {
-  // TODO: low width support
-  width: calc(var(--mat-dialog-container-max-width) - 3rem);
+  @include breakpoints.breakpoint-up(md) {
+    width: calc(var(--mat-dialog-container-max-width) - 3rem);
+  }
 
   app-alert + app-alert {
     display: block;

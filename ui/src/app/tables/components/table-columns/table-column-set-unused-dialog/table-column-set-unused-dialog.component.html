@@ -2,7 +2,7 @@
 
 <mat-dialog-content>
   <div class="table-modifying-dialog">
-    @if (statusResource.isLoading()) {
+    @if (statusResource.isLoading() || modificationRunning()) {
       <app-progress-spinner [center]="true" />
     } @else if (statusResource.error()) {
       <app-project-connection-error-alert [error]="statusResource.error()" />
