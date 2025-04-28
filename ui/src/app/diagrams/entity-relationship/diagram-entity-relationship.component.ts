@@ -16,6 +16,7 @@ import { isRelationshipConnection, RelationshipConnection } from './relationship
 import { DiagramExportControlComponent } from '../export/diagram-export-control.component';
 import { DiagramFullscreenControlComponent } from '../diagram-fullscreen-control.component';
 import { FullscreenDirective } from '../../core/directives/fullscreen.directive';
+import { NoMultiSelectModule } from '../util/no-multi-select.module';
 
 @Component({
   selector: 'app-diagram-entity-relationship',
@@ -37,6 +38,7 @@ export class DiagramEntityRelationshipComponent implements AfterViewInit {
     }),
     EntityModule,
     RelationshipModule,
+    NoMultiSelectModule,
   ];
 
   entities = input.required<Entity[]>();
