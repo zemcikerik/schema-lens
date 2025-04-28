@@ -7,6 +7,10 @@
     width: calc(var(--mat-dialog-container-max-width) - 3rem);
   }
 
+  app-alert ul {
+    word-break: break-word;
+  }
+
   app-alert + app-alert {
     display: block;
     margin-top: 0.25rem;

@@ -1,7 +1,12 @@
 @use '@angular/material' as mat;
+@use '../utilities/breakpoints' as breakpoints;
 
 .project-selector {
   @include mat.form-field-density(-4);
+
+  @include breakpoints.breakpoint-down(sm) {
+    width: 8rem;
+  }
 
   &.is-hidden {
     display: none;
