@@ -17,6 +17,7 @@ import { DiagramExportControlComponent } from '../export/diagram-export-control.
 import { DiagramFullscreenControlComponent } from '../diagram-fullscreen-control.component';
 import { FullscreenDirective } from '../../core/directives/fullscreen.directive';
 import { NoMultiSelectModule } from '../util/no-multi-select.module';
+import { BendpointsSegmentFixModule } from '../util/bendpoints-segment-fix.module';
 
 @Component({
   selector: 'app-diagram-entity-relationship',
@@ -39,6 +40,7 @@ export class DiagramEntityRelationshipComponent implements AfterViewInit {
     EntityModule,
     RelationshipModule,
     NoMultiSelectModule,
+    BendpointsSegmentFixModule,
   ];
 
   entities = input.required<Entity[]>();
