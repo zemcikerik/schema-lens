@@ -53,7 +53,7 @@ export class ChangeLocaleDialogComponent {
   changeLocale(): void {
     const locale = this.selectedLocale.value;
 
-    if (!locale || this.availableLocales().findIndex(l => l.code === locale) === -1) {
+    if (!locale || this.availableLocales().findIndex(l => l.locale === locale) === -1) {
       return;
     }
 

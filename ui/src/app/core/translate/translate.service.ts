@@ -1,11 +1,9 @@
 import { computed, inject, Injectable, signal, Signal } from '@angular/core';
-import { Translation, TranslationParams, Translations } from './translate.types';
+import { DescribedLocale, Translation, TranslationParams, Translations } from './translate.types';
 import { TranslateLoaderService } from './translate-loader.service';
-import { defer, map, Observable, of, tap } from 'rxjs';
-import { DescribedLocale } from '../models/described-locale.model';
+import { defer, map, mergeMap, Observable, of, tap } from 'rxjs';
 import { KeyValueStoreService } from '../persistence/key-value-store.service';
 
-const DEFAULT_LOCALE = 'en_US';
 const LOCALE_KEY = 'locale';
 
 @Injectable({ providedIn: 'root' })
@@ -14,7 +12,7 @@ export class TranslateService {
   private translateLoader = inject(TranslateLoaderService);
   private keyValueStoreService = inject(KeyValueStoreService);
 
-  readonly _availableLocales = signal<DescribedLocale[]>(this.translateLoader.getAvailableLocales());
+  readonly _availableLocales = signal<DescribedLocale[]>([]);
   private _translations = signal<Translations>({});
   private _locale = signal<string>('');
 
@@ -22,10 +20,10 @@ export class TranslateService {
   readonly locale = this._locale.asReadonly();
 
   trySetLocaleFromStorageOrDefault(): Observable<unknown> {
-    return defer(() => {
-      const locale = this.getLocaleFromStore() ?? DEFAULT_LOCALE;
-      return this.setLocale(locale);
-    });
+    return this.loadAvailableLocalesIfNeeded().pipe(
+      map(() => this.getLocaleFromStore() ?? this.getDefaultLocale()),
+      mergeMap(locale => this.setLocale(locale)),
+    );
   }
 
   translate(key: string, params?: TranslationParams): Signal<string> {
@@ -36,7 +34,7 @@ export class TranslateService {
   }
 
   setLocale(locale: string): Observable<boolean> {
-    return defer(() => {
+    return this.loadAvailableLocalesIfNeeded().pipe(mergeMap(() => {
       if (this.locale() === locale) {
         return of(true);
       }
@@ -44,7 +42,7 @@ export class TranslateService {
       if (!this.isLocaleAvailable(locale)) {
         return of(false);
       }
-      
+
       return this.translateLoader.loadTranslations(locale).pipe(
         tap(translations => {
           this._translations.set(translations);
@@ -53,15 +51,27 @@ export class TranslateService {
         }),
         map(() => true),
       );
+    }));
+  }
+
+  private loadAvailableLocalesIfNeeded(): Observable<unknown> {
+    return defer(() => {
+      if (this.availableLocales().length > 0) {
+        return of(null);
+      }
+
+      return this.translateLoader.getAvailableLocales().pipe(
+        tap(locales => this._availableLocales.set(locales)),
+      );
     });
   }
 
   private getLocaleFromStore(): string | null {
-    if (!this.keyValueStoreService.hasString(LOCALE_KEY)) {
+    const locale = this.keyValueStoreService.getString(LOCALE_KEY);
+
+    if (!locale) {
       return null;
     }
-
-    const locale = this.keyValueStoreService.getStringOrDefault(LOCALE_KEY, DEFAULT_LOCALE);
 
     if (this.isLocaleAvailable(locale)) {
       return locale;
@@ -71,8 +81,12 @@ export class TranslateService {
     return null;
   }
 
+  private getDefaultLocale(): string {
+    return this.availableLocales()[0].locale;
+  }
+
   private isLocaleAvailable(locale: string): boolean {
-    return this.availableLocales().findIndex(l => l.code === locale) !== -1;
+    return this.availableLocales().findIndex(l => l.locale === locale) !== -1;
   }
 
 }

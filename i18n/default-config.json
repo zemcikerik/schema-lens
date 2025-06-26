@@ -1,0 +1,5 @@
+{
+  "JWT_VERIFICATION_KEY": "6V8hpJ1kxeLpe1f88iATc4fjG0UG+OqWwjoZoU69mPydOcHN844r8ySgLFlFPB/6TlliR+59T+oz5WxaHxUPXA==",
+  "METADATA_JSON_PATH": "./meta.json",
+  "TRANSLATIONS_PATH": "./translations"
+}

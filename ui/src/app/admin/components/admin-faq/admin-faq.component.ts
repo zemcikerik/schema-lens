@@ -105,7 +105,7 @@ export class AdminFaqComponent {
   }
 
   private openModifyDialog(faqPost?: AdminFaqPost): Observable<AdminCreateFaqPost> {
-    const locales = this.translateService.availableLocales().map(l => l.code);
+    const locales = this.translateService.availableLocales().map(l => l.locale);
     const data: AdminFaqModifyDialogData = { locales, faqPost };
 
     return this.matDialog.open(AdminFaqModifyDialogComponent, { data }).afterClosed().pipe(

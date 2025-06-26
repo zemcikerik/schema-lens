@@ -18,7 +18,7 @@ export class UserHttpClientService {
 
   getCurrentUser(): Observable<User | null> {
     const context = new HttpContext();
-    context.set(SKIP_UNAUTHORIZED_REDIRECT, true);
+    context.set(SKIP_UNAUTHORIZED_REDIRECT, true); // todo: unused?
 
     return this.httpClient.get<User>('/user').pipe(
       catchSpecificHttpStatusError(401, () => of(null)),

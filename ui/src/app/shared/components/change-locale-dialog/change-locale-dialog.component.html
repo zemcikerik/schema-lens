@@ -14,8 +14,8 @@
       <mat-icon matPrefix>language</mat-icon>
       <mat-label>{{ ('LOCALE.LANGUAGE_BUTTON' | translate)() }}</mat-label>
       <mat-select [formControl]="selectedLocale" required>
-        @for (locale of availableLocales(); track locale.code) {
-          <mat-option [value]="locale.code">{{ locale.name }} ({{ locale.code }})</mat-option>
+        @for (locale of availableLocales(); track locale.locale) {
+          <mat-option [value]="locale.locale">{{ locale.title }} ({{ locale.locale }})</mat-option>
         }
       </mat-select>
     </mat-form-field>

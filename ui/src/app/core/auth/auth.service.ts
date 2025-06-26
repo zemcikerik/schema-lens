@@ -33,12 +33,14 @@ export class AuthService {
 
   attemptAuthFromStorage(): Observable<boolean> {
     return defer(() => {
-      if (!this.keyValueStoreService.hasString(JWT_TOKEN_KEY)) {
+      const rawJwt = this.keyValueStoreService.getString(JWT_TOKEN_KEY);
+
+      if (rawJwt === null) {
         this._isAuthenticated$.next(false);
         return of(false);
       }
 
-      this.setJwt(this.parseJwt(this.keyValueStoreService.getStringOrDefault(JWT_TOKEN_KEY, '')));
+      this.setJwt(this.parseJwt(rawJwt));
 
       if (this._jwt === null) {
         this._isAuthenticated$.next(false);

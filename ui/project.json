@@ -18,9 +18,6 @@
         "polyfills": [],
         "tsConfig": "tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "plugins": [
-          "src/translations/icu-translate.plugin.js"
-        ],
         "assets": [
           {
             "glob": "**/*",

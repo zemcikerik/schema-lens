@@ -1,0 +1,20 @@
+{
+  "tasks": {
+    "check": "deno check --frozen --all ./src/main.ts",
+    "test": "deno test",
+    "dev": "deno serve --cached-only --check=all --watch --allow-net --allow-env --allow-read --allow-write --allow-run --port=8018 ./src/main.ts",
+    "run": "deno serve --cached-only --allow-net --allow-env --allow-read --allow-write --allow-run --port=8018 ./src/main.ts"
+  },
+  "imports": {
+    "@luca/esbuild-deno-loader": "jsr:@luca/esbuild-deno-loader@^0.11.1",
+    "@messageformat/core": "npm:@messageformat/core@^3.4.0",
+    "@messageformat/runtime": "npm:@messageformat/runtime@^3.0.1",
+    "@std/expect": "jsr:@std/expect@1",
+    "@std/http": "jsr:@std/http@1",
+    "@std/path": "jsr:@std/path@^1.0.9",
+    "@std/testing": "jsr:@std/testing@^1.0.12",
+    "esbuild": "npm:esbuild@^0.25.4",
+    "fflate": "npm:fflate@^0.8.2",
+    "hono": "npm:hono@^4.7.10"
+  }
+}

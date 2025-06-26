@@ -11,15 +11,14 @@ describe('TranslateService', () => {
 
   beforeAll(() => MockBuilder(TranslateService)
     .mock(TranslateLoaderService, {
-      getAvailableLocales: () => [
-        { name: 'English', code: 'en_US' },
-        { name: 'Slovensky', code: 'sk_SK' },
-      ],
+      getAvailableLocales: () => of([
+        { title: 'English', locale: 'en_US' },
+        { title: 'Slovensky', locale: 'sk_SK' },
+      ]),
       loadTranslations: () => of({ KEY: () => 'test' }),
     })
     .mock(KeyValueStoreService, {
-      getStringOrDefault: () => 'en_US',
-      hasString: () => false,
+      getString: () => 'en_US',
       removeString: () => void 0,
     }));
 

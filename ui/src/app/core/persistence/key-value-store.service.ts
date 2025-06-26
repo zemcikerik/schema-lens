@@ -10,9 +10,8 @@ export class KeyValueStoreService {
     return this.localStorage.getItem(key) !== null;
   }
 
-  getStringOrDefault(key: string, defaultValue: string): string {
-    const value = this.localStorage.getItem(key);
-    return value ?? defaultValue;
+  getString(key: string): string | null {
+    return this.localStorage.getItem(key);
   }
 
   setString(key: string, value: string): void {

@@ -5,5 +5,12 @@
       "^/api": ""
     },
     "secure": false
+  },
+  "/i18n": {
+    "target": "http://localhost:8018",
+    "pathRewrite": {
+      "^/i18n": ""
+    },
+    "secure": false
   }
 }
