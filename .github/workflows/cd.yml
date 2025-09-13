@@ -375,6 +375,11 @@ jobs:
         id: connect-to-network
         run: sudo wg-quick up ./wg1.conf
 
+      - name: Wait for available connection
+        run: timeout 60 sh -c 'until ping -c1 -W10 $DEPLOY_SSH_HOST >/dev/null 2>&1; do sleep 2; done'
+        env:
+          DEPLOY_SSH_HOST: ${{ secrets.DEPLOY_SSH_HOST }}
+
       - name: Decode and save SSH key
         run: |
           install -m 600 -D /dev/null ~/.ssh/private.key
