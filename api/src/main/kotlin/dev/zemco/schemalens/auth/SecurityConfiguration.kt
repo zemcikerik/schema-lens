@@ -34,7 +34,7 @@ class SecurityConfiguration {
             exceptionHandling {
                 authenticationEntryPoint = jwtAuthenticationEntryPoint
             }
-            authorizeRequests {
+            authorizeHttpRequests {
                 authorize(GET, "/actuator/health", permitAll)
                 authorize(GET, "/actuator/prometheus", permitAll)
                 authorize(POST, "/user", permitAll)
