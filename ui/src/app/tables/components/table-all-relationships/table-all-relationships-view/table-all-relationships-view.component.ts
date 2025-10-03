@@ -7,7 +7,7 @@ import { rxResource, takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { distinctUntilChanged, map, of } from 'rxjs';
 import { TableRelationshipService } from '../../../services/table-relationship.service';
 import { LayoutHeaderAndContentComponent } from '../../../../core/layouts/layout-header-and-content.component';
-import { MatIconAnchor } from '@angular/material/button';
+import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '../../../../core/translate/translate.pipe';
 import { MatTooltip } from '@angular/material/tooltip';
@@ -21,7 +21,7 @@ const NON_ESCAPED_COMMAS_REGEX = /(?<!\\),/;
   imports: [
     LayoutHeaderAndContentComponent,
     TableRelationshipsDiagramComponent,
-    MatIconAnchor,
+    MatIconButton,
     MatIcon,
     RouterLink,
     TranslatePipe,
@@ -35,9 +35,9 @@ export class TableAllRelationshipsViewComponent {
   private tableRelationshipService = inject(TableRelationshipService);
 
   relationshipsResource = rxResource({
-    request: () => ({ projectId: this.projectId(), tables: this.tables() }),
-    loader: ({ request }) => request.tables.length > 0
-      ? this.tableRelationshipService.getRelationshipsOfTables(request.projectId, request.tables)
+    params: () => ({ projectId: this.projectId(), tables: this.tables() }),
+    stream: ({ params }) => params.tables.length > 0
+      ? this.tableRelationshipService.getRelationshipsOfTables(params.projectId, params.tables)
       : of(null),
   });
 

@@ -17,7 +17,7 @@ export class TableRelationshipsComponent {
   private tableRelationshipService = inject(TableRelationshipService);
 
   relationshipsResource = rxResource({
-    request: () => ({ projectId: this.projectId(), tableName: this.tableName() }),
-    loader: ({ request }) => this.tableRelationshipService.getRelationshipsOfTable(request.projectId, request.tableName),
+    params: () => ({ projectId: this.projectId(), tableName: this.tableName() }),
+    stream: ({ params }) => this.tableRelationshipService.getRelationshipsOfTable(params.projectId, params.tableName),
   });
 }

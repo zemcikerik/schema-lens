@@ -36,7 +36,7 @@ const ALLOWED_PICTURE_MIMETYPES = ['image/png', 'image/jpeg'];
 export class FilePickerProfilePictureComponent {
   username = input.required<string>();
   maximumFileSizeInKb = input.required<number>();
-  select = output<File>();
+  selectFile = output<File>();
   fileSizeTooBig = output();
   disallowedMimeType = output();
 
@@ -84,7 +84,7 @@ export class FilePickerProfilePictureComponent {
     this.selectedFile = { file, objectUrl };
     this.wasModified = true;
 
-    this.select.emit(file);
+    this.selectFile.emit(file);
   }
 
   fallBackToDefault(): void {

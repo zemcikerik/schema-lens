@@ -3,7 +3,7 @@
     class="profile__general__picture"
     [username]="user().username"
     [maximumFileSizeInKb]="2048"
-    (select)="setProfilePicture($event)"
+    (selectFile)="setProfilePicture($event)"
     (fileSizeTooBig)="notifyFileTooBig()"
     (disallowedMimeType)="notifyDisallowedMimeType()" />
 

@@ -1,6 +1,7 @@
 {
   "name": "schema-lens",
   "$schema": "node_modules/nx/schemas/project-schema.json",
+  "includedScripts": [],
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "./src",
@@ -8,9 +9,7 @@
   "targets": {
     "build": {
       "executor": "@nx/angular:application",
-      "outputs": [
-        "{options.outputPath}"
-      ],
+      "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/schema-lens",
         "index": "./src/index.html",
@@ -18,18 +17,14 @@
         "polyfills": [],
         "tsConfig": "tsconfig.app.json",
         "inlineStyleLanguage": "scss",
-        "plugins": [
-          "src/translations/icu-translate.plugin.js"
-        ],
+        "plugins": ["src/translations/icu-translate.plugin.js"],
         "assets": [
           {
             "glob": "**/*",
             "input": "public"
           }
         ],
-        "styles": [
-          "./src/styles.scss"
-        ],
+        "styles": ["./src/styles.scss"],
         "scripts": []
       },
       "configurations": {
@@ -69,7 +64,8 @@
       "defaultConfiguration": "development",
       "options": {
         "proxyConfig": "./src/proxy.conf.json"
-      }
+      },
+      "continuous": true
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -80,18 +76,25 @@
     "lint": {
       "executor": "@nx/eslint:lint",
       "options": {
-        "lintFilePatterns": [
-          "./src"
-        ]
+        "lintFilePatterns": ["./src"]
       }
     },
     "test": {
       "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/{projectName}"
-      ],
+      "outputs": ["{workspaceRoot}/coverage/{projectName}"],
       "options": {
-        "jestConfig": "jest.config.ts"
+        "jestConfig": "jest.config.ts",
+        "tsConfig": "tsconfig.spec.json"
+      }
+    },
+    "serve-static": {
+      "continuous": true,
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "test:build",
+        "port": 4200,
+        "staticFilePath": "dist/test/browser",
+        "spa": true
       }
     }
   }

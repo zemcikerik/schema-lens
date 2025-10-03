@@ -2,7 +2,7 @@
 @use '../theme' as t;
 
 .project-object-selector {
-  --mdc-list-list-item-one-line-container-height: 2.5rem;
+  --mat-list-list-item-one-line-container-height: 2.5rem;
 
   @include mat.expansion-overrides((
     container-background-color: transparent,

@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, input } from '@angular/core';
-import { MatIconAnchor } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { RouterLink } from '@angular/router';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
+import { MatIconButton } from '@angular/material/button';
 
 @Component({
   selector: 'app-icon-link',
@@ -14,8 +14,8 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatIconAnchor,
     MatIcon,
+    MatIconButton,
     RouterLink,
     MatTooltip,
     TranslatePipe,

@@ -1,5 +1,4 @@
-import { inject, Injectable, Signal } from '@angular/core';
-import { DOCUMENT } from '@angular/common';
+import { inject, Injectable, Signal, DOCUMENT } from '@angular/core';
 import { defer, fromEvent, map, Observable, of } from 'rxjs';
 import { toSignal } from '@angular/core/rxjs-interop';
 

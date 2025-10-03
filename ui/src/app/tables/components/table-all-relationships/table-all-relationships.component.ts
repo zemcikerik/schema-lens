@@ -33,8 +33,8 @@ export class TableAllRelationshipsComponent {
 
   tablesControl = new FormControl<string[]>([], [Validators.minLength(1)]);
   tableNamesResource = rxResource({
-    request: () => ({ projectId: this.projectId() }),
-    loader: ({ request }) => this.tableService.getTableNames(request.projectId),
+    params: () => ({ projectId: this.projectId() }),
+    stream: ({ params }) => this.tableService.getTableNames(params.projectId),
   });
 
   constructor() {

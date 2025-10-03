@@ -1,7 +1,6 @@
-import { inject, Injectable } from '@angular/core';
+import { inject, Injectable, DOCUMENT } from '@angular/core';
 import { toCanvas } from 'html-to-image';
 import { defer, finalize, from, mergeMap, Observable, of, throwError } from 'rxjs';
-import { DOCUMENT } from '@angular/common';
 import { canvasToBlob } from 'html-to-image/es/util';
 
 export interface DiagramExportOptions {

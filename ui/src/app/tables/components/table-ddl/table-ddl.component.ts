@@ -25,7 +25,7 @@ export class TableDdlComponent {
   private tableService = inject(TableService);
 
   ddlResource = rxResource({
-    request: () => ({ projectId: this.projectId(), tableName: this.tableName() }),
-    loader: ({ request }) => this.tableService.getTableDdl(request.projectId, request.tableName),
+    params: () => ({ projectId: this.projectId(), tableName: this.tableName() }),
+    stream: ({ params }) => this.tableService.getTableDdl(params.projectId, params.tableName),
   });
 }

@@ -29,7 +29,7 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
   ],
 })
 export class TableRelationshipsDiagramComponent {
-  relationshipsResource = input.required<Resource<TableRelationships | null>>();
+  relationshipsResource = input.required<Resource<TableRelationships | null | undefined>>();
   private tableColumnService = inject(TableColumnService);
 
   tableRelationships = computed<TableRelationships>(() =>

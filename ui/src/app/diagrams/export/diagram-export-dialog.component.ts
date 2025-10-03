@@ -95,7 +95,10 @@ export class DiagramExportDialogComponent {
         this.downloadService.downloadBlob(blob, fileName);
         this.state.set('success');
       },
-      error: () => this.state.set('error'),
+      error: (e: unknown) => {
+        console.error(e);
+        this.state.set('error');
+      },
     });
   }
 

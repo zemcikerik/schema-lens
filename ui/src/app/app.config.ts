@@ -1,7 +1,6 @@
-import { ApplicationConfig, provideExperimentalZonelessChangeDetection } from '@angular/core';
+import { ApplicationConfig, provideZonelessChangeDetection } from '@angular/core';
 import { provideRouter, withComponentInputBinding, withRouterConfig } from '@angular/router';
 import { appRoutes } from './app.routes';
-import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { LOCAL_STORAGE } from './core/persistence/local-storage.token';
 import { apiInterceptor } from './core/interceptors/api.interceptor';
@@ -13,7 +12,7 @@ import { FullscreenOverlayContainer, OverlayContainer } from '@angular/cdk/overl
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideExperimentalZonelessChangeDetection(),
+    provideZonelessChangeDetection(),
     provideRouter(appRoutes,
       withComponentInputBinding(),
       withRouterConfig({ paramsInheritanceStrategy: 'always' }),
@@ -21,7 +20,6 @@ export const appConfig: ApplicationConfig = {
     provideHttpClient(
       withInterceptors([apiInterceptor, jwtInterceptor, unauthorizedInterceptor]),
     ),
-    provideAnimationsAsync(),
     { provide: LOCAL_STORAGE, useFactory: () => window.localStorage },
     { provide: MAT_TOOLTIP_DEFAULT_OPTIONS, useValue: { position: 'above' } },
     { provide: MAT_ICON_DEFAULT_OPTIONS, useValue: { fontSet: 'material-symbols-outlined' } },

@@ -60,7 +60,7 @@ export class TableColumnSetUnusedDialogComponent {
   private translateService = inject(TranslateService);
 
   statusResource = rxResource({
-    loader: () => {
+    stream: () => {
       const { projectId, tableName, columnName } = this.targetData;
       return this.tableColumnService.getColumnUnusedAvailability(projectId, tableName, columnName);
     },
@@ -79,7 +79,7 @@ export class TableColumnSetUnusedDialogComponent {
 
   previewSqlDebounce = signal<boolean>(false);
   previewSqlResource = rxResource({
-    loader: () => {
+    stream: () => {
       const status = this.statusResource.value();
       const { cascadeConstraints } = this.optionsForm.value;
 

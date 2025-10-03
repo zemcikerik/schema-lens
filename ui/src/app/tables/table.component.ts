@@ -44,9 +44,9 @@ export class TableComponent {
   private router = inject(Router);
 
   tableResource = rxResource({
-    request: () => ({ projectId: this.projectId(), tableName: this.tableName() }),
-    loader: ({ request }) =>
-      this.tableService.getTableDetails(request.projectId, request.tableName).pipe(
+    params: () => ({ projectId: this.projectId(), tableName: this.tableName() }),
+    stream: ({ params }) =>
+      this.tableService.getTableDetails(params.projectId, params.tableName).pipe(
         tap(table => this.redirectIfNotFound(table)),
       ),
   });

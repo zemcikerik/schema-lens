@@ -1,5 +1,4 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { MatListItem, MatNavList } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
@@ -15,7 +14,6 @@ interface AdminNavEntry {
   templateUrl: './admin-nav.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    CommonModule,
     MatNavList,
     MatListItem,
     RouterLinkActive,
