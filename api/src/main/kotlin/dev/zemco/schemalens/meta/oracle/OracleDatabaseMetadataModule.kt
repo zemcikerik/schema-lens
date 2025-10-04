@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.meta.oracle
 
+import dev.zemco.schemalens.meta.oracle.format.OracleSqlFormatter
 import dev.zemco.schemalens.meta.spi.*
 import dev.zemco.schemalens.projects.OracleProjectConnectionInfo
 import dev.zemco.schemalens.projects.ProjectConnectionInfo
@@ -15,6 +16,7 @@ class OracleDatabaseMetadataModule(
     private val tableDdlGenerator: OracleTableDdlGenerator,
     private val tableRelationshipMetadataReader: OracleTableRelationshipMetadataReader,
     private val tableRelationshipResolver: OracleTableRelationshipResolver,
+    private val oracleSqlFormatter: OracleSqlFormatter,
 ) : DatabaseMetadataModule {
 
     override fun canResolveFor(connectionInfo: ProjectConnectionInfo): Boolean =
@@ -30,6 +32,7 @@ class OracleDatabaseMetadataModule(
             TableDdlGenerator::class -> tableDdlGenerator as T
             TableRelationshipMetadataReader::class -> tableRelationshipMetadataReader as T
             TableRelationshipResolver::class -> tableRelationshipResolver as T
+            SqlFormatter::class -> oracleSqlFormatter as T
             else -> null
         }
 

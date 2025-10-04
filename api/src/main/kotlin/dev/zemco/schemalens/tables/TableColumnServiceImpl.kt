@@ -23,10 +23,10 @@ class TableColumnServiceImpl(
         columnName: String,
     ): SetColumnUnusedStatus? =
         connectionService.withDataSource(project.connectionInfo) {
-            getColumnUnusedAvailabilityWithDatasource(project.connectionInfo, it, tableName, columnName)
+            getColumnUnusedAvailabilityForDataSource(project.connectionInfo, it, tableName, columnName)
         }
 
-    private fun getColumnUnusedAvailabilityWithDatasource(
+    private fun getColumnUnusedAvailabilityForDataSource(
         connectionInfo: ProjectConnectionInfo,
         dataSource: DataSource,
         tableName: String,
@@ -42,11 +42,11 @@ class TableColumnServiceImpl(
             return SetColumnUnusedStatus.UNAVAILABLE
         }
 
-        if (!tableReader.checkIfTableExists(dataSource, tableName)) {
+        if (!tableReader.tableExists(dataSource, tableName)) {
             return null
         }
 
-        if (!columnReader.checkIfTableColumnExists(dataSource, tableName, columnName)) {
+        if (!columnReader.columnExists(dataSource, tableName, columnName)) {
             return null
         }
 
@@ -72,7 +72,8 @@ class TableColumnServiceImpl(
             }
 
             val columnWriter = databaseMetadataService.getForConnection<TableColumnMetadataWriter>(project.connectionInfo)
-            columnWriter.previewColumnUnused(it, options)
+            val sqlFormatter = databaseMetadataService.getForConnection<SqlFormatter>(project.connectionInfo)
+            sqlFormatter.formatSql(columnWriter.previewColumnUnused(it, options))
         }
 
     override fun setColumnUnused(project: Project, options: SetColumnUnusedOptions): Boolean =
@@ -91,7 +92,7 @@ class TableColumnServiceImpl(
         dataSource: DataSource,
         options: SetColumnUnusedOptions,
     ): Boolean? {
-        val status = getColumnUnusedAvailabilityWithDatasource(
+        val status = getColumnUnusedAvailabilityForDataSource(
             project.connectionInfo,
             dataSource,
             options.tableName,

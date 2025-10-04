@@ -16,16 +16,20 @@ class OracleTableMetadataReader(
     private val indexMedataReader: OracleTableIndexMetadataReader,
 ) : TableMetadataReader {
 
-    override fun checkIfTableExists(dataSource: DataSource, tableName: String): Boolean =
-        checkIfTablesExists(dataSource, setOf(tableName))
+    override fun tableExists(dataSource: DataSource, tableName: String): Boolean =
+        allTablesExists(dataSource, setOf(tableName))
 
-    override fun readTableList(dataSource: DataSource): List<String> =
+    override fun allTablesExists(dataSource: DataSource, tableNames: Set<String>): Boolean {
+        val params = MapSqlParameterSource("table_names", tableNames)
+        val existingTableCount = dataSource.toNamedJdbcTemplate().queryForObject(TABLES_EXIST_SQL_QUERY, params, Int::class.java)
+        return existingTableCount == tableNames.size
+    }
+
+    override fun readTableNames(dataSource: DataSource): List<String> =
         dataSource.toJdbcTemplate().queryForList(GET_TABLE_LIST_SQL_QUERY, String::class.java)
 
-    override fun readTableDetails(dataSource: DataSource, tableName: String): TableMetadata? =
-        if (checkIfTablesExists(dataSource, setOf(tableName)))
-            readTableDetails(dataSource, setOf(tableName))[tableName]
-        else null
+    override fun readTableDetails(dataSource: DataSource, tableName: String): TableMetadata =
+        readTableDetails(dataSource, setOf(tableName)).getValue(tableName)
 
     fun readTableDetails(dataSource: DataSource, tableNames: Set<String>): Map<String, TableMetadata> {
         val columns = columnMetadataReader.readColumnsForTables(dataSource, tableNames)
@@ -40,12 +44,6 @@ class OracleTableMetadataReader(
                 indexes = indexes[it] ?: emptyList(),
             )
         }
-    }
-
-    fun checkIfTablesExists(dataSource: DataSource, tableNames: Set<String>): Boolean {
-        val params = MapSqlParameterSource("table_names", tableNames)
-        val existingTableCount = dataSource.toNamedJdbcTemplate().queryForObject(TABLES_EXIST_SQL_QUERY, params, Int::class.java)
-        return existingTableCount == tableNames.size
     }
 
     private companion object {

@@ -1,5 +1,5 @@
 package dev.zemco.schemalens.meta.oracle.format
 
-fun interface OracleSqlFormatter {
-    fun formatSql(sql: String): String
-}
+import dev.zemco.schemalens.meta.spi.SqlFormatter
+
+fun interface OracleSqlFormatter : SqlFormatter

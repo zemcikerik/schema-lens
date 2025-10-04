@@ -13,7 +13,7 @@ import javax.sql.DataSource
 class OracleTableConstraintMetadataReader : TableConstraintMetadataReader {
 
     override fun readConstraintsForTable(dataSource: DataSource, tableName: String): List<ConstraintMetadata> =
-        readConstraintsForTables(dataSource, setOf(tableName))[tableName] ?: emptyList()
+        readConstraintsForTables(dataSource, setOf(tableName)).getValue(tableName)
 
     override fun readConstraintsForTables(dataSource: DataSource, tableNames: Set<String>): Map<String, List<ConstraintMetadata>> {
         val params = MapSqlParameterSource("table_names", tableNames)

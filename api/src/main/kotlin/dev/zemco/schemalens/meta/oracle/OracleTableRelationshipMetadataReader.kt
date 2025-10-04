@@ -35,20 +35,23 @@ class OracleTableRelationshipMetadataReader : TableRelationshipMetadataReader {
         """.trimIndent()
 
         private val GET_DIRECT_RELATIONSHIPS_QUERY = """
-            SELECT DISTINCT table_name
-            FROM (
-                SELECT
-                    con.table_name AS source_table_name,
-                    ref_con.table_name AS ref_table_name
-                FROM user_constraints con
-                    INNER JOIN user_constraints ref_con ON (con.r_constraint_name = ref_con.constraint_name)
-                WHERE con.constraint_type = 'R' AND (con.table_name IN (:table_names) OR ref_con.table_name IN (:table_names))
-            ) UNPIVOT EXCLUDE NULLS (
-                table_name FOR direction IN (
-                    source_table_name AS 'S',
-                    ref_table_name AS 'R'
-                )
+            WITH source_table_fk AS (
+                SELECT table_name, r_constraint_name
+                FROM all_constraints
+                WHERE owner = user AND r_owner = user AND constraint_type = 'R'
+            ), target_table_pk AS (
+                SELECT table_name, constraint_name
+                FROM all_constraints
+                WHERE owner = user AND constraint_type = 'P'
+            ), relationships AS (
+                SELECT fk.table_name AS source_table_name, pk.table_name AS target_table_name
+                FROM source_table_fk fk
+                    INNER JOIN target_table_pk pk ON (fk.r_constraint_name = pk.constraint_name)
+                WHERE pk.table_name IN (:table_names) OR fk.table_name in (:table_names)
             )
+            SELECT source_table_name FROM relationships
+            UNION
+            SELECT target_table_name FROM relationships
         """.trimIndent()
     }
 

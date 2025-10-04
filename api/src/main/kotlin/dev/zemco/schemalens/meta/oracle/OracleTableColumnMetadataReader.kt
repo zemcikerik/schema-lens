@@ -14,10 +14,10 @@ import javax.sql.DataSource
 @Qualifier("oracle")
 class OracleTableColumnMetadataReader : TableColumnMetadataReader {
 
-    override fun checkIfTableColumnExists(dataSource: DataSource, tableName: String, columnName: String): Boolean {
+    override fun columnExists(dataSource: DataSource, tableName: String, columnName: String): Boolean {
         val params = MapSqlParameterSource(mapOf(
             "table_name" to tableName,
-            "column_name" to columnName
+            "column_name" to columnName,
         ))
 
         return dataSource.toNamedJdbcTemplate().queryForObject(COLUMN_EXISTS_SQL_QUERY, params, Boolean::class.java) ?: false

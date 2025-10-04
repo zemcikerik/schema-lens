@@ -13,14 +13,10 @@ class OracleTableRelationshipResolver(
     private val tableRelationshipMetadataReader: OracleTableRelationshipMetadataReader
 ) : TableRelationshipResolver {
 
-    override fun readDetailsOfTable(dataSource: DataSource, tableName: String): TableRelationshipsMetadata? =
-        readDetailsOfTables(dataSource, setOf(tableName))
+    override fun readTableRelationships(dataSource: DataSource, tableName: String): TableRelationshipsMetadata =
+        readTableRelationships(dataSource, setOf(tableName))
 
-    override fun readDetailsOfTables(dataSource: DataSource, tableNames: Set<String>): TableRelationshipsMetadata? {
-        if (!tableMetadataReader.checkIfTablesExists(dataSource, tableNames)) {
-            return null
-        }
-
+    override fun readTableRelationships(dataSource: DataSource, tableNames: Set<String>): TableRelationshipsMetadata {
         val relatedTableNames = tableRelationshipMetadataReader.readDirectlyRelatedTableNames(
             dataSource,
             tableNames,
