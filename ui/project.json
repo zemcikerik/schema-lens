@@ -63,7 +63,7 @@
       },
       "defaultConfiguration": "development",
       "options": {
-        "proxyConfig": "./src/proxy.conf.json"
+        "proxyConfig": "./src/proxy-local.config.json"
       },
       "continuous": true
     },

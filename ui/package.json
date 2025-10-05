@@ -4,6 +4,7 @@
   "license": "MIT",
   "scripts": {
     "start": "nx serve",
+    "start:proxy-dev": "nx serve --proxy-config=./src/proxy-dev.config.json",
     "build": "nx build",
     "build:ci": "nx build",
     "lint": "nx lint",

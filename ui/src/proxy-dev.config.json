@@ -1,0 +1,7 @@
+{
+  "/api": {
+    "target": "https://dev.schema-lens.com",
+    "secure": true,
+    "changeOrigin": true
+  }
+}
