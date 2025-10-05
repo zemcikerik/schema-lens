@@ -24,6 +24,7 @@ import type Canvas from 'diagram-js/lib/core/Canvas';
 import type { Connection, Shape } from 'diagram-js/lib/model/Types';
 import { AngularHostContextModuleFactory } from './angular/angular-host-context.module';
 import { UnfocusModule } from './util/unfocus.module';
+import { GridBackground, GridBackgroundModule } from './util/grid-background.module';
 
 @Component({
   selector: 'app-diagram-host',
@@ -51,6 +52,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
       const diagram = new Diagram({
         canvas: {
           container: this.elementRef.nativeElement,
+          deferUpdate: true,
         },
         modules: [
           BendpointsModule,
@@ -62,6 +64,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
           SelectionModule,
           UnfocusModule,
           ZoomScrollModule,
+          GridBackgroundModule,
           AngularHostContextModuleFactory.create({
             ngZone: this.ngZone,
             viewContainerRef: this.viewContainerRef,
@@ -81,7 +84,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   }
 
   addShape(shape: Partial<Shape>): Shape {
-    return this.ngZone.runOutsideAngular(() => {
+    return this.runInDiagramContext(() => {
       const createdShape = this.elementFactory.createShape(shape);
       this.canvas.addShape(createdShape);
       return createdShape;
@@ -89,7 +92,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   }
 
   addConnection(connection: Partial<Connection>): Connection {
-    return this.ngZone.runOutsideAngular(() => {
+    return this.runInDiagramContext(() => {
       const createdConnection = this.elementFactory.createConnection(connection);
       this.canvas.addConnection(createdConnection);
       return createdConnection;
@@ -97,15 +100,31 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   }
 
   getDiagramRoot(): HTMLElement {
-    return this.ngZone.runOutsideAngular(() => this.canvas.getContainer());
+    return this.runInDiagramContext(() => this.canvas.getContainer());
   }
 
   getZoomLevel(): number {
-    return this.ngZone.runOutsideAngular(() => this.canvas.zoom());
+    return this.runInDiagramContext(() => this.canvas.zoom());
   }
 
   setZoomLevel(zoomLevel: number): void {
-    this.ngZone.runOutsideAngular(() => this.canvas.zoom(zoomLevel));
+    this.runInDiagramContext(() => this.canvas.zoom(zoomLevel));
+  }
+
+  isGridVisible(): boolean {
+    return this.runInDiagramContext(diagram => diagram.get<GridBackground>('gridBackground').isBackgroundShown());
+  }
+
+  setGridVisibility(visible: boolean): void {
+    this.runInDiagramContext(diagram =>{
+      const grid = diagram.get<GridBackground>('gridBackground');
+
+      if (visible) {
+        grid.showBackground();
+      } else {
+        grid.hideBackground();
+      }
+    });
   }
 
   runInDiagramContext<T = void>(runner: (diagram: Diagram) => T): T {

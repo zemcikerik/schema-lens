@@ -10,6 +10,10 @@
     background-color: transparent;
   }
 
+  &.hide-grid .diagram__grid-background {
+    display: none;
+  }
+
   .djs-bendpoint,
   .djs-segment-dragger {
     .djs-visual {

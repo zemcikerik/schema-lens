@@ -15,6 +15,7 @@ import { isConnection } from 'diagram-js/lib/util/ModelUtil';
 import { isRelationshipConnection, RelationshipConnection } from './relationship/relationship.connection';
 import { DiagramExportControlComponent } from '../export/diagram-export-control.component';
 import { DiagramFullscreenControlComponent } from '../diagram-fullscreen-control.component';
+import { DiagramGridControlComponent } from '../diagram-grid-control.component';
 import { FullscreenDirective } from '../../core/directives/fullscreen.directive';
 import { NoMultiSelectModule } from '../util/no-multi-select.module';
 import { BendpointsSegmentFixModule } from '../util/bendpoints-segment-fix.module';
@@ -28,6 +29,7 @@ import { BendpointsSegmentFixModule } from '../util/bendpoints-segment-fix.modul
     DiagramZoomControlComponent,
     DiagramExportControlComponent,
     DiagramFullscreenControlComponent,
+    DiagramGridControlComponent,
     FullscreenDirective,
   ],
 })

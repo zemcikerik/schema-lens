@@ -235,6 +235,7 @@
     "FULLSCREEN_ENTER_LABEL": "Celá obrazovka",
     "FULLSCREEN_EXIT_LABEL": "Ukončiť celú obrazovku",
     "FULLSCREEN_UNAVAILABLE_LABEL": "Režim celej obrazovky nie je vo vašom prehliadači dostupný.",
+    "GRID_TOGGLE_LABEL": "Prepni mriežku",
     "ENTITY_RELATIONSHIP": {
       "PRIMARY_KEY": "Primárny kľúč",
       "FOREIGN_KEY": "Cudzí kľúč{count, plural, =1 {} other { '#'{position}}}"

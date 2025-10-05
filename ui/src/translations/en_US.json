@@ -235,6 +235,7 @@
     "FULLSCREEN_ENTER_LABEL": "Fullscreen",
     "FULLSCREEN_EXIT_LABEL": "Exit Fullscreen",
     "FULLSCREEN_UNAVAILABLE_LABEL": "Fullscreen is not available on your browser.",
+    "GRID_TOGGLE_LABEL": "Toggle Grid",
     "ENTITY_RELATIONSHIP": {
       "PRIMARY_KEY": "Primary Key",
       "FOREIGN_KEY": "Foreign Key{count, plural, =1 {} other { '#'{position}}}"

@@ -21,10 +21,10 @@ export class DiagramExportService {
       const diagramSvg = rootCopy.querySelector('.djs-parent > svg') as SVGElement;
       const viewport = diagramSvg.querySelector('g.viewport') as SVGGraphicsElement;
 
+      additionalClasses.forEach(c => rootCopy.classList.add(c));
       this.resetDiagramOffsetAndZoom(viewport);
       this.moveWrapperOutOfViewAndFitDiagram(wrapper, viewport);
       this.fixViewportPositioningWithNegativeCoordinates(viewport);
-      additionalClasses.forEach(c => rootCopy.classList.add(c));
 
       if (transparent) {
         rootCopy.classList.add('transparent');
