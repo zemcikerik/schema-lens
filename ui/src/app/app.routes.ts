@@ -1,5 +1,6 @@
 import { Route } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
+import { homeGuard } from './core/guards/home.guard';
 import { hasAdminRoleGuard } from './core/guards/has-role.guard';
 
 export const appRoutes: Route[] = [
@@ -9,11 +10,13 @@ export const appRoutes: Route[] = [
     path: 'login',
     loadComponent: () => import('./core/auth/login.component').then(c => c.LoginComponent),
     data: { disableTopBar: true },
+    canActivate: [homeGuard],
   },
   {
     path: 'register',
     loadComponent: () => import('./core/auth/register.component').then(c => c.RegisterComponent),
     data: { disableTopBar: true },
+    canActivate: [homeGuard],
   },
   {
     path: 'profile',
