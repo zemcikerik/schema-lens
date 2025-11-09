@@ -330,4 +330,379 @@
       <column name="LOWER(email)" />
     </createIndex>
   </changeSet>
+  
+  <changeSet id="2025-11-07T1434-add-data-model"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createTable tableName="data_model">
+      <column name="model_id"
+              type="bigint"
+              autoIncrement="true">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model" />
+      </column>
+
+      <column name="name"
+              type="VARCHAR(64)">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="owner_id"
+              type="BIGINT">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2025-11-07T1439-data-model-user-ownership"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addForeignKeyConstraint baseTableName="data_model"
+                             baseColumnNames="owner_id"
+                             constraintName="fk_data_model_on_owner_id"
+                             referencedTableName="registered_user"
+                             referencedColumnNames="id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2025-11-07T1440-add-data-model-data-type"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createTable tableName="data_model_data_type">
+      <column name="type_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_data_type" />
+      </column>
+
+      <column name="model_id"
+              type="BIGINT">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="name"
+              type="VARCHAR(40)">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2025-11-07T1444-data-model-data-type-ownership"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addForeignKeyConstraint baseTableName="data_model_data_type"
+                             baseColumnNames="model_id"
+                             constraintName="fk_data_model_data_type_on_model_id"
+                             referencedTableName="data_model"
+                             referencedColumnNames="model_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2025-11-07T1445-data-model-data-type-unique-name-per-model"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addUniqueConstraint tableName="data_model_data_type"
+                         columnNames="model_id, name"
+                         constraintName="uc_data_model_data_type_per_model_name" />
+  </changeSet>
+
+  <changeSet id="2025-11-07T1448-add-data-model-entity"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createTable tableName="data_model_entity">
+      <column name="entity_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_entity" />
+      </column>
+
+      <column name="model_id"
+              type="BIGINT">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="name"
+              type="VARCHAR(30)">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2025-11-07T1451-data-model-entity-ownership"
+               author="Erik Zemčík (zemcik.erik@gmail.com">
+    <addForeignKeyConstraint baseTableName="data_model_entity"
+                             baseColumnNames="model_id"
+                             constraintName="fk_data_model_entity_on_model_id"
+                             referencedTableName="data_model"
+                             referencedColumnNames="model_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2025-11-07T1452-add-data-model-attribute"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createTable tableName="data_model_attribute">
+      <column name="attribute_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_attribute" />
+      </column>
+
+      <column name="entity_id"
+              type="BIGINT">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="name"
+              type="VARCHAR(30)">
+        <constraints nullable="false"/>
+      </column>
+
+      <column name="type_id"
+              type="BIGINT">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="is_primary_key"
+              type="NUMBER(1,0)"
+              defaultValue="0">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="is_nullable"
+              type="NUMBER(1,0)"
+              defaultValue="1">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="position"
+              type="SMALLINT">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2025-11-07T1459-data-model-attribute-ownership"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addForeignKeyConstraint baseTableName="data_model_attribute"
+                             baseColumnNames="entity_id"
+                             constraintName="fk_data_model_attribute_on_entity_id"
+                             referencedTableName="data_model_entity"
+                             referencedColumnNames="entity_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2025-11-07T1500-data-model-attribute-data-type"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addForeignKeyConstraint baseTableName="data_model_attribute"
+                             baseColumnNames="type_id"
+                             constraintName="fk_data_model_attribute_on_type_id"
+                             referencedTableName="data_model_data_type"
+                             referencedColumnNames="type_id"
+                             onDelete="RESTRICT"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2025-11-07T1504-data-model-attribute-enforce-not-null-primary-key"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <sql dbms="oracle"
+         splitStatements="false">
+      ALTER TABLE data_model_attribute
+      ADD CONSTRAINT cc_data_model_attribute_not_null_primary_key CHECK (is_primary_key = 0 OR is_nullable = 0)
+    </sql>
+
+    <rollback>
+        <sql dbms="oracle"
+             splitStatements="false">
+          ALTER TABLE data_model_attribute
+          DROP CONSTRAINT cc_data_model_attribute_not_null_primary_key
+        </sql>
+    </rollback>
+  </changeSet>
+
+  <changeSet id="2025-11-07T1509-add-data-model-relationship"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createTable tableName="data_model_relationship">
+      <column name="relationship_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_relationship" />
+      </column>
+
+      <column name="model_id"
+              type="BIGINT">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="from_entity_id"
+              type="BIGINT">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="to_entity_id"
+              type="BIGINT">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="type"
+              type="CHAR">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="is_mandatory"
+              type="NUMBER(1,0)"
+              defaultValue="0">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="is_identifying"
+              type="NUMBER(1,0)"
+              defaultValue="0">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2025-11-07T1515-data-model-relationship-ownership"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addForeignKeyConstraint baseTableName="data_model_relationship"
+                             baseColumnNames="model_id"
+                             constraintName="fk_data_model_relationship_on_model_id"
+                             referencedTableName="data_model"
+                             referencedColumnNames="model_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2025-11-07T1518-data-model-relationship-from-entity-reference"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addForeignKeyConstraint baseTableName="data_model_relationship"
+                             baseColumnNames="from_entity_id"
+                             constraintName="fk_data_model_relationship_on_from_entity_id"
+                             referencedTableName="data_model_entity"
+                             referencedColumnNames="entity_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2025-11-07T1519-data-model-relationship-to-entity-reference"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addForeignKeyConstraint baseTableName="data_model_relationship"
+                             baseColumnNames="to_entity_id"
+                             constraintName="fk_data_model_relationship_on_to_entity_id"
+                             referencedTableName="data_model_entity"
+                             referencedColumnNames="entity_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2025-11-07T1520-data-model-relationship-type"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <!-- '1' -> one-to-one relationship -->
+    <!-- 'N' -> one-to-many relationship -->
+    <sql dbms="oracle"
+         splitStatements="false">
+      ALTER TABLE data_model_relationship
+      ADD CONSTRAINT cc_data_model_relationship_type CHECK (type IN ('1', 'N'))
+    </sql>
+
+    <rollback>
+      <sql dbms="oracle"
+           splitStatements="false">
+        ALTER TABLE data_model_relationship
+        DROP CONSTRAINT cc_data_model_relationship_type
+      </sql>
+    </rollback>
+  </changeSet>
+
+  <changeSet id="2025-11-07T1543-data-model-relationship-no-identifying-self-reference"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <sql dbms="oracle"
+         splitStatements="false">
+      ALTER TABLE data_model_relationship
+      ADD CONSTRAINT cc_data_model_relationship_no_identifying_self_reference CHECK (
+        from_entity_id &lt;&gt; to_entity_id OR is_identifying = 0
+      )
+    </sql>
+
+    <rollback>
+      <sql dbms="oracle"
+           splitStatements="false">
+        ALTER TABLE data_model_relationship
+        DROP CONSTRAINT cc_data_model_relationship_no_identifying_self_reference
+      </sql>
+    </rollback>
+  </changeSet>
+
+  <changeSet id="2025-11-07T1548-data-model-relationship-no-mandatory-self-reference"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <sql dbms="oracle"
+         splitStatements="false">
+      ALTER TABLE data_model_relationship
+      ADD CONSTRAINT cc_data_model_relationship_no_mandatory_self_reference CHECK (
+        from_entity_id &lt;&gt; to_entity_id OR is_mandatory = 0
+      )
+    </sql>
+
+    <rollback>
+      <sql dbms="oracle"
+           splitStatements="false">
+        ALTER TABLE data_model_relationship
+        DROP CONSTRAINT cc_data_model_relationship_no_mandatory_self_reference
+      </sql>
+    </rollback>
+  </changeSet>
+
+  <changeSet id="2025-11-07T1550-add-data-model-relationship-attribute"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createTable tableName="data_model_relationship_attribute">
+      <column name="relationship_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_relationship_attribute" />
+      </column>
+
+      <column name="referenced_attribute_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_relationship_attribute" />
+      </column>
+
+      <column name="name"
+              type="VARCHAR(30)">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="position"
+              type="TINYINT">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2025-11-07T1555-data-model-relationship-attribute-ownership"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addForeignKeyConstraint baseTableName="data_model_relationship_attribute"
+                             baseColumnNames="relationship_id"
+                             constraintName="fk_data_model_relationship_attribute_on_relationship_id"
+                             referencedTableName="data_model_relationship"
+                             referencedColumnNames="relationship_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2025-11-07T1600-data-model-relationship-attribute-referenced-attribute"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addForeignKeyConstraint baseTableName="data_model_relationship_attribute"
+                             baseColumnNames="referenced_attribute_id"
+                             constraintName="fk_data_model_relationship_attribute_on_referenced_attribute_id"
+                             referencedTableName="data_model_attribute"
+                             referencedColumnNames="attribute_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
 </databaseChangeLog>
