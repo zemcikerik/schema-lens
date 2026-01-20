@@ -1,13 +1,13 @@
-import type Canvas from 'diagram-js/lib/core/Canvas';
-import type EventBus from 'diagram-js/lib/core/EventBus';
 import type { ElementLike, Shape } from 'diagram-js/lib/model/Types';
 import type { Dimensions, Direction, Rect } from 'diagram-js/lib/util/Types';
-import { EntityShape, isEntityElement } from './entity.shape';
-import { translate } from 'diagram-js/lib/util/SvgTransformUtil';
-import { EntityComponent } from './entity.component';
 import { ResizerOffset, ResizerOffsets } from './resizer-offsets.model';
-import { create as svgCreate, replace as svgReplace } from 'tiny-svg';
+import type EventBus from 'diagram-js/lib/core/EventBus';
+import type Canvas from 'diagram-js/lib/core/Canvas';
 import type { AngularElementTracker } from '../../angular/angular-element-tracker.module';
+import { translate } from 'diagram-js/lib/util/SvgTransformUtil';
+import { create as svgCreate, replace as svgReplace } from 'tiny-svg';
+import { isNodeElement, SchemaDiagramNodeShape } from './schema-diagram-node.shape';
+import { SchemaDiagramNodeComponent } from './schema-diagram-node.component';
 
 interface SelectionChangedEvent extends Event {
   newSelection: ElementLike[];
@@ -16,14 +16,14 @@ interface SelectionChangedEvent extends Event {
 interface DraggingResizeStartEvent extends Event {
   shape: Shape;
   context: {
-    minDimensions: Dimensions,
+    minDimensions: Dimensions;
   };
 }
 
 interface DraggingResizeMoveEvent extends Event {
   shape: Shape;
   context: {
-    newBounds: Rect,
+    newBounds: Rect;
   };
 }
 
@@ -33,7 +33,7 @@ interface DraggingResizeCancelEvent extends Event {
 
 const RESIZER_CLASS_PREFIX = 'djs-resizer-';
 const RESIZER_VISUAL_CLASS = 'djs-resizer-visual';
-const ENTITY_RESIZER_RADIUS = 4;
+const NODE_RESIZER_RADIUS = 4;
 
 const RESIZER_OFFSETS_MAPPINGS: Record<Direction, keyof ResizerOffsets> = {
   n: 'top',
@@ -46,7 +46,7 @@ const RESIZER_OFFSETS_MAPPINGS: Record<Direction, keyof ResizerOffsets> = {
   se: 'bottomRight',
 };
 
-export class EntityResizeHandler {
+export class SchemaDiagramNodeResizeHandler {
 
   static readonly $inject = ['eventBus', 'canvas', 'angularElementTracker'];
 
@@ -62,7 +62,7 @@ export class EntityResizeHandler {
 
   private ensureMinimumDimensions(): void {
     this.eventBus.on('resize.start', 1500, (event: DraggingResizeStartEvent) => {
-      if (isEntityElement(event.shape)) {
+      if (isNodeElement(event.shape)) {
         event.context.minDimensions = { ...event.shape.minDimensions };
       }
     });
@@ -70,51 +70,51 @@ export class EntityResizeHandler {
 
   private liveResizePreview(): void {
     this.eventBus.on('resize.move', 750, (event: DraggingResizeMoveEvent) => {
-      if (isEntityElement(event.shape)) {
+      if (isNodeElement(event.shape)) {
         this.updateWrapperRectangle(event.shape, event.context.newBounds);
         event.stopPropagation();
       }
     });
 
     this.eventBus.on('resize.cancel', (event: DraggingResizeCancelEvent) => {
-      if (isEntityElement(event.shape)) {
+      if (isNodeElement(event.shape)) {
         this.updateWrapperRectangle(event.shape, event.shape);
       }
     });
   }
 
-  private updateWrapperRectangle(entity: EntityShape, { x, y, width, height }: Rect): void {
+  private updateWrapperRectangle(node: SchemaDiagramNodeShape, { x, y, width, height }: Rect): void {
     // translate graphics manually to prevent needles redraws
-    const graphics = this.canvas.getGraphics(entity);
+    const graphics = this.canvas.getGraphics(node);
     translate(graphics, x, y);
 
-    const wrapper = this.angularElementTracker.getComponentWrapper(entity);
+    const wrapper = this.angularElementTracker.getComponentWrapper(node);
     wrapper?.setAttribute('width', String(width));
     wrapper?.setAttribute('height', String(height));
   }
 
   private applyCustomResizers(): void {
     this.eventBus.on('selection.changed', 250, (event: SelectionChangedEvent) => {
-      if (event.newSelection.length !== 1 || !isEntityElement(event.newSelection[0])) {
+      if (event.newSelection.length !== 1 || !isNodeElement(event.newSelection[0])) {
         return;
       }
 
-      const [entity] = event.newSelection;
+      const [node] = event.newSelection;
       const resizers = this.canvas.getLayer('resizers');
-      const resizerOffsets = EntityComponent.calculateResizerHandleOffsets(entity);
+      const resizerOffsets = SchemaDiagramNodeComponent.calculateResizerHandleOffsets(node);
 
       Object.entries(RESIZER_OFFSETS_MAPPINGS).map(([direction, offsetsKey]) => {
         const resizer = resizers.getElementsByClassName(`${RESIZER_CLASS_PREFIX}${direction}`)[0];
 
         if (resizer) {
-          this.updateEntityResizer(entity, resizer as SVGElement, resizerOffsets[offsetsKey]);
+          this.updateNodeResizer(node, resizer as SVGElement, resizerOffsets[offsetsKey]);
         }
       });
     });
   }
 
-  private updateEntityResizer(entity: EntityShape, resizer: SVGElement, offset: ResizerOffset): void {
-    translate(resizer, entity.x + offset.x, entity.y + offset.y);
+  private updateNodeResizer(node: SchemaDiagramNodeShape, resizer: SVGElement, offset: ResizerOffset): void {
+    translate(resizer, node.x + offset.x, node.y + offset.y);
     const originalVisual = resizer.getElementsByClassName(RESIZER_VISUAL_CLASS)[0];
 
     if (!originalVisual) {
@@ -125,9 +125,8 @@ export class EntityResizeHandler {
       class: RESIZER_VISUAL_CLASS,
       x: originalVisual.getAttribute('x'),
       y: originalVisual.getAttribute('y'),
-      r: ENTITY_RESIZER_RADIUS,
+      r: NODE_RESIZER_RADIUS,
     });
     svgReplace(originalVisual, visual);
   }
-
 }

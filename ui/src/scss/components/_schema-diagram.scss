@@ -1,7 +1,7 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
 
-.diagram-entity-relationship {
+.schema-diagram {
   background-color: mat.get-theme-color(t.$theme, surface);
   position: relative;
   height: 100%;
@@ -29,7 +29,7 @@
     stroke-width: 1px;
   }
 
-  &__entity {
+  &__node {
     display: flex;
     flex-direction: column;
     user-select: none;
@@ -48,7 +48,7 @@
       overflow-x: hidden;
     }
 
-    &__attributes {
+    &__fields {
       border-collapse: collapse;
 
       &__wrapper {
@@ -74,7 +74,7 @@
           padding-left: 1rem;
         }
 
-        &.primary-key {
+        &.key {
           color: mat.get-theme-color(t.$theme, primary);
           padding: 0 1px;
 
@@ -99,7 +99,7 @@
     }
   }
 
-  &__relationship {
+  &__edge {
     fill: none;
     stroke: mat.get-theme-color(t.$theme, on-surface-variant);
     stroke-width: 0.125rem;

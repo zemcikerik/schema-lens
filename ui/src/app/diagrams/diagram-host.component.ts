@@ -19,12 +19,15 @@ import RuleModule from 'diagram-js/lib/features/rules';
 import SelectionModule from 'diagram-js/lib/features/selection';
 import ZoomScrollModule from 'diagram-js/lib/navigation/zoomscroll';
 import type { ModuleDeclaration } from 'didi';
-import type ElementFactory from 'diagram-js/lib/core/ElementFactory';
-import type Canvas from 'diagram-js/lib/core/Canvas';
-import type { Connection, Shape } from 'diagram-js/lib/model/Types';
+import ElementFactory from 'diagram-js/lib/core/ElementFactory';
+import Canvas from 'diagram-js/lib/core/Canvas';
+import type { Connection, ElementLike, Shape } from 'diagram-js/lib/model/Types';
 import { AngularHostContextModuleFactory } from './angular/angular-host-context.module';
 import { UnfocusModule } from './util/unfocus.module';
 import { GridBackground, GridBackgroundModule } from './util/grid-background.module';
+import Modeling from 'diagram-js/lib/features/modeling/Modeling';
+import EventBus from 'diagram-js/lib/core/EventBus';
+import { CroppingConnectionDockingModule } from './util/cropping-connection-docking.module';
 
 @Component({
   selector: 'app-diagram-host',
@@ -34,12 +37,17 @@ import { GridBackground, GridBackgroundModule } from './util/grid-background.mod
 export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   modules = input<ModuleDeclaration[]>([]);
 
+  // initialized after view init
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  private diagram: Diagram = null!; // initialized after view init
+  private diagram: Diagram = null!;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  private canvas: Canvas = null!; // initialized after view init
+  private canvas: Canvas = null!;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  private elementFactory: ElementFactory = null!; // initialized after view init
+  private elementFactory: ElementFactory = null!;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  private eventBus: EventBus = null!;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  private modeling: Modeling = null!;
 
   private elementRef = inject(ElementRef);
   private viewContainerRef = inject(ViewContainerRef);
@@ -48,7 +56,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     const modules = this.modules();
 
-    const { diagram, canvas, elementFactory } = this.ngZone.runOutsideAngular(() => {
+    const { diagram, canvas, elementFactory, eventBus, modeling } = this.ngZone.runOutsideAngular(() => {
       const diagram = new Diagram({
         canvas: {
           container: this.elementRef.nativeElement,
@@ -56,6 +64,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
         },
         modules: [
           BendpointsModule,
+          GridBackgroundModule,
           ModelingModule,
           MoveModule,
           MoveCanvasModule,
@@ -64,7 +73,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
           SelectionModule,
           UnfocusModule,
           ZoomScrollModule,
-          GridBackgroundModule,
+          CroppingConnectionDockingModule,
           AngularHostContextModuleFactory.create({
             ngZone: this.ngZone,
             viewContainerRef: this.viewContainerRef,
@@ -74,13 +83,17 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
       });
       const canvas = diagram.get<Canvas>('canvas');
       const elementFactory = diagram.get<ElementFactory>('elementFactory');
+      const eventBus = diagram.get<EventBus>('eventBus');
+      const modeling = diagram.get<Modeling>('modeling');
 
-      return { diagram, canvas, elementFactory };
+      return { diagram, canvas, elementFactory, eventBus, modeling };
     });
 
     this.diagram = diagram;
     this.canvas = canvas;
     this.elementFactory = elementFactory;
+    this.eventBus = eventBus;
+    this.modeling = modeling;
   }
 
   addShape(shape: Partial<Shape>): Shape {
@@ -91,11 +104,24 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  connect(from: Shape, to: Shape, connection: Partial<Connection>): Connection {
+    return this.runInDiagramContext(() => this.modeling.connect(from, to, connection));
+  }
+
   addConnection(connection: Partial<Connection>): Connection {
     return this.runInDiagramContext(() => {
       const createdConnection = this.elementFactory.createConnection(connection);
       this.canvas.addConnection(createdConnection);
       return createdConnection;
+    });
+  }
+
+  updateAll(elements: ElementLike[], updatesById: Record<string, Partial<ElementLike>>): void {
+    this.runInDiagramContext(() => {
+      elements.forEach(element => {
+        Object.entries(updatesById[element.id]).forEach(([key, value]) => element[key] = value);
+      });
+      this.eventBus.fire('elements.changed', { elements: [...elements] });
     });
   }
 
