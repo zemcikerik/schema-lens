@@ -1,9 +1,9 @@
-<div class="diagram-entity-relationship" appFullscreen #fullscreenHost="appFullscreen">
+<div class="schema-diagram" appFullscreen #fullscreenHost="appFullscreen">
   <app-diagram-host #diagramHost [modules]="MODULES" />
-  <div class="diagram-entity-relationship__controls">
+  <div class="schema-diagram__controls">
     <app-diagram-grid-control [diagramHost]="diagramHost" />
     <app-diagram-export-control [diagramHost]="diagramHost"
-                                [additionalClasses]="['diagram-entity-relationship', 'hide-grid']" />
+                                [additionalClasses]="['schema-diagram', 'hide-grid']" />
     <app-diagram-zoom-control [diagramHost]="diagramHost" />
     <app-diagram-fullscreen-control [fullscreenHost]="fullscreenHost" />
   </div>

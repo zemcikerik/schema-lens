@@ -3,17 +3,17 @@ import type { Connection } from 'diagram-js/lib/model/Types';
 import type EventBus from 'diagram-js/lib/core/EventBus';
 import { createLine } from 'diagram-js/lib/util/RenderUtil';
 import { append as svgAppend, create as svgCreate } from 'tiny-svg';
-import { isRelationshipConnection, RelationshipConnection } from './relationship.connection';
-import { Relationship } from './relationship.model';
+import { isEdgeConnection, SchemaDiagramEdgeConnection } from './schema-diagram-edge.connection';
+import { EDGE_TYPE_ONE_TO_ONE, SchemaDiagramEdge } from '../model/schema-diagram-edge.model';
 
-const RELATIONSHIP_CLASS = 'diagram-entity-relationship__relationship';
-const RELATIONSHIP_NON_IDENTIFYING_CLASS = 'non-identifying';
-const RELATIONSHIP_CORNER_RADIUS = 16;
+const EDGE_CLASS = 'schema-diagram__edge';
+const EDGE_NON_IDENTIFYING_CLASS = 'non-identifying';
+const EDGE_CORNER_RADIUS = 16;
 
-const RELATIONSHIP_ONE_SIDE_MARKER_CLASS = 'diagram-entity-relationship__relationship__one-side';
-const RELATIONSHIP_MANY_SIDE_MARKER_CLASS = 'diagram-entity-relationship__relationship__many-side';
+const EDGE_ONE_SIDE_MARKER_CLASS = 'schema-diagram__edge__one-side';
+const EDGE_MANY_SIDE_MARKER_CLASS = 'schema-diagram__edge__many-side';
 
-export class RelationshipRenderer extends BaseRenderer {
+export class SchemaDiagramEdgeRenderer extends BaseRenderer {
 
   static readonly $inject = ['eventBus'];
 
@@ -21,30 +21,30 @@ export class RelationshipRenderer extends BaseRenderer {
     super(eventBus, 1500);
   }
 
-  override canRender(element: Connection): boolean {
-    return isRelationshipConnection(element);
+  override canRender(connection: Connection): boolean {
+    return isEdgeConnection(connection);
   }
 
-  override drawConnection(visuals: SVGElement, connection: RelationshipConnection): SVGElement {
-    const { id, relationship } = connection;
+  override drawConnection(visuals: SVGElement, connection: SchemaDiagramEdgeConnection): SVGElement {
+    const { id, edge } = connection;
     const defs = svgCreate('defs');
     svgAppend(visuals, defs);
 
     const parentMarkerId = `${id}__parent`;
     const childMarkerId = `${id}__child`;
-    this.appendOneSideMarker(defs, parentMarkerId, relationship.mandatory);
+    this.appendOneSideMarker(defs, parentMarkerId, edge.mandatory);
 
-    if (relationship.unique) {
+    if (edge.type === EDGE_TYPE_ONE_TO_ONE) {
       this.appendOneSideMarker(defs, childMarkerId);
     } else {
       this.appendManySideMarker(defs, childMarkerId);
     }
 
     svgAppend(visuals, createLine(connection.waypoints, {
-      class: this.computeRelationshipClasses(connection.relationship).join(' '),
+      class: this.computeEdgeClasses(connection.edge).join(' '),
       markerStart: `url(#${parentMarkerId})`,
       markerEnd: `url(#${childMarkerId})`,
-    }, RELATIONSHIP_CORNER_RADIUS));
+    }, EDGE_CORNER_RADIUS));
 
     return visuals;
   }
@@ -52,7 +52,7 @@ export class RelationshipRenderer extends BaseRenderer {
   private appendOneSideMarker(defs: SVGDefsElement, id: string, mandatory = true): void {
     const marker = svgCreate('marker', {
       id,
-      class: RELATIONSHIP_ONE_SIDE_MARKER_CLASS,
+      class: EDGE_ONE_SIDE_MARKER_CLASS,
       orient: 'auto-start-reverse',
       markerWidth: '8',
       markerHeight: '8',
@@ -71,7 +71,7 @@ export class RelationshipRenderer extends BaseRenderer {
   private appendManySideMarker(defs: SVGDefsElement, id: string): void {
     const marker = svgCreate('marker', {
       id,
-      class: RELATIONSHIP_MANY_SIDE_MARKER_CLASS,
+      class: EDGE_MANY_SIDE_MARKER_CLASS,
       orient: 'auto-start-reverse',
       markerWidth: '8',
       markerHeight: '10',
@@ -85,8 +85,7 @@ export class RelationshipRenderer extends BaseRenderer {
     svgAppend(defs, marker);
   }
 
-  private computeRelationshipClasses(relationship: Relationship): string[] {
-    return relationship.identifying ? [RELATIONSHIP_CLASS] : [RELATIONSHIP_CLASS, RELATIONSHIP_NON_IDENTIFYING_CLASS];
+  private computeEdgeClasses(edge: SchemaDiagramEdge): string[] {
+    return edge.identifying ? [EDGE_CLASS] : [EDGE_CLASS, EDGE_NON_IDENTIFYING_CLASS];
   }
-
 }

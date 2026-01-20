@@ -5,5 +5,6 @@
 } @else if (relationshipsResource().value() === null) {
   <app-alert class="d-block pt-1" type="error">{{ ('TABLES.RELATIONSHIPS.SELECTION_NOT_FOUND' | translate)() }}</app-alert>
 } @else {
-  <app-diagram-entity-relationship [entities]="entities()" [relationships]="relationships()" />
+  <app-schema-diagram [patches$]="patches$" />
+  <!--  <app-diagram-entity-relationship [entities]="entities()" [relationships]="relationships()" />-->
 }

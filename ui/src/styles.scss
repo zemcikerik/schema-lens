@@ -18,7 +18,6 @@
 @use './scss/components/confirmation-dialog';
 @use './scss/components/content-card';
 @use './scss/components/diagram';
-@use './scss/components/diagram-entity-relationship';
 @use './scss/components/diagram-export';
 @use './scss/components/diagram-fullscreen';
 @use './scss/components/diagram-grid-control';
@@ -33,6 +32,7 @@
 @use './scss/components/project-properties';
 @use './scss/components/project-selector';
 @use './scss/components/progress-spinner';
+@use './scss/components/schema-diagram';
 @use './scss/components/table';
 @use './scss/components/table-all-relationships';
 @use './scss/components/table-constraint';
