@@ -7,6 +7,7 @@ import {
   input,
   NgZone,
   OnDestroy,
+  output,
   ViewContainerRef,
 } from '@angular/core';
 import Diagram from 'diagram-js';
@@ -36,6 +37,7 @@ import { CroppingConnectionDockingModule } from './util/cropping-connection-dock
 })
 export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   modules = input<ModuleDeclaration[]>([]);
+  elementsChanged = output<ElementLike[]>();
 
   // initialized after view init
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -85,6 +87,10 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
       const elementFactory = diagram.get<ElementFactory>('elementFactory');
       const eventBus = diagram.get<EventBus>('eventBus');
       const modeling = diagram.get<Modeling>('modeling');
+
+      eventBus.on('elements.changed', 100, (_event, { elements }: { elements: ElementLike[] }) => {
+        this.ngZone.run(() => this.elementsChanged.emit(elements));
+      });
 
       return { diagram, canvas, elementFactory, eventBus, modeling };
     });

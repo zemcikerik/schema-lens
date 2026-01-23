@@ -1,4 +1,4 @@
-import { AfterViewInit, ChangeDetectionStrategy, Component, inject, input, viewChild } from '@angular/core';
+import { AfterViewInit, ChangeDetectionStrategy, Component, inject, input, output, viewChild } from '@angular/core';
 import { DiagramHostComponent } from '../diagram-host.component';
 import {
   AngularComponentShapeRenderer,
@@ -28,6 +28,7 @@ import { isEdgeConnection, SchemaDiagramEdgeConnection } from './edge/schema-dia
 import { DiagramLayoutService, LayoutEdge, LayoutNode } from '../diagram-layout.service';
 import { Connection, ElementLike } from 'diagram-js/lib/model/Types';
 import { isConnection } from 'diagram-js/lib/util/ModelUtil';
+import { SchemaDiagramPositionSnapshot } from './model/schema-diagram-position-snapshot.model';
 
 interface NodeEntry {
   readonly node: SchemaDiagramNode;
@@ -54,6 +55,7 @@ interface EdgeEntry {
 })
 export class SchemaDiagramComponent implements AfterViewInit {
   patches$ = input<Observable<SchemaDiagramPatch>>(EMPTY);
+  diagramModified = output();
   diagramHost = viewChild.required(DiagramHostComponent);
 
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -180,5 +182,17 @@ export class SchemaDiagramComponent implements AfterViewInit {
     Object.entries(highlightUpdates).forEach(([nodeId, edgeIds]) =>
       this.angularRenderer.setShapeInput(this.nodes[+nodeId].shape, 'highlightEdgeIds', edgeIds)
     );
+  }
+
+  snapshotDiagramPositions(): SchemaDiagramPositionSnapshot {
+    return {
+      nodes: Object.fromEntries(Object.entries(this.nodes).map(([id, { shape }]) => {
+        const { x, y, width, height } = shape;
+        return [id, { x, y, width, height }];
+      })),
+      edges: Object.fromEntries(Object.entries(this.edges).map(([id, { connection }]) => {
+        return [id, { points: [...connection.waypoints] }];
+      })),
+    };
   }
 }
