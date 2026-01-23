@@ -1,5 +1,5 @@
 <div class="schema-diagram" appFullscreen #fullscreenHost="appFullscreen">
-  <app-diagram-host #diagramHost [modules]="MODULES" />
+  <app-diagram-host #diagramHost [modules]="MODULES" (elementsChanged)="diagramModified.emit()" />
   <div class="schema-diagram__controls">
     <app-diagram-grid-control [diagramHost]="diagramHost" />
     <app-diagram-export-control [diagramHost]="diagramHost"
