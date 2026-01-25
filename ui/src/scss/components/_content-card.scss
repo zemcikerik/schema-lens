@@ -15,6 +15,23 @@
   @include breakpoints.breakpoint-up(lg) {
     --content-card-bottom-spacing: 1rem;
     border-radius: 16px;
+  }
+}
+
+@include breakpoints.breakpoint-up(lg) {
+  // when used in root route component
+  .app-content > * > * > .content-card {
     margin: 0 1rem;
+  }
+
+  // when used in main content of layout-content-with-sidebar
+  .layout-content-with-sidebar {
+    &:not(.reverse) &__content > * > .content-card {
+      margin-right: 1rem;
+    }
+
+    &.reverse &__content > * > .content-card {
+      margin-left: 1rem;
+    }
   }
 }
