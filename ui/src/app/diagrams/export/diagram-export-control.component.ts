@@ -10,11 +10,9 @@ import { TranslatePipe } from '../../core/translate/translate.pipe';
 @Component({
   selector: 'app-diagram-export-control',
   template: `
-    <div class="diagram-export">
-      <button mat-icon-button [matTooltip]="('DIAGRAM.EXPORT.LABEL' | translate)()" (click)="export()">
-        <mat-icon>image</mat-icon>
-      </button>
-    </div>
+    <button mat-icon-button [matTooltip]="('DIAGRAM.EXPORT.LABEL' | translate)()" (click)="export()">
+      <mat-icon>image</mat-icon>
+    </button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [

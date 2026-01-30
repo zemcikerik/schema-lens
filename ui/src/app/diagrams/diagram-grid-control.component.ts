@@ -8,11 +8,9 @@ import { TranslatePipe } from '../core/translate/translate.pipe';
 @Component({
   selector: 'app-diagram-grid-control',
   template: `
-    <div class="diagram-grid-control">
-      <button mat-icon-button [matTooltip]="('DIAGRAM.GRID_TOGGLE_LABEL' | translate)()" (click)="toggle()">
-        <mat-icon>{{ enabled() ? 'grid_on' : 'grid_off' }}</mat-icon>
-      </button>
-    </div>
+    <button mat-icon-button [matTooltip]="('DIAGRAM.GRID_TOGGLE_LABEL' | translate)()" (click)="toggle()">
+      <mat-icon>{{ enabled() ? 'grid_on' : 'grid_off' }}</mat-icon>
+    </button>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatIcon, MatIconButton, MatTooltip, TranslatePipe],

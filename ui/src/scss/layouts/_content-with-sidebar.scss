@@ -10,9 +10,9 @@
   grid-template-columns: var(--layout-sidebar-computed-width) 1rem auto;
   width: 100%;
   height: 100%;
+  background: mat.get-theme-color(t.$theme, surface-container);
 
   &__sidebar {
-    background: mat.get-theme-color(t.$theme, surface-container);
     min-height: 0;
   }
 

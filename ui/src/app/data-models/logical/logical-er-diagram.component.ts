@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, viewChild } from '@angular/core';
 import { SchemaDiagramComponent } from '../../diagrams/schema/schema-diagram.component';
 
 @Component({
@@ -8,5 +8,6 @@ import { SchemaDiagramComponent } from '../../diagrams/schema/schema-diagram.com
   imports: [SchemaDiagramComponent],
 })
 export class LogicalErDiagramComponent {
-
+  private schemaDiagram = viewChild.required(SchemaDiagramComponent);
+  diagramHost = computed(() => this.schemaDiagram().diagramHost());
 }

@@ -166,5 +166,9 @@ export const appRoutes: Route[] = [
       },
     ],
   },
+  {
+    path: 'test',
+    loadComponent: () => import('./data-models/logical/logical-data-modeler.component').then(c => c.LogicalDataModelerComponent),
+  },
   { path: '**', redirectTo: '404' },
 ];

@@ -15,11 +15,6 @@ import {
   SchemaDiagramPatch,
 } from './model/schema-diagram-patches.model';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { DiagramExportControlComponent } from '../export/diagram-export-control.component';
-import { DiagramFullscreenControlComponent } from '../diagram-fullscreen-control.component';
-import { DiagramGridControlComponent } from '../diagram-grid-control.component';
-import { DiagramZoomControlComponent } from '../diagram-zoom-control.component';
-import { FullscreenDirective } from '../../core/directives/fullscreen.directive';
 import { SchemaDiagramEdgeModule } from './edge/schema-diagram-edge.module';
 import { SchemaDiagramNode } from './model/schema-diagram-node.model';
 import { SchemaDiagramNodeShape } from './node/schema-diagram-node.shape';
@@ -44,14 +39,7 @@ interface EdgeEntry {
   selector: 'app-schema-diagram',
   templateUrl: './schema-diagram.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    DiagramHostComponent,
-    DiagramExportControlComponent,
-    DiagramFullscreenControlComponent,
-    DiagramGridControlComponent,
-    DiagramZoomControlComponent,
-    FullscreenDirective,
-  ],
+  imports: [DiagramHostComponent],
 })
 export class SchemaDiagramComponent implements AfterViewInit {
   patches$ = input<Observable<SchemaDiagramPatch>>(EMPTY);

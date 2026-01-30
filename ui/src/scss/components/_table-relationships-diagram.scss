@@ -1,0 +1,31 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.table-relationships-diagram {
+  height: 100%;
+  position: relative;
+
+  &__controls {
+    display: flex;
+    gap: 0.5rem;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+
+    > * {
+      display: block;
+      background-color: mat.get-theme-color(t.$theme, surface-container-low);
+      border: 1px solid mat.get-theme-color(t.$theme, outline-variant);
+      border-radius: 2rem;
+
+      button + button {
+        margin-left: 0.25rem;
+      }
+    }
+  }
+
+  &.fullscreen &__controls {
+    right: 1rem;
+    bottom: 1rem;
+  }
+}

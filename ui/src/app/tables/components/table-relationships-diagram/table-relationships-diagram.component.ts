@@ -17,6 +17,11 @@ import {
   EDGE_TYPE_ONE_TO_ONE,
   SchemaDiagramEdge,
 } from '../../../diagrams/schema/model/schema-diagram-edge.model';
+import { DiagramGridControlComponent } from '../../../diagrams/diagram-grid-control.component';
+import { DiagramExportControlComponent } from '../../../diagrams/export/diagram-export-control.component';
+import { DiagramZoomControlComponent } from '../../../diagrams/diagram-zoom-control.component';
+import { DiagramFullscreenControlComponent } from '../../../diagrams/diagram-fullscreen-control.component';
+import { FullscreenDirective } from '../../../core/directives/fullscreen.directive';
 
 @Component({
   selector: 'app-table-relationships-diagram',
@@ -28,6 +33,11 @@ import {
     AlertComponent,
     TranslatePipe,
     SchemaDiagramComponent,
+    DiagramGridControlComponent,
+    DiagramExportControlComponent,
+    DiagramZoomControlComponent,
+    DiagramFullscreenControlComponent,
+    FullscreenDirective,
   ],
 })
 export class TableRelationshipsDiagramComponent {

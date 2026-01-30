@@ -20,9 +20,8 @@
 @use './scss/components/diagram';
 @use './scss/components/diagram-export';
 @use './scss/components/diagram-fullscreen';
-@use './scss/components/diagram-grid-control';
-@use './scss/components/diagram-zoom-control';
 @use './scss/components/help-faq';
+@use './scss/components/logical-data-modeler';
 @use './scss/components/nav';
 @use './scss/components/project-object-selector';
 @use './scss/components/profile';
@@ -39,6 +38,7 @@
 @use './scss/components/table-index';
 @use './scss/components/table-modifying-dialog';
 @use './scss/components/table-objects';
+@use './scss/components/table-relationships-diagram';
 @use './scss/components/top-bar';
 @use './scss/components/user-identifier';
 
