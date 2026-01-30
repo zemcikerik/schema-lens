@@ -1,19 +1,18 @@
-<app-layout-content-with-sidebar
-  [reverse]="true"
-  class="logical-data-modeler"
-  appFullscreen
-  #fullscreenHost="appFullscreen"
->
-  <app-content-card [background]="'dim'" ngProjectAs="sidebar">
-    <app-layout-header-and-content [title]="'Properties'" [titleLevel]="'low'">
-      <app-logical-er-diagram-properties />
-    </app-layout-header-and-content>
-  </app-content-card>
+<div class="logical-data-modeler" appFullscreen #fullscreenHost="appFullscreen">
+  <app-layout-content-with-sidebar [reverse]="true">
+    <app-content-card [background]="'dim'" ngProjectAs="sidebar">
+      <app-layout-header-and-content [title]="'Properties'" [titleLevel]="'low'">
+        <app-logical-er-diagram-properties />
+      </app-layout-header-and-content>
+    </app-content-card>
 
-  <app-content-card>
-    <app-layout-header-and-content [title]="'Hello'">
-      <app-logical-data-modeler-actions [diagramHost]="logicalDiagram.diagramHost()" [fullscreenHost]="fullscreenHost" />
-      <app-logical-er-diagram #logicalDiagram />
-    </app-layout-header-and-content>
-  </app-content-card>
-</app-layout-content-with-sidebar>
+    <app-content-card>
+      <app-layout-header-and-content [title]="'Hello'" [fullHeight]="true">
+        <app-logical-data-modeler-actions [diagramHost]="logicalDiagram.diagramHost()" [fullscreenHost]="fullscreenHost" />
+        <div class="logical-data-modeler__diagram">
+          <app-logical-er-diagram #logicalDiagram />
+        </div>
+      </app-layout-header-and-content>
+    </app-content-card>
+  </app-layout-content-with-sidebar>
+</div>

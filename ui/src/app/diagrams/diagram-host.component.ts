@@ -7,7 +7,7 @@ import {
   input,
   NgZone,
   OnDestroy,
-  output,
+  output, signal,
   ViewContainerRef,
 } from '@angular/core';
 import Diagram from 'diagram-js';
@@ -39,6 +39,9 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   modules = input<ModuleDeclaration[]>([]);
   elementsChanged = output<ElementLike[]>();
 
+  private _gridVisible = signal<boolean>(false);
+  readonly gridVisible = this._gridVisible.asReadonly();
+
   // initialized after view init
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   private diagram: Diagram = null!;
@@ -50,6 +53,8 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   private eventBus: EventBus = null!;
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   private modeling: Modeling = null!;
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  private gridBackground: GridBackground = null!;
 
   private elementRef = inject(ElementRef);
   private viewContainerRef = inject(ViewContainerRef);
@@ -58,7 +63,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     const modules = this.modules();
 
-    const { diagram, canvas, elementFactory, eventBus, modeling } = this.ngZone.runOutsideAngular(() => {
+    const { diagram, canvas, elementFactory, eventBus, modeling, gridBackground } = this.ngZone.runOutsideAngular(() => {
       const diagram = new Diagram({
         canvas: {
           container: this.elementRef.nativeElement,
@@ -87,12 +92,13 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
       const elementFactory = diagram.get<ElementFactory>('elementFactory');
       const eventBus = diagram.get<EventBus>('eventBus');
       const modeling = diagram.get<Modeling>('modeling');
+      const gridBackground = diagram.get<GridBackground>('gridBackground');
 
       eventBus.on('elements.changed', 100, (_event, { elements }: { elements: ElementLike[] }) => {
         this.ngZone.run(() => this.elementsChanged.emit(elements));
       });
 
-      return { diagram, canvas, elementFactory, eventBus, modeling };
+      return { diagram, canvas, elementFactory, eventBus, modeling, gridBackground };
     });
 
     this.diagram = diagram;
@@ -100,6 +106,9 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
     this.elementFactory = elementFactory;
     this.eventBus = eventBus;
     this.modeling = modeling;
+    this.gridBackground = gridBackground;
+
+    this._gridVisible.set(this.runInDiagramContext(() => this.gridBackground.isBackgroundShown()));
   }
 
   addShape(shape: Partial<Shape>): Shape {
@@ -143,20 +152,16 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
     this.runInDiagramContext(() => this.canvas.zoom(zoomLevel));
   }
 
-  isGridVisible(): boolean {
-    return this.runInDiagramContext(diagram => diagram.get<GridBackground>('gridBackground').isBackgroundShown());
-  }
-
   setGridVisibility(visible: boolean): void {
-    this.runInDiagramContext(diagram =>{
-      const grid = diagram.get<GridBackground>('gridBackground');
-
+    this.runInDiagramContext(() =>{
       if (visible) {
-        grid.showBackground();
+        this.gridBackground.showBackground();
       } else {
-        grid.hideBackground();
+        this.gridBackground.hideBackground();
       }
     });
+
+    this._gridVisible.set(visible);
   }
 
   runInDiagramContext<T = void>(runner: (diagram: Diagram) => T): T {

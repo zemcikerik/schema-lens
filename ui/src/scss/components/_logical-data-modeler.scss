@@ -2,6 +2,9 @@
 @use '../theme' as t;
 
 .logical-data-modeler {
+  background: mat.get-theme-color(t.$theme, surface-container);
+  height: 100%;
+
   &.fullscreen {
     padding-top: 1rem;
   }
@@ -19,5 +22,13 @@
       width: 0.5rem;
       background: linear-gradient($line-color, $line-color) no-repeat center/2px 50%;
     }
+
+    button + button {
+      margin-left: 0.25rem;
+    }
+  }
+
+  &__diagram {
+    height: 100%;
   }
 }
