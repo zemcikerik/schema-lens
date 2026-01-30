@@ -1,0 +1,10 @@
+package dev.zemco.schemalens.modeling.api.dtos
+
+data class DataModelAttributeDto(
+    val attributeId: Long? = null,
+    val name: String,
+    val typeId: Long,
+    val isPrimaryKey: Boolean = false,
+    val isNullable: Boolean = true,
+    val position: Int
+)
