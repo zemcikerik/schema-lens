@@ -1,0 +1,11 @@
+<form [formGroup]="propertiesForm">
+  <mat-form-field>
+    <mat-label>Name</mat-label>
+    <input matInput formControlName="name">
+    @if (propertiesForm.controls.name.invalid) {
+      <mat-error>{{ (propertiesForm.controls.name.errors | formatGenericValidationErrors)() }}</mat-error>
+    }
+  </mat-form-field>
+
+  <h4>Attributes</h4>
+</form>

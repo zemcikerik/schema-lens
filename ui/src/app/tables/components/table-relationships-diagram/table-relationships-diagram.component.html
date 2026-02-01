@@ -6,7 +6,7 @@
   <app-alert class="d-block pt-1" type="error">{{ ('TABLES.RELATIONSHIPS.SELECTION_NOT_FOUND' | translate)() }}</app-alert>
 } @else {
   <div class="table-relationships-diagram" appFullscreen #fullscreenHost="appFullscreen">
-    <app-schema-diagram #schemaDiagram [patches$]="patches$" />
+    <app-schema-diagram #schemaDiagram [patches$]="patches$" [additionalModules]="ADDITIONAL_MODULES" />
     <div class="table-relationships-diagram__controls">
       <app-diagram-grid-control [diagramHost]="schemaDiagram.diagramHost()" />
       <app-diagram-export-control [diagramHost]="schemaDiagram.diagramHost()"

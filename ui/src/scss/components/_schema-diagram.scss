@@ -57,6 +57,8 @@
         color: mat.get-theme-color(t.$theme, on-secondary-container);
         border-radius: 0.5rem;
         padding: 0.5rem;
+        margin: 1px; // space for thicker border
+        transition: border-color 0.2s ease-in-out;
       }
 
       td {
@@ -104,6 +106,14 @@
     stroke-width: 0.125rem;
     shape-rendering: geometricPrecision;
 
+    .djs-dragging & {
+      opacity: 75%;
+    }
+
+    .djs-dragging.djs-updating & {
+      display: none;
+    }
+
     &.non-identifying {
       stroke-dasharray: 8 4;
     }
@@ -120,5 +130,18 @@
 
   &__tooltip {
     pointer-events: none;
+  }
+
+  &.connect-mode .djs-resizer {
+    display: none;
+  }
+
+  &.connect-mode .djs-element.hover &__node__fields__wrapper {
+    border-color: mat.get-theme-color(t.$theme, secondary);
+  }
+
+  &.connect-mode .djs-element.selected &__node__fields__wrapper {
+    border: 2px solid mat.get-theme-color(t.$theme, secondary);
+    margin: 0;
   }
 }

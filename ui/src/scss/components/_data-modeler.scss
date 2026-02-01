@@ -1,0 +1,70 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.data-modeler {
+  background: mat.get-theme-color(t.$theme, surface-container);
+  height: 100%;
+
+  &.fullscreen {
+    padding-top: 1rem;
+  }
+
+  &__actions {
+    display: flex;
+    flex-wrap: wrap;
+    background-color: mat.get-theme-color(t.$theme, surface-container-low);
+    border: 1px solid mat.get-theme-color(t.$theme, outline-variant);
+    border-top: none;
+    gap: 0.25rem;
+
+    > .separator {
+      $line-color: mat.get-theme-color(t.$theme, outline);
+      width: 0.5rem;
+      background: linear-gradient($line-color, $line-color) no-repeat center/2px 50%;
+    }
+
+    button + button {
+      margin-left: 0.25rem;
+    }
+
+    button[disabled] {
+      pointer-events: all;
+    }
+  }
+
+  &__connect-action.toggled {
+    color: mat.get-theme-color(t.$theme, primary);
+  }
+
+  &__diagram {
+    position: relative;
+    height: calc(100% - 2.5rem);
+  }
+
+  &__loading-overlay {
+    position: absolute;
+    inset: 0;
+    cursor: progress;
+    background-color: #00000006;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 300ms ease-in-out;
+
+    &.is-visible {
+      opacity: 1;
+      visibility: visible;
+      transition: opacity 300ms ease-in-out;
+    }
+  }
+
+  &__properties {
+    display: block;
+    height: 100%;
+    margin-right: 1rem;
+
+    mat-form-field {
+      margin-top: 0.5rem;
+      width: 100%;
+    }
+  }
+}

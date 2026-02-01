@@ -11,8 +11,8 @@ export class SchemaDiagramEdgeLayouter extends BaseLayouter {
       return super.layoutConnection(connection, hints);
     }
 
-    const start: Point = hints?.connectionStart || (connection.waypoints?.[0] ?? getMid(connection.source));
-    const end: Point = hints?.connectionEnd || (connection.waypoints?.[connection.waypoints.length - 1] ?? getMid(connection.target));
+    const start: Point = hints?.connectionStart || (connection.waypoints?.[0] ?? getMid(hints?.source ?? connection.source));
+    const end: Point = hints?.connectionEnd || (connection.waypoints?.[connection.waypoints.length - 1] ?? getMid(hints?.source ?? connection.target));
 
     return [start, ...(connection.waypoints?.slice(1, connection.waypoints.length - 1) ?? []), end];
   }

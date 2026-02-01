@@ -14,7 +14,8 @@ const WIDTH_PER_ROW_LETTER = 9.6;
 const HEIGHT_TITLE_SIZE = 20;
 const HEIGHT_ROW_SIZE = 24;
 
-const TABLE_BORDER = 1;
+const TABLE_BORDER_REGULAR_MARGIN = 1;
+const TABLE_BORDER_MAXIMUM = 2;
 const TABLE_PADDING = 8;
 const CELL_PADDING = 1;
 const CELL_LEFT_PADDING_AFTER_PRIMARY_KEY = 8;
@@ -64,12 +65,12 @@ export class SchemaDiagramNodeComponent {
     const leftCellPaddings = CELL_PADDING + leftCellPrimaryKeyPadding + leftCellReferencePadding + (cellsWithoutKeys - 1) * CELL_LEFT_PADDING_NEXT;
     const rightCellPaddings = cellsPerRow * CELL_PADDING;
 
-    const tableWidthSpacing = 2 * (TABLE_PADDING + TABLE_BORDER) + leftCellPaddings + rightCellPaddings;
+    const tableWidthSpacing = 2 * (TABLE_PADDING + TABLE_BORDER_MAXIMUM) + leftCellPaddings + rightCellPaddings;
     const width = Math.ceil(WIDTH_PER_ROW_LETTER * letters)
       + ((hasKey ? 1 : 0) + edgeCount) * WIDTH_KEY
       + tableWidthSpacing;
 
-    const tableHeight = (HEIGHT_ROW_SIZE + 2 * CELL_PADDING) * fields.length + 2 * (TABLE_PADDING + TABLE_BORDER);
+    const tableHeight = (HEIGHT_ROW_SIZE + 2 * CELL_PADDING) * fields.length + 2 * (TABLE_PADDING + TABLE_BORDER_MAXIMUM);
     const height = HEIGHT_TITLE_SIZE + tableHeight;
 
     return { width, height };
@@ -80,14 +81,14 @@ export class SchemaDiagramNodeComponent {
     const verticalMiddle = (height - HEIGHT_TITLE_SIZE) / 2 + HEIGHT_TITLE_SIZE;
 
     return {
-      top: { x: horizontalMiddle, y: HEIGHT_TITLE_SIZE },
-      right: { x: width, y: verticalMiddle },
-      bottom: { x: horizontalMiddle, y: height },
-      left: { x: 0, y: verticalMiddle },
-      topLeft: { x: 0, y: HEIGHT_TITLE_SIZE },
-      topRight: { x: width, y: HEIGHT_TITLE_SIZE },
-      bottomLeft: { x: 0, y: height },
-      bottomRight: { x: width, y: height },
+      top: { x: horizontalMiddle, y: HEIGHT_TITLE_SIZE + TABLE_BORDER_REGULAR_MARGIN },
+      right: { x: width - TABLE_BORDER_REGULAR_MARGIN, y: verticalMiddle },
+      bottom: { x: horizontalMiddle, y: height - TABLE_BORDER_REGULAR_MARGIN },
+      left: { x: TABLE_BORDER_REGULAR_MARGIN, y: verticalMiddle },
+      topLeft: { x: TABLE_BORDER_REGULAR_MARGIN, y: HEIGHT_TITLE_SIZE + TABLE_BORDER_REGULAR_MARGIN },
+      topRight: { x: width - TABLE_BORDER_REGULAR_MARGIN, y: HEIGHT_TITLE_SIZE + TABLE_BORDER_REGULAR_MARGIN },
+      bottomLeft: { x: TABLE_BORDER_REGULAR_MARGIN, y: height - TABLE_BORDER_REGULAR_MARGIN },
+      bottomRight: { x: width - TABLE_BORDER_REGULAR_MARGIN, y: height - TABLE_BORDER_REGULAR_MARGIN },
     };
   }
 

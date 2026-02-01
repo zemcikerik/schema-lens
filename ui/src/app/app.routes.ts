@@ -2,6 +2,7 @@ import { Route } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 import { homeGuard } from './core/guards/home.guard';
 import { hasAdminRoleGuard } from './core/guards/has-role.guard';
+import { logicalDataModelerUnsavedGuard } from './data-models/modeler/logical/logical-data-modeler-unsaved.guard';
 
 export const appRoutes: Route[] = [
   { path: '', redirectTo: 'project', pathMatch: 'full' },
@@ -168,7 +169,8 @@ export const appRoutes: Route[] = [
   },
   {
     path: 'test',
-    loadComponent: () => import('./data-models/logical/logical-data-modeler.component').then(c => c.LogicalDataModelerComponent),
+    loadComponent: () => import('./data-models/modeler/logical/logical-data-modeler.component').then(c => c.LogicalDataModelerComponent),
+    canDeactivate: [logicalDataModelerUnsavedGuard]
   },
   { path: '**', redirectTo: '404' },
 ];

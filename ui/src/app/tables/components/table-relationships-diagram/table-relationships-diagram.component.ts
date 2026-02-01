@@ -22,6 +22,7 @@ import { DiagramExportControlComponent } from '../../../diagrams/export/diagram-
 import { DiagramZoomControlComponent } from '../../../diagrams/diagram-zoom-control.component';
 import { DiagramFullscreenControlComponent } from '../../../diagrams/diagram-fullscreen-control.component';
 import { FullscreenDirective } from '../../../core/directives/fullscreen.directive';
+import { UnfocusModule } from '../../../diagrams/util/unfocus.module';
 
 @Component({
   selector: 'app-table-relationships-diagram',
@@ -44,6 +45,7 @@ export class TableRelationshipsDiagramComponent {
   relationshipsResource = input.required<Resource<TableRelationships | null | undefined>>();
   private tableColumnService = inject(TableColumnService);
 
+  readonly ADDITIONAL_MODULES = [UnfocusModule];
   readonly patches$ = new Subject<SchemaDiagramPatch>();
 
   constructor() {

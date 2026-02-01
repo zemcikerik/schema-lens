@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+// diagram components initialized after view init
+
 import {
   AfterViewInit,
   ChangeDetectionStrategy,
@@ -7,11 +10,13 @@ import {
   input,
   NgZone,
   OnDestroy,
-  output, signal,
+  output,
+  signal,
   ViewContainerRef,
 } from '@angular/core';
 import Diagram from 'diagram-js';
 import BendpointsModule from 'diagram-js/lib/features/bendpoints';
+import ConnectionPreviewModule from 'diagram-js/lib/features/connection-preview';
 import ModelingModule from 'diagram-js/lib/features/modeling';
 import MoveModule from 'diagram-js/lib/features/move';
 import MoveCanvasModule from 'diagram-js/lib/navigation/movecanvas';
@@ -22,13 +27,15 @@ import ZoomScrollModule from 'diagram-js/lib/navigation/zoomscroll';
 import type { ModuleDeclaration } from 'didi';
 import ElementFactory from 'diagram-js/lib/core/ElementFactory';
 import Canvas from 'diagram-js/lib/core/Canvas';
-import type { Connection, ElementLike, Shape } from 'diagram-js/lib/model/Types';
+import type { Connection, ElementLike, Parent, Root, Shape } from 'diagram-js/lib/model/Types';
 import { AngularHostContextModuleFactory } from './angular/angular-host-context.module';
-import { UnfocusModule } from './util/unfocus.module';
 import { GridBackground, GridBackgroundModule } from './util/grid-background.module';
-import Modeling from 'diagram-js/lib/features/modeling/Modeling';
 import EventBus from 'diagram-js/lib/core/EventBus';
 import { CroppingConnectionDockingModule } from './util/cropping-connection-docking.module';
+import type { Point } from 'diagram-js/lib/util/Types';
+import Selection from 'diagram-js/lib/features/selection/Selection';
+import BaseLayouter from 'diagram-js/lib/layout/BaseLayouter';
+import ConnectionDocking from 'diagram-js/lib/layout/ConnectionDocking';
 
 @Component({
   selector: 'app-diagram-host',
@@ -42,19 +49,14 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   private _gridVisible = signal<boolean>(false);
   readonly gridVisible = this._gridVisible.asReadonly();
 
-  // initialized after view init
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   private diagram: Diagram = null!;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   private canvas: Canvas = null!;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   private elementFactory: ElementFactory = null!;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   private eventBus: EventBus = null!;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  private modeling: Modeling = null!;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   private gridBackground: GridBackground = null!;
+  private selection: Selection = null!;
+  private layouter: BaseLayouter = null!;
+  private connectionDocking: ConnectionDocking = null!;
 
   private elementRef = inject(ElementRef);
   private viewContainerRef = inject(ViewContainerRef);
@@ -63,14 +65,15 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   ngAfterViewInit(): void {
     const modules = this.modules();
 
-    const { diagram, canvas, elementFactory, eventBus, modeling, gridBackground } = this.ngZone.runOutsideAngular(() => {
-      const diagram = new Diagram({
+    this.ngZone.runOutsideAngular(() => {
+      this.diagram = new Diagram({
         canvas: {
           container: this.elementRef.nativeElement,
           deferUpdate: true,
         },
         modules: [
           BendpointsModule,
+          ConnectionPreviewModule,
           GridBackgroundModule,
           ModelingModule,
           MoveModule,
@@ -78,7 +81,6 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
           ResizeModule,
           RuleModule,
           SelectionModule,
-          UnfocusModule,
           ZoomScrollModule,
           CroppingConnectionDockingModule,
           AngularHostContextModuleFactory.create({
@@ -88,44 +90,76 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
           ...modules,
         ],
       });
-      const canvas = diagram.get<Canvas>('canvas');
-      const elementFactory = diagram.get<ElementFactory>('elementFactory');
-      const eventBus = diagram.get<EventBus>('eventBus');
-      const modeling = diagram.get<Modeling>('modeling');
-      const gridBackground = diagram.get<GridBackground>('gridBackground');
 
-      eventBus.on('elements.changed', 100, (_event, { elements }: { elements: ElementLike[] }) => {
+      this.canvas = this.diagram.get<Canvas>('canvas');
+      this.elementFactory = this.diagram.get<ElementFactory>('elementFactory');
+      this.eventBus = this.diagram.get<EventBus>('eventBus');
+      this.gridBackground = this.diagram.get<GridBackground>('gridBackground');
+      this.selection = this.diagram.get<Selection>('selection');
+      this.layouter = this.diagram.get<BaseLayouter>('layouter');
+      this.connectionDocking = this.diagram.get<ConnectionDocking>('connectionDocking');
+
+      this.eventBus.on('elements.changed', 100, (_event, { elements }: { elements: ElementLike[] }) => {
         this.ngZone.run(() => this.elementsChanged.emit(elements));
       });
-
-      return { diagram, canvas, elementFactory, eventBus, modeling, gridBackground };
     });
-
-    this.diagram = diagram;
-    this.canvas = canvas;
-    this.elementFactory = elementFactory;
-    this.eventBus = eventBus;
-    this.modeling = modeling;
-    this.gridBackground = gridBackground;
 
     this._gridVisible.set(this.runInDiagramContext(() => this.gridBackground.isBackgroundShown()));
   }
 
-  addShape(shape: Partial<Shape>): Shape {
+  isInitialized(): boolean {
+    return this.diagram !== null;
+  }
+
+  createRoot(id: string): Root {
     return this.runInDiagramContext(() => {
-      const createdShape = this.elementFactory.createShape(shape);
-      this.canvas.addShape(createdShape);
+      const root = this.elementFactory.createRoot({ id, isImplicit: false });
+      this.canvas.addRootElement(root);
+      this.canvas.showLayer(root['layer']);
+      return root;
+    });
+  }
+
+  addShape(shape: Partial<Shape>, parent?: Parent): Shape {
+    return this.runInDiagramContext(() => {
+      const { x, y } = this.getNewShapePosition(shape);
+
+      const createdShape = this.elementFactory.createShape({ ...shape, x, y });
+      this.canvas.addShape(createdShape, parent);
       return createdShape;
     });
   }
 
-  connect(from: Shape, to: Shape, connection: Partial<Connection>): Connection {
-    return this.runInDiagramContext(() => this.modeling.connect(from, to, connection));
+  private getNewShapePosition(shape: Partial<Shape>): Point {
+    if (shape.x !== undefined && shape.y !== undefined) {
+      return { x: shape.x, y: shape.y };
+    }
+    if (shape.width === undefined || shape.height === undefined) {
+      throw new Error(`Cannot place shape of unknown dimensions`);
+    }
+
+    const { x, y, width, height } = this.canvas.viewbox();
+
+    return {
+      x: x + width / 2 - shape.width / 2,
+      y: y + height / 2 - shape.height / 2,
+    };
   }
 
-  addConnection(connection: Partial<Connection>): Connection {
+  addConnection(from: Shape, to: Shape, connection: Partial<Connection>, parent?: Parent): Connection {
     return this.runInDiagramContext(() => {
-      const createdConnection = this.elementFactory.createConnection(connection);
+      const target = parent ?? from.parent ?? to.parent;
+
+      if (!target) {
+        throw new Error('Connection parent is undefined');
+      }
+
+      const template = { ...connection, source: from, target: to, parent };
+      template.waypoints ??= this.layouter.layoutConnection(template as Connection);
+      template.waypoints = this.connectionDocking.getCroppedWaypoints(template as Connection);
+      template.waypoints.forEach(point => delete (point as Point & { original?: Point }).original);
+
+      const createdConnection = this.elementFactory.createConnection(template);
       this.canvas.addConnection(createdConnection);
       return createdConnection;
     });
@@ -134,10 +168,18 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   updateAll(elements: ElementLike[], updatesById: Record<string, Partial<ElementLike>>): void {
     this.runInDiagramContext(() => {
       elements.forEach(element => {
-        Object.entries(updatesById[element.id]).forEach(([key, value]) => element[key] = value);
+        Object.entries(updatesById[element.id]).forEach(([key, value]) => (element[key] = value));
       });
       this.eventBus.fire('elements.changed', { elements: [...elements] });
     });
+  }
+
+  removeShape(shape: Shape): void {
+    this.runInDiagramContext(() => this.canvas.removeShape(shape));
+  }
+
+  removeConnection(connection: Connection): void {
+    this.runInDiagramContext(() => this.canvas.removeConnection(connection));
   }
 
   getDiagramRoot(): HTMLElement {
@@ -153,7 +195,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   }
 
   setGridVisibility(visible: boolean): void {
-    this.runInDiagramContext(() =>{
+    this.runInDiagramContext(() => {
       if (visible) {
         this.gridBackground.showBackground();
       } else {
@@ -162,6 +204,10 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
     });
 
     this._gridVisible.set(visible);
+  }
+
+  unselectAll(): void {
+    this.runInDiagramContext(() => this.selection.select([]));
   }
 
   runInDiagramContext<T = void>(runner: (diagram: Diagram) => T): T {

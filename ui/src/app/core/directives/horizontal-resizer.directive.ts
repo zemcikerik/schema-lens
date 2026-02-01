@@ -13,19 +13,19 @@ export interface HorizontalResizerTarget {
   },
 })
 export class HorizontalResizerDirective {
-  resizerTarget = input.required<HorizontalResizerTarget>();
+  appHorizontalResizer = input.required<HorizontalResizerTarget>();
   resizerReverse = input<boolean>(false);
 
   private document = inject(DOCUMENT);
   private destroyRef = inject(DestroyRef);
 
   handleDrag(event: MouseEvent): void {
-    const startWidth = this.resizerTarget().getWidth();
+    const startWidth = this.appHorizontalResizer().getWidth();
     const startX = event.clientX;
     const direction = this.resizerReverse() ? -1 : 1;
 
     const subscription = fromEvent(this.document, 'mousemove').subscribe(event => {
-      this.resizerTarget().setWidth(Math.max(startWidth + direction * ((event as MouseEvent).clientX - startX), 0));
+      this.appHorizontalResizer().setWidth(Math.max(startWidth + direction * ((event as MouseEvent).clientX - startX), 0));
     });
 
     subscription.add(fromEvent(this.document, 'mouseup').subscribe(() => {
