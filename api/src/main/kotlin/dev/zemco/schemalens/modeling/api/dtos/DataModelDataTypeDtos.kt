@@ -1,6 +1,11 @@
 package dev.zemco.schemalens.modeling.api.dtos
 
+data class DataModelDataTypeInputDto(
+    @field:NotBlank
+    val name: String
+)
+
 data class DataModelDataTypeDto(
-    val typeId: Long? = null,
+    val id: Long,
     val name: String
 )
