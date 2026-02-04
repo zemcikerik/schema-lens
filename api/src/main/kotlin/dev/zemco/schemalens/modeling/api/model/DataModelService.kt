@@ -1,4 +1,4 @@
-package dev.zemco.schemalens.modeling.api
+package dev.zemco.schemalens.modeling.api.model
 
 import dev.zemco.schemalens.modeling.api.dtos.DataModelDtos
 
