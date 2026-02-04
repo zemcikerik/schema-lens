@@ -1,4 +1,4 @@
-package dev.zemco.schemalens.modeling.entity
+package dev.zemco.schemalens.modeling.api.datatype
 
 interface DataModelDataTypeService {
     fun createDataType(

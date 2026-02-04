@@ -1,4 +1,4 @@
-package dev.zemco.schemalens.modeling.entity
+package dev.zemco.schemalens.modeling.api.datatype
 
 import dev.zemco.schemalens.auth.UserService
 import org.springframework.http.HttpStatus

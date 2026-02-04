@@ -1,4 +1,4 @@
-package dev.zemco.schemalens.modeling.repository
+package dev.zemco.schemalens.modeling.api.model
 
 import dev.zemco.schemalens.modeling.DataModel
 import org.springframework.data.jpa.repository.Query

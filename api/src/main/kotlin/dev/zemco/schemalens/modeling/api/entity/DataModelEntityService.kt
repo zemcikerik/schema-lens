@@ -1,4 +1,4 @@
-package dev.zemco.schemalens.modeling.entity
+package dev.zemco.schemalens.modeling.api.entity
 
 interface DataModelEntityService {
     fun createEntity(modelId: Long, dto: DataModelEntityInputDto, userId: Long): DataModelEntityDto
