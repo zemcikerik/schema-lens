@@ -48,4 +48,12 @@ class DataModelRelationship(
 
     @Column(nullable = false)
     var isIdentifying: Boolean,
+
+    @OneToMany(
+        mappedBy = "relationship",
+        cascade = [CascadeType.ALL],
+        orphanRemoval = true,
+        fetch = FetchType.LAZY,
+    )
+    var attributes: MutableList<DataModelRelationshipAttribute> = mutableListOf(),
 )

@@ -2,13 +2,15 @@ package dev.zemco.schemalens.modeling.api.model
 
 import dev.zemco.schemalens.modeling.api.dtos.*
 import dev.zemco.schemalens.auth.UserService
-import dev.zemco.schemalens.modeling.api.dtos.LogicalModelDto
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 
 @RestController
 @RequestMapping("/model")
-class DataModelController(private val service: DataModelService) {
+class DataModelController(
+    private val service: DataModelService,
+    private val userService: UserService
+) {
 
     @GetMapping
     fun getAllModels(): List<DataModelDto> {

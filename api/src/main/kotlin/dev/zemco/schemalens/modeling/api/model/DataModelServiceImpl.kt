@@ -80,7 +80,7 @@ class DataModelServiceImpl(
                             position = attr.position
                         )
                     }
-                DataModelEntityDto(
+                DataModelEntityLogicalDto(
                     entityId = entity.entityId,
                     name = entity.name,
                     attributes = attributes
