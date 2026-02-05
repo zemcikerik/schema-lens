@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.modeling.api.entity
 
+import dev.zemco.schemalens.modeling.api.dtos.*
 import dev.zemco.schemalens.auth.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*

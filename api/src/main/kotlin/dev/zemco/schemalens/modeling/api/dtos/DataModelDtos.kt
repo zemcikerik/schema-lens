@@ -11,6 +11,6 @@ data class DataModelInputDto(
 
 data class DataModelLogicalDto(
     val dataTypes: List<DataModelDataTypeDto>,
-    val entities: List<DataModelEntityDto>,
+    val entities: List<DataModelEntityLogicalDto>,
     val relationships: List<DataModelRelationshipDto>
 )
