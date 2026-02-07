@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity
 
 @RestController
 @RequestMapping("/model/{modelId}/dataType")
-class DataModelEntityController(
+class DataModelEntityDataTypeController(
     private val service: DataModelDataTypeService,
     private val userService: UserService
 ) {
