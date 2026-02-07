@@ -4,6 +4,8 @@ import dev.zemco.schemalens.modeling.api.dtos.*
 import dev.zemco.schemalens.auth.UserService
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import jakarta.validation.Valid
+import org.springframework.http.ResponseEntity
 
 @RestController
 @RequestMapping("/model")
@@ -22,7 +24,7 @@ class DataModelController(
     @ResponseStatus(HttpStatus.CREATED)
     fun createModel(@RequestBody dto: DataModelInputDto): DataModelDto {
         val user = userService.getCurrentUser()
-        return service.createModel(dto, user.id!!)
+        return service.createModel(dto, user)
     }
 
     @PutMapping("/{modelId}")
@@ -42,7 +44,7 @@ class DataModelController(
     }
     
     @GetMapping("/{modelId}/logical")
-    fun getLogicalModel(@PathVariable modelId: Long): LogicalDataModelDto {
+    fun getLogicalModel(@PathVariable modelId: Long): DataModelLogicalDto {
         val user = userService.getCurrentUser()
         return service.getLogicalModel(modelId, user.id!!)
     }

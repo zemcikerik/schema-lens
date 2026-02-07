@@ -1,7 +1,19 @@
 package dev.zemco.schemalens.modeling.api.relationship
 
-import dev.zemco.schemalens.modeling.api.dtos.*
-import dev.zemco.schemalens.modeling.repository.DataModelRepository
+import dev.zemco.schemalens.modeling.logical.DataModelRelationship
+import dev.zemco.schemalens.modeling.logical.DataModelRelationshipAttribute
+import dev.zemco.schemalens.modeling.api.dtos.DataModelRelationshipDto
+import dev.zemco.schemalens.modeling.api.dtos.DataModelRelationshipInputDto
+import dev.zemco.schemalens.modeling.api.dtos.DataModelRelationshipAttributeDto
+import dev.zemco.schemalens.modeling.api.model.DataModelRepository
+import dev.zemco.schemalens.modeling.api.entity.DataModelEntityRepository
+import dev.zemco.schemalens.modeling.api.relationship.DataModelRelationshipRepository
+import dev.zemco.schemalens.modeling.api.attribute.DataModelAttributeRepository
+
+import org.springframework.http.HttpStatus
+import jakarta.persistence.EntityNotFoundException
+import java.lang.IllegalAccessException
+import org.springframework.web.server.ResponseStatusException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -10,17 +22,22 @@ class DataModelRelationshipServiceImpl(
     private val modelRepository: DataModelRepository,
     private val entityRepository: DataModelEntityRepository,
     private val relationshipRepository: DataModelRelationshipRepository,
+    private val attributeRepository: DataModelAttributeRepository
 ) : DataModelRelationshipService {
 
     @Transactional
-    fun createRelationship(
+    override fun createRelationship(
         modelId: Long,
         dto: DataModelRelationshipInputDto,
         userId: Long
     ): DataModelRelationshipDto {
+        val optionalModel = modelRepository.findById(modelId)
 
-        val model = modelRepository.findById(modelId)
-            .orElseThrow { EntityNotFoundException("Model not found") }
+        if (optionalModel.isEmpty) {
+            throw EntityNotFoundException("Model not found")
+        }
+
+        val model = optionalModel.get()
 
         if (model.ownerId != userId) {
             throw IllegalAccessException("Access denied")
@@ -45,14 +62,16 @@ class DataModelRelationshipServiceImpl(
         )
 
         relationship.attributes = dto.attributes.map { attr ->
-            val referencedAttribute =
-                attributeRepository.findById(attr.referencedAttributeId)
-                    .orElseThrow {
-                        ResponseStatusException(
-                            HttpStatus.BAD_REQUEST,
-                            "Referenced attribute not found",
-                        )
-                    }
+            val referencedAttributeOptional = attributeRepository.findById(attr.referencedAttributeId)
+
+            if (referencedAttributeOptional.isEmpty) {
+                throw ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Referenced attribute with ID ${attr.referencedAttributeId} not found"
+                )
+            }
+
+            val referencedAttribute = referencedAttributeOptional.get()
 
             DataModelRelationshipAttribute(
                 id = DataModelRelationshipAttribute.Id(
@@ -70,6 +89,7 @@ class DataModelRelationshipServiceImpl(
 
         return DataModelRelationshipDto(
             id = saved.id!!,
+            modelId = saved.modelId,
             fromEntityId = saved.fromEntityId,
             toEntityId = saved.toEntityId,
             type = saved.type,
@@ -88,15 +108,19 @@ class DataModelRelationshipServiceImpl(
     }
 
     @Transactional
-    fun updateRelationship(
+    override fun updateRelationship(
         modelId: Long,
         relationshipId: Long,
         dto: DataModelRelationshipInputDto,
         userId: Long
     ): DataModelRelationshipDto {
+        val optionalModel = modelRepository.findById(modelId)
 
-        val model = modelRepository.findById(modelId)
-            .orElseThrow { EntityNotFoundException("Model not found") }
+        if (optionalModel.isEmpty) {
+            throw EntityNotFoundException("Model not found")
+        }
+
+        val model = optionalModel.get()
 
         if (model.ownerId != userId) {
             throw IllegalAccessException("Access denied")
@@ -112,11 +136,16 @@ class DataModelRelationshipServiceImpl(
         relationship.attributes.clear()
 
         dto.attributes.forEach { attr ->
-            val referencedAttribute =
-                attributeRepository.findById(attr.referencedAttributeId)
-                    .orElseThrow {
-                        ResponseStatusException(HttpStatus.BAD_REQUEST)
-                    }
+            val referencedAttributeOptional = attributeRepository.findById(attr.referencedAttributeId)
+
+            if (referencedAttributeOptional.isEmpty) {
+                throw ResponseStatusException(
+                    HttpStatus.BAD_REQUEST,
+                    "Referenced attribute with ID ${attr.referencedAttributeId} not found"
+                )
+            }
+
+            val referencedAttribute = referencedAttributeOptional.get()
 
             relationship.attributes.add(
                 DataModelRelationshipAttribute(
@@ -134,6 +163,7 @@ class DataModelRelationshipServiceImpl(
 
         return DataModelRelationshipDto(
             id = relationship.id!!,
+            modelId = relationship.modelId,
             fromEntityId = relationship.fromEntityId,
             toEntityId = relationship.toEntityId,
             type = relationship.type,
@@ -152,10 +182,14 @@ class DataModelRelationshipServiceImpl(
     }
 
     @Transactional
-    fun deleteRelationship(modelId: Long, relationshipId: Long, userId: Long) {
+    override fun deleteRelationship(modelId: Long, relationshipId: Long, userId: Long) {
+        val optionalModel = modelRepository.findById(modelId)
 
-        val model = modelRepository.findById(modelId)
-            .orElseThrow { EntityNotFoundException("Model not found") }
+        if (optionalModel.isEmpty) {
+            throw EntityNotFoundException("Model not found")
+        }
+
+        val model = optionalModel.get()
 
         if (model.ownerId != userId) {
             throw IllegalAccessException("Access denied")

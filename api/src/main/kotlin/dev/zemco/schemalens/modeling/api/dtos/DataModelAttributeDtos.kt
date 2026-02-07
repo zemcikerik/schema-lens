@@ -1,7 +1,6 @@
 package dev.zemco.schemalens.modeling.api.dtos
 
 data class DataModelAttributeInputDto(
-    @field:NotBlank
     val name: String,
     val typeId: Long,
     val isPrimaryKey: Boolean,
@@ -10,10 +9,10 @@ data class DataModelAttributeInputDto(
 )
 
 data class DataModelAttributeDto(
-    val attributeId: Long? = null,
+    val id: Long? = null,
     val name: String,
     val typeId: Long,
     val isPrimaryKey: Boolean = false,
     val isNullable: Boolean = true,
-    val position: Int
+    val position: Short
 )

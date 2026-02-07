@@ -1,6 +1,7 @@
 package dev.zemco.schemalens.modeling.api.relationship
 
-import dev.zemco.schemalens.modeling.api.dtos.DataModelDtos
+import dev.zemco.schemalens.modeling.api.dtos.DataModelRelationshipDto
+import dev.zemco.schemalens.modeling.api.dtos.DataModelRelationshipInputDto
 
 interface DataModelRelationshipService {
     fun createRelationship(
