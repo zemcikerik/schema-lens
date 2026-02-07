@@ -1,7 +1,25 @@
 package dev.zemco.schemalens.modeling.api.model
 
-import dev.zemco.schemalens.modeling.api.dtos.*
-import dev.zemco.schemalens.modeling.repository.DataModelRepository
+import dev.zemco.schemalens.auth.User
+import dev.zemco.schemalens.modeling.DataModel
+import dev.zemco.schemalens.modeling.api.dtos.DataModelDto
+import dev.zemco.schemalens.modeling.api.dtos.DataModelInputDto
+import dev.zemco.schemalens.modeling.api.dtos.DataModelLogicalDto
+import dev.zemco.schemalens.modeling.api.dtos.DataModelDataTypeDto
+import dev.zemco.schemalens.modeling.api.dtos.DataModelAttributeDto
+import dev.zemco.schemalens.modeling.api.dtos.DataModelEntityLogicalDto
+import dev.zemco.schemalens.modeling.api.dtos.DataModelRelationshipDto
+import dev.zemco.schemalens.modeling.api.dtos.DataModelRelationshipAttributeDto
+
+import dev.zemco.schemalens.modeling.api.datatype.DataModelDataTypeRepository
+import dev.zemco.schemalens.modeling.api.entity.DataModelEntityRepository
+import dev.zemco.schemalens.modeling.api.attribute.DataModelAttributeRepository
+import dev.zemco.schemalens.modeling.api.relationship.DataModelRelationshipRepository
+
+import org.springframework.http.HttpStatus
+import jakarta.persistence.EntityNotFoundException
+import java.lang.IllegalAccessException
+import org.springframework.web.server.ResponseStatusException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -11,100 +29,115 @@ class DataModelServiceImpl(
     private val dataTypeRepository: DataModelDataTypeRepository,
     private val entityRepository: DataModelEntityRepository,
     private val attributeRepository: DataModelAttributeRepository,
-    private val relationshipRepository: DataModelRelationshipRepository,
-    private val relationshipAttributeRepository: DataModelRelationshipAttributeRepository
+    private val relationshipRepository: DataModelRelationshipRepository
 ) : DataModelService {
 
     override fun getAllModels(userId: Long): List<DataModelDto> =
-        repository.findAllByOwnerId(userId).map { DataModelDto(it.modelId, it.name) }
+        repository.findAllByOwnerId(userId).map { DataModelDto(it.id, it.name) }
 
     @Transactional
-    override fun createModel(dto: DataModelInputDto, userId: Long): DataModelDto {
+    override fun createModel(dto: DataModelInputDto, user: User): DataModelDto {
         require(dto.name.isNotBlank()) { "Model name cannot be blank" }
 
-        val entity = DataModel(name = dto.name, ownerId = ownerId)
+        val entity = DataModel(name = dto.name, ownerId = user.id!!, owner = user)
         val saved = repository.save(entity)
-        return DataModelDto(id = saved.modelId, name = saved.name)
+        return DataModelDto(id = saved.id, name = saved.name)
     }
 
     @Transactional
-    fun updateModel(modelId: Long, dto: DataModelInputDto, ownerId: Long): DataModelDto {
+    override fun updateModel(modelId: Long, dto: DataModelInputDto, ownerId: Long): DataModelDto {
         require(dto.name.isNotBlank()) { "Model name cannot be blank" }
 
-        val model = repository.findById(modelId)
-            .orElseThrow { NotFoundException("DataModel with id $modelId not found") }
+        val optionalModel = repository.findById(modelId)
+
+        if (optionalModel.isEmpty) {
+            throw EntityNotFoundException("Model not found")
+        }
+
+        val model = optionalModel.get()
 
         if (model.ownerId != ownerId) {
-            throw AccessDeniedException("You do not have access to this model")
+            throw IllegalAccessException("Access denied")
         }
 
         model.name = dto.name
         val saved = repository.save(model)  // ID stays the same, just updates the name
-        return DataModelDto(id = saved.modelId, name = saved.name)
+        return DataModelDto(id = saved.id, name = saved.name)
     }
 
     @Transactional
-    fun deleteModel(modelId: Long, ownerId: Long) {
-        val model = repository.findById(modelId)
-            .orElseThrow { NotFoundException("DataModel with id $modelId not found") }
+    override fun deleteModel(modelId: Long, ownerId: Long) {
+        val optionalModel = repository.findById(modelId)
+
+        if (optionalModel.isEmpty) {
+            throw EntityNotFoundException("Model not found")
+        }
+
+        val model = optionalModel.get()
 
         if (model.ownerId != ownerId) {
-            throw AccessDeniedException("You do not have access to this model")
+            throw IllegalAccessException("Access denied")
         }
 
         repository.delete(model)
     }
 
     @Transactional(readOnly = true)
-    fun getLogicalModel(modelId: Long, userId: Long): DataModelLogicalDto {
-        val model = modelRepository.findById(modelId)
-            .orElseThrow { NotFoundException("DataModel $modelId not found") }
+    override fun getLogicalModel(modelId: Long, userId: Long): DataModelLogicalDto {
+        val optionalModel = repository.findById(modelId)
+
+        if (optionalModel.isEmpty) {
+            throw EntityNotFoundException("Model not found")
+        }
+
+        val model = optionalModel.get()
 
         if (model.ownerId != userId) {
-            throw AccessDeniedException("You do not have access to this model")
+            throw IllegalAccessException("Access denied")
         }
 
         val dataTypes = dataTypeRepository.findAllByModelId(modelId)
-            .map { DataModelDataTypeDto(it.typeId, it.name) }
+            .map { DataModelDataTypeDto(it.id!!, it.name) }
 
         val entities = entityRepository.findAllByModelId(modelId)
             .map { entity ->
-                val attributes = attributeRepository.findAllByEntityId(entity.entityId)
+                val attributes = attributeRepository.findAllByEntityId(entity.id!!)
                     .map { attr ->
                         DataModelAttributeDto(
-                            attributeId = attr.attributeId,
+                            id = attr.id,
                             name = attr.name,
                             typeId = attr.typeId,
-                            isPrimaryKey = attr.isPrimaryKey != 0,
-                            isNullable = attr.isNullable != 0,
+                            isPrimaryKey = attr.isPrimaryKey == true,
+                            isNullable = attr.isNullable == true,
                             position = attr.position
                         )
                     }
                 DataModelEntityLogicalDto(
-                    entityId = entity.entityId,
+                    id = entity.id!!,
                     name = entity.name,
                     attributes = attributes
                 )
             }
 
         val relationships = relationshipRepository.findAllByModelId(modelId)
-            .map { rel ->
-                val relAttrs = relationshipAttributeRepository.findAllByRelationshipId(rel.relationshipId)
-                    .map { ra ->
-                        DataModelRelationshipAttributeDto(
-                            referencedAttributeId = ra.referencedAttributeId,
-                            name = ra.name,
-                            position = ra.position
-                        )
-                    }
+            .map { relationship ->
                 DataModelRelationshipDto(
-                    relationshipId = rel.relationshipId,
-                    fromEntityId = rel.fromEntityId,
-                    toEntityId = rel.toEntityId,
-                    type = if (rel.type == "1") "1:1" else "1:N",
-                    isMandatory = rel.isMandatory != 0,
-                    isIdentifying = rel.isIdentifying != 0,
-                    attributes = relAttrs
+                    id = relationship.id!!,
+                    modelId = relationship.modelId,
+                    fromEntityId = relationship.fromEntityId,
+                    toEntityId = relationship.toEntityId,
+                    type = relationship.type,
+                    isMandatory = relationship.isMandatory,
+                    isIdentifying = relationship.isIdentifying,
+                    attributes = relationship.attributes
+                        .sortedBy { it.position }
+                        .map {
+                            DataModelRelationshipAttributeDto(
+                                referencedAttributeId = it.id.referencedAttributeId,
+                                name = it.name,
+                                position = it.position,
+                            )
+                        },
                 )
             }
 

@@ -1,7 +1,15 @@
 package dev.zemco.schemalens.modeling.api.entity
 
-import dev.zemco.schemalens.modeling.DataModelRepository
+import dev.zemco.schemalens.modeling.logical.DataModelEntity
+import dev.zemco.schemalens.modeling.api.model.DataModelRepository
+import dev.zemco.schemalens.modeling.api.entity.DataModelEntityRepository
+import dev.zemco.schemalens.modeling.api.dtos.DataModelEntityDto
+import dev.zemco.schemalens.modeling.api.dtos.DataModelEntityInputDto
+
+import org.springframework.http.HttpStatus
 import jakarta.persistence.EntityNotFoundException
+import java.lang.IllegalAccessException
+import org.springframework.web.server.ResponseStatusException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -19,8 +27,13 @@ class DataModelEntityServiceImpl(
     ): DataModelEntityDto {
         require(dto.name.isNotBlank()) { "Entity name cannot be blank" }
 
-        val model = modelRepository.findById(modelId)
-            .orElseThrow { EntityNotFoundException("Model not found") }
+        val optionalModel = modelRepository.findById(modelId)
+
+        if (optionalModel.isEmpty) {
+            throw EntityNotFoundException("Model not found")
+        }
+
+        val model = optionalModel.get()
 
         if (model.ownerId != userId) {
             throw IllegalAccessException("Access denied")
@@ -50,8 +63,13 @@ class DataModelEntityServiceImpl(
     ): DataModelEntityDto {
         require(dto.name.isNotBlank()) { "Entity name cannot be blank" }
 
-        val model = modelRepository.findById(modelId)
-            .orElseThrow { EntityNotFoundException("Model not found") }
+        val optionalModel = modelRepository.findById(modelId)
+
+        if (optionalModel.isEmpty) {
+            throw EntityNotFoundException("Model not found")
+        }
+
+        val model = optionalModel.get()
 
         if (model.ownerId != userId) {
             throw IllegalAccessException("Access denied")
@@ -80,8 +98,13 @@ class DataModelEntityServiceImpl(
         entityId: Long,
         userId: Long
     ) {
-        val model = modelRepository.findById(modelId)
-            .orElseThrow { EntityNotFoundException("Model not found") }
+        val optionalModel = modelRepository.findById(modelId)
+
+        if (optionalModel.isEmpty) {
+            throw EntityNotFoundException("Model not found")
+        }
+
+        val model = optionalModel.get()
 
         if (model.ownerId != userId) {
             throw IllegalAccessException("Access denied")

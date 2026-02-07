@@ -12,5 +12,5 @@ data class DataModelEntityInputDto(
 data class DataModelEntityLogicalDto(
     val id: Long,
     val name: String,
-    val attributes: List<DataModelEntityAttributeDto>
+    val attributes: List<DataModelAttributeDto>
 )
