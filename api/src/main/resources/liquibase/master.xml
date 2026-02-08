@@ -429,6 +429,12 @@
 
   <changeSet id="2025-11-07T1451-data-model-entity-ownership"
                author="Erik Zemčík (zemcik.erik@gmail.com)">
+               
+    <preConditions onFail="MARK_RAN">
+        <foreignKeyConstraintExists
+            foreignKeyName="fk_dmra_relationship"/>
+    </preConditions>
+
     <addForeignKeyConstraint baseTableName="data_model_entity"
                              baseColumnNames="model_id"
                              constraintName="fk_data_model_entity_on_model_id"
