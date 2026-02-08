@@ -369,7 +369,8 @@
              author="Erik Zemčík (zemcik.erik@gmail.com)">
     <createTable tableName="data_model_data_type">
       <column name="type_id"
-              type="BIGINT">
+              type="BIGINT"
+              autoIncrement="true">
         <constraints nullable="false"
                      primaryKey="true"
                      primaryKeyName="pk_data_model_data_type" />
@@ -409,7 +410,8 @@
              author="Erik Zemčík (zemcik.erik@gmail.com)">
     <createTable tableName="data_model_entity">
       <column name="entity_id"
-              type="BIGINT">
+              type="BIGINT"
+              autoIncrement="true">
         <constraints nullable="false"
                      primaryKey="true"
                      primaryKeyName="pk_data_model_entity" />
@@ -448,7 +450,8 @@
              author="Erik Zemčík (zemcik.erik@gmail.com)">
     <createTable tableName="data_model_attribute">
       <column name="attribute_id"
-              type="BIGINT">
+              type="BIGINT"
+              autoIncrement="true">
         <constraints nullable="false"
                      primaryKey="true"
                      primaryKeyName="pk_data_model_attribute" />
@@ -531,7 +534,8 @@
              author="Erik Zemčík (zemcik.erik@gmail.com)">
     <createTable tableName="data_model_relationship">
       <column name="relationship_id"
-              type="BIGINT">
+              type="BIGINT"
+              autoIncrement="true">
         <constraints nullable="false"
                      primaryKey="true"
                      primaryKeyName="pk_data_model_relationship" />
