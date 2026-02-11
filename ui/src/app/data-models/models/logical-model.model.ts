@@ -1,0 +1,42 @@
+import { Diagram } from './diagram';
+
+export interface LogicalDataModel {
+  dataTypes: DataType[];
+  entities: LogicalEntity[];
+  relationships: LogicalRelationship[];
+  diagrams: Diagram[];
+}
+
+export interface DataType {
+  typeId: number | null;
+  name: string;
+}
+
+export interface LogicalEntity {
+  entityId: number;
+  name: string;
+  attributes: LogicalAttribute[];
+}
+
+export interface LogicalAttribute {
+  attributeId: number | null,
+  name: string,
+  typeId: number,
+  isPrimaryKey: boolean,
+  isNullable: boolean,
+  position: number
+}
+
+export interface LogicalRelationship {
+  relationshipId: number;
+  fromEntityId: number;
+  toEntityId: number;
+  type: string;
+  isMandatory: boolean;
+  isIdentifying: boolean;
+  attributes: {
+    referencedAttributeId: number;
+    name: string;
+    position: number;
+  }[];
+}
