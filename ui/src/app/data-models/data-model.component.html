@@ -1,0 +1,14 @@
+<app-layout-content-with-sidebar>
+  <app-data-model-nav ngProjectAs="sidebar" [dataModelId]="dataModelId()"
+                      [logicalModel]="logicalDataModel()"/>
+
+  <app-content-card>
+    @if (logicalDataModelResource.isLoading()) {
+      <app-progress-spinner [center]="true"/>
+    } @else if (logicalDataModelResource.error()) {
+      <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+    } @else {
+      <router-outlet [routerOutletData]="logicalDataModel()"/>
+    }
+  </app-content-card>
+</app-layout-content-with-sidebar>

@@ -1,0 +1,22 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+@use '../utilities/breakpoints' as breakpoints;
+
+.data-model-properties {
+  &__main {
+    & > :first-child {
+      width: 100%;
+    }
+  }
+
+  &__control {
+    display: flex;
+    justify-content: right;
+    margin-top: .5rem;
+
+    gap: 1rem;
+    > :not([type="submit"]) {
+      @include mat.button-color(t.$theme, $color-variant: error);
+    }
+  }
+}

@@ -42,6 +42,12 @@
 @use './scss/components/top-bar';
 @use './scss/components/user-identifier';
 
+@use './scss/components/data-model-entiy';
+@use './scss/components/data-model-create-dialogs';
+@use './scss/components/data-type-editor';
+@use './scss/components/data-model-nav';
+@use './scss/components/data-model-properties';
+
 @include mat.elevation-classes();
 @include mat.app-background();
 

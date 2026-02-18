@@ -12,31 +12,32 @@ import { AuthService } from './core/auth/auth.service';
   template: `
     <mat-toolbar class="top-bar">
       @if (sidebarState.hasSidebar()) {
-        <div class="top-bar__sidebar-toggle__wrapper">
-          <button mat-icon-button (click)="toggleSidebar()">
-            <mat-icon>menu</mat-icon>
-          </button>          
-        </div>
+      <div class="top-bar__sidebar-toggle__wrapper">
+        <button mat-icon-button (click)="toggleSidebar()">
+          <mat-icon>menu</mat-icon>
+        </button>
+      </div>
       }
       <a class="top-bar__app-name" [routerLink]="homeLink()">{{ ('APP_TITLE' | translate)() }}</a>
       <a class="top-bar__app-name-short" [routerLink]="homeLink()">{{ ('APP_TITLE_SHORT' | translate)() }}</a>
+      <div class="top-bar__menu">
+        <a [routerLink]="projectLink()">{{ ('LINKS.PROJECT' | translate)() }}</a>
+        <a [routerLink]="modelLink()">{{ ('LINKS.MODEL' | translate)() }}</a>
+      </div>
       <div class="top-bar__separator"></div>
       <ng-content />
     </mat-toolbar>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatToolbar,
-    TranslatePipe,
-    MatIcon,
-    MatIconButton,
-    RouterLink,
-  ],
+  imports: [MatToolbar, TranslatePipe, MatIcon, MatIconButton, RouterLink],
 })
 export class TopBarComponent {
   authService = inject(AuthService);
   sidebarState = inject(SidebarStateService);
-  homeLink = computed(() => this.authService.isAuthenticated() ? ['/project'] : ['/login']);
+
+  projectLink = computed(() => (this.authService.isAuthenticated() ? ['/project'] : ['/login']));
+  modelLink = computed(() => (this.authService.isAuthenticated() ? ['/model'] : ['/login']));
+  homeLink = this.projectLink;
 
   toggleSidebar(): void {
     if (this.sidebarState.isOpen()) {

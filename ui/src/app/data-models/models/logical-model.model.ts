@@ -13,7 +13,7 @@ export interface DataType {
 }
 
 export interface LogicalEntity {
-  entityId: number;
+  entityId: number | null;
   name: string;
   attributes: LogicalAttribute[];
 }

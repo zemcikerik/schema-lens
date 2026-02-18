@@ -3,6 +3,10 @@
   "APP_TITLE_SHORT": "SL",
   "404_LABEL": "404",
   "404_DESCRIPTION": "How did we get here?",
+  "LINKS": {
+    "PROJECT": "Projects",
+    "MODEL": "Models"
+  },
   "GENERIC": {
     "SAVE_LABEL": "Save",
     "EDIT_LABEL": "Edit",
@@ -269,6 +273,68 @@
       "UPDATE_DESCRIPTION": "Update an existing frequently asked question. This question will be displayed only for the shown locale.",
       "CONFIRM_DELETE_TITLE": "Delete FAQ",
       "CONFIRM_DELETE_DESCRIPTION": "Are you sure you want to delete this frequently asked question?"
+    }
+  },
+  "DATAMODEL": {
+    "LABEL": "Models",
+    "ADD_BUTTON_LABEL": "Create Model",
+    "LIST_COLUMN.NAME_LABEL": "Name",
+    "DELETE_DESCRIPTION": "Are you sure want to delete this model?",
+    "NAV": {
+      "PROPERTIES": "Properties",
+      "DIAGRAMS": "Diagrams",
+      "ENTITIES": "Entities",
+      "DATA_TYPES": "Data Types"
+    },
+    "PROPERTIES": {
+      "TITLE": "Model Options",
+      "HEADER": "Model Properties",
+      "NAME_LABEL": "Model Name"
+    },
+    "DIAGRAM": {
+      "CREATE": {
+        "HEADER": "Create New Diagram",
+        "LABEL": "Diagram Name",
+        "PLACEHOLDER": "DIAGRAM"
+      }
+    },
+    "ENTITY": {
+      "CREATE": {
+        "HEADER": "Create New Entity",
+        "LABEL": "Entity Name",
+        "PLACEHOLDER": "ENTITY"
+      },
+      "DELETE_ATTR": {
+        "TITLE": "Are you sure want to delete this attribute?",
+        "DESC": "This operation cannot be reverted"
+      },
+      "DELETE": {
+        "TITLE": "Are you sure want to delete this entity?",
+        "DESC": "This operation cannot be reverted"
+      },
+      "CANNOT_SET_ON_PK": "Cannot set on PK"
+    },
+    "DATA_TYPE": {
+      "CREATE": {
+        "HEADER": "Create New Data Type",
+        "LABEL": "Data Type Name",
+        "PLACEHOLDER": "TYPE"
+      },
+      "SELECT": {
+        "HEADER": "Select Data Type",
+        "LABEL": "Data Type Name",
+        "PLACEHOLDER": "TYPE"
+      },
+      "EDIT": {
+        "TITLE": "Data Type Options",
+        "HEADER": "Data Type Properties",
+        "LABEL": "Name"
+      },
+      "DELETE": {
+        "TITLE": "Are you sure want to delete this data type?",
+        "DESC": "This operation cannot be reverted"
+      },
+      "ERROR.IN_USE": "This data type is still used in other entity!"
     }
   }
 }

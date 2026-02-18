@@ -16,6 +16,7 @@ import {
   ChangeLocaleButtonComponent
 } from '../../shared/components/change-locale-button/change-locale-button.component';
 import { IconLinkComponent } from '../../shared/components/icon-link/icon-link.component';
+import { DataModelService } from '../../data-models/services/data-model.service';
 
 @Component({
   selector: 'app-login',
@@ -40,6 +41,7 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
   private projectService = inject(ProjectService);
+  private dataModelService = inject(DataModelService);
   private router = inject(Router);
 
   loginForm = new FormGroup({
@@ -65,24 +67,26 @@ export class LoginComponent {
     this.loading.set(true);
     this.loginForm.disable();
 
-    this.authService.login(username, password).pipe(
-      mergeMap(authenticated => authenticated
-        ? this.projectService.loadProjects().pipe(map(() => true))
-        : of(false)),
-      takeUntilDestroyed(this.destroyRef),
-      finalize(() => {
-        this.loading.set(false);
-        this.loginForm.enable();
-      }),
-    ).subscribe({
-      next: async success => {
-        if (success) {
-          await this.router.navigate(['/project']);
-        } else {
-          this.error.set('AUTH.ERRORS.CREDENTIALS_WRONG');
-        }
-      },
-      error: () => this.error.set('GENERIC.ERROR_LABEL'),
-    });
+    this.authService
+      .login(username, password)
+      .pipe(
+        mergeMap(authenticated => (authenticated ? this.projectService.loadProjects().pipe(map(() => true)) : of(false))),
+        mergeMap(authenticated => (authenticated ? this.dataModelService.loadDataModels().pipe(map(() => true)) : of(false))),
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.loading.set(false);
+          this.loginForm.enable();
+        }),
+      )
+      .subscribe({
+        next: async success => {
+          if (success) {
+            await this.router.navigate(['/project']);
+          } else {
+            this.error.set('AUTH.ERRORS.CREDENTIALS_WRONG');
+          }
+        },
+        error: () => this.error.set('GENERIC.ERROR_LABEL'),
+      });
   }
 }

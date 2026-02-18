@@ -1,0 +1,103 @@
+<div class="entity-editor">
+  <div class="table__header">
+    <mat-icon class="icon" [matTooltip]="('DATAMODEL.ENTITY' | translate)()">table</mat-icon>
+    <h2 class="text-code">{{ this.entity()?.name }}</h2>
+  </div>
+  @if (error()) {
+    <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+  }
+  <div>
+    <button matButton="filled" (click)="delete()" [disabled]="loading()" class="entity-editor__delete-button">
+      <mat-icon>delete</mat-icon>
+      {{ ('GENERIC.DELETE_LABEL' | translate)() }}
+    </button>
+    <button matButton="filled" (click)="save()" [disabled]="loading()">
+      <mat-icon>save</mat-icon>
+      @if (loading()) {
+        <app-progress-spinner [center]="true" size="small"/>
+      } @else {
+        {{ ('GENERIC.SAVE_LABEL' | translate)() }}
+      }
+    </button>
+  </div>
+</div>
+<cdk-virtual-scroll-viewport [itemSize]="10" class="entity-editor__scroll">
+  <mat-table #table cdkDropList class="table-attributes" [dataSource]="entityAttributes()"
+             cdkDropListData="entityAttributes()" (cdkDropListDropped)="drop($event)">
+    <ng-container matColumnDef="drag">
+      <mat-header-cell *matHeaderCellDef>
+        <button matIconButton (click)="addAttribute()">
+          <mat-icon>add</mat-icon>
+        </button>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let attribute">
+        <mat-icon cdkDragHandle class="entity-editor__handle">menu</mat-icon>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="primary-key">
+      <mat-header-cell *matHeaderCellDef>
+        <app-table-constraint-icon type="PRIMARY_KEY" class="entity-editor__pk-icon"/>
+      </mat-header-cell>
+      <mat-cell class="entity-editor__pk" *matCellDef="let attribute">
+        <button mat-icon-button
+                (click)="attribute.isPrimaryKey = !attribute.isPrimaryKey; attribute.isNullable = false">
+          <app-table-constraint-icon type="PRIMARY_KEY" [class]="attribute.isPrimaryKey ? '' : 'entity-editor__pk__hover'"/>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="name">
+      <mat-header-cell *matHeaderCellDef>{{ ('TABLES.COLUMNS.NAME_LABEL' | translate)() }}</mat-header-cell>
+      <mat-cell *matCellDef="let attribute">
+        <input class="text-code entity-editor__name-input" type="text" [(ngModel)]="attribute.name">
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="type">
+      <mat-header-cell *matHeaderCellDef>
+        <div class="entity-editor__type_label" >
+          {{ ('TABLES.COLUMNS.TYPE_LABEL' | translate)() }}
+        </div>
+      </mat-header-cell>
+      <mat-cell *matCellDef="let attribute">
+        <button class="text-code data-type-column" matButton (click)="openDataTypeDialog(attribute)">
+          {{ dataTypeName(attribute.typeId) }}
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="nullable">
+      <mat-header-cell mat-header-cell *matHeaderCellDef>{{ ('TABLES.COLUMNS.NULLABLE_LABEL' | translate)() }}
+      </mat-header-cell>
+      <mat-cell class="column-icon" *matCellDef="let attribute">
+        <div [matTooltip]="(attribute.isPrimaryKey ? ('DATAMODEL.ENTITY.CANNOT_SET_ON_PK' | translate)() : null)">
+          <button mat-icon-button [disabled]="attribute.isPrimaryKey">
+            <app-status-icon [status]="attribute.isNullable" (click)="attribute.isNullable = !attribute.isNullable"/>
+          </button>
+        </div>
+      </mat-cell>
+    </ng-container>
+
+    <ng-container matColumnDef="actions">
+      <mat-header-cell *matHeaderCellDef/>
+      <mat-cell class="column-actions" *matCellDef="let attribute">
+        <button mat-icon-button [matMenuTriggerFor]="actionsMenu" [matMenuTriggerData]="{ attribute }">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      </mat-cell>
+    </ng-container>
+
+    <mat-header-row *matHeaderRowDef="ALL_COLUMNS, sticky: true"/>
+    <mat-row cdkDragLockAxis="y" *matRowDef="let row; columns: ALL_COLUMNS;" cdkDrag [cdkDragData]="row"/>
+  </mat-table>
+</cdk-virtual-scroll-viewport>
+
+<mat-menu #actionsMenu xPosition="before">
+  <ng-template matMenuContent let-attribute="attribute">
+    <button mat-menu-item (click)="deleteAttribute(attribute.attributeId)">
+      <mat-icon>delete</mat-icon>
+      {{ ('GENERIC.DELETE_LABEL' | translate)() }}
+    </button>
+  </ng-template>
+</mat-menu>

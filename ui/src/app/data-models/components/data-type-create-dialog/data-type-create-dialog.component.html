@@ -1,0 +1,35 @@
+<h2 mat-dialog-title>{{ ('DATAMODEL.DATA_TYPE.CREATE.HEADER' | translate)() }}</h2>
+
+<mat-dialog-content>
+  <div class="data-model-create-dialogs">
+    @if (error()) {
+      <app-alert type="error">{{ ('ERROR.GENERIC' | translate)() }}</app-alert>
+    }
+    <form>
+      <mat-form-field class="data-model-create-dialogs__form">
+        <mat-label>{{ ('DATAMODEL.DATA_TYPE.CREATE.LABEL' | translate)() }}</mat-label>
+        <input type="text"
+               [placeholder]="('DATAMODEL.DATA_TYPE.CREATE.PLACEHOLDER' | translate)()"
+               matInput
+               required
+               [formControl]="formControl">
+        @if (formControl.invalid) {
+          <mat-error>{{ (formControl.errors | formatGenericValidationErrors)() }}</mat-error>
+        }
+      </mat-form-field>
+    </form>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button
+    mat-flat-button
+    (click)="confirm()"
+    [disabled]="!formControl.valid || loading()">
+    @if (loading()) {
+      <app-progress-spinner [center]="true" size="small"/>
+    } @else {
+      {{ ('GENERIC.CONFIRM_LABEL' | translate)() }}
+    }
+  </button>
+</mat-dialog-actions>

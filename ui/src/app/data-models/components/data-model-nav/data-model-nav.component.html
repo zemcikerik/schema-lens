@@ -1,0 +1,68 @@
+<div class="model-nav__container">
+  <mat-nav-list class="model-nav">
+    <a
+      mat-list-item
+      [routerLink]="['/model', dataModelId(), 'properties']"
+      routerLinkActive
+      #rla="routerLinkActive"
+      [activated]="rla.isActive"
+      appSidebarClose
+    >{{ ('DATAMODEL.NAV.PROPERTIES' | translate)() }}</a>
+
+    <mat-expansion-panel class="data-model-object-selector">
+      <mat-expansion-panel-header>
+        <mat-panel-title>{{ ('DATAMODEL.NAV.DIAGRAMS' | translate)() }}</mat-panel-title>
+        <mat-panel-description>
+          <button matIconButton (click)="addNewDiagram($event)">
+            <mat-icon>add</mat-icon>
+          </button>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <ng-template matExpansionPanelContent>
+        @for (el of logicalModel()?.diagrams; track el.id) {
+          <a mat-list-item [routerLink]="['/model', dataModelId(), 'diagram', el.id]"
+          >{{ el.name }}</a>
+        }
+      </ng-template>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="data-model-object-selector">
+      <mat-expansion-panel-header>
+        <mat-panel-title>{{ ('DATAMODEL.NAV.ENTITIES' | translate)() }}</mat-panel-title>
+        <mat-panel-description>
+          <button matIconButton (click)="addNewEntity($event)">
+            <mat-icon>add</mat-icon>
+          </button>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+
+      <ng-template matExpansionPanelContent>
+        @for (el of logicalModel()?.entities; track el.entityId) {
+          <a
+            [routerLink]="['/model', dataModelId(), 'entity', el.entityId]"
+            mat-list-item>{{ el.name }}</a>
+        }
+      </ng-template>
+    </mat-expansion-panel>
+
+    <mat-expansion-panel class="data-model-object-selector">
+      <mat-expansion-panel-header>
+        <mat-panel-title>{{ ('DATAMODEL.NAV.DATA_TYPES' | translate)() }}</mat-panel-title>
+        <mat-panel-description>
+        <button matIconButton (click)="addNewDataType($event)">
+          <mat-icon>add</mat-icon>
+        </button>
+        </mat-panel-description>
+      </mat-expansion-panel-header>
+
+      <ng-template matExpansionPanelContent>
+        @for (el of logicalModel()?.dataTypes; track el.typeId) {
+          <a mat-list-item [routerLink]="['/model', dataModelId(), 'data-type', el.typeId]">{{ el.name }}</a>
+        }
+      </ng-template>
+    </mat-expansion-panel>
+
+  </mat-nav-list>
+</div>

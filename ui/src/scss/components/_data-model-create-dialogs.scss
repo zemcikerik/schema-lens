@@ -1,0 +1,28 @@
+@use '@angular/material' as mat;
+@use '../utilities/breakpoints' as breakpoints;
+
+.data-model-create-dialogs {
+  display: flex;
+  flex-direction: column;
+
+  @include breakpoints.breakpoint-up(md) {
+    width: calc(var(--mat-dialog-container-max-width) - 3rem);
+  }
+
+  app-alert {
+    margin-bottom: .5rem;
+  }
+
+  &__auto {
+    @include mat.autocomplete-overrides((
+      background-color: white,
+    ));
+  }
+
+  &__form {
+    width: 100%;
+    * input {
+      text-transform: uppercase;
+    }
+  }
+}

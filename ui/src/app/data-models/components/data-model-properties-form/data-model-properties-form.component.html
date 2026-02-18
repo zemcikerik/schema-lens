@@ -1,0 +1,26 @@
+<form class="data-model-properties" [formGroup]="propertiesForm" (ngSubmit)="submit()">
+  <h4>{{ ('DATAMODEL.PROPERTIES.HEADER' | translate)() }}</h4>
+  <div class="data-model-properties__main">
+    <mat-form-field>
+      <mat-label>{{ ('DATAMODEL.PROPERTIES.NAME_LABEL' | translate)() }}</mat-label>
+      <input matInput required formControlName="name">
+      @if (nameControl.invalid) {
+        <mat-error>{{ (nameControl.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div class="data-model-properties__control">
+    @if (properties() !== null) {
+      <button mat-flat-button (click)="delete.emit()" type="button">
+        <mat-icon>delete</mat-icon>
+        {{ ('GENERIC.DELETE_LABEL' | translate)() }}
+      </button>
+    }
+
+    <button mat-flat-button type="submit">
+      <mat-icon>save</mat-icon>
+      {{ ('GENERIC.SAVE_LABEL' | translate)() }}
+    </button>
+  </div>
+</form>

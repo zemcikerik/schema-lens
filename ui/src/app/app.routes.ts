@@ -24,13 +24,55 @@ export const appRoutes: Route[] = [
     canActivate: [authGuard],
   },
   {
+    path: 'model',
+    loadComponent: () =>
+      import('./data-models/components/data-model-list/data-model-list.component').then(c => c.DataModelListComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'model/create',
+    loadComponent: () =>
+      import('./data-models/components/data-model-create/data-model-create.component').then(c => c.DataModelCreateComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'model/:dataModelId',
+    loadComponent: () => import('./data-models/data-model.component').then(c => c.DataModelComponent),
+    canActivate: [authGuard],
+    children: [
+      { path: '', redirectTo: 'properties', pathMatch: 'full' },
+      {
+        path: 'properties',
+        loadComponent: () =>
+          import('./data-models/components/data-model-properties-edit/data-model-properties-edit.component').then(
+            c => c.DataModelPropertiesEditComponent,
+          ),
+      },
+      {
+        path: 'entity/:entityId',
+        loadComponent: () =>
+          import('./data-models/components/data-model-entity/data-model-entity.component').then(c => c.DataModelEntityComponent),
+      },
+      {
+        path: 'data-type/:dataTypeId',
+        loadComponent: () =>
+          import('./data-models/components/data-type-edit/data-type-edit.component').then(c => c.DataTypeEditComponent),
+      },
+      //{
+      //  path: 'diagram/:diagramId',
+      //  loadComponent: () => import('./tables/table.component').then(c => c.TableComponent),
+      //},
+    ],
+  },
+  {
     path: 'project',
     loadComponent: () => import('./projects/components/project-list/project-list.component').then(c => c.ProjectListComponent),
     canActivate: [authGuard],
   },
   {
     path: 'project/create',
-    loadComponent: () => import('./projects/components/project-create/project-create.component').then(c => c.ProjectCreateComponent),
+    loadComponent: () =>
+      import('./projects/components/project-create/project-create.component').then(c => c.ProjectCreateComponent),
     canActivate: [authGuard],
   },
   {
@@ -41,11 +83,15 @@ export const appRoutes: Route[] = [
       { path: '', redirectTo: 'properties', pathMatch: 'full' },
       {
         path: 'properties',
-        loadComponent: () => import('./projects/components/project-properties-edit/project-properties-edit.component').then(c => c.ProjectPropertiesEditComponent),
+        loadComponent: () =>
+          import('./projects/components/project-properties-edit/project-properties-edit.component').then(
+            c => c.ProjectPropertiesEditComponent,
+          ),
       },
       {
         path: 'table/404',
-        loadComponent: () => import('./tables/components/table-not-found/table-not-found.component').then(c => c.TableNotFoundComponent),
+        loadComponent: () =>
+          import('./tables/components/table-not-found/table-not-found.component').then(c => c.TableNotFoundComponent),
       },
       {
         path: 'table/:tableName',
@@ -54,15 +100,18 @@ export const appRoutes: Route[] = [
           { path: '', redirectTo: 'columns', pathMatch: 'full' },
           {
             path: 'columns',
-            loadComponent: () => import('./tables/components/table-columns/table-columns.component').then(c => c.TableColumnsComponent),
+            loadComponent: () =>
+              import('./tables/components/table-columns/table-columns.component').then(c => c.TableColumnsComponent),
           },
           {
             path: 'constraints',
-            loadComponent: () => import('./tables/components/table-constraints/table-constraints.component').then(c => c.TableConstraintsComponent),
+            loadComponent: () =>
+              import('./tables/components/table-constraints/table-constraints.component').then(c => c.TableConstraintsComponent),
           },
           {
             path: 'indexes',
-            loadComponent: () => import('./tables/components/table-indexes/table-indexes.component').then(c => c.TableIndexesComponent),
+            loadComponent: () =>
+              import('./tables/components/table-indexes/table-indexes.component').then(c => c.TableIndexesComponent),
           },
           {
             path: 'ddl',
@@ -70,21 +119,33 @@ export const appRoutes: Route[] = [
           },
           {
             path: 'relationships',
-            loadComponent: () => import('./tables/components/table-relationships/table-relationships.component').then(c => c.TableRelationshipsComponent),
+            loadComponent: () =>
+              import('./tables/components/table-relationships/table-relationships.component').then(
+                c => c.TableRelationshipsComponent,
+              ),
           },
         ],
       },
       {
         path: 'table-relationships',
-        loadComponent: () => import('./tables/components/table-all-relationships/table-all-relationships.component').then(c => c.TableAllRelationshipsComponent),
+        loadComponent: () =>
+          import('./tables/components/table-all-relationships/table-all-relationships.component').then(
+            c => c.TableAllRelationshipsComponent,
+          ),
       },
       {
         path: 'table-relationships/view',
-        loadComponent: () => import('./tables/components/table-all-relationships/table-all-relationships-view/table-all-relationships-view.component').then(c => c.TableAllRelationshipsViewComponent),
+        loadComponent: () =>
+          import(
+            './tables/components/table-all-relationships/table-all-relationships-view/table-all-relationships-view.component'
+          ).then(c => c.TableAllRelationshipsViewComponent),
       },
       {
         path: 'collaborators',
-        loadComponent: () => import('./projects/components/project-collaborators/project-collaborators.component').then(c => c.ProjectCollaboratorsComponent),
+        loadComponent: () =>
+          import('./projects/components/project-collaborators/project-collaborators.component').then(
+            c => c.ProjectCollaboratorsComponent,
+          ),
       },
     ],
   },

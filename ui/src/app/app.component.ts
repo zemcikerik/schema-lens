@@ -18,6 +18,7 @@ import { HasRolePipe } from './core/pipes/has-role.pipe';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from './core/translate/translate.pipe';
 import { ChangeLocaleButtonComponent } from './shared/components/change-locale-button/change-locale-button.component';
+import { DataModelService } from './data-models/services/data-model.service';
 
 @Component({
   selector: 'app-root',
@@ -53,18 +54,19 @@ export class AppComponent {
 
   constructor() {
     const projectService = inject(ProjectService);
+    const dataModelService = inject(DataModelService);
 
-    forkJoin([
-      this.translateService.trySetLocaleFromStorageOrDefault(),
-      this.authService.attemptAuthFromStorage(),
-    ]).pipe(
-      map(([, authenticated]) => authenticated),
-      mergeMap(authenticated => authenticated ? projectService.loadProjects() : of(null)),
-      takeUntilDestroyed(),
-      finalize(() => this.loading.set(false)),
-    ).subscribe({
-      error: (err: Error) => this.error.set(err.message),
-    });
+    forkJoin([this.translateService.trySetLocaleFromStorageOrDefault(), this.authService.attemptAuthFromStorage()])
+      .pipe(
+        map(([, authenticated]) => authenticated),
+        mergeMap(authenticated => (authenticated ? projectService.loadProjects() : of(null))),
+        mergeMap(authenticated => (authenticated ? dataModelService.loadDataModels() : of(null))),
+        takeUntilDestroyed(),
+        finalize(() => this.loading.set(false)),
+      )
+      .subscribe({
+        error: (err: Error) => this.error.set(err.message),
+      });
   }
 
   async goToProfile(): Promise<void> {
