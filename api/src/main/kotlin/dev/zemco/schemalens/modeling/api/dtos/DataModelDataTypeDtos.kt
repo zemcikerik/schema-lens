@@ -5,6 +5,6 @@ data class DataModelDataTypeInputDto(
 )
 
 data class DataModelDataTypeDto(
-    val id: Long,
+    val typeId: Long,
     val name: String
 )

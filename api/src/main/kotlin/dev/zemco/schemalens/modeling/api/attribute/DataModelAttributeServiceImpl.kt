@@ -1,6 +1,5 @@
 package dev.zemco.schemalens.modeling.api.attribute
 
-import dev.zemco.schemalens.modeling.DataModel
 import dev.zemco.schemalens.modeling.logical.DataModelAttribute
 import dev.zemco.schemalens.modeling.api.model.DataModelRepository
 import dev.zemco.schemalens.modeling.api.entity.DataModelEntityRepository
@@ -75,7 +74,7 @@ class DataModelAttributeServiceImpl(
         val saved = attributeRepository.save(attribute)
 
         return DataModelAttributeDto(
-            id = saved.id,
+            attributeId = saved.id,
             name = saved.name,
             typeId = saved.typeId,
             isPrimaryKey = saved.isPrimaryKey,

@@ -2,17 +2,15 @@ package dev.zemco.schemalens.modeling.api.entity
 
 import dev.zemco.schemalens.modeling.logical.DataModelEntity
 import dev.zemco.schemalens.modeling.api.model.DataModelRepository
-import dev.zemco.schemalens.modeling.api.entity.DataModelEntityRepository
 import dev.zemco.schemalens.modeling.api.dtos.DataModelEntityDto
 import dev.zemco.schemalens.modeling.api.dtos.DataModelEntityInputDto
 
-import org.springframework.http.HttpStatus
 import jakarta.persistence.EntityNotFoundException
 import java.lang.IllegalAccessException
-import org.springframework.web.server.ResponseStatusException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+// TODO: duplicated code fragments
 @Service
 class DataModelEntityServiceImpl(
     private val entityRepository: DataModelEntityRepository,
@@ -48,7 +46,7 @@ class DataModelEntityServiceImpl(
         val saved = entityRepository.save(entity)
 
         return DataModelEntityDto(
-            id = saved.id!!,
+            entityId = saved.id!!,
             name = saved.name
         )
     }
@@ -87,7 +85,7 @@ class DataModelEntityServiceImpl(
         val saved = entityRepository.save(entity)
 
         return DataModelEntityDto(
-            id = saved.id!!,
+            entityId = saved.id!!,
             name = saved.name
         )
     }

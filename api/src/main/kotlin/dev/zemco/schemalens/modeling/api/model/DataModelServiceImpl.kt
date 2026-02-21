@@ -16,10 +16,8 @@ import dev.zemco.schemalens.modeling.api.entity.DataModelEntityRepository
 import dev.zemco.schemalens.modeling.api.attribute.DataModelAttributeRepository
 import dev.zemco.schemalens.modeling.api.relationship.DataModelRelationshipRepository
 
-import org.springframework.http.HttpStatus
 import jakarta.persistence.EntityNotFoundException
 import java.lang.IllegalAccessException
-import org.springframework.web.server.ResponseStatusException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -101,19 +99,20 @@ class DataModelServiceImpl(
 
         val entities = entityRepository.findAllByModelId(modelId)
             .map { entity ->
+                // TODO: fix N+1 query problem here by fetching attributes in batch and grouping by entity ID
                 val attributes = attributeRepository.findAllByEntityId(entity.id!!)
                     .map { attr ->
                         DataModelAttributeDto(
-                            id = attr.id,
+                            attributeId = attr.id,
                             name = attr.name,
                             typeId = attr.typeId,
-                            isPrimaryKey = attr.isPrimaryKey == true,
-                            isNullable = attr.isNullable == true,
+                            isPrimaryKey = attr.isPrimaryKey,
+                            isNullable = attr.isNullable,
                             position = attr.position
                         )
                     }
                 DataModelEntityLogicalDto(
-                    id = entity.id!!,
+                    entityId = entity.id!!,
                     name = entity.name,
                     attributes = attributes
                 )
@@ -122,7 +121,7 @@ class DataModelServiceImpl(
         val relationships = relationshipRepository.findAllByModelId(modelId)
             .map { relationship ->
                 DataModelRelationshipDto(
-                    id = relationship.id!!,
+                    relationshipId = relationship.id!!,
                     modelId = relationship.modelId,
                     fromEntityId = relationship.fromEntityId,
                     toEntityId = relationship.toEntityId,
