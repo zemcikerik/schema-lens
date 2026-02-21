@@ -61,6 +61,7 @@ class DataModelRelationshipServiceImpl(
         )
 
         relationship.attributes = dto.attributes.map { attr ->
+            // TODO: N+1 query problem
             val referencedAttributeOptional = attributeRepository.findById(attr.referencedAttributeId)
 
             if (referencedAttributeOptional.isEmpty) {
@@ -135,6 +136,7 @@ class DataModelRelationshipServiceImpl(
         relationship.attributes.clear()
 
         dto.attributes.forEach { attr ->
+            // TODO: N+1 query problem
             val referencedAttributeOptional = attributeRepository.findById(attr.referencedAttributeId)
 
             if (referencedAttributeOptional.isEmpty) {
@@ -159,6 +161,8 @@ class DataModelRelationshipServiceImpl(
                 )
             )
         }
+
+        // TODO: does this do anything?
 
         return DataModelRelationshipDto(
             relationshipId = relationship.id!!,

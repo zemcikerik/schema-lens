@@ -14,6 +14,8 @@ import org.springframework.web.server.ResponseStatusException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
+// TODO: code duplication
+
 @Service
 class DataModelAttributeServiceImpl(
     private val modelRepository: DataModelRepository,
@@ -42,7 +44,7 @@ class DataModelAttributeServiceImpl(
         }
 
         val entity = entityRepository.findByIdAndModelId(entityId, modelId)
-            ?: throw ResponseStatusException(
+            ?: throw ResponseStatusException( // TODO: don't use http statuses in service layer
                 HttpStatus.NOT_FOUND,
                 "Entity not found in model",
             )
@@ -101,7 +103,7 @@ class DataModelAttributeServiceImpl(
         val model = optionalModel.get()
 
         if (model.ownerId != userId) {
-            throw IllegalAccessException("Access denied")
+            throw IllegalAccessException("Access denied") // TODO: ResourceAccessDeniedException
         }
 
         val entity = entityRepository.findByIdAndModelId(entityId, modelId)
@@ -135,8 +137,10 @@ class DataModelAttributeServiceImpl(
         attribute.isPrimaryKey = request.isPrimaryKey
         attribute.isNullable = request.isNullable
         attribute.position = request.position
-    }
 
+        // TODO: does this do anything?
+        // TODO: no return?
+    }
 
     @Transactional
     override fun deleteAttribute(
