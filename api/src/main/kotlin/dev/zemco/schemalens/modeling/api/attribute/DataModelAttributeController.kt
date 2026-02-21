@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
+import org.springframework.web.server.ResponseStatusException
 
 @RestController
 @RequestMapping("/model/{modelId}/entity/{entityId}/attribute")
@@ -20,8 +21,12 @@ class DataModelAttributeController(
         @Valid @RequestBody request: DataModelAttributeInputDto,
     ): ResponseEntity<Void> {
         val user = userService.getCurrentUser()
-        attributeService.createAttribute(modelId, entityId, request, user.id!!)
-        return ResponseEntity.status(HttpStatus.CREATED).build()
+        try {
+            attributeService.createAttribute(modelId, entityId, request, user.id!!)
+            return ResponseEntity.status(HttpStatus.CREATED).build()
+        } catch (e: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+        }
     }
 
     @PutMapping("/{attributeId}")
@@ -32,8 +37,12 @@ class DataModelAttributeController(
         @Valid @RequestBody request: DataModelAttributeInputDto,
     ): ResponseEntity<Void> {
         val user = userService.getCurrentUser()
-        attributeService.updateAttribute(modelId, entityId, attributeId, request, user.id!!)
-        return ResponseEntity.noContent().build()
+        try {
+            attributeService.updateAttribute(modelId, entityId, attributeId, request, user.id!!)
+            return ResponseEntity.noContent().build()
+        } catch (e: IllegalArgumentException) {
+            throw ResponseStatusException(HttpStatus.BAD_REQUEST, e.message)
+        }
     }
 
     @DeleteMapping("/{attributeId}")

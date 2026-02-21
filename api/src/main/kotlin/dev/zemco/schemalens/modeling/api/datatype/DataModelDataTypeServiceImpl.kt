@@ -1,13 +1,14 @@
 package dev.zemco.schemalens.modeling.api.datatype
 
+import dev.zemco.schemalens.auth.ResourceAccessDeniedException
+import dev.zemco.schemalens.modeling.DataModel
 import dev.zemco.schemalens.modeling.logical.DataModelDataType
 import dev.zemco.schemalens.modeling.api.model.DataModelRepository
 import dev.zemco.schemalens.modeling.api.attribute.DataModelAttributeRepository
 import dev.zemco.schemalens.modeling.api.dtos.DataModelDataTypeDto
 import dev.zemco.schemalens.modeling.api.dtos.DataModelDataTypeInputDto
+import dev.zemco.schemalens.modeling.api.model.DataModelNotFoundException
 
-import jakarta.persistence.EntityNotFoundException
-import java.lang.IllegalAccessException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -24,20 +25,10 @@ class DataModelDataTypeServiceImpl(
         dto: DataModelDataTypeInputDto,
         userId: Long
     ): DataModelDataTypeDto {
-        val optionalModel = modelRepository.findById(modelId)
-
-        if (optionalModel.isEmpty) {
-            throw EntityNotFoundException("Model not found")
-        }
-
-        val model = optionalModel.get()
-
-        if (model.ownerId != userId) {
-            throw IllegalAccessException("Access denied")
-        }
+        val model = findDataModel(userId, modelId)
 
         if (dataTypeRepository.existsByModelIdAndNameIgnoreCase(modelId, dto.name)) {
-            throw IllegalArgumentException("Data type with this name already exists")
+            throw DataTypeExistsException(dto.name)
         }
 
         val dataType = DataModelDataType(
@@ -61,28 +52,16 @@ class DataModelDataTypeServiceImpl(
         dto: DataModelDataTypeInputDto,
         userId: Long
     ): DataModelDataTypeDto {
-        require(dto.name.isNotBlank()) { "Data type name cannot be blank" }
-
-        val optionalModel = modelRepository.findById(modelId)
-
-        if (optionalModel.isEmpty) {
-            throw EntityNotFoundException("Model not found")
-        }
-
-        val model = optionalModel.get()
-
-        if (model.ownerId != userId) {
-            throw IllegalAccessException("Access denied")
-        }
+        findDataModel(userId, modelId)
 
         val dataType = dataTypeRepository.findByIdAndModelId(typeId, modelId)
-            ?: throw EntityNotFoundException("Data type not found")
+            ?: throw DataTypeNotFoundException(typeId)
 
         if (
             !dataType.name.equals(dto.name, ignoreCase = true) &&
             dataTypeRepository.existsByModelIdAndNameIgnoreCase(modelId, dto.name)
         ) {
-            throw IllegalArgumentException("Data type with this name already exists")
+            throw DataTypeExistsException(dto.name)
         }
 
         dataType.name = dto.name.trim()
@@ -101,25 +80,31 @@ class DataModelDataTypeServiceImpl(
         typeId: Long,
         userId: Long
     ) {
+        findDataModel(userId, modelId)
+
+        val dataType = dataTypeRepository.findByIdAndModelId(typeId, modelId)
+            ?: throw DataTypeNotFoundException(typeId)
+
+        if (attributeRepository.existsByTypeId(typeId)) {
+            throw DataTypeInUseException(typeId)
+        }
+
+        dataTypeRepository.delete(dataType)
+    }
+
+    fun findDataModel(userId: Long, modelId: Long): DataModel {
         val optionalModel = modelRepository.findById(modelId)
 
         if (optionalModel.isEmpty) {
-            throw EntityNotFoundException("Model not found")
+            throw DataModelNotFoundException(modelId)
         }
 
         val model = optionalModel.get()
 
         if (model.ownerId != userId) {
-            throw IllegalAccessException("Access denied")
+            throw ResourceAccessDeniedException()
         }
 
-        val dataType = dataTypeRepository.findByIdAndModelId(typeId, modelId)
-            ?: throw EntityNotFoundException("Data type not found")
-
-        if (attributeRepository.existsByTypeId(typeId)) {
-            throw IllegalStateException("Data type is used by at least one attribute")
-        }
-
-        dataTypeRepository.delete(dataType)
+        return model
     }
 }

@@ -1,16 +1,16 @@
 package dev.zemco.schemalens.modeling.api.entity
 
+import dev.zemco.schemalens.auth.ResourceAccessDeniedException
+import dev.zemco.schemalens.modeling.DataModel
 import dev.zemco.schemalens.modeling.logical.DataModelEntity
 import dev.zemco.schemalens.modeling.api.model.DataModelRepository
 import dev.zemco.schemalens.modeling.api.dtos.DataModelEntityDto
 import dev.zemco.schemalens.modeling.api.dtos.DataModelEntityInputDto
+import dev.zemco.schemalens.modeling.api.model.DataModelNotFoundException
 
-import jakarta.persistence.EntityNotFoundException
-import java.lang.IllegalAccessException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
-// TODO: duplicated code fragments
 @Service
 class DataModelEntityServiceImpl(
     private val entityRepository: DataModelEntityRepository,
@@ -23,19 +23,7 @@ class DataModelEntityServiceImpl(
         dto: DataModelEntityInputDto,
         userId: Long
     ): DataModelEntityDto {
-        require(dto.name.isNotBlank()) { "Entity name cannot be blank" } // TODO: use validation annotations in dto
-
-        val optionalModel = modelRepository.findById(modelId)
-
-        if (optionalModel.isEmpty) {
-            throw EntityNotFoundException("Model not found")
-        }
-
-        val model = optionalModel.get()
-
-        if (model.ownerId != userId) {
-            throw IllegalAccessException("Access denied")
-        }
+        val model = findModel(userId, modelId)
 
         val entity = DataModelEntity(
             modelId = modelId,
@@ -59,26 +47,7 @@ class DataModelEntityServiceImpl(
         dto: DataModelEntityInputDto,
         userId: Long
     ): DataModelEntityDto {
-        require(dto.name.isNotBlank()) { "Entity name cannot be blank" }
-
-        val optionalModel = modelRepository.findById(modelId)
-
-        if (optionalModel.isEmpty) {
-            throw EntityNotFoundException("Model not found")
-        }
-
-        val model = optionalModel.get()
-
-        if (model.ownerId != userId) {
-            throw IllegalAccessException("Access denied")
-        }
-
-        val entity = entityRepository.findById(entityId)
-            .orElseThrow { EntityNotFoundException("Entity not found") }
-
-        if (entity.modelId != modelId) {
-            throw EntityNotFoundException("Entity does not belong to model")
-        }
+        val entity = findEntity(userId, modelId, entityId)
 
         entity.name = dto.name
 
@@ -96,25 +65,35 @@ class DataModelEntityServiceImpl(
         entityId: Long,
         userId: Long
     ) {
+        val entity = findEntity(userId, modelId, entityId)
+        entityRepository.delete(entity)
+    }
+
+    fun findModel(userId: Long, modelId: Long): DataModel {
         val optionalModel = modelRepository.findById(modelId)
 
         if (optionalModel.isEmpty) {
-            throw EntityNotFoundException("Model not found")
+            throw DataModelNotFoundException(modelId)
         }
 
         val model = optionalModel.get()
 
         if (model.ownerId != userId) {
-            throw IllegalAccessException("Access denied")
+            throw ResourceAccessDeniedException()
         }
+        return model
+    }
+
+    fun findEntity(userId: Long, modelId: Long, entityId: Long): DataModelEntity {
+        findModel(userId, modelId)
 
         val entity = entityRepository.findById(entityId)
-            .orElseThrow { EntityNotFoundException("Entity not found") }
+            .orElseThrow { EntityNotFoundException(entityId) }
 
         if (entity.modelId != modelId) {
-            throw EntityNotFoundException("Entity does not belong to model")
+            throw EntityNotFoundException(entityId)
         }
 
-        entityRepository.delete(entity)
+        return entity
     }
 }
