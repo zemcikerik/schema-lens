@@ -9,7 +9,7 @@ data class DataModelAttributeInputDto(
 )
 
 data class DataModelAttributeDto(
-    val id: Long? = null,
+    val attributeId: Long? = null,
     val name: String,
     val typeId: Long,
     val isPrimaryKey: Boolean = false,

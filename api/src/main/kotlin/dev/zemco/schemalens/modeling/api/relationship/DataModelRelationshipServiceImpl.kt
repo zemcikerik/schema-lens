@@ -7,7 +7,6 @@ import dev.zemco.schemalens.modeling.api.dtos.DataModelRelationshipInputDto
 import dev.zemco.schemalens.modeling.api.dtos.DataModelRelationshipAttributeDto
 import dev.zemco.schemalens.modeling.api.model.DataModelRepository
 import dev.zemco.schemalens.modeling.api.entity.DataModelEntityRepository
-import dev.zemco.schemalens.modeling.api.relationship.DataModelRelationshipRepository
 import dev.zemco.schemalens.modeling.api.attribute.DataModelAttributeRepository
 
 import org.springframework.http.HttpStatus
@@ -88,7 +87,7 @@ class DataModelRelationshipServiceImpl(
         val saved = relationshipRepository.save(relationship)
 
         return DataModelRelationshipDto(
-            id = saved.id!!,
+            relationshipId = saved.id!!,
             modelId = saved.modelId,
             fromEntityId = saved.fromEntityId,
             toEntityId = saved.toEntityId,
@@ -162,7 +161,7 @@ class DataModelRelationshipServiceImpl(
         }
 
         return DataModelRelationshipDto(
-            id = relationship.id!!,
+            relationshipId = relationship.id!!,
             modelId = relationship.modelId,
             fromEntityId = relationship.fromEntityId,
             toEntityId = relationship.toEntityId,

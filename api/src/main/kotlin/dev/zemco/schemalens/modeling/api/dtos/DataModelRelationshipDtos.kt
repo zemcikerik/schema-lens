@@ -3,7 +3,7 @@ package dev.zemco.schemalens.modeling.api.dtos
 import dev.zemco.schemalens.modeling.logical.DataModelRelationshipType
 
 data class DataModelRelationshipDto(
-    var id: Long? = null,
+    var relationshipId: Long? = null,
     var modelId: Long,
     var fromEntityId: Long,
     var toEntityId: Long,
