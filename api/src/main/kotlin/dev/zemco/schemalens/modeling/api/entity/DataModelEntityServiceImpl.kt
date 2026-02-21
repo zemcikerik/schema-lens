@@ -23,7 +23,7 @@ class DataModelEntityServiceImpl(
         dto: DataModelEntityInputDto,
         userId: Long
     ): DataModelEntityDto {
-        require(dto.name.isNotBlank()) { "Entity name cannot be blank" }
+        require(dto.name.isNotBlank()) { "Entity name cannot be blank" } // TODO: use validation annotations in dto
 
         val optionalModel = modelRepository.findById(modelId)
 
