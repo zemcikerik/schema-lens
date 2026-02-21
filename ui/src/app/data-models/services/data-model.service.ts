@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, tap } from 'rxjs';
+import { defer, Observable, of, tap } from 'rxjs';
 import { DataModel } from '../models/data-model.model';
 import { DataModelHttpClientService } from './data-model-http-client.service';
 
@@ -11,10 +11,6 @@ export class DataModelService {
   private dataModelHttpClient = inject(DataModelHttpClientService);
   readonly dataModels = this._dataModels.asReadonly();
 
-  isDataModelAvailable(dataModelId: number): boolean {
-    return this._dataModels().find(dataModel => dataModel.id === dataModelId) !== undefined;
-  }
-
   loadDataModels(): Observable<DataModel[]> {
     return this.dataModelHttpClient.getDataModels().pipe(
       tap(dataModels => {
@@ -23,7 +19,10 @@ export class DataModelService {
     );
   }
 
-  getDataModel = (dataModelId: number) => this.dataModelHttpClient.getDataModel(dataModelId);
+  getDataModel(dataModelId: number): Observable<DataModel> {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return defer(() => of(this._dataModels().find(dataModel => dataModel.id === dataModelId)!));
+  }
 
   createDataModel(dataModel: DataModel): Observable<DataModel> {
     return this.dataModelHttpClient
@@ -35,7 +34,7 @@ export class DataModelService {
     return this.dataModelHttpClient.updateDataModel(dataModel).pipe(tap(model => this.updateExistingModels(model)));
   }
 
-  deleteDataModel(dataModelId: number): Observable<void> {
+  deleteDataModel(dataModelId: number): Observable<unknown> {
     return this.dataModelHttpClient.deleteDataModel(dataModelId).pipe(tap(() => this.removeAvailableDataModel(dataModelId)));
   }
 

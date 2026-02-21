@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, effect, input, output, untracked } from '@angular/core';
-import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
@@ -8,6 +8,7 @@ import { MatButton } from '@angular/material/button';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { DataModel } from '../../models/data-model.model';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-data-model-properties-form',
@@ -28,32 +29,33 @@ export class DataModelPropertiesFormComponent {
   save = output<DataModel>();
   delete = output();
 
-  propertiesForm = new FormGroup({
-    name: new FormControl<string>('', [Validators.required, noStartEndWhitespaceValidator, Validators.maxLength(64)]),
+  private fb = inject(FormBuilder);
+  propertiesForm = this.fb.nonNullable.group({
+    name: this.fb.nonNullable.control('', [Validators.required, noStartEndWhitespaceValidator, Validators.maxLength(64)]),
   });
 
   constructor() {
-    effect(() => {
-      const properties = this.properties();
-      untracked(() => {
-        if (properties !== null) {
-          this.propertiesForm.patchValue({
-            name: properties.name,
-          });
-        }
-      });
+    toObservable(this.properties).pipe(takeUntilDestroyed()).subscribe(properties => {
+      if (properties !== null) {
+        this.propertiesForm.reset(properties);
+      } else {
+        this.propertiesForm.reset();
+      }
     });
   }
 
   submit(): void {
-    if (this.propertiesForm.valid) {
-      const { name } = this.propertiesForm.value;
-
-      this.save.emit({
-        id: this.properties()?.id ?? null,
-        name: name as string,
-      });
+    if (this.propertiesForm.invalid) {
+      this.propertiesForm.markAllAsTouched();
+      return;
     }
+
+    const { name } = this.propertiesForm.getRawValue();
+
+    this.save.emit({
+      id: this.properties()?.id ?? null,
+      name: name,
+    });
   }
 
   get nameControl() {

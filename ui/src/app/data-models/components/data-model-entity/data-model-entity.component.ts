@@ -34,6 +34,8 @@ import { LogicalEntityService } from '../../services/logical-entity.service';
 import { FormsModule } from '@angular/forms';
 import { TranslateService } from '../../../core/translate/translate.service';
 
+// TODO: oof
+
 @Component({
   selector: 'app-data-model-entity',
   templateUrl: './data-model-entity.component.html',
@@ -68,7 +70,7 @@ export class DataModelEntityComponent {
   entityId = input.required<number>();
   dataModelId = input.required<number>();
 
-  logicalDataModel = inject(ROUTER_OUTLET_DATA) as Signal<LogicalDataModel | null>;
+  logicalDataModel = inject(ROUTER_OUTLET_DATA) as Signal<LogicalDataModel>;
   translateService = inject(TranslateService);
 
   entity = linkedSignal(() => {

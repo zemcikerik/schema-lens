@@ -11,14 +11,15 @@ import { Router, RouterLink } from '@angular/router';
 import { verifyPasswordValidator } from '../validators/verify-password.validator';
 import { ProjectService } from '../../projects/services/project.service';
 import { RegistrationData } from '../models/registration-data.model';
-import { finalize, map, mergeMap, of } from 'rxjs';
+import { finalize, forkJoin, map, mergeMap, of } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RegistrationResult } from '../models/auth.model';
 import { NgOptimizedImage } from '@angular/common';
 import {
-  ChangeLocaleButtonComponent
+  ChangeLocaleButtonComponent,
 } from '../../shared/components/change-locale-button/change-locale-button.component';
 import { IconLinkComponent } from '../../shared/components/icon-link/icon-link.component';
+import { DataModelService } from '../../data-models/services/data-model.service';
 
 @Component({
   selector: 'app-register',
@@ -43,6 +44,7 @@ export class RegisterComponent {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
   private projectService = inject(ProjectService);
+  private dataModelService = inject(DataModelService);
   private router = inject(Router);
 
   registerForm = new FormGroup({
@@ -54,7 +56,7 @@ export class RegisterComponent {
     ]),
     email: new FormControl('', [Validators.required, Validators.email, Validators.maxLength(128)]),
     password: new FormControl('', [Validators.required, Validators.minLength(8)]),
-    verifyPassword: new FormControl('', [Validators.required])
+    verifyPassword: new FormControl('', [Validators.required]),
   });
 
   loading = signal<boolean>(false);
@@ -78,7 +80,7 @@ export class RegisterComponent {
 
     this.authService.register(registrationData as RegistrationData).pipe(
       mergeMap(result => result === RegistrationResult.SUCCESS
-        ? this.projectService.loadProjects().pipe(map(() => result))
+        ? forkJoin([this.projectService.loadProjects(), this.dataModelService.loadDataModels()]).pipe(map(() => result))
         : of(result)),
       takeUntilDestroyed(this.destroyRef),
       finalize(() => {
@@ -93,7 +95,7 @@ export class RegisterComponent {
           this.error.set(
             result === RegistrationResult.USERNAME_TAKEN
               ? 'AUTH.ERRORS.USERNAME_TAKEN'
-              : 'AUTH.ERRORS.EMAIL_TAKEN'
+              : 'AUTH.ERRORS.EMAIL_TAKEN',
           );
         }
       },

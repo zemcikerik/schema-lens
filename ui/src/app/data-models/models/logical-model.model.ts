@@ -7,6 +7,7 @@ export interface LogicalDataModel {
   diagrams: Diagram[];
 }
 
+// TODO: inconsistent naming
 export interface DataType {
   typeId: number | null;
   name: string;
@@ -19,12 +20,12 @@ export interface LogicalEntity {
 }
 
 export interface LogicalAttribute {
-  attributeId: number | null,
-  name: string,
-  typeId: number,
-  isPrimaryKey: boolean,
-  isNullable: boolean,
-  position: number
+  attributeId: number | null;
+  name: string;
+  typeId: number;
+  isPrimaryKey: boolean;
+  isNullable: boolean;
+  position: number;
 }
 
 export interface LogicalRelationship {
@@ -34,9 +35,11 @@ export interface LogicalRelationship {
   type: string;
   isMandatory: boolean;
   isIdentifying: boolean;
-  attributes: {
-    referencedAttributeId: number;
-    name: string;
-    position: number;
-  }[];
+  attributes: LogicalRelationshipAttribute[];
+}
+
+export interface LogicalRelationshipAttribute {
+  referencedAttributeId: number;
+  name: string;
+  position: number;
 }

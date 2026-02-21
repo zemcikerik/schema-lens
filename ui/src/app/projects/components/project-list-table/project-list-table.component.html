@@ -1,4 +1,4 @@
-<mat-table class="project-list-table" [dataSource]="projects()">
+<mat-table class="selectable-list-table" [dataSource]="projects()">
   <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef>{{ ('PROJECTS.LIST_COLUMN.NAME_LABEL' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let project">{{ project.name }}</mat-cell>
@@ -12,7 +12,7 @@
   <ng-container matColumnDef="owner">
     <mat-header-cell *matHeaderCellDef>{{ ('PROJECTS.LIST_COLUMN.OWNER_LABEL' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let project">
-      <app-profile-picture class="project-list-table__profile-picture" [username]="project.owner" />
+      <app-profile-picture class="selectable-list-table__profile-picture" [username]="project.owner" />
       {{ project.owner }}
     </mat-cell>
   </ng-container>

@@ -15,6 +15,8 @@ import { ProgressSpinnerComponent } from '../../../shared/components/progress-sp
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { DialogService } from '../../../core/dialog.service';
 
+// TODO: cleanup
+
 @Component({
   selector: 'app-data-type-edit',
   templateUrl: './data-type-edit.component.html',
@@ -35,11 +37,11 @@ import { DialogService } from '../../../core/dialog.service';
 export class DataTypeEditComponent {
   dataTypeId = input.required<number>();
   dataModelId = input.required<number>();
-
   logicalModel = inject(ROUTER_OUTLET_DATA) as Signal<LogicalDataModel>;
-  dataTypeService = inject(DataTypeService);
-  router = inject(Router);
+
+  private dataTypeService = inject(DataTypeService);
   private dialogService = inject(DialogService);
+  private router = inject(Router);
 
   form = new FormGroup({
     name: new FormControl<string>('', [Validators.required, noStartEndWhitespaceValidator, Validators.maxLength(40)]),

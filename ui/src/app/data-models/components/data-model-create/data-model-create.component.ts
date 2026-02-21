@@ -12,7 +12,7 @@ import { DataModel } from '../../models/data-model.model';
 import { DataModelPropertiesFormComponent } from '../data-model-properties-form/data-model-properties-form.component';
 
 @Component({
-  selector: 'app-project-create',
+  selector: 'app-data-model-create',
   template: `
     <app-content-card>
       <app-layout-header-and-content title="Create new model" [includeSpacing]="loading() || error()">

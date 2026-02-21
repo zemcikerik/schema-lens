@@ -59,8 +59,9 @@ export class AppComponent {
     forkJoin([this.translateService.trySetLocaleFromStorageOrDefault(), this.authService.attemptAuthFromStorage()])
       .pipe(
         map(([, authenticated]) => authenticated),
-        mergeMap(authenticated => (authenticated ? projectService.loadProjects() : of(null))),
-        mergeMap(authenticated => (authenticated ? dataModelService.loadDataModels() : of(null))),
+        mergeMap(authenticated => (authenticated
+          ? forkJoin([projectService.loadProjects(), dataModelService.loadDataModels()])
+          : of(null))),
         takeUntilDestroyed(),
         finalize(() => this.loading.set(false)),
       )

@@ -17,6 +17,8 @@ export interface EntityCreateDialogData {
   entities: LogicalEntity[];
 }
 
+// TODO: refactor similarly to data-type-create-dialog
+
 @Component({
   selector: 'app-entity-create-dialog',
   templateUrl: './entity-create-dialog.component.html',

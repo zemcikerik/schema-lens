@@ -1,4 +1,4 @@
-<mat-table class="project-list-table" [dataSource]="dataModels()">
+<mat-table class="selectable-list-table" [dataSource]="dataModels()">
   <ng-container matColumnDef="name">
     <mat-header-cell *matHeaderCellDef>{{ ('DATAMODEL.LIST_COLUMN.NAME_LABEL' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let dataModel">{{ dataModel.name }}</mat-cell>

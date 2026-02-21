@@ -1,7 +1,7 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
 
-.project-object-selector {
+.object-selector {
   --mat-list-list-item-one-line-container-height: 2.5rem;
 
   @include mat.expansion-overrides((
@@ -34,5 +34,15 @@
     > button {
       @include mat.icon-button-color(t.$theme, $color-variant: error);
     }
+  }
+
+  // data-model specific
+  .mat-expansion-panel-header-title {
+    text-wrap: nowrap;
+  }
+
+  .mat-expansion-panel-header-description {
+    display: flex;
+    justify-content: right;
   }
 }

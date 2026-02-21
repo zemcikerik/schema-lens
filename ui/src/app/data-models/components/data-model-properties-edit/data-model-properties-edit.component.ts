@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, linkedSignal, signal } from '@angular/core';
-import { takeUntilDestroyed, toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DataModelService } from '../../services/data-model.service';
-import { filter, finalize, switchMap, tap } from 'rxjs';
+import { catchError, filter, finalize, of, switchMap, tap } from 'rxjs';
 import { DataModelPropertiesFormComponent } from '../data-model-properties-form/data-model-properties-form.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { DialogService } from '../../../core/dialog.service';
@@ -12,15 +12,17 @@ import { DataModel } from '../../models/data-model.model';
 import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-project-properties-edit',
+  selector: 'app-data-model-properties-edit',
   template: `
-    <app-layout-header-and-content [title]="('DATAMODEL.PROPERTIES.TITLE' | translate)()" [includeSpacing]="loading() || error()">
+    <app-layout-header-and-content [title]="('DATAMODEL.PROPERTIES.TITLE' | translate)()"
+                                   [includeSpacing]="loading() || error()">
       @if (loading()) {
-      <app-progress-spinner [center]="true" />
+        <app-progress-spinner [center]="true" />
       } @else if (error()) {
-      <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
-      } @else if (dataModel()) {
-      <app-data-model-properties-form [properties]="dataModel()" (delete)="deleteDataModel()" (save)="updateProperties($event)" />
+        <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+      } @else {
+        <app-data-model-properties-form [properties]="properties()" (delete)="deleteDataModel()"
+                                        (save)="updateProperties($event)" />
       }
     </app-layout-header-and-content>
   `,
@@ -34,8 +36,8 @@ import { Router } from '@angular/router';
   ],
 })
 export class DataModelPropertiesEditComponent {
-  dataModelId = input.required<number>();
-
+  dataModelId = input.required<string>();
+  properties = signal<DataModel | null>(null);
   loading = signal<boolean>(true);
   error = signal<boolean>(false);
 
@@ -44,24 +46,30 @@ export class DataModelPropertiesEditComponent {
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
 
-  initSig = toSignal(
+  constructor() {
     toObservable(this.dataModelId).pipe(
+      tap(() => {
+        this.loading.set(true);
+        this.error.set(false);
+      }),
       switchMap(() =>
-        this.dataModelService.getDataModel(this.dataModelId()).pipe(
+        this.dataModelService.getDataModel(+this.dataModelId()).pipe(
           finalize(() => this.loading.set(false)),
-          tap({
-            error: () => {
-              this.error.set(true);
-            },
+          catchError(() => {
+            this.error.set(true);
+            return of(null);
           }),
         ),
       ),
-    ),
-  );
-
-  dataModel = linkedSignal(() => this.initSig() ?? null);
+      takeUntilDestroyed(),
+    ).subscribe(properties => {
+      this.properties.set(properties);
+    });
+  }
 
   updateProperties(properties: DataModel): void {
+    this.loading.set(true);
+
     this.dataModelService
       .updateDataModel(properties)
       .pipe(
@@ -69,27 +77,24 @@ export class DataModelPropertiesEditComponent {
         finalize(() => this.loading.set(false)),
       )
       .subscribe({
-        next: properties => this.dataModel.set(properties),
+        next: properties => this.properties.set(properties),
         error: () => this.error.set(true),
       });
   }
 
   deleteDataModel(): void {
-    const dataModelId = this.dataModelId();
+    const dataModelId = +this.dataModelId();
 
     this.dialogService
       .openConfirmationDialog('GENERIC.CONFIRM_LABEL', 'DATAMODEL.DELETE_DESCRIPTION', 'danger')
       .pipe(
         filter(r => r === true),
-        tap(async () => {
-          this.loading.set(true);
-          this.error.set(false);
-          await this.router.navigate(['/model']);
-        }),
+        tap(() => this.loading.set(true)),
         switchMap(() => this.dataModelService.deleteDataModel(dataModelId)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
+        next: async () => await this.router.navigate(['/model']),
         error: () => this.error.set(true),
       });
   }

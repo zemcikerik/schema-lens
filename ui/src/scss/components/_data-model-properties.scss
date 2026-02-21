@@ -4,7 +4,7 @@
 
 .data-model-properties {
   &__main {
-    & > :first-child {
+    mat-form-field {
       width: 100%;
     }
   }
@@ -13,8 +13,8 @@
     display: flex;
     justify-content: right;
     margin-top: .5rem;
-
     gap: 1rem;
+
     > :not([type="submit"]) {
       @include mat.button-color(t.$theme, $color-variant: error);
     }

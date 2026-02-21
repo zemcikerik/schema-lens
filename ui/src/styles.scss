@@ -23,15 +23,15 @@
 @use './scss/components/diagram-fullscreen';
 @use './scss/components/help-faq';
 @use './scss/components/nav';
-@use './scss/components/project-object-selector';
+@use './scss/components/object-selector';
 @use './scss/components/profile';
 @use './scss/components/profile-picture';
 @use './scss/components/project-collaborators-table';
-@use './scss/components/project-list-table';
 @use './scss/components/project-properties';
 @use './scss/components/project-selector';
 @use './scss/components/progress-spinner';
 @use './scss/components/schema-diagram';
+@use './scss/components/selectable-list-table';
 @use './scss/components/table';
 @use './scss/components/table-all-relationships';
 @use './scss/components/table-constraint';
@@ -45,7 +45,6 @@
 @use './scss/components/data-model-entiy';
 @use './scss/components/data-model-create-dialogs';
 @use './scss/components/data-type-editor';
-@use './scss/components/data-model-nav';
 @use './scss/components/data-model-properties';
 
 @include mat.elevation-classes();

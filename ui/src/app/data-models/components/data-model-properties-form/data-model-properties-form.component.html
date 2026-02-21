@@ -13,14 +13,12 @@
   <div class="data-model-properties__control">
     @if (properties() !== null) {
       <button mat-flat-button (click)="delete.emit()" type="button">
-        <mat-icon>delete</mat-icon>
-        {{ ('GENERIC.DELETE_LABEL' | translate)() }}
+        <mat-icon>delete</mat-icon> {{ ('GENERIC.DELETE_LABEL' | translate)() }}
       </button>
     }
 
     <button mat-flat-button type="submit">
-      <mat-icon>save</mat-icon>
-      {{ ('GENERIC.SAVE_LABEL' | translate)() }}
+      <mat-icon>save</mat-icon> {{ ('GENERIC.SAVE_LABEL' | translate)() }}
     </button>
   </div>
 </form>

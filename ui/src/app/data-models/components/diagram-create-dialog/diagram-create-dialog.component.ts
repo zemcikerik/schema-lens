@@ -17,6 +17,8 @@ export interface DiagramCreateDialogData {
   diagrams: Diagram[];
 }
 
+// TODO: refactor similarly to data-type-create-dialog
+
 @Component({
   selector: 'app-diagram-create-dialog',
   templateUrl: './diagram-create-dialog.component.html',

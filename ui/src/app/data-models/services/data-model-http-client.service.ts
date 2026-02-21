@@ -18,13 +18,6 @@ export class DataModelHttpClientService {
     ]).pipe(delay(500));
   }
 
-  getDataModel(dataModelId: number): Observable<DataModel> {
-    //return this.httpClient.get<DataModel>('/model', dataModelId);
-    return of(
-      { id: dataModelId, name: 'model'+dataModelId },
-    ).pipe(delay(200));
-  }
-
   createDataModel(dataModel: DataModel): Observable<DataModel> {
     //return this.httpClient.post<DataModel>(`/model`, dataModelId);
     return of({ id: 0, name: dataModel.name }).pipe(delay(1500));
@@ -35,8 +28,8 @@ export class DataModelHttpClientService {
     return of(updatedModel).pipe(delay(1500));
   }
 
-  deleteDataModel(dataModelId: number): Observable<void> {
+  deleteDataModel(dataModelId: number): Observable<unknown> {
     //return this.httpClient.delete<void>(`/model/${dataModelId}`);
-    return of().pipe(delay(1500));
+    return of(null).pipe(delay(1500));
   }
 }

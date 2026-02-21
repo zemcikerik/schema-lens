@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService, USERNAME_REGEX } from './auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize, map, mergeMap, of } from 'rxjs';
+import { finalize, forkJoin, map, mergeMap, of } from 'rxjs';
 import { LayoutAuthComponent } from '../layouts/layout-auth.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatAnchor, MatButton } from '@angular/material/button';
@@ -13,7 +13,7 @@ import { FormatGenericValidationErrorsPipe } from '../../shared/pipes/format-gen
 import { ProjectService } from '../../projects/services/project.service';
 import { NgOptimizedImage } from '@angular/common';
 import {
-  ChangeLocaleButtonComponent
+  ChangeLocaleButtonComponent,
 } from '../../shared/components/change-locale-button/change-locale-button.component';
 import { IconLinkComponent } from '../../shared/components/icon-link/icon-link.component';
 import { DataModelService } from '../../data-models/services/data-model.service';
@@ -70,8 +70,10 @@ export class LoginComponent {
     this.authService
       .login(username, password)
       .pipe(
-        mergeMap(authenticated => (authenticated ? this.projectService.loadProjects().pipe(map(() => true)) : of(false))),
-        mergeMap(authenticated => (authenticated ? this.dataModelService.loadDataModels().pipe(map(() => true)) : of(false))),
+        mergeMap(authenticated => (authenticated
+          ? forkJoin([this.projectService.loadProjects(), this.dataModelService.loadDataModels()]).pipe(map(() => true))
+          : of(false)),
+        ),
         takeUntilDestroyed(this.destroyRef),
         finalize(() => {
           this.loading.set(false);

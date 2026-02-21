@@ -59,10 +59,6 @@ export const appRoutes: Route[] = [
         loadComponent: () =>
           import('./data-models/components/data-type-edit/data-type-edit.component').then(c => c.DataTypeEditComponent),
       },
-      //{
-      //  path: 'diagram/:diagramId',
-      //  loadComponent: () => import('./tables/table.component').then(c => c.TableComponent),
-      //},
     ],
   },
   {

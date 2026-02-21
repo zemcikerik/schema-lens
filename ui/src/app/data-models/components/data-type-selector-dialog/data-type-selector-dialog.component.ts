@@ -15,6 +15,8 @@ export interface DataTypeDialogData {
   targetAttribute: LogicalAttribute;
 }
 
+// TODO: refactor similarly to data-type-create-dialog
+
 @Component({
   selector: 'app-data-type-selector-dialog',
   templateUrl: './data-type-selector-dialog.component.html',
