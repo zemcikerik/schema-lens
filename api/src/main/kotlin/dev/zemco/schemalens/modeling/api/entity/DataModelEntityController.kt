@@ -2,10 +2,11 @@ package dev.zemco.schemalens.modeling.api.entity
 
 import dev.zemco.schemalens.modeling.api.dtos.*
 import dev.zemco.schemalens.auth.UserService
+import dev.zemco.schemalens.projects.OnCreate
+import dev.zemco.schemalens.projects.OnUpdate
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import jakarta.validation.Valid
-import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 
 @RestController
 @RequestMapping("/model/{modelId}/entity")
@@ -18,7 +19,7 @@ class DataModelEntityController(
     @ResponseStatus(HttpStatus.CREATED)
     fun createEntity(
         @PathVariable modelId: Long,
-        @RequestBody dto: DataModelEntityInputDto
+        @RequestBody @Validated(OnCreate::class)  dto: DataModelEntityInputDto
     ): DataModelEntityDto {
         val user = userService.getCurrentUser()
         return service.createEntity(modelId, dto, user.id!!)
@@ -28,7 +29,7 @@ class DataModelEntityController(
     fun updateEntity(
         @PathVariable modelId: Long,
         @PathVariable entityId: Long,
-        @RequestBody dto: DataModelEntityInputDto
+        @RequestBody @Validated(OnUpdate::class)  dto: DataModelEntityInputDto
     ): DataModelEntityDto {
         val user = userService.getCurrentUser()
         return service.updateEntity(modelId, entityId, dto, user.id!!)

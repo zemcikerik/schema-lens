@@ -17,7 +17,7 @@ interface DataModelAttributeService {
         attributeId: Long,
         request: DataModelAttributeInputDto,
         userId: Long
-    )
+    ): DataModelAttributeDto
 
     fun deleteAttribute(
         modelId: Long,

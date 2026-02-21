@@ -2,10 +2,11 @@ package dev.zemco.schemalens.modeling.api.datatype
 
 import dev.zemco.schemalens.modeling.api.dtos.*
 import dev.zemco.schemalens.auth.UserService
+import dev.zemco.schemalens.projects.OnCreate
+import dev.zemco.schemalens.projects.OnUpdate
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
-import jakarta.validation.Valid
-import org.springframework.http.ResponseEntity
+import org.springframework.validation.annotation.Validated
 
 @RestController
 @RequestMapping("/model/{modelId}/dataType")
@@ -17,7 +18,7 @@ class DataModelEntityDataTypeController(
     @ResponseStatus(HttpStatus.CREATED)
     fun createDataType(
         @PathVariable modelId: Long,
-        @RequestBody @Valid dto: DataModelDataTypeInputDto
+        @RequestBody @Validated(OnCreate::class) dto: DataModelDataTypeInputDto
     ): DataModelDataTypeDto {
         val user = userService.getCurrentUser()
         return service.createDataType(modelId, dto, user.id!!)
@@ -27,7 +28,7 @@ class DataModelEntityDataTypeController(
     fun updateDataType(
         @PathVariable modelId: Long,
         @PathVariable typeId: Long,
-        @RequestBody @Valid dto: DataModelDataTypeInputDto
+        @RequestBody @Validated(OnUpdate ::class) dto: DataModelDataTypeInputDto
     ): DataModelDataTypeDto {
         val user = userService.getCurrentUser()
         return service.updateDataType(modelId, typeId, dto, user.id!!)

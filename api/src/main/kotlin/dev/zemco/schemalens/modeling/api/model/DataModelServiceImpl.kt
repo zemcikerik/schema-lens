@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.modeling.api.model
 
+import dev.zemco.schemalens.auth.ResourceAccessDeniedException
 import dev.zemco.schemalens.auth.User
 import dev.zemco.schemalens.modeling.DataModel
 import dev.zemco.schemalens.modeling.api.dtos.DataModelDto
@@ -16,8 +17,6 @@ import dev.zemco.schemalens.modeling.api.entity.DataModelEntityRepository
 import dev.zemco.schemalens.modeling.api.attribute.DataModelAttributeRepository
 import dev.zemco.schemalens.modeling.api.relationship.DataModelRelationshipRepository
 
-import jakarta.persistence.EntityNotFoundException
-import java.lang.IllegalAccessException
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -35,8 +34,6 @@ class DataModelServiceImpl(
 
     @Transactional
     override fun createModel(dto: DataModelInputDto, user: User): DataModelDto {
-        require(dto.name.isNotBlank()) { "Model name cannot be blank" }
-
         val entity = DataModel(name = dto.name, ownerId = user.id!!, owner = user)
         val saved = repository.save(entity)
         return DataModelDto(id = saved.id, name = saved.name)
@@ -44,19 +41,7 @@ class DataModelServiceImpl(
 
     @Transactional
     override fun updateModel(modelId: Long, dto: DataModelInputDto, ownerId: Long): DataModelDto {
-        require(dto.name.isNotBlank()) { "Model name cannot be blank" }
-
-        val optionalModel = repository.findById(modelId)
-
-        if (optionalModel.isEmpty) {
-            throw EntityNotFoundException("Model not found")
-        }
-
-        val model = optionalModel.get()
-
-        if (model.ownerId != ownerId) {
-            throw IllegalAccessException("Access denied")
-        }
+        val model = findDataModel(ownerId, modelId)
 
         model.name = dto.name
         val saved = repository.save(model)  // ID stays the same, just updates the name
@@ -65,34 +50,13 @@ class DataModelServiceImpl(
 
     @Transactional
     override fun deleteModel(modelId: Long, ownerId: Long) {
-        val optionalModel = repository.findById(modelId)
-
-        if (optionalModel.isEmpty) {
-            throw EntityNotFoundException("Model not found")
-        }
-
-        val model = optionalModel.get()
-
-        if (model.ownerId != ownerId) {
-            throw IllegalAccessException("Access denied")
-        }
-
+        val model = findDataModel(ownerId, modelId)
         repository.delete(model)
     }
 
     @Transactional(readOnly = true)
     override fun getLogicalModel(modelId: Long, userId: Long): DataModelLogicalDto {
-        val optionalModel = repository.findById(modelId)
-
-        if (optionalModel.isEmpty) {
-            throw EntityNotFoundException("Model not found")
-        }
-
-        val model = optionalModel.get()
-
-        if (model.ownerId != userId) {
-            throw IllegalAccessException("Access denied")
-        }
+        findDataModel(userId, modelId)
 
         val dataTypes = dataTypeRepository.findAllByModelId(modelId)
             .map { DataModelDataTypeDto(it.id!!, it.name) }
@@ -145,5 +109,21 @@ class DataModelServiceImpl(
             entities = entities,
             relationships = relationships
         )
+    }
+
+    fun findDataModel(userId: Long, modelId: Long): DataModel {
+        val optionalModel = repository.findById(modelId)
+
+        if (optionalModel.isEmpty) {
+            throw DataModelNotFoundException(modelId)
+        }
+
+        val model = optionalModel.get()
+
+        if (model.ownerId != userId) {
+            throw ResourceAccessDeniedException()
+        }
+
+        return model
     }
 }
