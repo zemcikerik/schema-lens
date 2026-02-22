@@ -1,1 +1,15 @@
-Relationship
+<form [formGroup]="propertiesForm">
+  <mat-form-field>
+    <mat-label>Type</mat-label>
+    <mat-select formControlName="type">
+      @for (relType of relationshipTypes; track relType.value) {
+        <mat-option [value]="relType.value">{{ relType.label }}</mat-option>
+      }
+    </mat-select>
+  </mat-form-field>
+
+  <div class="data-modeler__properties__checkbox-group">
+    <mat-checkbox formControlName="isIdentifying">Identifying</mat-checkbox>
+    <mat-checkbox formControlName="isMandatory">Mandatory</mat-checkbox>
+  </div>
+</form>

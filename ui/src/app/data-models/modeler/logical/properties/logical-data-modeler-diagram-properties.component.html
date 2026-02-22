@@ -1,6 +1,15 @@
-<form [formGroup]="propertiesForm">
-  <mat-form-field>
-    <mat-label>Name</mat-label>
-    <input matInput formControlName="name">
-  </mat-form-field>
-</form>
+<div class="data-modeler__properties__spread">
+  <form [formGroup]="propertiesForm">
+    <mat-form-field>
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name">
+    </mat-form-field>
+  </form>
+
+  <div class="data-modeler__properties__danger-zone">
+    <h4 class="data-modeler__properties__danger-zone__title">{{ ('DATA_MODELER.LOGICAL.PROPERTIES.DANGER_ZONE_LABEL' | translate)() }}</h4>
+    <button mat-stroked-button color="warn" (click)="deleteDiagram()">
+      {{ ('DATA_MODELER.LOGICAL.PROPERTIES.DELETE_DIAGRAM_LABEL' | translate)() }}
+    </button>
+  </div>
+</div>

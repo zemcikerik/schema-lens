@@ -57,9 +57,9 @@ export class DataModelerComponent {
     }
 
     if (selection.type === 'node') {
-      this.executeModelingOperation(() => this.modelingFacade.deleteNode(selection.node.id));
+      this.modelingFacade.deleteNode(selection.node.id);
     } else {
-      this.executeModelingOperation(() => this.modelingFacade.deleteEdge(selection.edge.id));
+      this.modelingFacade.deleteEdge(selection.edge.id);
     }
   }
 

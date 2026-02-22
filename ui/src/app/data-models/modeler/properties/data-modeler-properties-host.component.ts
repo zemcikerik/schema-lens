@@ -37,7 +37,8 @@ import { DATA_MODELING_FACADE } from '../data-modeling.facade';
       (focusout)="saveChanges()"
     >
       <app-layout-header-and-content [title]="('DATA_MODELER.$type.PROPERTIES.TITLE' | dataModelerTranslate)()"
-                                     [titleLevel]="'low'">
+                                     [titleLevel]="'low'"
+                                     [fullHeight]="true">
         <ng-container #propertiesTarget />
       </app-layout-header-and-content>
     </app-content-card>

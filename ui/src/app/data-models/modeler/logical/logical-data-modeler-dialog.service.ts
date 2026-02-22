@@ -41,4 +41,12 @@ export class LogicalDataModelerDialogService {
       'danger',
     );
   }
+
+  openDeleteDiagramConfirmation(): Observable<boolean | null> {
+    return this.dialogService.openConfirmationDialog(
+      'DATA_MODELER.LOGICAL.DIALOGS.DELETE_DIAGRAM_CONFIRM_TITLE',
+      'DATA_MODELER.LOGICAL.DIALOGS.DELETE_DIAGRAM_CONFIRM_DESCRIPTION',
+      'danger',
+    );
+  }
 }

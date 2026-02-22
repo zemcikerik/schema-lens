@@ -66,5 +66,44 @@
       margin-top: 0.5rem;
       width: 100%;
     }
+
+    mat-checkbox {
+      padding-bottom: 0.5rem;
+    }
+
+    &__checkbox-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+      margin-top: 1rem;
+    }
+
+    &__spread {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      height: 100%;
+    }
+
+    &__danger-zone {
+      padding: 1rem;
+      border: 1px solid mat.get-theme-color(t.$theme, error);
+      border-radius: 0.5rem;
+
+      &__title {
+        margin: 0 0 0.75rem 0;
+        color: mat.get-theme-color(t.$theme, error);
+        font-size: 0.875rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+
+      button {
+        @include mat.button-color(t.$theme, $color-variant: error);
+        width: 100%;
+      }
+    }
   }
 }
+

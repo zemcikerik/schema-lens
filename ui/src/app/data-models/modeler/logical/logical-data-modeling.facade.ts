@@ -65,11 +65,14 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
       .openAddExistingEntity(availableEntities)
       .pipe(filter(entity => entity !== null))
       .subscribe(entity => {
-        this.pendingEntityIds.add(entity.entityId!);
+        const newEntityId = entity.entityId!;
+        this.pendingEntityIds.add(newEntityId);
         this.state.patches$.next({
           type: 'node:add',
           node: this.mapper.entityToNode(entity, model.dataTypes),
         });
+
+        this.emitNewlyVisibleRelationships(newEntityId, includedEntityIds);
       });
   }
 
@@ -109,34 +112,22 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
     ).subscribe();
   }
 
-  // TODO: remove all related edges
   deleteNode(nodeId: number): void {
     this.dialogs.openDeleteEntityConfirmation().pipe(
       filter(result => !!result),
-      switchMap(() =>
-        this.withLoading(
-          this.store.deleteEntity(nodeId).pipe(
-            tap(() => {
-              this.pendingEntityIds.delete(nodeId);
-              this.state.patches$.next({ type: 'node:remove', nodeId });
-            }),
-          ),
-        ),
-      ),
-    ).subscribe();
+    ).subscribe(() => {
+      this.removeNodeEdges(nodeId);
+      this.pendingEntityIds.delete(nodeId);
+      this.state.patches$.next({ type: 'node:remove', nodeId });
+    });
   }
 
   deleteEdge(edgeId: number): void {
     this.dialogs.openDeleteRelationshipConfirmation().pipe(
       filter(result => !!result),
-      switchMap(() =>
-        this.withLoading(
-          this.store.deleteRelationship(edgeId).pipe(
-            tap(() => this.state.patches$.next({ type: 'edge:remove', edgeId })),
-          ),
-        ),
-      ),
-    ).subscribe();
+    ).subscribe(() => {
+      this.state.patches$.next({ type: 'edge:remove', edgeId });
+    });
   }
 
   savePositions(snapshot: SchemaDiagramPositionSnapshot): Observable<unknown> {
@@ -185,6 +176,14 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
     ).subscribe();
   }
 
+  deleteDiagram(): Observable<boolean> {
+    const diagram = this.store.activeDiagram() as LogicalModelDiagram;
+    return this.dialogs.openDeleteDiagramConfirmation().pipe(
+      filter(result => !!result),
+      switchMap(() => this.withLoading(this.store.deleteDiagram(diagram.id as number))),
+    );
+  }
+
   private notifyEntityUpdated(entity: LogicalEntity): void {
     this.state.patches$.next({
       type: 'node:update',
@@ -197,6 +196,36 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
       type: 'edge:update',
       edge: this.mapper.relationshipToEdge(rel),
     });
+  }
+
+  private emitNewlyVisibleRelationships(newEntityId: number, previouslyIncludedEntityIds: Set<number>): void {
+    const model = this.store.model() as LogicalDataModel;
+    const diagram = this.store.activeDiagram() as LogicalModelDiagram;
+
+    const visibleEntityIds = new Set([...previouslyIncludedEntityIds, ...this.pendingEntityIds]);
+    const newRelationships = model.relationships.filter(rel => {
+      const connectsNewEntity = rel.fromEntityId === newEntityId || rel.toEntityId === newEntityId;
+      const bothSidesVisible = visibleEntityIds.has(rel.fromEntityId) && visibleEntityIds.has(rel.toEntityId);
+      const alreadyInDiagram = diagram.relationships.some(r => r.relationshipId === rel.relationshipId);
+      return connectsNewEntity && bothSidesVisible && !alreadyInDiagram;
+    });
+
+    for (const rel of newRelationships) {
+      this.state.patches$.next({
+        type: 'edge:add',
+        edge: this.mapper.relationshipToEdge(rel),
+      });
+    }
+  }
+
+  private removeNodeEdges(nodeId: number): void {
+    const model = this.store.model() as LogicalDataModel;
+    const relatedEdges = model.relationships.filter(
+      rel => rel.fromEntityId === nodeId || rel.toEntityId === nodeId,
+    );
+    for (const rel of relatedEdges) {
+      this.state.patches$.next({ type: 'edge:remove', edgeId: rel.relationshipId! });
+    }
   }
 
   private entityPosition(entityId: number, diagram: LogicalModelDiagram) {
