@@ -10,7 +10,8 @@ export type SchemaDiagramPatchType =
   | 'edge:add'
   | 'edge:update'
   | 'edge:remove'
-  | 'layout:auto';
+  | 'layout:auto'
+  | 'diagram:clear';
 
 interface BaseSchemaDiagramPatch {
   type: SchemaDiagramPatchType;
@@ -52,6 +53,10 @@ export interface AutoLayoutPatch extends BaseSchemaDiagramPatch {
   type: 'layout:auto';
 }
 
+export interface ClearDiagramPatch extends BaseSchemaDiagramPatch {
+  type: 'diagram:clear';
+}
+
 export type SchemaDiagramPatch =
   | AddNodePatch
   | UpdateNodePatch
@@ -59,4 +64,5 @@ export type SchemaDiagramPatch =
   | AddEdgePatch
   | UpdateEdgePatch
   | RemoveEdgePatch
-  | AutoLayoutPatch;
+  | AutoLayoutPatch
+  | ClearDiagramPatch;

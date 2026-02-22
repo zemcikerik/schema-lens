@@ -151,6 +151,8 @@ export class SchemaDiagramComponent implements AfterViewInit {
         this.removeEdge(patch);
       } else if (patch.type === 'layout:auto') {
         this.autoLayout();
+      } else if (patch.type === 'diagram:clear') {
+        this.clearDiagram();
       } else {
         throw new Error('Unknown patch type');
       }
@@ -275,6 +277,17 @@ export class SchemaDiagramComponent implements AfterViewInit {
     const updates = { ...layout.nodes, ...Object.fromEntries(edgeUpdates) };
 
     this.diagramHost().updateAll(updatedElements, updates);
+  }
+
+  private clearDiagram(): void {
+    for (const { connection } of Object.values(this.edges)) {
+      this.diagramHost().removeConnection(connection);
+    }
+    for (const { shape } of Object.values(this.nodes)) {
+      this.diagramHost().removeShape(shape);
+    }
+    this.edges = {};
+    this.nodes = {};
   }
 
   private handleConnectModeSelection(oldSelection: ElementLike[], newSelection: ElementLike[]): void {

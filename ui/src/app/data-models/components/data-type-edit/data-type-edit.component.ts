@@ -13,7 +13,7 @@ import { Router } from '@angular/router';
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { DialogService } from '../../../core/dialog.service';
-import { LogicalModelStore } from '../../modeler/logical/logical-model.store';
+import { LogicalModelStore } from '../../logical-model.store';
 
 // TODO: cleanup
 

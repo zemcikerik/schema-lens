@@ -17,9 +17,7 @@ export class LogicalDataTypeService {
     return this.httpClient.updateDataType(dataModelId, dataType);
   }
 
-  deleteDataType(dataModelId: number, typeId: number): Observable<boolean> {
+  deleteDataType(dataModelId: number, typeId: number): Observable<unknown> {
     return this.httpClient.deleteDataType(dataModelId, typeId);
   }
 }
-
-

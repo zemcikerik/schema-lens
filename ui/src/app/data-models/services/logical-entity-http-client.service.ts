@@ -1,24 +1,23 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { delay, Observable, of } from 'rxjs';
-import { LogicalEntity } from '../models/logical-model.model';
+import { Observable } from 'rxjs';
+import { LogicalEntitySummary } from '../models/logical-model.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LogicalEntityHttpClientService {
-  // TODO: implement requests
   private httpClient = inject(HttpClient);
 
-  createEntity(modelId: number, entity: LogicalEntity): Observable<LogicalEntity> {
-    return of({ name: entity.name, entityId: 0, attributes: [] }).pipe(delay(1500));
+  createEntity(modelId: number, entity: LogicalEntitySummary): Observable<LogicalEntitySummary> {
+    return this.httpClient.post<LogicalEntitySummary>(`/model/${modelId}/entity`, { name: entity.name });
   }
 
-  updateEntity(modelId: number, entity: LogicalEntity): Observable<LogicalEntity> {
-    return of(entity).pipe(delay(1500));
+  updateEntity(modelId: number, entity: LogicalEntitySummary): Observable<LogicalEntitySummary> {
+    return this.httpClient.put<LogicalEntitySummary>(`/model/${modelId}/entity/${entity.entityId}`, { name: entity.name });
   }
 
-  deleteEntity(modelId: number, entityId: number): Observable<boolean> {
-    return of(true).pipe(delay(1500));
+  deleteEntity(modelId: number, entityId: number): Observable<unknown> {
+    return this.httpClient.delete(`/model/${modelId}/entity/${entityId}`);
   }
 }

@@ -17,7 +17,7 @@ export class LogicalRelationshipService {
     return this.httpClient.updateRelationship(dataModelId, relationship);
   }
 
-  deleteRelationship(dataModelId: number, relationshipId: number): Observable<boolean> {
+  deleteRelationship(dataModelId: number, relationshipId: number): Observable<unknown> {
     return this.httpClient.deleteRelationship(dataModelId, relationshipId);
   }
 }

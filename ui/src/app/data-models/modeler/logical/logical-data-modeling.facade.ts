@@ -5,9 +5,9 @@ import { SchemaDiagramNode } from '../../../diagrams/schema/model/schema-diagram
 import { catchError, defer, filter, finalize, Observable, switchMap, tap, throwError } from 'rxjs';
 import { SchemaDiagramPositionSnapshot } from '../../../diagrams/schema/model/schema-diagram-position-snapshot.model';
 import { LogicalDataModelerDialogService } from './logical-data-modeler-dialog.service';
-import { LogicalModelStore } from './logical-model.store';
+import { LogicalModelStore } from '../../logical-model.store';
 import { LogicalDiagramMapper } from './logical-diagram.mapper';
-import { LogicalEntity, LogicalRelationship } from '../../models/logical-model.model';
+import { LogicalDataModel, LogicalEntity, LogicalEntitySummary, LogicalRelationship } from '../../models/logical-model.model';
 import { LogicalModelDiagram } from '../../models/data-model-diagram.model';
 
 @Injectable()
@@ -16,6 +16,8 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
   private state = inject(LogicalDataModelingState);
   private mapper = inject(LogicalDiagramMapper);
   private dialogs = inject(LogicalDataModelerDialogService);
+
+  private readonly pendingEntityIds = new Set<number>();
 
   readonly patches$ = this.state.patches$.asObservable();
   readonly loading = this.state.loading.asReadonly();
@@ -29,6 +31,9 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
       console.log(this.store);
       throw new Error('Cannot initialize modeler without active model and diagram');
     }
+
+    this.state.patches$.next({ type: 'diagram:clear' });
+    this.pendingEntityIds.clear();
 
     const entities = model.entities;
     const includedEntityIds = new Set(diagram.entities.map(e => e.entityId));
@@ -47,6 +52,40 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
       const position = this.relationshipPosition(rel.relationshipId!, diagram);
       this.state.patches$.next({ type: 'edge:add', edge: this.mapper.relationshipToEdge(rel), position });
     }
+  }
+
+  addExistingNode(): void {
+    const model = this.store.model() as LogicalDataModel;
+    const diagram = this.store.activeDiagram() as LogicalModelDiagram;
+
+    const includedEntityIds = new Set(diagram.entities.map(e => e.entityId));
+    const availableEntities = model.entities.filter(e => e.entityId !== null && !includedEntityIds.has(e.entityId) && !this.pendingEntityIds.has(e.entityId!));
+
+    this.dialogs
+      .openAddExistingEntity(availableEntities)
+      .pipe(filter(entity => entity !== null))
+      .subscribe(entity => {
+        this.pendingEntityIds.add(entity.entityId!);
+        this.state.patches$.next({
+          type: 'node:add',
+          node: this.mapper.entityToNode(entity, model.dataTypes),
+        });
+      });
+  }
+
+  createNode(): void {
+    const model = this.store.model() as LogicalDataModel;
+
+    this.dialogs
+      .openCreateEntity(model.entities)
+      .pipe(filter(entity => entity !== null))
+      .subscribe(entity => {
+        this.pendingEntityIds.add(entity.entityId!);
+        this.state.patches$.next({
+          type: 'node:add',
+          node: this.mapper.entityToNode(entity, model.dataTypes),
+        });
+      });
   }
 
   connect(from: SchemaDiagramNode, to: SchemaDiagramNode): void {
@@ -77,7 +116,10 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
       switchMap(() =>
         this.withLoading(
           this.store.deleteEntity(nodeId).pipe(
-            tap(() => this.state.patches$.next({ type: 'node:remove', nodeId })),
+            tap(() => {
+              this.pendingEntityIds.delete(nodeId);
+              this.state.patches$.next({ type: 'node:remove', nodeId });
+            }),
           ),
         ),
       ),
@@ -115,10 +157,12 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
       })),
     };
 
-    return this.withLoading(this.store.updateDiagram(updatedDiagram));
+    return this.withLoading(this.store.updateDiagram(updatedDiagram).pipe(
+      tap(() => this.pendingEntityIds.clear()),
+    ));
   }
 
-  updateEntity(entity: LogicalEntity): void {
+  updateEntity(entity: LogicalEntitySummary): void {
     this.withLoading(
       this.store.updateEntity(entity).pipe(
         tap(saved => this.notifyEntityUpdated(saved)),

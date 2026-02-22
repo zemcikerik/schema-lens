@@ -1,6 +1,9 @@
 <div class="schema-diagram__node text-code">
   <span class="schema-diagram__node__name">{{ node().name }}</span>
   <div class="schema-diagram__node__fields__wrapper">
+    @if (node().fields.length === 0) {
+      <span class="schema-diagram__node__fields__no-fields">{{ ('DIAGRAM.ENTITY_RELATIONSHIP.NO_FIELDS' | translate)() }}</span>
+    }
     <table class="schema-diagram__node__fields">
       @for (field of node().fields; track field.name) {
         <tr>

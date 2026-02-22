@@ -1,7 +1,7 @@
 import { inject, Injectable, Injector } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { LogicalAttribute, LogicalDataType, LogicalEntity } from '../models/logical-model.model';
+import { LogicalAttribute, LogicalDataType, LogicalEntitySummary } from '../models/logical-model.model';
 import { DataModelDiagram } from '../models/data-model-diagram.model';
 import {
   DataTypeCreateDialogComponent,
@@ -12,13 +12,13 @@ import {
   DataTypeDialogData,
 } from '../components/data-type-selector-dialog/data-type-selector-dialog.component';
 import {
-  DiagramCreateDialogComponent,
-  DiagramCreateDialogData,
-} from '../components/diagram-create-dialog/diagram-create-dialog.component';
+  DataModelDiagramCreateDialogComponent,
+  DataModelDiagramCreateDialogData,
+} from '../components/data-model-diagram-create-dialog/data-model-diagram-create-dialog.component';
 import {
-  EntityCreateDialogComponent,
-  EntityCreateDialogData,
-} from '../components/entity-create-dialog/entity-create-dialog.component';
+  DataModelEntityCreateDialogComponent,
+  DataModelEntityCreateDialogData,
+} from '../components/data-model-entity-create-dialog/data-model-entity-create-dialog.component';
 
 @Injectable()
 export class DataModelDialogService {
@@ -26,13 +26,13 @@ export class DataModelDialogService {
   private injector = inject(Injector);
 
   openCreateDiagramDialog(diagrams: DataModelDiagram[]): Observable<DataModelDiagram | undefined> {
-    const data: DiagramCreateDialogData = { diagrams };
-    return this.matDialog.open(DiagramCreateDialogComponent, { data, injector: this.injector }).afterClosed();
+    const data: DataModelDiagramCreateDialogData = { diagrams };
+    return this.matDialog.open(DataModelDiagramCreateDialogComponent, { data, injector: this.injector }).afterClosed();
   }
 
-  openCreateEntityDialog(entities: LogicalEntity[]): Observable<LogicalEntity | undefined> {
-    const data: EntityCreateDialogData = { entities };
-    return this.matDialog.open(EntityCreateDialogComponent, { data, injector: this.injector }).afterClosed();
+  openCreateEntityDialog(entities: LogicalEntitySummary[]): Observable<LogicalEntitySummary | undefined> {
+    const data: DataModelEntityCreateDialogData = { entities };
+    return this.matDialog.open(DataModelEntityCreateDialogComponent, { data, injector: this.injector }).afterClosed();
   }
 
   openCreateDataTypeDialog(dataTypes: LogicalDataType[]): Observable<unknown> {

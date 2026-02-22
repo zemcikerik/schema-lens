@@ -12,7 +12,7 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { LogicalModelStore } from '../../modeler/logical/logical-model.store';
+import { LogicalModelStore } from '../../logical-model.store';
 import { DataModelDialogService } from '../../services/data-model-dialog.service';
 
 // TODO: routing

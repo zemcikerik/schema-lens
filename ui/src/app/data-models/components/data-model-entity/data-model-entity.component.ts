@@ -27,7 +27,8 @@ import { ProgressSpinnerComponent } from '../../../shared/components/progress-sp
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { FormsModule } from '@angular/forms';
 import { TranslateService } from '../../../core/translate/translate.service';
-import { LogicalModelStore } from '../../modeler/logical/logical-model.store';
+import { LogicalModelStore } from '../../logical-model.store';
+import { EMPTY, forkJoin, of, switchMap } from 'rxjs';
 
 // TODO: oof
 
@@ -62,13 +63,13 @@ export class DataModelEntityComponent {
   @ViewChild('table', { static: true }) table!: MatTable<LogicalAttribute>;
   readonly ALL_COLUMNS = ['drag', 'primary-key', 'name', 'type', 'nullable', 'actions'];
 
-  entityId = input.required<number>();
+  entityId = input.required<string>();
 
   private store = inject(LogicalModelStore);
   translateService = inject(TranslateService);
 
   entity = linkedSignal(() => {
-    const entity = this.store.entities().find(e => e.entityId == this.entityId());
+    const entity = this.store.entities().find(e => e.entityId == +this.entityId());
     // TODO: redirect on null
     return structuredClone(entity);
   });
@@ -88,19 +89,29 @@ export class DataModelEntityComponent {
       ? this.store.dataTypes().find(e => e.typeId === id)?.name
       : this.translateService.translate('DATAMODEL.ENTITY.ATTRIBUTE_NEW.TYPE')();
 
-  deleteAttribute = (attributeId: number) => {
+  deleteAttribute = (attributeId: number | null) => {
     this.dialogService
       .openConfirmationDialog('DATAMODEL.ENTITY.DELETE_ATTR.TITLE', 'DATAMODEL.ENTITY.DELETE_ATTR.DESC', 'danger')
-      .subscribe({
-        next: res => {
-          if (res) {
-            this.entityAttributes()?.splice(
-              this.entityAttributes().findIndex(a => a.attributeId === attributeId),
-              1,
-            );
+      .pipe(
+        switchMap(confirmed => {
+          if (!confirmed) return EMPTY;
+          const removeLocally = () => {
+            const attrs = this.entityAttributes();
+            attrs.splice(attrs.findIndex(a => a.attributeId === attributeId), 1);
             this.table.renderRows();
+          };
+          if (attributeId === null) {
+            removeLocally();
+            return EMPTY;
           }
-        },
+          this.loading.set(true);
+          this.error.set(false);
+          return this.store.deleteAttribute(+this.entityId(), attributeId);
+        }),
+      )
+      .subscribe({
+        next: () => this.loading.set(false),
+        error: () => { this.loading.set(false); this.error.set(true); },
       });
   };
 
@@ -134,19 +145,30 @@ export class DataModelEntityComponent {
 
   save = () => {
     const entity = this.entity();
-    if (entity) {
-      this.loading.set(true);
-      this.error.set(false);
-      this.store.updateEntity(entity).subscribe({
-        next: () => {
-          this.loading.set(false);
-        },
-        error: () => {
-          this.loading.set(false);
-          this.error.set(true);
-        },
-      });
-    }
+    if (!entity) return;
+
+    const entityId = this.entityId();
+    const originalAttributes = this.store.entities().find(e => e.entityId === +entityId)?.attributes ?? [];
+    const updatedAttributes = this.entityAttributes().map((a, i) => ({ ...a, position: i }));
+
+    const toCreate = updatedAttributes.filter(a => a.attributeId === null);
+    const toUpdate = updatedAttributes.filter(a => a.attributeId !== null);
+    const originalIds = new Set(originalAttributes.map(a => a.attributeId));
+    const updatedIds = new Set(updatedAttributes.filter(a => a.attributeId !== null).map(a => a.attributeId));
+    const toDeleteIds = [...originalIds].filter(id => !updatedIds.has(id)) as number[];
+
+    this.loading.set(true);
+    this.error.set(false);
+
+    const entityUpdate$ = this.store.updateEntity(entity);
+    const creates$ = toCreate.length ? forkJoin(toCreate.map(a => this.store.createAttribute(+entityId, a))) : of([]);
+    const updates$ = toUpdate.length ? forkJoin(toUpdate.map(a => this.store.updateAttribute(+entityId, a))) : of([]);
+    const deletes$ = toDeleteIds.length ? forkJoin(toDeleteIds.map(id => this.store.deleteAttribute(+entityId, id))) : of([]);
+
+    forkJoin([entityUpdate$, creates$, updates$, deletes$]).subscribe({
+      next: () => this.loading.set(false),
+      error: () => { this.loading.set(false); this.error.set(true); },
+    });
   };
 
   delete = () => {
@@ -157,7 +179,7 @@ export class DataModelEntityComponent {
           if (!res) return;
           this.error.set(false);
           this.loading.set(true);
-          this.store.deleteEntity(this.entityId()).subscribe({
+          this.store.deleteEntity(+this.entityId()).subscribe({
             next: async () => {
               this.loading.set(false);
               await this.router.navigate(['/model', this.store.dataModelId]);
@@ -171,3 +193,4 @@ export class DataModelEntityComponent {
       });
   };
 }
+

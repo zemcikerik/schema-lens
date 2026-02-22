@@ -10,6 +10,8 @@ export interface DataModelingFacade {
   readonly patches$: Observable<SchemaDiagramPatch>;
   readonly loading: Signal<boolean>;
   readonly diagramName: Signal<string>;
+  addExistingNode(): void;
+  createNode(): void;
   connect(from: SchemaDiagramNode, to: SchemaDiagramNode): void;
   deleteNode(nodeId: number): void;
   deleteEdge(edgeId: number): void;

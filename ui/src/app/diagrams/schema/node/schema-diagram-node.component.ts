@@ -23,6 +23,9 @@ const CELL_LEFT_PADDING_NEXT = 16;
 const CELL_LEFT_PADDING_REFERENCE = 4;
 const CELL_LEFT_PADDING_REFERENCE_START = 8;
 
+const NO_FIELDS_LABEL_MAX_LENGTH = 15;
+const NO_FIELDS_MIN_WIDTH = Math.ceil(WIDTH_PER_ROW_LETTER * NO_FIELDS_LABEL_MAX_LENGTH) + 2 * (TABLE_PADDING + TABLE_BORDER_MAXIMUM + CELL_PADDING);
+
 @Component({
   selector: 'app-schema-diagram-node',
   templateUrl: './schema-diagram-node.component.html',
@@ -47,6 +50,11 @@ export class SchemaDiagramNodeComponent {
   static estimateDimensions(node: SchemaDiagramNode): { width: number, height: number } {
     const { fields, uniqueFieldGroups } = node;
     const edgeCount = node.parentEdges.length;
+
+    if (fields.length === 0) {
+      const tableHeight = (HEIGHT_ROW_SIZE + 2 * CELL_PADDING) + 2 * (TABLE_PADDING + TABLE_BORDER_MAXIMUM);
+      return { width: NO_FIELDS_MIN_WIDTH, height: HEIGHT_TITLE_SIZE + tableHeight };
+    }
 
     const hasKey = this.hasPrimaryKey(node);
     const hasNotNullFields = this.hasNotNullField(node);

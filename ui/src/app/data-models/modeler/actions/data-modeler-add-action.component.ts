@@ -1,9 +1,10 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { DataModelerTranslatePipe } from '../data-modeler-translate.pipe';
 import { MatTooltip } from '@angular/material/tooltip';
+import { DATA_MODELING_FACADE } from '../data-modeling.facade';
 
 @Component({
   selector: 'app-data-modeler-add-action',
@@ -18,10 +19,10 @@ import { MatTooltip } from '@angular/material/tooltip';
     </button>
     
     <mat-menu #addMenu>
-      <button mat-menu-item>
+      <button mat-menu-item (click)="facade.createNode()">
         <mat-icon>add_circle</mat-icon> {{ ('DATA_MODELER.$type.ACTION.CREATE_NODE' | dataModelerTranslate)() }}
       </button>
-      <button mat-menu-item>
+      <button mat-menu-item (click)="facade.addExistingNode()">
         <mat-icon>folder_open</mat-icon> {{ ('DATA_MODELER.$type.ACTION.EXISTING_NODE' | dataModelerTranslate)() }}
       </button>
     </mat-menu>
@@ -37,4 +38,5 @@ import { MatTooltip } from '@angular/material/tooltip';
   ],
 })
 export class DataModelerAddActionComponent {
+  facade = inject(DATA_MODELING_FACADE);
 }

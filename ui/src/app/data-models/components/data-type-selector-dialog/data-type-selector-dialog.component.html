@@ -2,29 +2,32 @@
 
 <mat-dialog-content>
   <div class="data-model-create-dialogs">
-    <form>
+    <form [formGroup]="form">
       <mat-form-field class="data-model-create-dialogs__form">
         <mat-label>{{ ('DATAMODEL.DATA_TYPE.SELECT.LABEL' | translate)() }}</mat-label>
         <input type="text"
                [placeholder]="('DATAMODEL.DATA_TYPE.SELECT.PLACEHOLDER' | translate)()"
                matInput
                required
-               [formControl]="formControl"
+               formControlName="name"
                [matAutocomplete]="auto">
         <mat-autocomplete #auto="matAutocomplete" class="data-model-create-dialogs__auto">
-          @for (type of this.filteredTypes | async; track type.typeId) {
+          @for (type of filteredTypes(); track type.typeId) {
             <mat-option [value]="type.name">
               {{ type.name }}
             </mat-option>
           }
         </mat-autocomplete>
+        @if (form.controls.name.invalid) {
+          <mat-error>{{ (form.controls.name.errors | formatGenericValidationErrors)() }}</mat-error>
+        }
       </mat-form-field>
     </form>
   </div>
 </mat-dialog-content>
 
 <mat-dialog-actions align="end">
-  <button mat-flat-button (click)="confirm()">
+  <button mat-flat-button (click)="confirm()" [disabled]="form.invalid">
     {{ ('GENERIC.CONFIRM_LABEL' | translate)() }}
   </button>
 </mat-dialog-actions>

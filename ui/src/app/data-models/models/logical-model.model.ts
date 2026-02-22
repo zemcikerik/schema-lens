@@ -12,9 +12,12 @@ export interface LogicalDataType {
   name: string;
 }
 
-export interface LogicalEntity {
+export interface LogicalEntitySummary {
   entityId: number | null;
   name: string;
+}
+
+export interface LogicalEntity extends LogicalEntitySummary {
   attributes: LogicalAttribute[];
 }
 

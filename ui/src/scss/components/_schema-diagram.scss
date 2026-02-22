@@ -61,6 +61,13 @@
         transition: border-color 0.2s ease-in-out;
       }
 
+      &__no-fields {
+        display: block;
+        text-align: center;
+        text-decoration: underline;
+        color: mat.get-theme-color(t.$theme, outline);
+      }
+
       td {
         height: 1.625rem;
         padding: 1px;

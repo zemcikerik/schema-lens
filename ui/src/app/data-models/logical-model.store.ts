@@ -1,12 +1,13 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { Observable, tap, of, finalize, defer } from 'rxjs';
-import { LogicalDataModel, LogicalDataType, LogicalEntity, LogicalRelationship } from '../../models/logical-model.model';
-import { DataModelDiagram, LogicalModelDiagram } from '../../models/data-model-diagram.model';
-import { LogicalDataModelService } from '../../services/logical-data-model.service';
-import { LogicalEntityService } from '../../services/logical-entity.service';
-import { LogicalRelationshipService } from '../../services/logical-relationship.service';
-import { LogicalDataTypeService } from '../../services/logical-data-type.service';
-import { DataModelDiagramService } from '../../services/data-model-diagram.service';
+import { Observable, tap, of, finalize, defer, map } from 'rxjs';
+import { LogicalDataModel, LogicalDataType, LogicalEntity, LogicalEntitySummary, LogicalAttribute, LogicalRelationship } from './models/logical-model.model';
+import { DataModelDiagram, LogicalModelDiagram } from './models/data-model-diagram.model';
+import { LogicalDataModelService } from './services/logical-data-model.service';
+import { LogicalEntityService } from './services/logical-entity.service';
+import { LogicalRelationshipService } from './services/logical-relationship.service';
+import { LogicalDataTypeService } from './services/logical-data-type.service';
+import { DataModelDiagramService } from './services/data-model-diagram.service';
+import { LogicalAttributeService } from './services/logical-attribute.service';
 
 @Injectable()
 export class LogicalModelStore {
@@ -14,6 +15,7 @@ export class LogicalModelStore {
   private logicalEntityService = inject(LogicalEntityService);
   private logicalRelationshipService = inject(LogicalRelationshipService);
   private logicalDataTypeService = inject(LogicalDataTypeService);
+  private logicalAttributeService = inject(LogicalAttributeService);
   private diagramService = inject(DataModelDiagramService);
 
   dataModelId = -1; // this is initialized first by load()
@@ -84,14 +86,16 @@ export class LogicalModelStore {
     });
   }
 
-  createEntity(entity: LogicalEntity): Observable<LogicalEntity> {
+  createEntity(entity: LogicalEntitySummary): Observable<LogicalEntity> {
     return this.logicalEntityService.createEntity(this.dataModelId, entity).pipe(
+      map(created => ({ ...created, attributes: [] })),
       tap(created => this._model.update(m => m && { ...m, entities: [...m.entities, created] })),
     );
   }
 
-  updateEntity(entity: LogicalEntity): Observable<LogicalEntity> {
+  updateEntity(entity: LogicalEntitySummary): Observable<LogicalEntity> {
     return this.logicalEntityService.updateEntity(this.dataModelId, entity).pipe(
+      map(updated => ({ ...updated, attributes: this.entities().find(e => e.entityId === updated.entityId)?.attributes ?? [] })),
       tap(updated => this._model.update(m => m && {
         ...m,
         entities: m.entities.map(e => e.entityId === updated.entityId ? updated : e),
@@ -99,12 +103,49 @@ export class LogicalModelStore {
     );
   }
 
-  deleteEntity(entityId: number): Observable<boolean> {
+  deleteEntity(entityId: number): Observable<unknown> {
     return this.logicalEntityService.deleteEntity(this.dataModelId, entityId).pipe(
       tap(() => this._model.update(m => m && {
         ...m,
         entities: m.entities.filter(e => e.entityId !== entityId),
         relationships: m.relationships.filter(r => r.fromEntityId !== entityId && r.toEntityId !== entityId),
+      })),
+    );
+  }
+
+  createAttribute(entityId: number, attribute: LogicalAttribute): Observable<LogicalAttribute> {
+    return this.logicalAttributeService.createAttribute(this.dataModelId, entityId, attribute).pipe(
+      tap(created => this._model.update(m => m && {
+        ...m,
+        entities: m.entities.map(e =>
+          e.entityId === entityId ? { ...e, attributes: [...e.attributes, created] } : e,
+        ),
+      })),
+    );
+  }
+
+  updateAttribute(entityId: number, attribute: LogicalAttribute): Observable<LogicalAttribute> {
+    return this.logicalAttributeService.updateAttribute(this.dataModelId, entityId, attribute).pipe(
+      tap(updated => this._model.update(m => m && {
+        ...m,
+        entities: m.entities.map(e =>
+          e.entityId === entityId
+            ? { ...e, attributes: e.attributes.map(a => a.attributeId === updated.attributeId ? updated : a) }
+            : e,
+        ),
+      })),
+    );
+  }
+
+  deleteAttribute(entityId: number, attributeId: number): Observable<unknown> {
+    return this.logicalAttributeService.deleteAttribute(this.dataModelId, entityId, attributeId).pipe(
+      tap(() => this._model.update(m => m && {
+        ...m,
+        entities: m.entities.map(e =>
+          e.entityId === entityId
+            ? { ...e, attributes: e.attributes.filter(a => a.attributeId !== attributeId) }
+            : e,
+        ),
       })),
     );
   }
@@ -124,7 +165,7 @@ export class LogicalModelStore {
     );
   }
 
-  deleteRelationship(relationshipId: number): Observable<boolean> {
+  deleteRelationship(relationshipId: number): Observable<unknown> {
     return this.logicalRelationshipService.deleteRelationship(this.dataModelId, relationshipId).pipe(
       tap(() => this._model.update(m => m && {
         ...m,
@@ -148,7 +189,7 @@ export class LogicalModelStore {
     );
   }
 
-  deleteDataType(typeId: number): Observable<boolean> {
+  deleteDataType(typeId: number): Observable<unknown> {
     return this.logicalDataTypeService.deleteDataType(this.dataModelId, typeId).pipe(
       tap(() => this._model.update(m => m && {
         ...m,

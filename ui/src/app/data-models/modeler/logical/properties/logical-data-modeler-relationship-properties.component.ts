@@ -4,7 +4,7 @@ import {
   SchemaDiagramEdgeSelection,
   SchemaDiagramSelection,
 } from '../../../../diagrams/schema/model/schema-diagram-selection.model';
-import { LogicalModelStore } from '../logical-model.store';
+import { LogicalModelStore } from '../../../logical-model.store';
 import { LogicalDataModelingFacade } from '../logical-data-modeling.facade';
 
 @Component({

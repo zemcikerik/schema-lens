@@ -5,16 +5,16 @@
     @if (error()) {
       <app-alert type="error">{{ ('ERROR.GENERIC' | translate)() }}</app-alert>
     }
-    <form>
+    <form [formGroup]="form">
       <mat-form-field class="data-model-create-dialogs__form">
         <mat-label>{{ ('DATAMODEL.ENTITY.CREATE.LABEL' | translate)() }}</mat-label>
         <input type="text"
                [placeholder]="('DATAMODEL.ENTITY.CREATE.PLACEHOLDER' | translate)()"
                matInput
                required
-               [formControl]="formControl">
-        @if (formControl.invalid) {
-          <mat-error>{{ (formControl.errors | formatGenericValidationErrors)() }}</mat-error>
+               formControlName="name">
+        @if (form.controls.name.invalid) {
+          <mat-error>{{ (form.controls.name.errors | formatGenericValidationErrors)() }}</mat-error>
         }
       </mat-form-field>
     </form>
@@ -25,7 +25,7 @@
   <button
     mat-flat-button
     (click)="confirm()"
-    [disabled]="!formControl.valid || loading()">
+    [disabled]="form.invalid || loading()">
     @if (loading()) {
       <app-progress-spinner [center]="true" size="small"/>
     } @else {
@@ -33,3 +33,4 @@
     }
   </button>
 </mat-dialog-actions>
+

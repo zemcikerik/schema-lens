@@ -7,7 +7,7 @@ import {
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormatGenericValidationErrorsPipe } from '../../../../shared/pipes/format-generic-validation-errors.pipe';
-import { LogicalModelStore } from '../logical-model.store';
+import { LogicalModelStore } from '../../../logical-model.store';
 import { LogicalDataModelingFacade } from '../logical-data-modeling.facade';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { combineWithPrevious } from '../../../../core/rxjs-pipes';
@@ -73,8 +73,8 @@ export class LogicalDataModelerEntityPropertiesComponent implements BaseDataMode
       throw new Error();
     }
 
-    const updated = { ...entity, name: this.propertiesForm.getRawValue().name };
-    this.formModified = false;
+    const updated = { entityId: entity.entityId, name: this.propertiesForm.getRawValue().name };
     this.facade.updateEntity(updated);
+    this.formModified = false;
   }
 }

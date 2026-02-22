@@ -1,76 +1,24 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { delay, Observable, of } from 'rxjs';
+import { Observable, map, of } from 'rxjs';
+import { catchSpecificHttpStatusError } from '../../core/rxjs-pipes';
 import { LogicalDataModel } from '../models/logical-model.model';
+import { DataModelDiagramHttpClientService } from './data-model-diagram-http-client.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LogicalDataModelHttpClientService {
-  // TODO: implement requests
   private httpClient = inject(HttpClient);
+  private diagramHttpClient = inject(DataModelDiagramHttpClientService);
 
-  getLogicalDataModel(dataModelId: number): Observable<LogicalDataModel> {
-    //return this.httpClient.get<LogicalDataModel[]>(`/model/${dataModelId}/logical`);
-    return of({
-      dataTypes: [
-        { typeId: 1, name: 'TEXT' },
-        { typeId: 2, name: 'TEXT1' },
-        { typeId: 3, name: 'TEXT2' },
-        { typeId: 4, name: 'TEXT3' },
-        { typeId: 5, name: 'TEXT4' },
-      ],
-      entities: [
-        {
-          entityId: 11,
-          name: 'MY_ENTITY',
-          attributes: [
-            {
-              attributeId: 123,
-              name: 'NAME',
-              typeId: 1,
-              isPrimaryKey: false,
-              isNullable: true,
-              position: 1,
-            },
-            {
-              attributeId: 124,
-              name: 'NAME0',
-              typeId: 1,
-              isPrimaryKey: true,
-              isNullable: false,
-              position: 2,
-            },
-          ],
-        },
-      ],
-      relationships: [
-        {
-          relationshipId: 21342134,
-          fromEntityId: 11,
-          toEntityId: 12,
-          type: '1:1' as const,
-          isMandatory: true,
-          isIdentifying: true,
-          attributes: [{ referencedAttributeId: 12, name: 'ID_FK', position: 11 }],
-        },
-      ],
-      diagrams: [
-        {
-          id: 100,
-          name: 'diagram 1',
-          type: 'logical' as const,
-          entities: [],
-          relationships: [],
-        },
-        {
-          id: 200,
-          name: 'diagram 2',
-          type: 'logical' as const,
-          entities: [],
-          relationships: [],
-        },
-      ],
-    }).pipe(delay(500));
+  getLogicalDataModel(dataModelId: number): Observable<LogicalDataModel | null> {
+    return this.httpClient.get<Omit<LogicalDataModel, 'diagrams'>>(`/model/${dataModelId}/logical`).pipe(
+      map(response => {
+        const diagrams = this.diagramHttpClient.seedDataModel(dataModelId, []);
+        return { ...response, diagrams };
+      }),
+      catchSpecificHttpStatusError(404, () => of(null)),
+    );
   }
 }
