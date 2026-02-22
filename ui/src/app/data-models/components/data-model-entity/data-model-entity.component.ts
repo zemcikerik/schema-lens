@@ -7,32 +7,27 @@ import {
   input,
   linkedSignal,
   signal,
-  Signal,
   ViewChild,
 } from '@angular/core';
 import { MatTable, MatTableModule } from '@angular/material/table';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { StatusIconComponent } from '../../../shared/components/status-icon/status-icon.component';
-import { Router, ROUTER_OUTLET_DATA } from '@angular/router';
+import { Router } from '@angular/router';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
-import { MatDialog } from '@angular/material/dialog';
-import { LogicalAttribute, LogicalDataModel } from '../../models/logical-model.model';
+import { LogicalAttribute } from '../../models/logical-model.model';
 import { TableConstraintIconComponent } from '../../../tables/components/table-constraint-icon/table-constraint-icon.component';
 import { MatTooltip } from '@angular/material/tooltip';
 import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
-import {
-  DataTypeSelectorDialogComponent,
-  DataTypeDialogData,
-} from '../data-type-selector-dialog/data-type-selector-dialog.component';
 import { DialogService } from '../../../core/dialog.service';
+import { DataModelDialogService } from '../../services/data-model-dialog.service';
 import { CdkFixedSizeVirtualScroll, CdkVirtualScrollViewport } from '@angular/cdk/scrolling';
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
-import { LogicalEntityService } from '../../services/logical-entity.service';
 import { FormsModule } from '@angular/forms';
 import { TranslateService } from '../../../core/translate/translate.service';
+import { LogicalModelStore } from '../../modeler/logical/logical-model.store';
 
 // TODO: oof
 
@@ -68,13 +63,12 @@ export class DataModelEntityComponent {
   readonly ALL_COLUMNS = ['drag', 'primary-key', 'name', 'type', 'nullable', 'actions'];
 
   entityId = input.required<number>();
-  dataModelId = input.required<number>();
 
-  logicalDataModel = inject(ROUTER_OUTLET_DATA) as Signal<LogicalDataModel>;
+  private store = inject(LogicalModelStore);
   translateService = inject(TranslateService);
 
   entity = linkedSignal(() => {
-    const entity = this.logicalDataModel()?.entities.filter(e => e.entityId == this.entityId())[0];
+    const entity = this.store.entities().find(e => e.entityId == this.entityId());
     // TODO: redirect on null
     return structuredClone(entity);
   });
@@ -84,15 +78,14 @@ export class DataModelEntityComponent {
   loading = signal<boolean>(false);
   error = signal<boolean>(false);
 
-  private matDialog = inject(MatDialog);
+  private dataModelDialogService = inject(DataModelDialogService);
   private dialogService = inject(DialogService);
-  private logicalEntityService = inject(LogicalEntityService);
   private router = inject(Router);
   private changes = inject(ChangeDetectorRef);
 
   dataTypeName = (id: number) =>
     id !== -1
-      ? this.logicalDataModel()?.dataTypes.find(e => e.typeId === id)?.name
+      ? this.store.dataTypes().find(e => e.typeId === id)?.name
       : this.translateService.translate('DATAMODEL.ENTITY.ATTRIBUTE_NEW.TYPE')();
 
   deleteAttribute = (attributeId: number) => {
@@ -130,16 +123,10 @@ export class DataModelEntityComponent {
   }
 
   openDataTypeDialog = (attribute: LogicalAttribute) => {
-    const data: DataTypeDialogData = {
-      targetAttribute: attribute,
-      dataTypes: this.logicalDataModel()?.dataTypes ?? [],
-    };
-    this.matDialog
-      .open(DataTypeSelectorDialogComponent, { data: data, autoFocus: false })
-      .afterClosed()
+    this.dataModelDialogService.openDataTypeSelectorDialog(attribute, this.store.dataTypes())
       .subscribe(res => {
         if (res !== undefined) {
-          attribute.typeId = res.typeId;
+          attribute.typeId = res.typeId!;
           this.changes.markForCheck();
         }
       });
@@ -150,7 +137,7 @@ export class DataModelEntityComponent {
     if (entity) {
       this.loading.set(true);
       this.error.set(false);
-      this.logicalEntityService.updateLogicalEntity(this.dataModelId(), entity).subscribe({
+      this.store.updateEntity(entity).subscribe({
         next: () => {
           this.loading.set(false);
         },
@@ -170,10 +157,10 @@ export class DataModelEntityComponent {
           if (!res) return;
           this.error.set(false);
           this.loading.set(true);
-          this.logicalEntityService.deleteLogicalEntity(this.dataModelId(), this.entityId()).subscribe({
+          this.store.deleteEntity(this.entityId()).subscribe({
             next: async () => {
               this.loading.set(false);
-              await this.router.navigate(['/model', this.dataModelId()]);
+              await this.router.navigate(['/model', this.store.dataModelId]);
             },
             error: () => {
               this.loading.set(false);

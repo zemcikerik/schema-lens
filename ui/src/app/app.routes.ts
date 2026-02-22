@@ -62,6 +62,12 @@ export const appRoutes: Route[] = [
     ],
   },
   {
+    path: 'modeler/:dataModelId/logical/:diagramId',
+    loadComponent: () =>
+      import('./data-models/modeler/logical/logical-data-modeler.component').then(c => c.LogicalDataModelerComponent),
+    canDeactivate: [logicalDataModelerUnsavedGuard],
+  },
+  {
     path: 'project',
     loadComponent: () => import('./projects/components/project-list/project-list.component').then(c => c.ProjectListComponent),
     canActivate: [authGuard],
@@ -162,11 +168,6 @@ export const appRoutes: Route[] = [
         loadComponent: () => import('./admin/components/admin-faq/admin-faq.component').then(c => c.AdminFaqComponent),
       },
     ],
-  },
-  {
-    path: 'test',
-    loadComponent: () => import('./data-models/modeler/logical/logical-data-modeler.component').then(c => c.LogicalDataModelerComponent),
-    canDeactivate: [logicalDataModelerUnsavedGuard]
   },
   { path: '**', redirectTo: '404' },
 ];

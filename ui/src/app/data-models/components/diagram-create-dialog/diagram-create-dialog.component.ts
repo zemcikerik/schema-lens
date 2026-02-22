@@ -9,12 +9,11 @@ import { ProgressSpinnerComponent } from '../../../shared/components/progress-sp
 import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { uniqueStringValidator } from '../../../core/validators/unique-string.validator';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
-import { Diagram } from '../../models/diagram';
-import { DataModelDiagramService } from '../../services/data-model-diagram.service';
+import { DataModelDiagram } from '../../models/data-model-diagram.model';
+import { LogicalModelStore } from '../../modeler/logical/logical-model.store';
 
 export interface DiagramCreateDialogData {
-  modelId: number;
-  diagrams: Diagram[];
+  diagrams: DataModelDiagram[];
 }
 
 // TODO: refactor similarly to data-type-create-dialog
@@ -43,7 +42,7 @@ export class DiagramCreateDialogComponent {
   private matDialogRef = inject(MatDialogRef);
 
   data = inject<DiagramCreateDialogData>(MAT_DIALOG_DATA);
-  diagramService = inject(DataModelDiagramService);
+  private store = inject(LogicalModelStore);
 
   loading = signal<boolean>(false);
   error = signal<boolean>(false);
@@ -60,8 +59,8 @@ export class DiagramCreateDialogComponent {
     if (!name) return;
     this.loading.set(true);
     this.error.set(false);
-    this.diagramService
-      .createDiagram(this.data.modelId, { name: name, type: 'Logical', id: null, relationships: null, entities: null })
+    this.store
+      .createDiagram({ name: name, type: 'logical', id: null, relationships: [], entities: [] })
       .subscribe({
         next: res => {
           this.loading.set(false);

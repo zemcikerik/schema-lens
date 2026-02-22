@@ -10,15 +10,15 @@ export class LogicalEntityHttpClientService {
   // TODO: implement requests
   private httpClient = inject(HttpClient);
 
-  updateLogicalEntity = (modelId: number, entity: LogicalEntity) => {
-    return of(entity).pipe(delay(1500));
-  };
-
-  deleteLogicalEntity = (modelId: number, entityId: number): Observable<boolean> => {
-    return of(true).pipe(delay(1500));
-  };
-
-  createLogicalEntity = (modelId: number, entity: LogicalEntity) => {
+  createEntity(modelId: number, entity: LogicalEntity): Observable<LogicalEntity> {
     return of({ name: entity.name, entityId: 0, attributes: [] }).pipe(delay(1500));
-  };
+  }
+
+  updateEntity(modelId: number, entity: LogicalEntity): Observable<LogicalEntity> {
+    return of(entity).pipe(delay(1500));
+  }
+
+  deleteEntity(modelId: number, entityId: number): Observable<boolean> {
+    return of(true).pipe(delay(1500));
+  }
 }

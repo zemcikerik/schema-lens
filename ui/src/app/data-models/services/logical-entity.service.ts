@@ -1,31 +1,29 @@
 import { inject, Injectable } from '@angular/core';
 import { LogicalEntity } from '../models/logical-model.model';
 import { LogicalEntityHttpClientService } from './logical-entity-http-client.service';
-import { Subject, tap } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class LogicalEntityService {
-  entityUpdated$ = new Subject<LogicalEntity>();
-  entityDeleted$ = new Subject<number>();
-  entityCreated$ = new Subject<LogicalEntity>();
+  private httpClient = inject(LogicalEntityHttpClientService);
 
-  private logicalEntityHttpClient = inject(LogicalEntityHttpClientService);
+  createEntity(modelId: number, entity: LogicalEntity): Observable<LogicalEntity> {
+    return this.httpClient.createEntity(modelId, entity);
+  }
 
-  updateLogicalEntity = (modelId: number, entity: LogicalEntity) => {
-    this.updateAttributePositions(entity);
-    return this.logicalEntityHttpClient.updateLogicalEntity(modelId, entity).pipe(tap(e => this.entityUpdated$.next(e)));
-  };
+  updateEntity(modelId: number, entity: LogicalEntity): Observable<LogicalEntity> {
+    this.normalizeAttributePositions(entity);
+    return this.httpClient.updateEntity(modelId, entity);
+  }
 
-  deleteLogicalEntity = (modelId: number, entityId: number) =>
-    this.logicalEntityHttpClient.deleteLogicalEntity(modelId, entityId).pipe(tap(() => this.entityDeleted$.next(entityId)));
+  deleteEntity(modelId: number, entityId: number): Observable<boolean> {
+    return this.httpClient.deleteEntity(modelId, entityId);
+  }
 
-  createLogicalEntity = (modelId: number, entity: LogicalEntity) =>
-    this.logicalEntityHttpClient.createLogicalEntity(modelId, entity).pipe(tap(e => this.entityCreated$.next(e)));
-
-  private updateAttributePositions = (entity: LogicalEntity) => {
-    let i = 0;
-    entity.attributes.map(a => (a.position = i++));
-  };
+  // TODO: move
+  private normalizeAttributePositions(entity: LogicalEntity): void {
+    entity.attributes.forEach((a, i) => (a.position = i));
+  }
 }

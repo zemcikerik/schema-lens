@@ -1,9 +1,8 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { DataType, LogicalAttribute } from '../../models/logical-model.model';
+import { LogicalAttribute, LogicalDataType } from '../../models/logical-model.model';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { DataTypeService } from '../../services/data-type.service';
 import { MatFormField, MatInputModule, MatLabel } from '@angular/material/input';
 import { FormControl, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
@@ -11,7 +10,7 @@ import { map, startWith } from 'rxjs';
 import { AsyncPipe } from '@angular/common';
 
 export interface DataTypeDialogData {
-  dataTypes: DataType[];
+  dataTypes: LogicalDataType[];
   targetAttribute: LogicalAttribute;
 }
 
@@ -41,7 +40,6 @@ export interface DataTypeDialogData {
 export class DataTypeSelectorDialogComponent {
   private matDialogRef = inject(MatDialogRef);
   data = inject<DataTypeDialogData>(MAT_DIALOG_DATA);
-  dataTypeService = inject(DataTypeService);
 
   findType = (id: number) => this.data.dataTypes.find(e => e.typeId === id);
 

@@ -1,9 +1,9 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { DataType } from '../../models/logical-model.model';
+import { LogicalDataType } from '../../models/logical-model.model';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { DataTypeService } from '../../services/data-type.service';
+import { LogicalModelStore } from '../../modeler/logical/logical-model.store';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
@@ -15,8 +15,7 @@ import { finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface DataTypeCreateDialogData {
-  modelId: number;
-  dataTypes: DataType[];
+  dataTypes: LogicalDataType[];
 }
 
 // TODO: inconsistent naming
@@ -45,7 +44,7 @@ export class DataTypeCreateDialogComponent {
   private destroyRef = inject(DestroyRef);
 
   data = inject<DataTypeCreateDialogData>(MAT_DIALOG_DATA);
-  dataTypeService = inject(DataTypeService);
+  private store = inject(LogicalModelStore);
 
   loading = signal<boolean>(false);
   error = signal<boolean>(false);
@@ -66,7 +65,7 @@ export class DataTypeCreateDialogComponent {
     this.error.set(false);
     this.matDialogRef.disableClose = true;
 
-    this.dataTypeService.createDataType(this.data.modelId, { name: name.toUpperCase(), typeId: null })
+    this.store.createDataType({ name: name, typeId: null })
       .pipe(
         finalize(() => {
           this.loading.set(false);
@@ -75,7 +74,7 @@ export class DataTypeCreateDialogComponent {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
-        next: res => this.matDialogRef.close(res),
+        next: dataType => this.matDialogRef.close(dataType),
         error: () => this.error.set(true),
       });
   }

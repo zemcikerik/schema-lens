@@ -10,10 +10,9 @@ import { ProgressSpinnerComponent } from '../../../shared/components/progress-sp
 import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { uniqueStringValidator } from '../../../core/validators/unique-string.validator';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
-import { LogicalEntityService } from '../../services/logical-entity.service';
+import { LogicalModelStore } from '../../modeler/logical/logical-model.store';
 
 export interface EntityCreateDialogData {
-  modelId: number;
   entities: LogicalEntity[];
 }
 
@@ -43,7 +42,7 @@ export class EntityCreateDialogComponent {
   private matDialogRef = inject(MatDialogRef);
 
   data = inject<EntityCreateDialogData>(MAT_DIALOG_DATA);
-  logicalEntityService = inject(LogicalEntityService);
+  private store = inject(LogicalModelStore);
 
   loading = signal<boolean>(false);
   error = signal<boolean>(false);
@@ -60,7 +59,7 @@ export class EntityCreateDialogComponent {
     if (!name) return;
     this.loading.set(true);
     this.error.set(false);
-    this.logicalEntityService.createLogicalEntity(this.data.modelId, { name: name.toUpperCase(), entityId: null, attributes: [] }).subscribe({
+    this.store.createEntity({ name: name.toUpperCase(), entityId: null, attributes: [] }).subscribe({
       next: res => {
         this.loading.set(false);
         this.matDialogRef.close(res);

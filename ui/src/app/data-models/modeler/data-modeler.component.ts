@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal, viewChild } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, signal, viewChild } from '@angular/core';
 import { LayoutContentWithSidebarComponent } from '../../core/layouts/layout-content-with-sidebar.component';
 import { ContentCardComponent } from '../../shared/components/content-card/content-card.component';
 import { LayoutHeaderAndContentComponent } from '../../core/layouts/layout-header-and-content.component';
@@ -12,6 +12,9 @@ import { SchemaDiagramConnectNodes } from '../../diagrams/schema/model/schema-di
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { DATA_MODELING_FACADE } from './data-modeling.facade';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { RouterLink } from '@angular/router';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-data-modeler',
@@ -27,6 +30,9 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
     SchemaDiagramComponent,
     BlockExitDirective,
     MatProgressBar,
+    RouterLink,
+    MatIconButton,
+    MatIcon,
   ],
 })
 export class DataModelerComponent {
@@ -34,6 +40,7 @@ export class DataModelerComponent {
   private destroyRef = inject(DestroyRef);
   private diagram = viewChild.required(SchemaDiagramComponent);
 
+  backLink = input.required<string>();
   currentSelection = signal<SchemaDiagramSelection | null>(null);
   connectMode = signal<boolean>(false);
   hasUnsavedPositions = signal<boolean>(false);

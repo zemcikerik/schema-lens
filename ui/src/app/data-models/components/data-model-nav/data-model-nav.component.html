@@ -14,15 +14,18 @@
       <mat-expansion-panel-header>
         <mat-panel-title>{{ ('DATAMODEL.NAV.DIAGRAMS' | translate)() }}</mat-panel-title>
         <mat-panel-description>
-          <button matIconButton (click)="addNewDiagram($event)">
+          <button matIconButton (click)="$event.stopPropagation(); addNewDiagram()">
             <mat-icon>add</mat-icon>
           </button>
         </mat-panel-description>
       </mat-expansion-panel-header>
 
       <ng-template matExpansionPanelContent>
-        @for (diagram of logicalModel()?.diagrams; track diagram.id) {
-          <a mat-list-item [routerLink]="['/model', dataModelId(), 'diagram', diagram.id]">{{ diagram.name }}</a>
+        @for (diagram of store.diagrams(); track diagram.id) {
+          <a
+            mat-list-item
+            [routerLink]="['/modeler', dataModelId(), 'logical', diagram.id]"
+          >{{ diagram.name }}</a>
         }
       </ng-template>
     </mat-expansion-panel>
@@ -31,14 +34,14 @@
       <mat-expansion-panel-header>
         <mat-panel-title>{{ ('DATAMODEL.NAV.ENTITIES' | translate)() }}</mat-panel-title>
         <mat-panel-description>
-          <button matIconButton (click)="addNewEntity($event)">
+          <button matIconButton (click)="$event.stopPropagation(); addNewEntity()">
             <mat-icon>add</mat-icon>
           </button>
         </mat-panel-description>
       </mat-expansion-panel-header>
 
       <ng-template matExpansionPanelContent>
-        @for (entity of logicalModel()?.entities; track entity.entityId) {
+        @for (entity of store.entities(); track entity.entityId) {
           <a
             mat-list-item
             [routerLink]="['/model', dataModelId(), 'entity', entity.entityId]"
@@ -54,14 +57,14 @@
       <mat-expansion-panel-header>
         <mat-panel-title>{{ ('DATAMODEL.NAV.DATA_TYPES' | translate)() }}</mat-panel-title>
         <mat-panel-description>
-        <button matIconButton (click)="addNewDataType($event)">
+        <button matIconButton (click)="$event.stopPropagation(); addNewDataType()">
           <mat-icon>add</mat-icon>
         </button>
         </mat-panel-description>
       </mat-expansion-panel-header>
 
       <ng-template matExpansionPanelContent>
-        @for (dataType of logicalModel()?.dataTypes; track dataType.typeId) {
+        @for (dataType of store.dataTypes(); track dataType.typeId) {
           <a
             mat-list-item
             [routerLink]="['/model', dataModelId(), 'data-type', dataType.typeId]"

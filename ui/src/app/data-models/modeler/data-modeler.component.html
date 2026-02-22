@@ -12,7 +12,10 @@
       (keydown.delete)="onDeletePressed()"
       (keydown.backspace)="onDeletePressed()"
     >
-      <app-layout-header-and-content [title]="'TODO'" [fullHeight]="true">
+      <app-layout-header-and-content [title]="modelingFacade.diagramName()" [fullHeight]="true">
+        <a ngProjectAs="header-prefix" mat-icon-button [routerLink]="backLink()">
+          <mat-icon>arrow_back</mat-icon>
+        </a>
         <app-data-modeler-actions
           [diagramHost]="schemaDiagram.diagramHost()"
           [fullscreenHost]="fullscreenHost"

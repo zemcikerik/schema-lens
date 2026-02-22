@@ -1,14 +1,13 @@
-import { Diagram } from './diagram';
+import { DataModelDiagram } from './data-model-diagram.model';
 
 export interface LogicalDataModel {
-  dataTypes: DataType[];
+  dataTypes: LogicalDataType[];
   entities: LogicalEntity[];
   relationships: LogicalRelationship[];
-  diagrams: Diagram[];
+  diagrams: DataModelDiagram[];
 }
 
-// TODO: inconsistent naming
-export interface DataType {
+export interface LogicalDataType {
   typeId: number | null;
   name: string;
 }
@@ -29,14 +28,16 @@ export interface LogicalAttribute {
 }
 
 export interface LogicalRelationship {
-  relationshipId: number;
+  relationshipId: number | null;
   fromEntityId: number;
   toEntityId: number;
-  type: string;
+  type: LogicalRelationshipType;
   isMandatory: boolean;
   isIdentifying: boolean;
   attributes: LogicalRelationshipAttribute[];
 }
+
+export type LogicalRelationshipType = '1:1' | '1:N';
 
 export interface LogicalRelationshipAttribute {
   referencedAttributeId: number;

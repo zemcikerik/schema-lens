@@ -6,11 +6,11 @@ import { LogicalDataModel } from '../models/logical-model.model';
 @Injectable({
   providedIn: 'root',
 })
-export class DataModelHttpClientService {
+export class LogicalDataModelHttpClientService {
   // TODO: implement requests
   private httpClient = inject(HttpClient);
 
-  getLogical(dataModelId: number): Observable<LogicalDataModel> {
+  getLogicalDataModel(dataModelId: number): Observable<LogicalDataModel> {
     //return this.httpClient.get<LogicalDataModel[]>(`/model/${dataModelId}/logical`);
     return of({
       dataTypes: [
@@ -49,7 +49,7 @@ export class DataModelHttpClientService {
           relationshipId: 21342134,
           fromEntityId: 11,
           toEntityId: 12,
-          type: '1:1 | 1:N',
+          type: '1:1' as const,
           isMandatory: true,
           isIdentifying: true,
           attributes: [{ referencedAttributeId: 12, name: 'ID_FK', position: 11 }],
@@ -59,16 +59,16 @@ export class DataModelHttpClientService {
         {
           id: 100,
           name: 'diagram 1',
-          type: 'logical',
-          entities: null,
-          relationships: null,
+          type: 'logical' as const,
+          entities: [],
+          relationships: [],
         },
         {
           id: 200,
           name: 'diagram 2',
-          type: 'logical',
-          entities: null,
-          relationships: null,
+          type: 'logical' as const,
+          entities: [],
+          relationships: [],
         },
       ],
     }).pipe(delay(500));

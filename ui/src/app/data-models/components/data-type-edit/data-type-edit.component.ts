@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, linkedSignal, Signal, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, input, linkedSignal, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -8,12 +8,12 @@ import { MatButton } from '@angular/material/button';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
-import { DataType, LogicalDataModel } from '../../models/logical-model.model';
-import { Router, ROUTER_OUTLET_DATA } from '@angular/router';
-import { DataTypeService } from '../../services/data-type.service';
+import { LogicalDataType } from '../../models/logical-model.model';
+import { Router } from '@angular/router';
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { DialogService } from '../../../core/dialog.service';
+import { LogicalModelStore } from '../../modeler/logical/logical-model.store';
 
 // TODO: cleanup
 
@@ -36,10 +36,8 @@ import { DialogService } from '../../../core/dialog.service';
 })
 export class DataTypeEditComponent {
   dataTypeId = input.required<number>();
-  dataModelId = input.required<number>();
-  logicalModel = inject(ROUTER_OUTLET_DATA) as Signal<LogicalDataModel>;
 
-  private dataTypeService = inject(DataTypeService);
+  private store = inject(LogicalModelStore);
   private dialogService = inject(DialogService);
   private router = inject(Router);
 
@@ -47,8 +45,8 @@ export class DataTypeEditComponent {
     name: new FormControl<string>('', [Validators.required, noStartEndWhitespaceValidator, Validators.maxLength(40)]),
   });
 
-  type = linkedSignal<DataType | null>(() => {
-    const t = structuredClone(this.logicalModel().dataTypes.find(t => t.typeId == this.dataTypeId())) ?? null;
+  type = linkedSignal<LogicalDataType | null>(() => {
+    const t = structuredClone(this.store.dataTypes().find(t => t.typeId == this.dataTypeId())) ?? null;
     this.form.patchValue({ name: t?.name ?? '' });
     // TODO: redirect on null
     return t;
@@ -59,7 +57,8 @@ export class DataTypeEditComponent {
 
   delete = () => {
     const type = this.type();
-    if (type == null) return;
+    if (type == null || type.typeId == null) return;
+    const typeId = type.typeId;
     this.dialogService
       .openConfirmationDialog('DATAMODEL.DATA_TYPE.DELETE.TITLE', 'DATAMODEL.DATA_TYPE.DELETE.DESC', 'danger')
       .subscribe({
@@ -67,13 +66,17 @@ export class DataTypeEditComponent {
           if (!res) return;
           this.loading.set(true);
           this.error.set(null);
-          this.dataTypeService.deleteDataType(this.dataModelId(), type).subscribe({
-            next: async res => {
+          this.store.deleteDataType(typeId).subscribe({
+            next: async deleted => {
               this.loading.set(false);
-              if (res) await this.router.navigate(['/model', this.dataModelId()]);
-              this.error.set('DATAMODEL.DATATYPE.ERROR.IN_USE');
+              if (deleted) {
+                await this.router.navigate(['/model', this.store.dataModelId]);
+              } else {
+                this.error.set('DATAMODEL.DATATYPE.ERROR.IN_USE');
+              }
             },
             error: () => {
+              this.loading.set(false);
               this.error.set('GENERIC.ERROR_LABEL');
             },
           });
@@ -87,11 +90,12 @@ export class DataTypeEditComponent {
     if (type?.typeId == null || !name) return;
     this.loading.set(true);
     this.error.set(null);
-    this.dataTypeService.updateDataType(this.dataModelId(), { name: name, typeId: type.typeId }).subscribe({
+    this.store.updateDataType({ name: name, typeId: type.typeId }).subscribe({
       next: () => {
         this.loading.set(false);
       },
       error: () => {
+        this.loading.set(false);
         this.error.set('GENERIC.ERROR_LABEL');
       },
     });

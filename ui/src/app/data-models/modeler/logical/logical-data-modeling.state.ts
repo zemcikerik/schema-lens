@@ -4,34 +4,6 @@ import { SchemaDiagramPatch } from '../../../diagrams/schema/model/schema-diagra
 
 @Injectable()
 export class LogicalDataModelingState {
-  patches$ = new Subject<SchemaDiagramPatch>();
-  loading = signal<boolean>(false);
-
-  constructor() {
-    setTimeout(() => {
-      this.patches$.next({
-        type: 'node:add',
-        node: {
-          id: 1,
-          name: 'TEST1',
-          fields: [{ name: 'ID', key: true, type: 'ABCD', nullable: false }],
-          parentEdges: [],
-          uniqueFieldGroups: [],
-        },
-      });
-
-      this.patches$.next({
-        type: 'node:add',
-        node: {
-          id: 2,
-          name: 'TEST2',
-          fields: [{ name: 'ID', key: true, type: 'ABCD', nullable: false }],
-          parentEdges: [],
-          uniqueFieldGroups: [],
-        },
-      });
-
-      this.patches$.next({ type: 'layout:auto' });
-    }, 500);
-  }
+  readonly patches$ = new Subject<SchemaDiagramPatch>();
+  readonly loading = signal<boolean>(false);
 }

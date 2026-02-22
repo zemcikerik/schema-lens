@@ -7,7 +7,8 @@ import {
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormatGenericValidationErrorsPipe } from '../../../../shared/pipes/format-generic-validation-errors.pipe';
-import { LogicalDataModelingState } from '../logical-data-modeling.state';
+import { LogicalModelStore } from '../logical-model.store';
+import { LogicalDataModelingFacade } from '../logical-data-modeling.facade';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { combineWithPrevious } from '../../../../core/rxjs-pipes';
 
@@ -26,12 +27,18 @@ import { combineWithPrevious } from '../../../../core/rxjs-pipes';
 })
 export class LogicalDataModelerEntityPropertiesComponent implements BaseDataModelerPropertiesComponent {
   selection = input.required<SchemaDiagramSelection | null>();
-  state = inject(LogicalDataModelingState);
+  private store = inject(LogicalModelStore);
+  private facade = inject(LogicalDataModelingFacade);
 
   currentEntity = computed(() => {
     const { node } = this.selection() as SchemaDiagramNodeSelection;
-    // TODO: resolve to entity :D
-    return { id: node.id, name: node.name };
+    const entity = this.store.entities().find(e => e.entityId === node.id);
+
+    if (!entity) {
+      throw new Error('Failed to resolve entity for selected node');
+    }
+
+    return entity;
   });
 
   private formModified = false;
@@ -44,11 +51,10 @@ export class LogicalDataModelerEntityPropertiesComponent implements BaseDataMode
     combineWithPrevious(toObservable(this.currentEntity))
       .pipe(takeUntilDestroyed())
       .subscribe(([previous, current]) => {
-        if (previous !== undefined) {
-          this.saveChanges(previous.id);
+        if (previous !== undefined && previous !== null && previous.entityId !== null) {
+          this.saveChanges(previous.entityId);
         }
-
-        this.propertiesForm.reset(current);
+        this.propertiesForm.reset({ name: current.name });
         this.formModified = false;
       });
 
@@ -57,13 +63,18 @@ export class LogicalDataModelerEntityPropertiesComponent implements BaseDataMode
       .subscribe(() => (this.formModified = true));
   }
 
-  saveChanges(entityId: number = this.currentEntity().id): void {
+  saveChanges(entityId: number = this.currentEntity().entityId ?? -1): void {
     if (!this.formModified) {
       return;
     }
 
-    // call update, rerender modeling state
-    console.trace(entityId, 'saveChanges');
+    const entity = this.store.entities().find(e => e.entityId === entityId);
+    if (!entity) {
+      throw new Error();
+    }
+
+    const updated = { ...entity, name: this.propertiesForm.getRawValue().name };
     this.formModified = false;
+    this.facade.updateEntity(updated);
   }
 }

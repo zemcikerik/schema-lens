@@ -9,6 +9,7 @@ export const DATA_MODELING_FACADE = new InjectionToken<DataModelingFacade>('DATA
 export interface DataModelingFacade {
   readonly patches$: Observable<SchemaDiagramPatch>;
   readonly loading: Signal<boolean>;
+  readonly diagramName: Signal<string>;
   connect(from: SchemaDiagramNode, to: SchemaDiagramNode): void;
   deleteNode(nodeId: number): void;
   deleteEdge(edgeId: number): void;
