@@ -3,12 +3,8 @@ import { LogicalAttribute, LogicalDataType } from '../../models/logical-model.mo
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
-import { map, startWith } from 'rxjs';
-import { toSignal } from '@angular/core/rxjs-interop';
-import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
+import { DataTypeNameFieldComponent } from '../data-type-name-field/data-type-name-field.component';
 
 export interface DataTypeDialogData {
   dataTypes: LogicalDataType[];
@@ -25,15 +21,8 @@ export interface DataTypeDialogData {
     MatDialogActions,
     MatButton,
     TranslatePipe,
-    MatFormField,
-    MatLabel,
-    MatInput,
-    MatAutocomplete,
-    MatAutocompleteTrigger,
-    MatOption,
     ReactiveFormsModule,
-    MatError,
-    FormatGenericValidationErrorsPipe,
+    DataTypeNameFieldComponent,
   ],
 })
 export class DataTypeSelectorDialogComponent {
@@ -44,14 +33,6 @@ export class DataTypeSelectorDialogComponent {
   form = this.fb.nonNullable.group({
     name: this.fb.nonNullable.control(this.findType(this.data.targetAttribute.typeId)?.name ?? '', [Validators.required]),
   });
-
-  filteredTypes = toSignal(
-    this.form.controls.name.valueChanges.pipe(
-      startWith(this.form.controls.name.value),
-      map(value => this.data.dataTypes.filter(d => d.name.toUpperCase().startsWith(value?.toUpperCase() ?? ''))),
-    ),
-    { initialValue: this.data.dataTypes },
-  );
 
   confirm(): void {
     const { name } = this.form.getRawValue();

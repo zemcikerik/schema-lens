@@ -1,0 +1,44 @@
+<h2 mat-dialog-title>{{ ('DATA_MODELER.LOGICAL.DIALOGS.EDIT_ATTRIBUTE_TITLE' | translate)() }}</h2>
+
+<mat-dialog-content>
+  <div class="data-model-create-dialogs">
+    @if (error()) {
+      <app-alert type="error">{{ ('ERROR.GENERIC' | translate)() }}</app-alert>
+    }
+    <form [formGroup]="form">
+      <mat-form-field class="data-model-create-dialogs__form">
+        <mat-label>{{ ('DATA_MODELER.LOGICAL.DIALOGS.EDIT_ATTRIBUTE_NAME_LABEL' | translate)() }}</mat-label>
+        <input matInput formControlName="name" required>
+        @if (form.controls.name.invalid) {
+          <mat-error>{{ (form.controls.name.errors | formatGenericValidationErrors)() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <app-data-type-name-field
+        [dataTypes]="data.dataTypes"
+        [control]="form.controls.typeName"
+        [label]="('DATA_MODELER.LOGICAL.DIALOGS.EDIT_ATTRIBUTE_TYPE_LABEL' | translate)()"/>
+
+      <mat-checkbox formControlName="isPrimaryKey">
+        {{ ('DATA_MODELER.LOGICAL.DIALOGS.EDIT_ATTRIBUTE_IS_PRIMARY_KEY_LABEL' | translate)() }}
+      </mat-checkbox>
+
+      <mat-checkbox formControlName="isNullable">
+        {{ ('DATA_MODELER.LOGICAL.DIALOGS.EDIT_ATTRIBUTE_IS_NULLABLE_LABEL' | translate)() }}
+      </mat-checkbox>
+    </form>
+  </div>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">
+    {{ ('GENERIC.CANCEL_LABEL' | translate)() }}
+  </button>
+  <button mat-flat-button (click)="confirm()" [disabled]="form.invalid || loading()">
+    @if (loading()) {
+      <app-progress-spinner [center]="true" size="small"/>
+    } @else {
+      {{ ('GENERIC.CONFIRM_LABEL' | translate)() }}
+    }
+  </button>
+</mat-dialog-actions>

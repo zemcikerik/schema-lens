@@ -143,6 +143,7 @@ export class DataModelEntityComponent {
       });
   };
 
+  // generated quick fix start
   save = () => {
     const entity = this.entity();
     if (!entity) return;
@@ -170,6 +171,7 @@ export class DataModelEntityComponent {
       error: () => { this.loading.set(false); this.error.set(true); },
     });
   };
+  // generated quick fix end
 
   delete = () => {
     this.dialogService

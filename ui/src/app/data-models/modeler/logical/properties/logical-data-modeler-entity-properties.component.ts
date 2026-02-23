@@ -5,12 +5,17 @@ import {
   SchemaDiagramSelection,
 } from '../../../../diagrams/schema/model/schema-diagram-selection.model';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
+import { MatTooltip } from '@angular/material/tooltip';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormatGenericValidationErrorsPipe } from '../../../../shared/pipes/format-generic-validation-errors.pipe';
 import { LogicalModelStore } from '../../../logical-model.store';
 import { LogicalDataModelingFacade } from '../logical-data-modeling.facade';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { combineWithPrevious } from '../../../../core/rxjs-pipes';
+import { DataModelEntityAttributesTableComponent } from '../../../components/data-model-entity-attributes-table/data-model-entity-attributes-table.component';
+import { ResolvedAttribute } from '../../../models/resolved-attribute.model';
 
 @Component({
   selector: 'app-logical-data-modeler-entity-properties',
@@ -23,6 +28,10 @@ import { combineWithPrevious } from '../../../../core/rxjs-pipes';
     ReactiveFormsModule,
     MatError,
     FormatGenericValidationErrorsPipe,
+    DataModelEntityAttributesTableComponent,
+    MatIconButton,
+    MatIcon,
+    MatTooltip,
   ],
 })
 export class LogicalDataModelerEntityPropertiesComponent implements BaseDataModelerPropertiesComponent {
@@ -47,6 +56,8 @@ export class LogicalDataModelerEntityPropertiesComponent implements BaseDataMode
     name: this.fb.nonNullable.control<string>('', [Validators.required, Validators.maxLength(30)]),
   });
 
+  private pendingAttributeOrder: ResolvedAttribute[] | null = null;
+
   constructor() {
     combineWithPrevious(toObservable(this.currentEntity))
       .pipe(takeUntilDestroyed())
@@ -56,6 +67,7 @@ export class LogicalDataModelerEntityPropertiesComponent implements BaseDataMode
         }
         this.propertiesForm.reset({ name: current.name });
         this.formModified = false;
+        this.pendingAttributeOrder = null;
       });
 
     this.propertiesForm.valueChanges
@@ -63,18 +75,45 @@ export class LogicalDataModelerEntityPropertiesComponent implements BaseDataMode
       .subscribe(() => (this.formModified = true));
   }
 
-  saveChanges(entityId: number = this.currentEntity().entityId ?? -1): void {
-    if (!this.formModified) {
+  onAddAttribute(): void {
+    this.facade.addAttribute(this.currentEntity().entityId as number);
+  }
+
+  onAttributeOrderChanged(reordered: ResolvedAttribute[]): void {
+    this.pendingAttributeOrder = reordered;
+  }
+
+  onEditAttribute(attribute: ResolvedAttribute): void {
+    if (attribute.source !== 'direct') {
       return;
     }
+    this.facade.editAttribute(this.currentEntity().entityId as number, attribute.attribute);
+  }
 
-    const entity = this.store.entities().find(e => e.entityId === entityId);
-    if (!entity) {
-      throw new Error();
+  onDeleteAttribute(attribute: ResolvedAttribute): void {
+    if (attribute.source !== 'direct') {
+      return;
+    }
+    this.facade.deleteAttribute(this.currentEntity().entityId as number, attribute.attribute);
+  }
+
+  saveChanges(entityId: number = this.currentEntity().entityId ?? -1): void {
+    const pendingOrder = this.pendingAttributeOrder;
+
+    if (this.formModified) {
+      const entity = this.store.entities().find(e => e.entityId === entityId);
+      if (!entity) {
+        throw new Error();
+      }
+
+      const updated = { entityId: entity.entityId, name: this.propertiesForm.getRawValue().name };
+      this.facade.updateEntity(updated);
+      this.formModified = false;
     }
 
-    const updated = { entityId: entity.entityId, name: this.propertiesForm.getRawValue().name };
-    this.facade.updateEntity(updated);
-    this.formModified = false;
+    if (pendingOrder !== null) {
+      this.facade.reorderAttributes(entityId, pendingOrder);
+      this.pendingAttributeOrder = null;
+    }
   }
 }

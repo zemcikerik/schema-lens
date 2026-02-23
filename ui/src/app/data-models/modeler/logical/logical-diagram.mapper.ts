@@ -7,14 +7,16 @@ import { SchemaDiagramField } from '../../../diagrams/schema/model/schema-diagra
 @Injectable()
 export class LogicalDiagramMapper {
 
-  entityToNode(entity: LogicalEntity, dataTypes: LogicalDataType[]): SchemaDiagramNode {
+  entityToNode(entity: LogicalEntity, dataTypes: LogicalDataType[], relationships: LogicalRelationship[] = []): SchemaDiagramNode {
+    const parentEdges = relationships
+      .filter(rel => rel.toEntityId === entity.entityId)
+      .map(rel => this.relationshipToEdge(rel));
+
     return {
       id: entity.entityId as number,
       name: entity.name,
-      fields: [...entity.attributes]
-        .sort((a, b) => a.position - b.position)
-        .map(a => this.attributeToField(a, dataTypes)),
-      parentEdges: [],
+      fields: entity.attributes.map(a => this.attributeToField(a, dataTypes)),
+      parentEdges,
       uniqueFieldGroups: [],
     };
   }

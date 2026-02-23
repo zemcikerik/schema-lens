@@ -3,7 +3,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { map, Observable } from 'rxjs';
 import { DialogService } from '../../../core/dialog.service';
 import { LogicalAddExistingEntityDialogComponent, LogicalAddExistingEntityDialogData } from './dialogs/logical-add-existing-entity-dialog/logical-add-existing-entity-dialog.component';
-import { LogicalEntity, LogicalEntitySummary } from '../../models/logical-model.model';
+import { LogicalEditAttributeDialogComponent, LogicalEditAttributeDialogData } from './dialogs/logical-edit-attribute-dialog/logical-edit-attribute-dialog.component';
+import { LogicalAttribute, LogicalDataType, LogicalEntity, LogicalEntitySummary } from '../../models/logical-model.model';
 import { DataModelEntityCreateDialogComponent, DataModelEntityCreateDialogData } from '../../components/data-model-entity-create-dialog/data-model-entity-create-dialog.component';
 
 @Injectable()
@@ -26,6 +27,35 @@ export class LogicalDataModelerDialogService {
       .pipe(map((entity: LogicalEntity) => (entity ? entity : null)));
   }
 
+  openCreateAttribute(dataTypes: LogicalDataType[]): Observable<LogicalAttribute | null> {
+    const blank: LogicalAttribute = {
+      attributeId: null,
+      name: '',
+      typeId: dataTypes[0]?.typeId ?? -1,
+      isPrimaryKey: false,
+      isNullable: false,
+      position: -1,
+    };
+
+    return this.matDialog
+      .open(LogicalEditAttributeDialogComponent, {
+        data: { attribute: blank, dataTypes } satisfies LogicalEditAttributeDialogData,
+        injector: this.injector,
+      })
+      .afterClosed()
+      .pipe(map((result: LogicalAttribute | undefined) => result ?? null));
+  }
+
+  openEditAttribute(attribute: LogicalAttribute, dataTypes: LogicalDataType[]): Observable<LogicalAttribute | null> {
+    return this.matDialog
+      .open(LogicalEditAttributeDialogComponent, {
+        data: { attribute, dataTypes } satisfies LogicalEditAttributeDialogData,
+        injector: this.injector,
+      })
+      .afterClosed()
+      .pipe(map((result: LogicalAttribute | undefined) => result ?? null));
+  }
+
   openDeleteEntityConfirmation(): Observable<boolean | null> {
     return this.dialogService.openConfirmationDialog(
       'DATA_MODELER.LOGICAL.DIALOGS.DELETE_ENTITY_CONFIRM_TITLE',
@@ -34,18 +64,18 @@ export class LogicalDataModelerDialogService {
     );
   }
 
-  openDeleteRelationshipConfirmation(): Observable<boolean | null> {
-    return this.dialogService.openConfirmationDialog(
-      'DATA_MODELER.LOGICAL.DIALOGS.DELETE_RELATIONSHIP_CONFIRM_TITLE',
-      'DATA_MODELER.LOGICAL.DIALOGS.DELETE_RELATIONSHIP_CONFIRM_DESCRIPTION',
-      'danger',
-    );
-  }
-
   openDeleteDiagramConfirmation(): Observable<boolean | null> {
     return this.dialogService.openConfirmationDialog(
       'DATA_MODELER.LOGICAL.DIALOGS.DELETE_DIAGRAM_CONFIRM_TITLE',
       'DATA_MODELER.LOGICAL.DIALOGS.DELETE_DIAGRAM_CONFIRM_DESCRIPTION',
+      'danger',
+    );
+  }
+
+  openDeleteAttributeConfirmation(): Observable<boolean | null> {
+    return this.dialogService.openConfirmationDialog(
+      'DATA_MODELER.LOGICAL.DIALOGS.DELETE_ATTRIBUTE_CONFIRM_TITLE',
+      'DATA_MODELER.LOGICAL.DIALOGS.DELETE_ATTRIBUTE_CONFIRM_DESCRIPTION',
       'danger',
     );
   }

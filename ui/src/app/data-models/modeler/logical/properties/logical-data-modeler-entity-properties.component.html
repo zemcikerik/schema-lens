@@ -6,6 +6,18 @@
       <mat-error>{{ (propertiesForm.controls.name.errors | formatGenericValidationErrors)() }}</mat-error>
     }
   </mat-form-field>
-
-  <h4>Attributes</h4>
 </form>
+
+<div class="data-modeler__properties__section-header">
+  <h4>Attributes</h4>
+  <button mat-icon-button (click)="onAddAttribute()" matTooltip="Add attribute">
+    <mat-icon>add</mat-icon>
+  </button>
+</div>
+
+@if (currentEntity().entityId; as entityId) {
+  <!-- TODO: disable on loading, mat-menu triggers save -->
+  <app-data-model-entity-attributes-table [entityId]="entityId" (orderChanged)="onAttributeOrderChanged($event)"
+                                          (editAttribute)="onEditAttribute($event)"
+                                          (deleteAttribute)="onDeleteAttribute($event)"/>
+}

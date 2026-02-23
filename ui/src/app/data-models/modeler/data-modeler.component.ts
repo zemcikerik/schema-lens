@@ -52,14 +52,9 @@ export class DataModelerComponent {
 
   onDeletePressed(): void {
     const selection = this.currentSelection();
-    if (!selection) {
-      return;
-    }
 
-    if (selection.type === 'node') {
+    if (selection?.type === 'node') {
       this.modelingFacade.deleteNode(selection.node.id);
-    } else {
-      this.modelingFacade.deleteEdge(selection.edge.id);
     }
   }
 

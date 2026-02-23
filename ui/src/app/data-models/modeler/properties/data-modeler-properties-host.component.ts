@@ -20,6 +20,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { BaseDataModelerPropertiesComponent } from './base-data-modeler-properties.component';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { TrapClicksDirective } from '../../../core/directives/trap-clicks.directive';
+import { FocusLeftDirective } from '../../../core/directives/focus-left.directive';
 import { concat, filter, map, of, switchMap, tap } from 'rxjs';
 import { DialogService } from '../../../core/dialog.service';
 import { DATA_MODELING_FACADE } from '../data-modeling.facade';
@@ -33,12 +34,14 @@ import { DATA_MODELING_FACADE } from '../data-modeling.facade';
       [background]="'dim'"
       [cdkTrapFocus]="formInvalid()"
       [appTrapClicks]="formInvalid()"
+      appFocusLeft
+      [allowOverlayFocus]="false"
       (clickTrapped)="notifyUserOfInvalidForm()"
-      (focusout)="saveChanges()"
-    >
-      <app-layout-header-and-content [title]="('DATA_MODELER.$type.PROPERTIES.TITLE' | dataModelerTranslate)()"
-                                     [titleLevel]="'low'"
-                                     [fullHeight]="true">
+      (focusLeft)="saveChanges()">
+      <app-layout-header-and-content
+        [title]="('DATA_MODELER.$type.PROPERTIES.TITLE' | dataModelerTranslate)()"
+        [titleLevel]="'low'"
+        [fullHeight]="true">
         <ng-container #propertiesTarget />
       </app-layout-header-and-content>
     </app-content-card>
@@ -49,6 +52,7 @@ import { DATA_MODELING_FACADE } from '../data-modeling.facade';
     ContentCardComponent,
     CdkTrapFocus,
     TrapClicksDirective,
+    FocusLeftDirective,
   ],
 })
 export class DataModelerPropertiesHostComponent {
@@ -71,34 +75,42 @@ export class DataModelerPropertiesHostComponent {
   }
 
   private renderPropertiesComponentBasedOnSelection(): void {
-    toObservable(this.propertiesComponentType).pipe(
-      tap(() => this.currentRef()?.destroy()),
-      map(propertiesType => this.propertiesTarget().createComponent(propertiesType, {
-        bindings: [inputBinding('selection', this.selection)],
-      })),
-      takeUntilDestroyed(),
-    ).subscribe(componentRef => this.currentRef.set(componentRef));
+    toObservable(this.propertiesComponentType)
+      .pipe(
+        tap(() => this.currentRef()?.destroy()),
+        map(propertiesType =>
+          this.propertiesTarget().createComponent(propertiesType, {
+            bindings: [inputBinding('selection', this.selection)],
+          }),
+        ),
+        takeUntilDestroyed(),
+      )
+      .subscribe(componentRef => this.currentRef.set(componentRef));
   }
 
   private trackPropertiesFormValidity(): void {
-    toObservable(this.currentRef).pipe(
-      map(componentRef => componentRef?.instance?.propertiesForm),
-      filter(form => !!form),
-      switchMap(form => concat(of(form.status), form.statusChanges)),
-      takeUntilDestroyed(),
-    ).subscribe(status => this.formInvalid.set(status === 'INVALID'));
+    toObservable(this.currentRef)
+      .pipe(
+        map(componentRef => componentRef?.instance?.propertiesForm),
+        filter(form => !!form),
+        switchMap(form => concat(of(form.status), form.statusChanges)),
+        takeUntilDestroyed(),
+      )
+      .subscribe(status => this.formInvalid.set(status === 'INVALID'));
   }
 
   private disableFormWhenModelIsBeingUpdated(): void {
-    toObservable(this.facade.loading).pipe(takeUntilDestroyed()).subscribe(loading => {
-      const form = this.currentRef()?.instance?.propertiesForm;
+    toObservable(this.facade.loading)
+      .pipe(takeUntilDestroyed())
+      .subscribe(loading => {
+        const form = this.currentRef()?.instance?.propertiesForm;
 
-      if (loading) {
-        form?.disable({ emitEvent: false });
-      } else {
-        form?.enable({ emitEvent: false });
-      }
-    });
+        if (loading) {
+          form?.disable({ emitEvent: false });
+        } else {
+          form?.enable({ emitEvent: false });
+        }
+      });
   }
 
   private destroyPropertiesComponentWhenHostIsDestroyed(): void {

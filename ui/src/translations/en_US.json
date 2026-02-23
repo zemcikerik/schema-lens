@@ -276,12 +276,17 @@
         "UNSAVED_DESCRIPTION": "Logical diagram currently contains unsaved work. Are you sure you want to exit without saving?",
         "DELETE_ENTITY_CONFIRM_TITLE": "Remove entity from diagram",
         "DELETE_ENTITY_CONFIRM_DESCRIPTION": "Are you sure you want to remove this entity from the diagram? The entity will remain in the data model.",
-        "DELETE_RELATIONSHIP_CONFIRM_TITLE": "Remove relationship from diagram",
-        "DELETE_RELATIONSHIP_CONFIRM_DESCRIPTION": "Are you sure you want to remove this relationship from the diagram? The relationship will remain in the data model.",
         "ADD_EXISTING_ENTITY_TITLE": "Add Existing Entity",
         "ADD_EXISTING_ENTITY_EMPTY": "All entities are already included in this diagram.",
         "DELETE_DIAGRAM_CONFIRM_TITLE": "Delete diagram",
-        "DELETE_DIAGRAM_CONFIRM_DESCRIPTION": "Are you sure you want to permanently delete this diagram? This action cannot be undone."
+        "DELETE_DIAGRAM_CONFIRM_DESCRIPTION": "Are you sure you want to permanently delete this diagram? This action cannot be undone.",
+        "DELETE_ATTRIBUTE_CONFIRM_TITLE": "Delete attribute",
+        "DELETE_ATTRIBUTE_CONFIRM_DESCRIPTION": "Are you sure you want to permanently delete this attribute? This action cannot be undone.",
+        "EDIT_ATTRIBUTE_TITLE": "Edit attribute",
+        "EDIT_ATTRIBUTE_NAME_LABEL": "Name",
+        "EDIT_ATTRIBUTE_TYPE_LABEL": "Data type",
+        "EDIT_ATTRIBUTE_IS_PRIMARY_KEY_LABEL": "Primary key",
+        "EDIT_ATTRIBUTE_IS_NULLABLE_LABEL": "Nullable"
       },
       "PROPERTIES": {
         "TITLE": "Properties",
@@ -341,6 +346,9 @@
         "HEADER": "Create New Entity",
         "LABEL": "Entity Name",
         "PLACEHOLDER": "ENTITY"
+      },
+      "ATTRIBUTES": {
+        "EMPTY_LABEL": "This entity does not contain any attributes."
       },
       "DELETE_ATTR": {
         "TITLE": "Are you sure want to delete this attribute?",

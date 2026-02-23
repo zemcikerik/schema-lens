@@ -14,6 +14,5 @@ export interface DataModelingFacade {
   createNode(): void;
   connect(from: SchemaDiagramNode, to: SchemaDiagramNode): void;
   deleteNode(nodeId: number): void;
-  deleteEdge(edgeId: number): void;
   savePositions(positions: SchemaDiagramPositionSnapshot): Observable<unknown>;
 }

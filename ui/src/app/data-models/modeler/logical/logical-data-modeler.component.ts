@@ -16,7 +16,7 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
   selector: 'app-logical-data-modeler',
   template: `
     @if (store.loading()) {
-      <mat-progress-bar />
+      <mat-progress-bar mode="indeterminate" />
     } @else if (store.error()) {
       <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
     } @else {

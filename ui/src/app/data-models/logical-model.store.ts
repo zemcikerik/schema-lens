@@ -1,6 +1,7 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Observable, tap, of, finalize, defer, map } from 'rxjs';
 import { LogicalDataModel, LogicalDataType, LogicalEntity, LogicalEntitySummary, LogicalAttribute, LogicalRelationship } from './models/logical-model.model';
+import { AttributeDeletionResult } from './models/attribute-deletion-result.model';
 import { DataModelDiagram, LogicalModelDiagram } from './models/data-model-diagram.model';
 import { LogicalDataModelService } from './services/logical-data-model.service';
 import { LogicalEntityService } from './services/logical-entity.service';
@@ -137,16 +138,29 @@ export class LogicalModelStore {
     );
   }
 
-  deleteAttribute(entityId: number, attributeId: number): Observable<unknown> {
+  deleteAttribute(entityId: number, attributeId: number): Observable<AttributeDeletionResult> {
     return this.logicalAttributeService.deleteAttribute(this.dataModelId, entityId, attributeId).pipe(
-      tap(() => this._model.update(m => m && {
-        ...m,
-        entities: m.entities.map(e =>
-          e.entityId === entityId
-            ? { ...e, attributes: e.attributes.filter(a => a.attributeId !== attributeId) }
-            : e,
-        ),
-      })),
+      map(() => {
+        const affectedRelationships: LogicalRelationship[] = (this._model()?.relationships ?? [])
+          .filter(rel => rel.attributes.some(a => a.referencedAttributeId === attributeId))
+          .map(rel => ({ ...rel, attributes: rel.attributes.filter(a => a.referencedAttributeId !== attributeId) }));
+
+        const affectedById = new Map(affectedRelationships.map(r => [r.relationshipId, r]));
+
+        this._model.update(m => m && {
+          ...m,
+          entities: m.entities.map(e =>
+            e.entityId === entityId
+              ? { ...e, attributes: e.attributes.filter(a => a.attributeId !== attributeId) }
+              : e,
+          ),
+          relationships: affectedById.size
+            ? m.relationships.map(r => affectedById.get(r.relationshipId as number) ?? r)
+            : m.relationships,
+        });
+
+        return { affectedRelationships };
+      }),
     );
   }
 
