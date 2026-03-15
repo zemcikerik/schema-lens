@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.projects
 
+import dev.zemco.schemalens.ResourceNotFoundException
 import dev.zemco.schemalens.auth.ResourceAccessDeniedException
 import dev.zemco.schemalens.auth.UserService
 import dev.zemco.schemalens.projects.collaborators.ProjectCollaborationRole
@@ -30,7 +31,7 @@ class ProjectConverter(
             retrieveProject(projectId, targetType)
         }
 
-        return project ?: throw ProjectNotFoundException(projectId)
+        return project ?: throw ResourceNotFoundException.withIdentifier("Project", "UUID", projectId)
     }
 
     private fun retrieveProjectUnsecure(projectId: UUID): Project? {
