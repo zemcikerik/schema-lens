@@ -1,30 +1,21 @@
 package dev.zemco.schemalens.modeling.edges
 
-import dev.zemco.schemalens.ResourceNotFoundException
 import dev.zemco.schemalens.modeling.models.DataModel
-import dev.zemco.schemalens.modeling.nodes.DataModelFieldRepository
-import dev.zemco.schemalens.modeling.nodes.DataModelNodeRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class DataModelEdgeServiceImpl(
-    private val nodeRepository: DataModelNodeRepository,
     private val edgeRepository: DataModelEdgeRepository,
-    private val fieldRepository: DataModelFieldRepository,
 ) : DataModelEdgeService {
 
     @Transactional
     override fun createEdge(model: DataModel, dto: DataModelEdgeInputDto): DataModelEdgeDto {
-        val modelId = model.id!!
-
-        val fromNode = nodeRepository.findByIdAndModelId(dto.fromNodeId, modelId)
-            ?: throw ResourceNotFoundException.withId("Node", dto.fromNodeId)
-        val toNode = nodeRepository.findByIdAndModelId(dto.toNodeId, modelId)
-            ?: throw ResourceNotFoundException.withId("Node", dto.toNodeId)
+        val fromNode = model.findNode(dto.fromNodeId)
+        val toNode = model.findNode(dto.toNodeId)
 
         val edge = DataModelEdge(
-            modelId = modelId,
+            modelId = model.id!!,
             model = model,
             fromNodeId = fromNode.id!!,
             fromNode = fromNode,
@@ -35,10 +26,8 @@ class DataModelEdgeServiceImpl(
             isIdentifying = dto.isIdentifying,
         )
 
-        // TODO: maybe access directly from the model?
-        edge.fields = dto.fields.map { field ->
-            val referencedField = fieldRepository.findById(field.referencedFieldId)
-                .orElseThrow { ResourceNotFoundException.withId("Field", field.referencedFieldId) }
+        edge.fields = dto.fields.asSequence().map { field ->
+            val referencedField = model.findField(field.referencedFieldId)
 
             DataModelEdgeField(
                 id = DataModelEdgeField.Id(
@@ -50,7 +39,7 @@ class DataModelEdgeServiceImpl(
                 name = field.name,
                 position = field.position,
             )
-        }.toMutableList()
+        }.toMutableSet()
 
         val saved = edgeRepository.save(edge)
         return saved.mapToDto()
@@ -58,9 +47,7 @@ class DataModelEdgeServiceImpl(
 
     @Transactional
     override fun updateEdge(model: DataModel, edgeId: Long, dto: DataModelEdgeInputDto): DataModelEdgeDto {
-        val modelId = model.id!!
-        val edge = edgeRepository.findByIdAndModelId(edgeId, modelId)
-            ?: throw ResourceNotFoundException.withId("Edge", edgeId)
+        val edge = model.findEdge(edgeId)
 
         edge.apply {
             type = dto.type
@@ -69,10 +56,8 @@ class DataModelEdgeServiceImpl(
             fields.clear()
         }
 
-        // TODO: maybe access directly from the model?
         dto.fields.forEach { field ->
-            val referencedField = fieldRepository.findById(field.referencedFieldId)
-                .orElseThrow { ResourceNotFoundException.withId("Field", field.referencedFieldId) }
+            val referencedField = model.findField(field.referencedFieldId)
 
             edge.fields.add(
                 DataModelEdgeField(
@@ -94,8 +79,7 @@ class DataModelEdgeServiceImpl(
 
     @Transactional
     override fun deleteEdge(model: DataModel, edgeId: Long) {
-        val edge = edgeRepository.findByIdAndModelId(edgeId, model.id!!)
-            ?: throw ResourceNotFoundException.withId("Edge", edgeId)
+        val edge = model.findEdge(edgeId)
         edgeRepository.delete(edge)
     }
 

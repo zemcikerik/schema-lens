@@ -3,13 +3,9 @@ package dev.zemco.schemalens.modeling.models
 import dev.zemco.schemalens.auth.User
 import dev.zemco.schemalens.modeling.edges.DataModelEdgeDto
 import dev.zemco.schemalens.modeling.edges.DataModelEdgeFieldDto
-import dev.zemco.schemalens.modeling.edges.DataModelEdgeRepository
 import dev.zemco.schemalens.modeling.nodes.DataModelFieldDto
 import dev.zemco.schemalens.modeling.nodes.DataModelNodeLogicalDto
-import dev.zemco.schemalens.modeling.nodes.DataModelNodeRepository
-import dev.zemco.schemalens.modeling.nodes.DataModelFieldRepository
 import dev.zemco.schemalens.modeling.types.DataModelDataTypeDto
-import dev.zemco.schemalens.modeling.types.DataModelDataTypeRepository
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -17,10 +13,6 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class DataModelServiceImpl(
     private val repository: DataModelRepository,
-    private val dataTypeRepository: DataModelDataTypeRepository,
-    private val nodeRepository: DataModelNodeRepository,
-    private val fieldRepository: DataModelFieldRepository,
-    private val edgeRepository: DataModelEdgeRepository
 ) : DataModelService {
 
     override fun getAllModels(userId: Long): List<DataModelDto> =
@@ -47,53 +39,53 @@ class DataModelServiceImpl(
 
     @Transactional(readOnly = true)
     override fun getLogicalModel(model: DataModel): DataModelLogicalDto {
-        val modelId = model.id!!
-
-        // TODO: maybe access directly from the model?
-        val dataTypes = dataTypeRepository.findAllByModelId(modelId)
+        val dataTypes = model.dataTypes
+            .sortedBy { it.name }
             .map { DataModelDataTypeDto(it.id!!, it.name) }
 
-        val nodes = nodeRepository.findAllByModelId(modelId)
+        val nodes = model.nodes
+            .sortedBy { it.name }
             .map { node ->
-                val fields = fieldRepository.findAllByNodeId(node.id!!)
-                    .map { field ->
-                        DataModelFieldDto(
-                            fieldId = field.id,
-                            name = field.name,
-                            typeId = field.typeId,
-                            isPrimaryKey = field.isPrimaryKey,
-                            isNullable = field.isNullable,
-                            position = field.position,
-                        )
-                    }
-                DataModelNodeLogicalDto(
-                    nodeId = node.id!!,
-                    name = node.name,
-                    fields = fields,
+            val fields = node.fields.map { field ->
+                DataModelFieldDto(
+                    fieldId = field.id,
+                    name = field.name,
+                    typeId = field.typeId,
+                    isPrimaryKey = field.isPrimaryKey,
+                    isNullable = field.isNullable,
+                    position = field.position,
                 )
             }
 
-        val edges = edgeRepository.findAllByModelId(modelId)
+            DataModelNodeLogicalDto(
+                nodeId = node.id!!,
+                name = node.name,
+                fields = fields.sortedBy { it.position },
+            )
+        }
+
+        val edges = model.edges
+            .sortedBy { it.id }
             .map { edge ->
-                DataModelEdgeDto(
-                    edgeId = edge.id!!,
-                    modelId = edge.modelId,
-                    fromNodeId = edge.fromNodeId,
-                    toNodeId = edge.toNodeId,
-                    type = edge.type,
-                    isMandatory = edge.isMandatory,
-                    isIdentifying = edge.isIdentifying,
-                    fields = edge.fields
-                        .sortedBy { it.position }
-                        .map {
-                            DataModelEdgeFieldDto(
-                                referencedFieldId = it.id.referencedFieldId,
-                                name = it.name,
-                                position = it.position,
-                            )
-                        },
-                )
-            }
+            DataModelEdgeDto(
+                edgeId = edge.id!!,
+                modelId = edge.modelId,
+                fromNodeId = edge.fromNodeId,
+                toNodeId = edge.toNodeId,
+                type = edge.type,
+                isMandatory = edge.isMandatory,
+                isIdentifying = edge.isIdentifying,
+                fields = edge.fields
+                    .sortedBy { it.position }
+                    .map {
+                        DataModelEdgeFieldDto(
+                            referencedFieldId = it.id.referencedFieldId,
+                            name = it.name,
+                            position = it.position,
+                        )
+                    },
+            )
+        }
 
         return DataModelLogicalDto(
             dataTypes = dataTypes,
@@ -102,8 +94,8 @@ class DataModelServiceImpl(
         )
     }
 
-    override fun getDataModelById(modelId: Long): DataModel? = repository.findById(modelId).orElse(null)
+    override fun getDataModelById(modelId: Long): DataModel? = repository.findModelTreeById(modelId)
 
     override fun getSecuredDataModelById(modelId: Long, user: User): DataModel? =
-        repository.findByIdAndOwnerId(modelId, user.id!!)
+        repository.findModelTreeByIdAndOwnerId(modelId, user.id!!)
 }

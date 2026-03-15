@@ -1,76 +1,63 @@
 package dev.zemco.schemalens.modeling.types
 
-import dev.zemco.schemalens.ResourceNotFoundException
 import dev.zemco.schemalens.modeling.models.DataModel
-import dev.zemco.schemalens.modeling.nodes.DataModelFieldRepository
 
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class DataModelDataTypeServiceImpl(
-    private val fieldRepository: DataModelFieldRepository,
     private val dataTypeRepository: DataModelDataTypeRepository
 ) : DataModelDataTypeService {
 
     @Transactional
     override fun createDataType(model: DataModel, dto: DataModelDataTypeInputDto): DataModelDataTypeDto {
         val modelId = model.id!!
+        val normalizedName = dto.name.trim()
 
-        if (dataTypeRepository.existsByModelIdAndNameIgnoreCase(modelId, dto.name)) {
-            throw DataTypeExistsException(dto.name)
+        // TODO: make sure that name normalization also happens on FE and in nodes
+        if (model.findDataTypeByNameOrNull(normalizedName) != null) {
+            throw DataTypeExistsException(normalizedName)
         }
 
         val dataType = DataModelDataType(
             modelId = modelId,
             model = model,
-            name = dto.name.trim()
+            name = normalizedName
         )
 
-        val saved = dataTypeRepository.save(dataType)
-
-        return DataModelDataTypeDto(
-            typeId = saved.id!!,
-            name = saved.name
-        )
+        return dataTypeRepository.save(dataType).mapToDto()
     }
 
     @Transactional
     override fun updateDataType(model: DataModel, typeId: Long, dto: DataModelDataTypeInputDto): DataModelDataTypeDto {
-        val modelId = model.id!!
+        val normalizedName = dto.name.trim()
+        val dataType = model.findDataType(typeId)
+        val existingType = model.findDataTypeByNameOrNull(normalizedName)
 
-        val dataType = dataTypeRepository.findByIdAndModelId(typeId, modelId)
-            ?: throw ResourceNotFoundException.withId("Data type", typeId)
-
-        // TODO: case sensitivity
-        if (
-            !dataType.name.equals(dto.name, ignoreCase = true) &&
-            dataTypeRepository.existsByModelIdAndNameIgnoreCase(modelId, dto.name)
-        ) {
-            throw DataTypeExistsException(dto.name)
+        if (existingType != null && existingType.id != dataType.id) {
+            throw DataTypeExistsException(normalizedName)
         }
 
-        dataType.name = dto.name.trim()
+        dataType.name = normalizedName
 
-        val saved = dataTypeRepository.save(dataType)
-
-        return DataModelDataTypeDto(
-            typeId = saved.id!!,
-            name = saved.name
-        )
+        return dataTypeRepository.save(dataType).mapToDto()
     }
 
     @Transactional
     override fun deleteDataType(model: DataModel, typeId: Long) {
-        val modelId = model.id!!
+        val dataType = model.findDataType(typeId)
 
-        val dataType = dataTypeRepository.findByIdAndModelId(typeId, modelId)
-            ?: throw ResourceNotFoundException.withId("Data type", typeId)
-
-        if (fieldRepository.existsByTypeId(typeId)) {
+        if (model.nodes.any { node -> node.fields.any { it.typeId == typeId } }) {
             throw DataTypeInUseException(typeId)
         }
 
         dataTypeRepository.delete(dataType)
     }
+
+    private fun DataModelDataType.mapToDto(): DataModelDataTypeDto =
+        DataModelDataTypeDto(
+            typeId = id!!,
+            name = name,
+        )
 }

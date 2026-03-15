@@ -22,10 +22,15 @@ class DataModelConverter(
         val modelId = rawModelId.toLongOrNull()
             ?: throw IllegalArgumentException("Data model ID must be a valid number!")
 
-        val model = if (targetType.hasAnnotation(NoOwnershipCheck::class.java)) {
-            retrieveModelUnsecure(modelId)
-        } else {
-            retrieveModel(modelId)
+        val model = try {
+            if (targetType.hasAnnotation(NoOwnershipCheck::class.java)) {
+                retrieveModelUnsecure(modelId)
+            } else {
+                retrieveModel(modelId)
+            }
+        } catch (ex: Exception) {
+            LOGGER.error("Failed to retrieve data model with id: {}", modelId, ex)
+            throw ex
         }
 
         return model ?: throw ResourceNotFoundException.withId("Data model", modelId)

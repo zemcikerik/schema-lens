@@ -1,6 +1,5 @@
 package dev.zemco.schemalens.modeling.nodes
 
-import dev.zemco.schemalens.ResourceNotFoundException
 import dev.zemco.schemalens.modeling.models.DataModel
 
 import org.springframework.stereotype.Service
@@ -22,14 +21,8 @@ class DataModelNodeServiceImpl(
             name = dto.name,
         )
 
-        val saved = nodeRepository.save(node)
-
-        return DataModelNodeDto(
-            nodeId = saved.id!!,
-            name = saved.name,
-        )
+        return nodeRepository.save(node).mapToDto()
     }
-
 
     @Transactional
     override fun updateNode(
@@ -37,16 +30,11 @@ class DataModelNodeServiceImpl(
         nodeId: Long,
         dto: DataModelNodeInputDto,
     ): DataModelNodeDto {
-        val node = findNode(model.id!!, nodeId)
+        val node = model.findNode(nodeId).apply {
+            name = dto.name
+        }
 
-        node.name = dto.name
-
-        val saved = nodeRepository.save(node)
-
-        return DataModelNodeDto(
-            nodeId = saved.id!!,
-            name = saved.name,
-        )
+        return nodeRepository.save(node).mapToDto()
     }
 
     @Transactional
@@ -54,19 +42,13 @@ class DataModelNodeServiceImpl(
         model: DataModel,
         nodeId: Long,
     ) {
-        val node = findNode(model.id!!, nodeId)
+        val node = model.findNode(nodeId)
         nodeRepository.delete(node)
     }
 
-    // TODO: maybe access directly from the model?
-    private fun findNode(modelId: Long, nodeId: Long): DataModelNode {
-        val node = nodeRepository.findById(nodeId)
-            .orElseThrow { ResourceNotFoundException.withId("Node", nodeId) }
-
-        if (node.modelId != modelId) {
-            throw ResourceNotFoundException.withId("Node", nodeId)
-        }
-
-        return node
-    }
+    private fun DataModelNode.mapToDto(): DataModelNodeDto =
+        DataModelNodeDto(
+            nodeId = id!!,
+            name = name,
+        )
 }

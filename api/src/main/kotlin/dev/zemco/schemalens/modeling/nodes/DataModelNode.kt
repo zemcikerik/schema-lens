@@ -31,5 +31,5 @@ class DataModelNode(
     var name: String,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "node", orphanRemoval = true)
-    var fields: MutableList<DataModelField> = mutableListOf(),
+    var fields: MutableSet<DataModelField> = mutableSetOf(),
 )
