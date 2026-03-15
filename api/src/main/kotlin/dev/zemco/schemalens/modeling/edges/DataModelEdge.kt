@@ -58,5 +58,5 @@ class DataModelEdge(
         orphanRemoval = true,
         fetch = FetchType.LAZY,
     )
-    var fields: MutableList<DataModelEdgeField> = mutableListOf(),
+    var fields: MutableSet<DataModelEdgeField> = mutableSetOf(),
 )
