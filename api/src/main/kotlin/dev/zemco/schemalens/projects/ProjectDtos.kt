@@ -2,6 +2,8 @@ package dev.zemco.schemalens.projects
 
 import dev.zemco.schemalens.projects.collaborators.ProjectCollaborationRole
 import dev.zemco.schemalens.validation.IpAddressConstraint
+import dev.zemco.schemalens.validation.OnCreate
+import dev.zemco.schemalens.validation.OnUpdate
 import jakarta.validation.Valid
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.NotNull
@@ -55,6 +57,3 @@ data class ProjectConnectionFailureDto(
     val type: ProjectConnectionFailure,
     val message: String?,
 )
-
-interface OnCreate
-interface OnUpdate

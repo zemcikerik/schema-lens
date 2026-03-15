@@ -1,8 +1,8 @@
 package dev.zemco.schemalens.modeling.nodes
 
 import com.fasterxml.jackson.annotation.JsonProperty
-import dev.zemco.schemalens.projects.OnCreate
-import dev.zemco.schemalens.projects.OnUpdate
+import dev.zemco.schemalens.validation.OnCreate
+import dev.zemco.schemalens.validation.OnUpdate
 import jakarta.validation.constraints.NotBlank
 
 data class DataModelNodeDto(
