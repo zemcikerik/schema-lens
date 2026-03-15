@@ -2,6 +2,8 @@ package dev.zemco.schemalens.projects
 
 import dev.zemco.schemalens.auth.UserService
 import dev.zemco.schemalens.projects.collaborators.ProjectCollaborationRole
+import dev.zemco.schemalens.validation.OnCreate
+import dev.zemco.schemalens.validation.OnUpdate
 import org.springframework.http.HttpStatus
 import org.springframework.validation.annotation.Validated
 import org.springframework.web.bind.annotation.*

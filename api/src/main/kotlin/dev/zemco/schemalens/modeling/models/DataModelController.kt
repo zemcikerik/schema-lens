@@ -1,8 +1,8 @@
 package dev.zemco.schemalens.modeling.models
 
 import dev.zemco.schemalens.auth.UserService
-import dev.zemco.schemalens.projects.OnCreate
-import dev.zemco.schemalens.projects.OnUpdate
+import dev.zemco.schemalens.validation.OnCreate
+import dev.zemco.schemalens.validation.OnUpdate
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import org.springframework.validation.annotation.Validated
