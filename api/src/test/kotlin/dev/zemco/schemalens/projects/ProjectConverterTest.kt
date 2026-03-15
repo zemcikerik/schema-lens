@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.projects
 
+import dev.zemco.schemalens.ResourceNotFoundException
 import dev.zemco.schemalens.auth.ResourceAccessDeniedException
 import dev.zemco.schemalens.auth.User
 import dev.zemco.schemalens.auth.UserService
@@ -53,7 +54,7 @@ class ProjectConverterTest {
         every { userService.getCurrentUser() } returns MOCK_USER
         every { projectService.getSecuredProjectByUuid(MOCK_UUID, MOCK_USER) } returns null
 
-        assertThrows<ProjectNotFoundException> {
+        assertThrows<ResourceNotFoundException> {
             projectConverter.convert(MOCK_UUID.toString(), FROM_STRING, TO_PROJECT)
         }
     }

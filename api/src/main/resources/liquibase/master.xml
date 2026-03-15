@@ -709,4 +709,245 @@
                              onDelete="CASCADE"
                              onUpdate="CASCADE" />
   </changeSet>
+
+  <changeSet id="2026-03-15T1520-rename-data-model-relationship-attribute-to-edge-field"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <dropForeignKeyConstraint baseTableName="data_model_relationship_attribute"
+                              constraintName="fk_data_model_relationship_attribute_on_relationship_id" />
+
+    <dropForeignKeyConstraint baseTableName="data_model_relationship_attribute"
+                              constraintName="fk_data_model_relationship_attribute_on_referenced_attribute_id" />
+
+    <dropPrimaryKey tableName="data_model_relationship_attribute"
+                    constraintName="pk_data_model_relationship_attribute" />
+
+    <renameTable oldTableName="data_model_relationship_attribute"
+                 newTableName="data_model_edge_field" />
+
+    <renameColumn tableName="data_model_edge_field"
+                  oldColumnName="relationship_id"
+                  newColumnName="edge_id"
+                  columnDataType="BIGINT" />
+
+    <renameColumn tableName="data_model_edge_field"
+                  oldColumnName="referenced_attribute_id"
+                  newColumnName="referenced_field_id"
+                  columnDataType="BIGINT" />
+
+    <addPrimaryKey tableName="data_model_edge_field"
+                   columnNames="edge_id, referenced_field_id"
+                   constraintName="pk_data_model_edge_field" />
+  </changeSet>
+
+  <changeSet id="2026-03-15T1521-rename-data-model-attribute-to-field"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <dropForeignKeyConstraint baseTableName="data_model_attribute"
+                              constraintName="fk_data_model_attribute_on_entity_id" />
+
+    <dropForeignKeyConstraint baseTableName="data_model_attribute"
+                              constraintName="fk_data_model_attribute_on_type_id" />
+
+    <dropPrimaryKey tableName="data_model_attribute"
+                    constraintName="pk_data_model_attribute" />
+
+    <renameTable oldTableName="data_model_attribute"
+                 newTableName="data_model_field" />
+
+    <renameColumn tableName="data_model_field"
+                  oldColumnName="attribute_id"
+                  newColumnName="field_id"
+                  columnDataType="BIGINT" />
+
+    <renameColumn tableName="data_model_field"
+                  oldColumnName="entity_id"
+                  newColumnName="node_id"
+                  columnDataType="BIGINT" />
+
+    <addPrimaryKey tableName="data_model_field"
+                   columnNames="field_id"
+                   constraintName="pk_data_model_field" />
+  </changeSet>
+
+  <changeSet id="2026-03-15T1522-rename-data-model-field-custom-constraints"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <sql dbms="oracle"
+         splitStatements="false">
+      ALTER TABLE data_model_field
+      RENAME CONSTRAINT cc_data_model_attribute_not_null_primary_key TO cc_data_model_field_not_null_primary_key
+    </sql>
+
+    <rollback>
+      <sql dbms="oracle"
+           splitStatements="false">
+        ALTER TABLE data_model_field
+        RENAME CONSTRAINT cc_data_model_field_not_null_primary_key TO cc_data_model_attribute_not_null_primary_key
+      </sql>
+    </rollback>
+  </changeSet>
+
+  <changeSet id="2026-03-15T1523-rename-data-model-relationship-to-edge"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <dropForeignKeyConstraint baseTableName="data_model_relationship"
+                              constraintName="fk_data_model_relationship_on_model_id" />
+
+    <dropForeignKeyConstraint baseTableName="data_model_relationship"
+                              constraintName="fk_data_model_relationship_on_from_entity_id" />
+
+    <dropForeignKeyConstraint baseTableName="data_model_relationship"
+                              constraintName="fk_data_model_relationship_on_to_entity_id" />
+
+    <dropPrimaryKey tableName="data_model_relationship"
+                    constraintName="pk_data_model_relationship" />
+
+    <renameTable oldTableName="data_model_relationship"
+                 newTableName="data_model_edge" />
+
+    <renameColumn tableName="data_model_edge"
+                  oldColumnName="relationship_id"
+                  newColumnName="edge_id"
+                  columnDataType="BIGINT" />
+
+    <renameColumn tableName="data_model_edge"
+                  oldColumnName="from_entity_id"
+                  newColumnName="from_node_id"
+                  columnDataType="BIGINT" />
+
+    <renameColumn tableName="data_model_edge"
+                  oldColumnName="to_entity_id"
+                  newColumnName="to_node_id"
+                  columnDataType="BIGINT" />
+
+    <addPrimaryKey tableName="data_model_edge"
+                   columnNames="edge_id"
+                   constraintName="pk_data_model_edge" />
+  </changeSet>
+
+  <changeSet id="2026-03-15T1524-rename-data-model-edge-custom-constraints"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <sql dbms="oracle"
+         splitStatements="false">
+      ALTER TABLE data_model_edge
+      RENAME CONSTRAINT cc_data_model_relationship_type TO cc_data_model_edge_type
+    </sql>
+
+    <sql dbms="oracle"
+         splitStatements="false">
+      ALTER TABLE data_model_edge
+      RENAME CONSTRAINT cc_data_model_relationship_no_identifying_self_reference TO cc_data_model_edge_no_identifying_self_reference
+    </sql>
+
+    <sql dbms="oracle"
+         splitStatements="false">
+      ALTER TABLE data_model_edge
+      RENAME CONSTRAINT cc_data_model_relationship_no_mandatory_self_reference TO cc_data_model_edge_no_mandatory_self_reference
+    </sql>
+
+    <rollback>
+      <sql dbms="oracle"
+           splitStatements="false">
+        ALTER TABLE data_model_edge
+        RENAME CONSTRAINT cc_data_model_edge_type TO cc_data_model_relationship_type
+      </sql>
+
+      <sql dbms="oracle"
+           splitStatements="false">
+        ALTER TABLE data_model_edge
+        RENAME CONSTRAINT cc_data_model_edge_no_identifying_self_reference TO cc_data_model_relationship_no_identifying_self_reference
+      </sql>
+
+      <sql dbms="oracle"
+           splitStatements="false">
+        ALTER TABLE data_model_edge
+        RENAME CONSTRAINT cc_data_model_edge_no_mandatory_self_reference TO cc_data_model_relationship_no_mandatory_self_reference
+      </sql>
+    </rollback>
+  </changeSet>
+
+  <changeSet id="2026-03-15T1525-rename-data-model-entity-to-node"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <dropForeignKeyConstraint baseTableName="data_model_entity"
+                              constraintName="fk_data_model_entity_on_model_id" />
+
+    <dropPrimaryKey tableName="data_model_entity"
+                    constraintName="pk_data_model_entity" />
+
+    <renameTable oldTableName="data_model_entity"
+                 newTableName="data_model_node" />
+
+    <renameColumn tableName="data_model_node"
+                  oldColumnName="entity_id"
+                  newColumnName="node_id"
+                  columnDataType="BIGINT" />
+
+    <addPrimaryKey tableName="data_model_node"
+                   columnNames="node_id"
+                   constraintName="pk_data_model_node" />
+
+    <addForeignKeyConstraint baseTableName="data_model_node"
+                             baseColumnNames="model_id"
+                             constraintName="fk_data_model_node_on_model_id"
+                             referencedTableName="data_model"
+                             referencedColumnNames="model_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2026-03-15T1526-restore-data-model-foreign-keys-after-renaming"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addForeignKeyConstraint baseTableName="data_model_field"
+                             baseColumnNames="node_id"
+                             constraintName="fk_data_model_field_on_node_id"
+                             referencedTableName="data_model_node"
+                             referencedColumnNames="node_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+
+    <addForeignKeyConstraint baseTableName="data_model_field"
+                             baseColumnNames="type_id"
+                             constraintName="fk_data_model_field_on_type_id"
+                             referencedTableName="data_model_data_type"
+                             referencedColumnNames="type_id"
+                             onDelete="RESTRICT"
+                             onUpdate="CASCADE" />
+
+    <addForeignKeyConstraint baseTableName="data_model_edge"
+                             baseColumnNames="model_id"
+                             constraintName="fk_data_model_edge_on_model_id"
+                             referencedTableName="data_model"
+                             referencedColumnNames="model_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+
+    <addForeignKeyConstraint baseTableName="data_model_edge"
+                             baseColumnNames="from_node_id"
+                             constraintName="fk_data_model_edge_on_from_node_id"
+                             referencedTableName="data_model_node"
+                             referencedColumnNames="node_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+
+    <addForeignKeyConstraint baseTableName="data_model_edge"
+                             baseColumnNames="to_node_id"
+                             constraintName="fk_data_model_edge_on_to_node_id"
+                             referencedTableName="data_model_node"
+                             referencedColumnNames="node_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+
+    <addForeignKeyConstraint baseTableName="data_model_edge_field"
+                             baseColumnNames="edge_id"
+                             constraintName="fk_data_model_edge_field_on_edge_id"
+                             referencedTableName="data_model_edge"
+                             referencedColumnNames="edge_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+
+    <addForeignKeyConstraint baseTableName="data_model_edge_field"
+                             baseColumnNames="referenced_field_id"
+                             constraintName="fk_data_model_edge_field_on_referenced_field_id"
+                             referencedTableName="data_model_field"
+                             referencedColumnNames="field_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
 </databaseChangeLog>

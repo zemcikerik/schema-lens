@@ -1,16 +1,10 @@
 package dev.zemco.schemalens
 
 import dev.zemco.schemalens.auth.ResourceAccessDeniedException
-import dev.zemco.schemalens.modeling.api.attribute.AttributeNotFoundException
-import dev.zemco.schemalens.modeling.api.datatype.DataTypeExistsException
-import dev.zemco.schemalens.modeling.api.datatype.DataTypeInUseException
-import dev.zemco.schemalens.modeling.api.datatype.DataTypeNotFoundException
-import dev.zemco.schemalens.modeling.api.entity.EntityNotFoundException
-import dev.zemco.schemalens.modeling.api.model.DataModelNotFoundException
-import dev.zemco.schemalens.modeling.api.relationship.RelationshipNotFoundException
+import dev.zemco.schemalens.modeling.types.DataTypeExistsException
+import dev.zemco.schemalens.modeling.types.DataTypeInUseException
 import dev.zemco.schemalens.projects.ProjectConnectionException
 import dev.zemco.schemalens.projects.ProjectConnectionFailureDto
-import dev.zemco.schemalens.projects.ProjectNotFoundException
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ResponseEntity
@@ -24,13 +18,8 @@ class GlobalControllerAdvice {
     fun handleResourceAccessDeniedException(ex: ResourceAccessDeniedException) =
         ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.message)
 
-    @ExceptionHandler(ProjectNotFoundException::class,
-        DataModelNotFoundException::class,
-        RelationshipNotFoundException::class,
-        EntityNotFoundException::class,
-        DataTypeNotFoundException::class,
-        AttributeNotFoundException::class)
-    fun handleNotFoundException(ex: RuntimeException) =
+    @ExceptionHandler(ResourceNotFoundException::class)
+    fun handleNotFoundException(ex: ResourceNotFoundException) =
         ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
 
     @ExceptionHandler(DataTypeInUseException::class, DataTypeExistsException::class)
