@@ -12,31 +12,31 @@ import org.springframework.web.bind.annotation.ResponseStatus
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-@RequestMapping("/model/{modelId}/relationship")
+@RequestMapping("/model/{modelId}/edge")
 class DataModelEdgeController(
     private val edgeService: DataModelEdgeService,
 ) {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createRelationship(
+    fun createEdge(
         @PathVariable modelId: DataModel,
         @RequestBody dto: DataModelEdgeInputDto,
     ): DataModelEdgeDto = edgeService.createEdge(modelId, dto)
 
-    @PutMapping("/{relationshipId}")
-    fun updateRelationship(
+    @PutMapping("/{edgeId}")
+    fun updateEdge(
         @PathVariable modelId: DataModel,
-        @PathVariable relationshipId: Long,
+        @PathVariable edgeId: Long,
         @RequestBody dto: DataModelEdgeInputDto,
-    ): DataModelEdgeDto = edgeService.updateEdge(modelId, relationshipId, dto)
+    ): DataModelEdgeDto = edgeService.updateEdge(modelId, edgeId, dto)
 
-    @DeleteMapping("/{relationshipId}")
+    @DeleteMapping("/{edgeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteRelationship(
+    fun deleteEdge(
         @PathVariable modelId: DataModel,
-        @PathVariable relationshipId: Long,
+        @PathVariable edgeId: Long,
     ) {
-        edgeService.deleteEdge(modelId, relationshipId)
+        edgeService.deleteEdge(modelId, edgeId)
     }
 }

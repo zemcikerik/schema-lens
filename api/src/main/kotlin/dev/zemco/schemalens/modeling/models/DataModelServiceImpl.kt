@@ -38,7 +38,7 @@ class DataModelServiceImpl(
     }
 
     @Transactional(readOnly = true)
-    override fun getLogicalModel(model: DataModel): DataModelLogicalDto {
+    override fun getModelDetails(model: DataModel): DataModelDetailsDto {
         val dataTypes = model.dataTypes
             .sortedBy { it.name }
             .map { DataModelDataTypeDto(it.id!!, it.name) }
@@ -87,7 +87,7 @@ class DataModelServiceImpl(
             )
         }
 
-        return DataModelLogicalDto(
+        return DataModelDetailsDto(
             dataTypes = dataTypes,
             nodes = nodes,
             edges = edges,
