@@ -1,6 +1,4 @@
 package dev.zemco.schemalens.modeling.models
-
-import com.fasterxml.jackson.annotation.JsonProperty
 import dev.zemco.schemalens.modeling.edges.DataModelEdgeDto
 import dev.zemco.schemalens.modeling.nodes.DataModelNodeLogicalDto
 import dev.zemco.schemalens.modeling.types.DataModelDataTypeDto
@@ -18,10 +16,8 @@ data class DataModelInputDto(
     val name: String
 )
 
-data class DataModelLogicalDto(
+data class DataModelDetailsDto(
     val dataTypes: List<DataModelDataTypeDto>,
-    @field:JsonProperty("entities")
     val nodes: List<DataModelNodeLogicalDto>,
-    @field:JsonProperty("relationships")
     val edges: List<DataModelEdgeDto>
 )

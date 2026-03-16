@@ -1,7 +1,5 @@
 package dev.zemco.schemalens.modeling.nodes
 
-import com.fasterxml.jackson.annotation.JsonProperty
-
 data class DataModelFieldInputDto(
     val name: String,
     val typeId: Long,
@@ -11,7 +9,6 @@ data class DataModelFieldInputDto(
 )
 
 data class DataModelFieldDto(
-    @field:JsonProperty("attributeId")
     val fieldId: Long? = null,
     val name: String,
     val typeId: Long,

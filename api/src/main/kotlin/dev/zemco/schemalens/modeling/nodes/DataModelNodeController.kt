@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.validation.annotation.Validated
 
 @RestController
-@RequestMapping("/model/{modelId}/entity")
+@RequestMapping("/model/{modelId}/node")
 class DataModelNodeController(
     private val service: DataModelNodeService,
 ) {
@@ -20,19 +20,19 @@ class DataModelNodeController(
         @RequestBody @Validated(OnCreate::class) dto: DataModelNodeInputDto,
     ): DataModelNodeDto = service.createNode(modelId, dto)
 
-    @PutMapping("/{entityId}")
+    @PutMapping("/{nodeId}")
     fun updateNode(
         @PathVariable modelId: DataModel,
-        @PathVariable entityId: Long,
+        @PathVariable nodeId: Long,
         @RequestBody @Validated(OnUpdate::class) dto: DataModelNodeInputDto,
-    ): DataModelNodeDto = service.updateNode(modelId, entityId, dto)
+    ): DataModelNodeDto = service.updateNode(modelId, nodeId, dto)
 
-    @DeleteMapping("/{entityId}")
+    @DeleteMapping("/{nodeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteNode(
         @PathVariable modelId: DataModel,
-        @PathVariable entityId: Long,
+        @PathVariable nodeId: Long,
     ) {
-        service.deleteNode(modelId, entityId)
+        service.deleteNode(modelId, nodeId)
     }
 }

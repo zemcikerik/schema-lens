@@ -20,6 +20,10 @@ class DataModelController(
         return service.getAllModels(user.id!!)
     }
 
+    @GetMapping("/{modelId}")
+    fun getModel(@PathVariable modelId: DataModel): DataModelDetailsDto =
+        service.getModelDetails(modelId)
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createModel(@RequestBody @Validated(OnCreate::class) dto: DataModelInputDto): DataModelDto {
@@ -38,8 +42,4 @@ class DataModelController(
     fun deleteModel(@PathVariable modelId: DataModel) {
         service.deleteModel(modelId)
     }
-    
-    @GetMapping("/{modelId}/logical")
-    fun getLogicalModel(@PathVariable modelId: DataModel): DataModelLogicalDto =
-        service.getLogicalModel(modelId)
 }
