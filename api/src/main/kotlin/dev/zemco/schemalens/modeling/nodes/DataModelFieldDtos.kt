@@ -1,6 +1,7 @@
 package dev.zemco.schemalens.modeling.nodes
 
 data class DataModelFieldInputDto(
+    val fieldId: Long? = null,
     val name: String,
     val typeId: Long,
     val isPrimaryKey: Boolean,
