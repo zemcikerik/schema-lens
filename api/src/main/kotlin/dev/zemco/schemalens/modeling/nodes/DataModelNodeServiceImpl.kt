@@ -37,11 +37,30 @@ class DataModelNodeServiceImpl(
     ): DataModelNodeDto {
         val node = model.findNode(nodeId).apply {
             name = dto.name
-            fields.clear()
         }
 
+        val (toUpdate, toInsert) = dto.fields.partition { it.fieldId != null }
+        val updateById = toUpdate.associateBy { it.fieldId!! }
+
+        node.fields.forEach { existingField ->
+            val input = updateById[existingField.id]
+
+            if (input != null) {
+                existingField.apply {
+                    name = input.name
+                    typeId = input.typeId
+                    type = model.findDataType(input.typeId)
+                    isPrimaryKey = input.isPrimaryKey
+                    isNullable = input.isNullable
+                    position = input.position
+                }
+            }
+        }
+
+        node.fields.removeAll { it.id !in updateById }
+
         node.fields.addAll(
-            dto.fields.map { fieldInput -> fieldInput.toEntity(model, node) }
+            toInsert.map { fieldInput -> fieldInput.toEntity(model, node) }
         )
 
         return nodeRepository.save(node).mapToDto()
