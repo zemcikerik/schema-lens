@@ -1,16 +1,20 @@
 package dev.zemco.schemalens.modeling.edges
 
 import dev.zemco.schemalens.modeling.models.DataModel
+import dev.zemco.schemalens.modeling.models.DataModelEdgeCascadeMutationService
+import dev.zemco.schemalens.modeling.models.DataModelModificationDto
+import dev.zemco.schemalens.modeling.models.DataModelModificationDto.Companion.emptyModification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class DataModelEdgeServiceImpl(
     private val edgeRepository: DataModelEdgeRepository,
+    private val edgeCascadeMutationService: DataModelEdgeCascadeMutationService,
 ) : DataModelEdgeService {
 
     @Transactional
-    override fun createEdge(model: DataModel, dto: DataModelEdgeInputDto): DataModelEdgeDto {
+    override fun createEdge(model: DataModel, dto: DataModelEdgeInputDto): DataModelModificationDto {
         val fromNode = model.findNode(dto.fromNodeId)
         val toNode = model.findNode(dto.toNodeId)
 
@@ -26,80 +30,91 @@ class DataModelEdgeServiceImpl(
             isIdentifying = dto.isIdentifying,
         )
 
-        edge.fields = dto.fields.asSequence().map { field ->
-            val referencedField = model.findField(field.referencedFieldId)
-
-            DataModelEdgeField(
-                id = DataModelEdgeField.Id(
-                    edgeId = 0,
-                    referencedFieldId = referencedField.id!!,
-                ),
-                edge = edge,
-                referencedField = referencedField,
-                name = field.name,
-                position = field.position,
-            )
-        }.toMutableSet()
-
         val saved = edgeRepository.save(edge)
-        return saved.mapToDto()
+
+        return persistUpdatedEdges(
+            model = model,
+            edge = saved,
+            syncEdgeFields = true,
+            syncCascade = saved.isIdentifying,
+        )
     }
 
     @Transactional
-    override fun updateEdge(model: DataModel, edgeId: Long, dto: DataModelEdgeInputDto): DataModelEdgeDto {
+    override fun updateEdge(model: DataModel, edgeId: Long, dto: DataModelEdgeInputDto): DataModelModificationDto {
         val edge = model.findEdge(edgeId)
+        val wasIdentifying = edge.isIdentifying
+
+        val requestedFields = dto.fields.orEmpty()
+        val existingFieldIds = edge.fields.map { it.id.referencedFieldId }.toSet()
+        val requestedFieldIds = requestedFields.map { it.referencedFieldId }.toSet()
+
+        if (existingFieldIds != requestedFieldIds) {
+            throw DataModelEdgeReferencedFieldsImmutableException(edgeId)
+        }
 
         edge.apply {
             type = dto.type
             isMandatory = dto.isMandatory
             isIdentifying = dto.isIdentifying
-            fields.clear()
         }
 
-        dto.fields.forEach { field ->
-            val referencedField = model.findField(field.referencedFieldId)
+        val existingFieldsByReferencedFieldId = edge.fields.associateBy { it.id.referencedFieldId }
 
-            edge.fields.add(
-                DataModelEdgeField(
-                    id = DataModelEdgeField.Id(
-                        edgeId = edge.id!!,
-                        referencedFieldId = referencedField.id!!,
-                    ),
-                    edge = edge,
-                    referencedField = referencedField,
-                    name = field.name,
-                    position = field.position,
-                )
-            )
+        requestedFields.forEach { field ->
+            val referencedField = existingFieldsByReferencedFieldId[field.referencedFieldId]!!
+            referencedField.name = field.name
+            referencedField.position = field.position
         }
 
-        edgeRepository.save(edge)
-        return edge.mapToDto()
+        val saved = edgeRepository.save(edge)
+
+        return persistUpdatedEdges(
+            model = model,
+            edge = saved,
+            syncEdgeFields = false,
+            syncCascade = wasIdentifying != saved.isIdentifying,
+        )
     }
 
     @Transactional
-    override fun deleteEdge(model: DataModel, edgeId: Long) {
+    override fun deleteEdge(model: DataModel, edgeId: Long): DataModelModificationDto {
         val edge = model.findEdge(edgeId)
+        val deletedEdgeId = edge.id!!
+        val wasIdentifying = edge.isIdentifying
+
+        model.edges.removeIf { it.id == deletedEdgeId }
         edgeRepository.delete(edge)
+
+        if (!wasIdentifying) {
+            return emptyModification()
+        }
+
+        val cascadeEdges = edgeCascadeMutationService.collectCascadeEdgesAndSync(model, edge.toNode)
+        return DataModelModificationDto(updatedEdges = edgeCascadeMutationService.persistAndMapEdges(cascadeEdges))
     }
 
-    private fun DataModelEdge.mapToDto(): DataModelEdgeDto =
-        DataModelEdgeDto(
-            edgeId = id!!,
-            modelId = modelId,
-            fromNodeId = fromNodeId,
-            toNodeId = toNodeId,
-            type = type,
-            isMandatory = isMandatory,
-            isIdentifying = isIdentifying,
-            fields = fields
-                .sortedBy { it.position }
-                .map {
-                    DataModelEdgeFieldDto(
-                        referencedFieldId = it.id.referencedFieldId,
-                        name = it.name,
-                        position = it.position,
-                    )
-                },
-        )
+    private fun persistUpdatedEdges(
+        model: DataModel,
+        edge: DataModelEdge,
+        syncEdgeFields: Boolean,
+        syncCascade: Boolean,
+    ): DataModelModificationDto {
+        if (syncEdgeFields) {
+            edgeCascadeMutationService.syncReferencedFieldsFromPrimaryKey(model, edge)
+        }
+
+        if (!syncCascade) {
+            val persistedEdge = if (syncEdgeFields) edgeRepository.save(edge) else edge
+            return DataModelModificationDto(updatedEdges = listOf(DataModelEdgeDto.from(persistedEdge)))
+        }
+
+        val cascadeEdges = edgeCascadeMutationService.collectCascadeEdgesAndSync(model, edge.toNode)
+
+        val edgesToPersist = (sequenceOf(edge) + cascadeEdges.asSequence())
+            .distinctBy { it.id }
+            .toList()
+
+        return DataModelModificationDto(updatedEdges = edgeCascadeMutationService.persistAndMapEdges(edgesToPersist))
+    }
 }

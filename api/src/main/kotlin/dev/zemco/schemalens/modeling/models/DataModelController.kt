@@ -20,9 +20,9 @@ class DataModelController(
         return service.getAllModels(user.id!!)
     }
 
-    @GetMapping("/{modelId}")
-    fun getModel(@PathVariable modelId: DataModel): DataModelDetailsDto =
-        service.getModelDetails(modelId)
+    @GetMapping("/{model}")
+    fun getModel(@PathVariable model: DataModel): DataModelDetailsDto =
+        service.getModelDetails(model)
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
@@ -31,15 +31,15 @@ class DataModelController(
         return service.createModel(dto, user)
     }
 
-    @PutMapping("/{modelId}")
+    @PutMapping("/{model}")
     fun updateModel(
-        @PathVariable modelId: DataModel,
+        @PathVariable model: DataModel,
         @RequestBody @Validated(OnUpdate::class) dto: DataModelInputDto
-    ): DataModelDto = service.updateModel(modelId, dto)
+    ): DataModelDto = service.updateModel(model, dto)
     
-    @DeleteMapping("/{modelId}")
+    @DeleteMapping("/{model}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun deleteModel(@PathVariable modelId: DataModel) {
-        service.deleteModel(modelId)
+    fun deleteModel(@PathVariable model: DataModel) {
+        service.deleteModel(model)
     }
 }

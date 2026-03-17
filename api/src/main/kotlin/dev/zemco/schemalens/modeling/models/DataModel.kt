@@ -35,13 +35,13 @@ class DataModel(
     @JoinColumn(name = "owner_id", nullable = false, insertable = false, updatable = false)
     var owner: User,
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model")
     var dataTypes: MutableSet<DataModelDataType> = mutableSetOf(),
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model")
     var nodes: MutableSet<DataModelNode> = mutableSetOf(),
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model")
     var edges: MutableSet<DataModelEdge> = mutableSetOf(),
 ) {
     fun findNodeOrNull(nodeId: Long): DataModelNode? =
