@@ -12,4 +12,12 @@ data class DataModelDataTypeInputDto(
 data class DataModelDataTypeDto(
     val typeId: Long,
     val name: String
-)
+) {
+    companion object {
+        fun from(dataType: DataModelDataType): DataModelDataTypeDto =
+            DataModelDataTypeDto(
+                typeId = dataType.id!!,
+                name = dataType.name,
+            )
+    }
+}

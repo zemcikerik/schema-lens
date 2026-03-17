@@ -1,6 +1,7 @@
 package dev.zemco.schemalens.modeling.nodes
 
 import dev.zemco.schemalens.modeling.models.DataModel
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -30,6 +31,6 @@ class DataModelNode(
     @Column(nullable = false, length = 30)
     var name: String,
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "node", orphanRemoval = true)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "node", orphanRemoval = true, cascade = [CascadeType.ALL])
     var fields: MutableSet<DataModelField> = mutableSetOf(),
 )

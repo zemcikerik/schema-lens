@@ -26,7 +26,7 @@ class DataModelDataTypeServiceImpl(
             name = normalizedName
         )
 
-        return dataTypeRepository.save(dataType).mapToDto()
+        return DataModelDataTypeDto.from(dataTypeRepository.save(dataType))
     }
 
     @Transactional
@@ -41,7 +41,7 @@ class DataModelDataTypeServiceImpl(
 
         dataType.name = normalizedName
 
-        return dataTypeRepository.save(dataType).mapToDto()
+        return DataModelDataTypeDto.from(dataTypeRepository.save(dataType))
     }
 
     @Transactional
@@ -54,10 +54,4 @@ class DataModelDataTypeServiceImpl(
 
         dataTypeRepository.delete(dataType)
     }
-
-    private fun DataModelDataType.mapToDto(): DataModelDataTypeDto =
-        DataModelDataTypeDto(
-            typeId = id!!,
-            name = name,
-        )
 }

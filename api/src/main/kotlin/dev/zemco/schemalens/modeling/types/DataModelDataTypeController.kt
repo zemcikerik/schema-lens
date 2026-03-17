@@ -8,30 +8,30 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.validation.annotation.Validated
 
 @RestController
-@RequestMapping("/model/{modelId}/dataType")
+@RequestMapping("/model/{model}/dataType")
 class DataModelDataTypeController(
     private val service: DataModelDataTypeService,
 ) {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createDataType(
-        @PathVariable modelId: DataModel,
+        @PathVariable model: DataModel,
         @RequestBody @Validated(OnCreate::class) dto: DataModelDataTypeInputDto
-    ): DataModelDataTypeDto = service.createDataType(modelId, dto)
+    ): DataModelDataTypeDto = service.createDataType(model, dto)
 
     @PutMapping("/{typeId}")
     fun updateDataType(
-        @PathVariable modelId: DataModel,
+        @PathVariable model: DataModel,
         @PathVariable typeId: Long,
         @RequestBody @Validated(OnUpdate::class) dto: DataModelDataTypeInputDto
-    ): DataModelDataTypeDto = service.updateDataType(modelId, typeId, dto)
+    ): DataModelDataTypeDto = service.updateDataType(model, typeId, dto)
 
     @DeleteMapping("/{typeId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteDataType(
-        @PathVariable modelId: DataModel,
+        @PathVariable model: DataModel,
         @PathVariable typeId: Long
     ) {
-        service.deleteDataType(modelId, typeId)
+        service.deleteDataType(model, typeId)
     }
 }

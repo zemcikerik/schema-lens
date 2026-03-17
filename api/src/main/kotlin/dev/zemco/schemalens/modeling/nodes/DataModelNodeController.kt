@@ -1,6 +1,7 @@
 package dev.zemco.schemalens.modeling.nodes
 
 import dev.zemco.schemalens.modeling.models.DataModel
+import dev.zemco.schemalens.modeling.models.DataModelModificationDto
 import dev.zemco.schemalens.validation.OnCreate
 import dev.zemco.schemalens.validation.OnUpdate
 import org.springframework.http.HttpStatus
@@ -8,7 +9,7 @@ import org.springframework.web.bind.annotation.*
 import org.springframework.validation.annotation.Validated
 
 @RestController
-@RequestMapping("/model/{modelId}/node")
+@RequestMapping("/model/{model}/node")
 class DataModelNodeController(
     private val service: DataModelNodeService,
 ) {
@@ -16,23 +17,20 @@ class DataModelNodeController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun createNode(
-        @PathVariable modelId: DataModel,
+        @PathVariable model: DataModel,
         @RequestBody @Validated(OnCreate::class) dto: DataModelNodeInputDto,
-    ): DataModelNodeDto = service.createNode(modelId, dto)
+    ): DataModelNodeDto = service.createNode(model, dto)
 
     @PutMapping("/{nodeId}")
     fun updateNode(
-        @PathVariable modelId: DataModel,
+        @PathVariable model: DataModel,
         @PathVariable nodeId: Long,
         @RequestBody @Validated(OnUpdate::class) dto: DataModelNodeInputDto,
-    ): DataModelNodeDto = service.updateNode(modelId, nodeId, dto)
+    ): DataModelModificationDto = service.updateNode(model, nodeId, dto)
 
     @DeleteMapping("/{nodeId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteNode(
-        @PathVariable modelId: DataModel,
+        @PathVariable model: DataModel,
         @PathVariable nodeId: Long,
-    ) {
-        service.deleteNode(modelId, nodeId)
-    }
+    ): DataModelModificationDto = service.deleteNode(model, nodeId)
 }

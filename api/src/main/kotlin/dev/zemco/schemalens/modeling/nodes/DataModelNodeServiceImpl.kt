@@ -1,12 +1,15 @@
 package dev.zemco.schemalens.modeling.nodes
 
 import dev.zemco.schemalens.modeling.models.DataModel
+import dev.zemco.schemalens.modeling.models.DataModelEdgeCascadeMutationService
+import dev.zemco.schemalens.modeling.models.DataModelModificationDto
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class DataModelNodeServiceImpl(
     private val nodeRepository: DataModelNodeRepository,
+    private val edgeCascadeMutationService: DataModelEdgeCascadeMutationService,
 ) : DataModelNodeService {
 
     @Transactional
@@ -26,18 +29,15 @@ class DataModelNodeServiceImpl(
             .map { fieldInput -> fieldInput.toEntity(model, node) }
             .toMutableSet()
 
-        return nodeRepository.save(node).mapToDto()
+        return DataModelNodeDto.from(nodeRepository.save(node))
     }
 
     @Transactional
-    override fun updateNode(
-        model: DataModel,
-        nodeId: Long,
-        dto: DataModelNodeInputDto,
-    ): DataModelNodeDto {
+    override fun updateNode(model: DataModel, nodeId: Long, dto: DataModelNodeInputDto): DataModelModificationDto {
         val node = model.findNode(nodeId).apply {
             name = dto.name
         }
+        val primaryKeyChanged = hasPrimaryKeyChanged(node.fields, dto.fields)
 
         val (toUpdate, toInsert) = dto.fields.partition { it.fieldId != null }
         val updateById = toUpdate.associateBy { it.fieldId!! }
@@ -63,35 +63,76 @@ class DataModelNodeServiceImpl(
             toInsert.map { fieldInput -> fieldInput.toEntity(model, node) }
         )
 
-        return nodeRepository.save(node).mapToDto()
+        val savedNode = nodeRepository.save(node)
+        val updatedNodes = listOf(DataModelNodeDto.from(savedNode))
+
+        if (!primaryKeyChanged) {
+            return DataModelModificationDto(updatedNodes = updatedNodes)
+        }
+
+        return DataModelModificationDto(
+            updatedNodes = updatedNodes,
+            updatedEdges = edgeCascadeMutationService
+                .collectCascadeEdgesAndSync(model, savedNode)
+                .let { edgeCascadeMutationService.persistAndMapEdges(it) },
+        )
     }
 
     @Transactional
-    override fun deleteNode(
-        model: DataModel,
-        nodeId: Long,
-    ) {
+    override fun deleteNode(model: DataModel, nodeId: Long): DataModelModificationDto {
         val node = model.findNode(nodeId)
+
+        val nodeEdges = model.edges
+            .asSequence()
+            .filter { it.fromNodeId == nodeId || it.toNodeId == nodeId }
+            .toSet()
+
+        val cascadeStartNodes = nodeEdges
+            .asSequence()
+            .filter { it.fromNodeId == nodeId && it.isIdentifying }
+            .map { it.toNodeId }
+            .distinct()
+            .map { model.findNode(it) }
+            .toList()
+
+        model.edges.removeAll(nodeEdges)
+        model.nodes.remove(node)
         nodeRepository.delete(node)
+
+        val updatedEdges = edgeCascadeMutationService
+            .collectCascadeEdgesAndSync(model, cascadeStartNodes)
+
+        return DataModelModificationDto(updatedEdges = edgeCascadeMutationService.persistAndMapEdges(updatedEdges))
     }
 
-    private fun DataModelNode.mapToDto(): DataModelNodeDto =
-        DataModelNodeDto(
-            nodeId = id!!,
-            name = name,
-            fields = fields
-                .sortedBy { it.position }
-                .map {
-                    DataModelFieldDto(
-                        fieldId = it.id,
-                        name = it.name,
-                        typeId = it.typeId,
-                        isPrimaryKey = it.isPrimaryKey,
-                        isNullable = it.isNullable,
-                        position = it.position,
-                    )
-                },
-        )
+    private fun hasPrimaryKeyChanged(
+        existingFields: Collection<DataModelField>,
+        requestedFields: Collection<DataModelFieldInputDto>,
+    ): Boolean {
+        val existingById = existingFields.associateBy { field -> field.id!! }
+
+        val requestedById = requestedFields
+            .asSequence()
+            .filter { it.fieldId != null }
+            .associateBy { it.fieldId!! }
+
+        if (existingFields.any { it.isPrimaryKey && it.id !in requestedById }) {
+            return true
+        }
+
+        if (requestedFields.any { it.fieldId == null && it.isPrimaryKey }) {
+            return true
+        }
+
+        return existingById.any { (fieldId, existingField) ->
+            val requestedField = requestedById[fieldId] ?: return@any false
+
+            val primaryKeyMembershipChanged = requestedField.isPrimaryKey != existingField.isPrimaryKey
+            val primaryKeyTypeChanged = existingField.isPrimaryKey && requestedField.typeId != existingField.typeId
+
+            primaryKeyMembershipChanged || primaryKeyTypeChanged
+        }
+    }
 
     private fun DataModelFieldInputDto.toEntity(model: DataModel, node: DataModelNode): DataModelField {
         val dataType = model.findDataType(typeId)
@@ -101,7 +142,7 @@ class DataModelNodeServiceImpl(
         }
 
         return DataModelField(
-            nodeId = node.id!!,
+            nodeId = node.id ?: 0,
             node = node,
             name = name,
             typeId = dataType.id!!,

@@ -1,5 +1,10 @@
 package dev.zemco.schemalens.modeling.edges
 
+import dev.zemco.schemalens.validation.OnCreate
+import dev.zemco.schemalens.validation.OnUpdate
+import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.Null
+
 data class DataModelEdgeDto(
     var edgeId: Long? = null,
     var modelId: Long,
@@ -9,7 +14,29 @@ data class DataModelEdgeDto(
     var isMandatory: Boolean,
     var isIdentifying: Boolean,
     val fields: List<DataModelEdgeFieldDto>,
-)
+) {
+    companion object {
+        fun from(edge: DataModelEdge): DataModelEdgeDto =
+            DataModelEdgeDto(
+                edgeId = edge.id!!,
+                modelId = edge.modelId,
+                fromNodeId = edge.fromNodeId,
+                toNodeId = edge.toNodeId,
+                type = edge.type,
+                isMandatory = edge.isMandatory,
+                isIdentifying = edge.isIdentifying,
+                fields = edge.fields
+                    .sortedBy { it.position }
+                    .map {
+                        DataModelEdgeFieldDto(
+                            referencedFieldId = it.id.referencedFieldId,
+                            name = it.name,
+                            position = it.position,
+                        )
+                    },
+            )
+    }
+}
 
 data class DataModelEdgeInputDto(
     var fromNodeId: Long,
@@ -17,5 +44,7 @@ data class DataModelEdgeInputDto(
     var type: DataModelEdgeType,
     var isMandatory: Boolean,
     var isIdentifying: Boolean,
-    val fields: List<DataModelEdgeFieldDto>,
+    @field:Null(groups = [OnCreate::class])
+    @field:NotEmpty(groups = [OnUpdate::class])
+    val fields: List<DataModelEdgeFieldDto>? = null,
 )
