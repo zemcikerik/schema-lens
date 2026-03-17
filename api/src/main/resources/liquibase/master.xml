@@ -950,4 +950,185 @@
                              onDelete="CASCADE"
                              onUpdate="CASCADE" />
   </changeSet>
+
+  <changeSet id="2026-06-17T2307-add-data-model-diagram-table"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <createTable tableName="data_model_diagram">
+      <column name="id"
+              type="BIGINT"
+              autoIncrement="true">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_diagram" />
+      </column>
+
+      <column name="model_id"
+              type="BIGINT">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="name"
+              type="VARCHAR(64)">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="type"
+              type="CHAR(1)">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2026-06-17T2308-data-model-diagram-model-reference"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <addForeignKeyConstraint baseTableName="data_model_diagram"
+                             baseColumnNames="model_id"
+                             constraintName="fk_data_model_diagram_on_model_id"
+                             referencedTableName="data_model"
+                             referencedColumnNames="model_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2026-06-17T2309-data-model-diagram-type-check"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <!-- 'L' -> logical diagram -->
+    <sql dbms="oracle"
+         splitStatements="false">
+      ALTER TABLE data_model_diagram
+      ADD CONSTRAINT cc_data_model_diagram_type CHECK (type IN ('L'))
+    </sql>
+
+    <rollback>
+      <sql dbms="oracle"
+           splitStatements="false">
+        ALTER TABLE data_model_diagram
+        DROP CONSTRAINT cc_data_model_diagram_type
+      </sql>
+    </rollback>
+  </changeSet>
+
+  <changeSet id="2026-06-17T2310-add-data-model-diagram-node-table"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <createTable tableName="data_model_diagram_node">
+      <column name="diagram_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_diagram_node" />
+      </column>
+
+      <column name="node_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_diagram_node" />
+      </column>
+
+      <column name="x"
+              type="DOUBLE PRECISION">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="y"
+              type="DOUBLE PRECISION">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="width"
+              type="DOUBLE PRECISION">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="height"
+              type="DOUBLE PRECISION">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2026-06-17T2311-data-model-diagram-node-node-reference"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <addForeignKeyConstraint baseTableName="data_model_diagram_node"
+                             baseColumnNames="node_id"
+                             constraintName="fk_data_model_diagram_node_on_node_id"
+                             referencedTableName="data_model_node"
+                             referencedColumnNames="node_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2026-06-17T2312-data-model-diagram-node-diagram-reference"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <addForeignKeyConstraint baseTableName="data_model_diagram_node"
+                             baseColumnNames="diagram_id"
+                             constraintName="fk_data_model_diagram_node_on_diagram_id"
+                             referencedTableName="data_model_diagram"
+                             referencedColumnNames="id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2026-06-17T2313-add-data-model-diagram-edge-table"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <createTable tableName="data_model_diagram_edge">
+      <column name="diagram_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_diagram_edge" />
+      </column>
+
+      <column name="edge_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_diagram_edge" />
+      </column>
+
+      <column name="points"
+              type="CLOB">
+        <constraints nullable="false" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2026-06-17T2314-data-model-diagram-edge-edge-reference"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <addForeignKeyConstraint baseTableName="data_model_diagram_edge"
+                             baseColumnNames="edge_id"
+                             constraintName="fk_data_model_diagram_edge_on_edge_id"
+                             referencedTableName="data_model_edge"
+                             referencedColumnNames="edge_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2026-06-17T2315-data-model-diagram-edge-diagram-reference"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <addForeignKeyConstraint baseTableName="data_model_diagram_edge"
+                             baseColumnNames="diagram_id"
+                             constraintName="fk_data_model_diagram_edge_on_diagram_id"
+                             referencedTableName="data_model_diagram"
+                             referencedColumnNames="id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2026-06-17T2316-data-model-diagram-edge-points-json-constraint"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <sql dbms="oracle"
+         splitStatements="false">
+      ALTER TABLE data_model_diagram_edge
+      ADD CONSTRAINT cc_data_model_diagram_edge_points_json CHECK (points IS JSON)
+    </sql>
+
+    <rollback>
+      <sql dbms="oracle"
+           splitStatements="false">
+        ALTER TABLE data_model_diagram_edge
+        DROP CONSTRAINT cc_data_model_diagram_edge_points_json
+      </sql>
+    </rollback>
+  </changeSet>
 </databaseChangeLog>

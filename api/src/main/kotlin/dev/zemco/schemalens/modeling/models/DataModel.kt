@@ -2,6 +2,7 @@ package dev.zemco.schemalens.modeling.models
 
 import dev.zemco.schemalens.ResourceNotFoundException
 import dev.zemco.schemalens.auth.User
+import dev.zemco.schemalens.modeling.diagrams.DataModelDiagram
 import dev.zemco.schemalens.modeling.edges.DataModelEdge
 import dev.zemco.schemalens.modeling.nodes.DataModelField
 import dev.zemco.schemalens.modeling.nodes.DataModelNode
@@ -43,6 +44,9 @@ class DataModel(
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "model")
     var edges: MutableSet<DataModelEdge> = mutableSetOf(),
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model")
+    var diagrams: MutableSet<DataModelDiagram> = mutableSetOf(),
 ) {
     fun findNodeOrNull(nodeId: Long): DataModelNode? =
         nodes.firstOrNull { it.id == nodeId }

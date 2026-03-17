@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.modeling.models
 
+import dev.zemco.schemalens.modeling.diagrams.DataModelDiagramSimpleDto
 import dev.zemco.schemalens.modeling.edges.DataModelEdgeDto
 import dev.zemco.schemalens.modeling.nodes.DataModelNodeDto
 import dev.zemco.schemalens.modeling.types.DataModelDataTypeDto
@@ -28,7 +29,8 @@ data class DataModelInputDto(
 data class DataModelDetailsDto(
     val dataTypes: List<DataModelDataTypeDto>,
     val nodes: List<DataModelNodeDto>,
-    val edges: List<DataModelEdgeDto>
+    val edges: List<DataModelEdgeDto>,
+    val diagrams: List<DataModelDiagramSimpleDto>,
 ) {
     companion object {
         fun from(model: DataModel): DataModelDetailsDto =
@@ -39,9 +41,8 @@ data class DataModelDetailsDto(
                 nodes = model.nodes
                     .sortedBy { it.name }
                     .map { DataModelNodeDto.from(it) },
-                edges = model.edges
-                    .sortedBy { it.id }
-                    .map { DataModelEdgeDto.from(it) },
+                edges = model.edges.map { DataModelEdgeDto.from(it) },
+                diagrams = model.diagrams.map { DataModelDiagramSimpleDto.from(it) },
             )
     }
 }
