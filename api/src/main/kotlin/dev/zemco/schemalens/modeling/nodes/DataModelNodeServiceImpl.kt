@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.modeling.nodes
 
+import dev.zemco.schemalens.modeling.edges.DataModelEdgeWriteService
 import dev.zemco.schemalens.modeling.models.DataModel
 import dev.zemco.schemalens.modeling.models.DataModelEdgeCascadeMutationService
 import dev.zemco.schemalens.modeling.models.DataModelModificationDto
@@ -10,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 class DataModelNodeServiceImpl(
     private val nodeRepository: DataModelNodeRepository,
     private val edgeCascadeMutationService: DataModelEdgeCascadeMutationService,
+    private val edgeWriteService: DataModelEdgeWriteService,
 ) : DataModelNodeService {
 
     @Transactional
@@ -74,7 +76,7 @@ class DataModelNodeServiceImpl(
             updatedNodes = updatedNodes,
             updatedEdges = edgeCascadeMutationService
                 .collectCascadeEdgesAndSync(model, savedNode)
-                .let { edgeCascadeMutationService.persistAndMapEdges(it) },
+                .let { edgeWriteService.persistAndMapEdges(it) },
         )
     }
 
@@ -102,7 +104,7 @@ class DataModelNodeServiceImpl(
         val updatedEdges = edgeCascadeMutationService
             .collectCascadeEdgesAndSync(model, cascadeStartNodes)
 
-        return DataModelModificationDto(updatedEdges = edgeCascadeMutationService.persistAndMapEdges(updatedEdges))
+        return DataModelModificationDto(updatedEdges = edgeWriteService.persistAndMapEdges(updatedEdges))
     }
 
     private fun hasPrimaryKeyChanged(
