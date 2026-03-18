@@ -17,11 +17,11 @@ You don't need to clone this entire repository in order to deploy this applicati
 > By default, when the application is started for first time, then admin user with username `admin` and password `adminpass` is created. You should change password of this user as soon as possible.
 
 ## Development
-We recommend using IntelliJ Idea Ultimate Edition for development with project folder opened as project.
+We recommend using IntelliJ IDEA Ultimate Edition for development with project folder opened as project.
 
 #### Prerequisites
 - Java 21
-- Node 22 + NPM
+- Node 24 + NPM
 - Deno 2
 - Docker & Docker Compose Plugin
 
