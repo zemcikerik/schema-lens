@@ -20,7 +20,7 @@ You don't need to clone this entire repository in order to deploy this applicati
 We recommend using IntelliJ IDEA Ultimate Edition for development with project folder opened as project.
 
 #### Prerequisites
-- Java 21
+- Java 25
 - Node 24 + NPM
 - Deno 2
 - Docker & Docker Compose Plugin
