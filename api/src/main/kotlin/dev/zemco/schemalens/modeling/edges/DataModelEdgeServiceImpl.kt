@@ -11,6 +11,7 @@ import org.springframework.transaction.annotation.Transactional
 class DataModelEdgeServiceImpl(
     private val edgeRepository: DataModelEdgeRepository,
     private val edgeCascadeMutationService: DataModelEdgeCascadeMutationService,
+    private val edgeWriteService: DataModelEdgeWriteService,
 ) : DataModelEdgeService {
 
     @Transactional
@@ -91,7 +92,7 @@ class DataModelEdgeServiceImpl(
         }
 
         val cascadeEdges = edgeCascadeMutationService.collectCascadeEdgesAndSync(model, edge.toNode)
-        return DataModelModificationDto(updatedEdges = edgeCascadeMutationService.persistAndMapEdges(cascadeEdges))
+        return DataModelModificationDto(updatedEdges = edgeWriteService.persistAndMapEdges(cascadeEdges))
     }
 
     private fun persistUpdatedEdges(
@@ -115,6 +116,6 @@ class DataModelEdgeServiceImpl(
             .distinctBy { it.id }
             .toList()
 
-        return DataModelModificationDto(updatedEdges = edgeCascadeMutationService.persistAndMapEdges(edgesToPersist))
+        return DataModelModificationDto(updatedEdges = edgeWriteService.persistAndMapEdges(edgesToPersist))
     }
 }

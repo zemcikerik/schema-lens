@@ -5,6 +5,7 @@ import dev.zemco.schemalens.modeling.models.DataModelModificationDto
 import dev.zemco.schemalens.validation.OnCreate
 import dev.zemco.schemalens.validation.OnUpdate
 import org.springframework.http.HttpStatus
+import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import org.springframework.validation.annotation.Validated
 
@@ -12,6 +13,7 @@ import org.springframework.validation.annotation.Validated
 @RequestMapping("/model/{model}/node")
 class DataModelNodeController(
     private val service: DataModelNodeService,
+    private val reorderService: DataModelNodeFieldReorderService,
 ) {
 
     @PostMapping
@@ -27,6 +29,18 @@ class DataModelNodeController(
         @PathVariable nodeId: Long,
         @RequestBody @Validated(OnUpdate::class) dto: DataModelNodeInputDto,
     ): DataModelModificationDto = service.updateNode(model, nodeId, dto)
+
+    @PutMapping("/{nodeId}/fields/reorder")
+    fun reorderNodeFields(
+        @PathVariable model: DataModel,
+        @PathVariable nodeId: Long,
+        @RequestBody @Validated dto: DataModelFieldReorderInputDto,
+    ): ResponseEntity<DataModelModificationDto> =
+        try {
+            ResponseEntity.ok(reorderService.reorderNodeFields(model, nodeId, dto))
+        } catch (_: DataModelNodeFieldReorderRequestInvalidException) {
+            ResponseEntity.badRequest().build()
+        }
 
     @DeleteMapping("/{nodeId}")
     fun deleteNode(
