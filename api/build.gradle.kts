@@ -1,9 +1,9 @@
 plugins {
-    kotlin("jvm") version "2.2.20"
-    kotlin("plugin.spring") version "2.2.20"
-    kotlin("plugin.jpa") version "2.2.20"
-    kotlin("plugin.allopen") version "2.2.20"
-    id("org.springframework.boot") version "3.5.6"
+    kotlin("jvm") version "2.3.20"
+    kotlin("plugin.spring") version "2.3.20"
+    kotlin("plugin.jpa") version "2.3.20"
+    kotlin("plugin.allopen") version "2.3.20"
+    id("org.springframework.boot") version "3.5.11"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -40,7 +40,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
     implementation("io.jsonwebtoken:jjwt-jackson:0.13.0")
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
-    implementation("commons-validator:commons-validator:1.10.0") {
+    implementation("commons-validator:commons-validator:1.10.1") {
         exclude(group = "commons-logging", module = "commons-logging")
     }
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -48,7 +48,7 @@ dependencies {
     annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("io.mockk:mockk:1.14.6")
+    testImplementation("io.mockk:mockk:1.14.9")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
