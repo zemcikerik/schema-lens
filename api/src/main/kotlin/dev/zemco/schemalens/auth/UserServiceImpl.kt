@@ -15,7 +15,7 @@ class UserServiceImpl(
             return false
         }
 
-        user.password = passwordEncoder.encode(newPassword)
+        user.password = passwordEncoder.encode(newPassword)!!
         userRepository.save(user)
         return true
     }
@@ -54,7 +54,7 @@ class UserServiceImpl(
         return userRepository.save(User(
             username = registrationDto.username,
             email = registrationDto.email,
-            password = passwordEncoder.encode(registrationDto.password),
+            password = passwordEncoder.encode(registrationDto.password)!!,
             active = true,
         ))
     }

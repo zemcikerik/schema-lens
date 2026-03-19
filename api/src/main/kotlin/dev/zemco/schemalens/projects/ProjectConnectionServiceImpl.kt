@@ -45,7 +45,7 @@ class ProjectConnectionServiceImpl(
                 .username(username)
                 .password(projectConnectionEncryptor.decryptPassword(password))
                 .type(SingleConnectionDataSource::class.java)
-                .build() as SingleConnectionDataSource
+                .build()
         }
 
     private fun mapExceptionToFailureStatus(ex: DataAccessException) =

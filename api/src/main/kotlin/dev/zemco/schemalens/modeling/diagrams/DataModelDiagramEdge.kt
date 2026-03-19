@@ -1,7 +1,5 @@
 package dev.zemco.schemalens.modeling.diagrams
 
-import com.fasterxml.jackson.core.type.TypeReference
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import dev.zemco.schemalens.modeling.edges.DataModelEdge
 import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Column
@@ -15,6 +13,8 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.Lob
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.MapsId
+import tools.jackson.core.type.TypeReference
+import tools.jackson.module.kotlin.jacksonObjectMapper
 
 @Entity
 class DataModelDiagramEdge(
