@@ -68,7 +68,7 @@ class ProjectCollaboratorController(
         val collaborator = projectCollaboratorService.getCollaboratorForProject(project, username) ?:
             return ResponseEntity.status(HttpStatus.NOT_FOUND).build()
 
-        if (collaborator.role === ProjectCollaborationRole.MANAGER) {
+        if (collaborator.role === ProjectCollaborationRole.MANAGER && project.role !== ProjectCollaborationRole.OWNER) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build()
         }
 

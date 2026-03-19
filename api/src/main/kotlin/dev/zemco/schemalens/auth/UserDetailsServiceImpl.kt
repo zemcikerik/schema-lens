@@ -10,8 +10,8 @@ class UserDetailsServiceImpl(
     private val userService: UserService,
 ) : UserDetailsService {
 
-    override fun loadUserByUsername(username: String?): UserDetails =
-        username?.let { userService.getUserByUsername(it) }?.let { UserWrapperDetails(it) }
+    override fun loadUserByUsername(username: String): UserDetails =
+        userService.getUserByUsername(username)?.let { UserWrapperDetails(it) }
             ?: throw UsernameNotFoundException("User with username '$username' not found")
 
 }

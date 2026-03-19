@@ -17,12 +17,17 @@ class OracleTableRelationshipMetadataReader : TableRelationshipMetadataReader {
             "column_name" to columnName,
         ))
 
-        return dataSource.toNamedJdbcTemplate().queryForList(GET_DEPENDANT_ON_COLUMN_QUERY, params, String::class.java)
+        return dataSource.toNamedJdbcTemplate()
+            .queryForList(GET_DEPENDANT_ON_COLUMN_QUERY, params, String::class.java)
+            .filterNotNull()
     }
 
     fun readDirectlyRelatedTableNames(dataSource: DataSource, tableNames: Set<String>): List<String> {
         val params = MapSqlParameterSource("table_names", tableNames)
-        return dataSource.toNamedJdbcTemplate().queryForList(GET_DIRECT_RELATIONSHIPS_QUERY, params, String::class.java)
+
+        return dataSource.toNamedJdbcTemplate()
+            .queryForList(GET_DIRECT_RELATIONSHIPS_QUERY, params, String::class.java)
+            .filterNotNull()
     }
 
     companion object {

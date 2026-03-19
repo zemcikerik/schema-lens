@@ -5,6 +5,7 @@ import dev.zemco.schemalens.meta.models.TableMetadata
 import dev.zemco.schemalens.meta.spi.TableMetadataReader
 import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource
+import org.springframework.jdbc.core.queryForList
 import org.springframework.stereotype.Component
 import javax.sql.DataSource
 
@@ -26,7 +27,9 @@ class OracleTableMetadataReader(
     }
 
     override fun readTableNames(dataSource: DataSource): List<String> =
-        dataSource.toJdbcTemplate().queryForList(GET_TABLE_LIST_SQL_QUERY, String::class.java)
+        dataSource.toJdbcTemplate()
+            .queryForList<String>(GET_TABLE_LIST_SQL_QUERY)
+            .filterNotNull()
 
     override fun readTableDetails(dataSource: DataSource, tableName: String): TableMetadata =
         readTableDetails(dataSource, setOf(tableName)).getValue(tableName)
