@@ -10,7 +10,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { FormatGenericValidationErrorsPipe } from '../../../../shared/pipes/format-generic-validation-errors.pipe';
-import { LogicalModelStore } from '../../../logical-model.store';
+import { DataModelStore } from '../../../data-model.store';
 import { LogicalDataModelingFacade } from '../logical-data-modeling.facade';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { combineWithPrevious } from '../../../../core/rxjs-pipes';
@@ -36,12 +36,12 @@ import { ResolvedAttribute } from '../../../models/resolved-attribute.model';
 })
 export class LogicalDataModelerEntityPropertiesComponent implements BaseDataModelerPropertiesComponent {
   selection = input.required<SchemaDiagramSelection | null>();
-  private store = inject(LogicalModelStore);
+  private store = inject(DataModelStore);
   private facade = inject(LogicalDataModelingFacade);
 
   currentEntity = computed(() => {
     const { node } = this.selection() as SchemaDiagramNodeSelection;
-    const entity = this.store.entities().find(e => e.entityId === node.id);
+    const entity = this.store.nodes().find(e => e.nodeId === node.id);
 
     if (!entity) {
       throw new Error('Failed to resolve entity for selected node');
@@ -62,8 +62,8 @@ export class LogicalDataModelerEntityPropertiesComponent implements BaseDataMode
     combineWithPrevious(toObservable(this.currentEntity))
       .pipe(takeUntilDestroyed())
       .subscribe(([previous, current]) => {
-        if (previous !== undefined && previous !== null && previous.entityId !== null) {
-          this.saveChanges(previous.entityId);
+        if (previous !== undefined && previous !== null && previous.nodeId !== null) {
+          this.saveChanges(previous.nodeId);
         }
         this.propertiesForm.reset({ name: current.name });
         this.formModified = false;
@@ -76,7 +76,7 @@ export class LogicalDataModelerEntityPropertiesComponent implements BaseDataMode
   }
 
   onAddAttribute(): void {
-    this.facade.addAttribute(this.currentEntity().entityId as number);
+    this.facade.addAttribute(this.currentEntity().nodeId as number);
   }
 
   onAttributeOrderChanged(reordered: ResolvedAttribute[]): void {
@@ -87,26 +87,26 @@ export class LogicalDataModelerEntityPropertiesComponent implements BaseDataMode
     if (attribute.source !== 'direct') {
       return;
     }
-    this.facade.editAttribute(this.currentEntity().entityId as number, attribute.attribute);
+    this.facade.editAttribute(this.currentEntity().nodeId as number, attribute.attribute);
   }
 
   onDeleteAttribute(attribute: ResolvedAttribute): void {
     if (attribute.source !== 'direct') {
       return;
     }
-    this.facade.deleteAttribute(this.currentEntity().entityId as number, attribute.attribute);
+    this.facade.deleteAttribute(this.currentEntity().nodeId as number, attribute.attribute);
   }
 
-  saveChanges(entityId: number = this.currentEntity().entityId ?? -1): void {
+  saveChanges(entityId: number = this.currentEntity().nodeId ?? -1): void {
     const pendingOrder = this.pendingAttributeOrder;
 
     if (this.formModified) {
-      const entity = this.store.entities().find(e => e.entityId === entityId);
+      const entity = this.store.nodes().find(e => e.nodeId === entityId);
       if (!entity) {
         throw new Error();
       }
 
-      const updated = { entityId: entity.entityId, name: this.propertiesForm.getRawValue().name };
+      const updated = { nodeId: entity.nodeId, name: this.propertiesForm.getRawValue().name };
       this.facade.updateEntity(updated);
       this.formModified = false;
     }

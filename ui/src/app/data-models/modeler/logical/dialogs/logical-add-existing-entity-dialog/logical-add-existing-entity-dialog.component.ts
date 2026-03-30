@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { LogicalEntity } from '../../../../models/logical-model.model';
+﻿import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { DataModelNode } from '../../../../models/data-model-types.model';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '../../../../../core/translate/translate.pipe';
@@ -7,7 +7,7 @@ import { MatNavList, MatListItem } from '@angular/material/list';
 import { AlertComponent } from '../../../../../shared/components/alert/alert.component';
 
 export interface LogicalAddExistingEntityDialogData {
-  entities: LogicalEntity[];
+  entities: DataModelNode[];
 }
 
 @Component({
@@ -26,10 +26,10 @@ export interface LogicalAddExistingEntityDialogData {
   ],
 })
 export class LogicalAddExistingEntityDialogComponent {
-  private matDialogRef = inject(MatDialogRef<LogicalAddExistingEntityDialogComponent, LogicalEntity>);
+  private matDialogRef = inject(MatDialogRef<LogicalAddExistingEntityDialogComponent, DataModelNode>);
   data = inject<LogicalAddExistingEntityDialogData>(MAT_DIALOG_DATA);
 
-  select(entity: LogicalEntity): void {
+  select(entity: DataModelNode): void {
     this.matDialogRef.close(entity);
   }
 

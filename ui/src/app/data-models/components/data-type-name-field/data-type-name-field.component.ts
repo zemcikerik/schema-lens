@@ -1,11 +1,11 @@
-import { ChangeDetectionStrategy, Component, input } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/material/autocomplete';
 import { combineLatest, map, startWith, switchMap } from 'rxjs';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
-import { LogicalDataType } from '../../models/logical-model.model';
+import { DataModelDataType } from '../../models/data-model-types.model';
 
 @Component({
   selector: 'app-data-type-name-field',
@@ -24,7 +24,7 @@ import { LogicalDataType } from '../../models/logical-model.model';
   ],
 })
 export class DataTypeNameFieldComponent {
-  dataTypes = input.required<LogicalDataType[]>();
+  dataTypes = input.required<DataModelDataType[]>();
   control = input.required<FormControl<string>>();
   label = input.required<string>();
 
@@ -35,6 +35,6 @@ export class DataTypeNameFieldComponent {
       switchMap(ctrl => combineLatest([ctrl.valueChanges.pipe(startWith(ctrl.value)), this.dataTypes$])),
       map(([value, dataTypes]) => dataTypes.filter(t => t.name.toUpperCase().startsWith(value.toUpperCase()))),
     ),
-    { initialValue: [] as LogicalDataType[] },
+    { initialValue: [] as DataModelDataType[] },
   );
 }

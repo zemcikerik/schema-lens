@@ -1,4 +1,4 @@
-import {
+﻿import {
   ChangeDetectionStrategy,
   ChangeDetectorRef,
   Component,
@@ -16,7 +16,7 @@ import { Router } from '@angular/router';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
-import { LogicalAttribute } from '../../models/logical-model.model';
+import { DataModelField } from '../../models/data-model-types.model';
 import { TableConstraintIconComponent } from '../../../tables/components/table-constraint-icon/table-constraint-icon.component';
 import { MatTooltip } from '@angular/material/tooltip';
 import { CdkDrag, CdkDragDrop, CdkDragHandle, CdkDropList, moveItemInArray } from '@angular/cdk/drag-drop';
@@ -27,7 +27,7 @@ import { ProgressSpinnerComponent } from '../../../shared/components/progress-sp
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { FormsModule } from '@angular/forms';
 import { TranslateService } from '../../../core/translate/translate.service';
-import { LogicalModelStore } from '../../logical-model.store';
+import { DataModelStore } from '../../data-model.store';
 import { EMPTY, forkJoin, of, switchMap } from 'rxjs';
 
 // TODO: oof
@@ -60,21 +60,21 @@ import { EMPTY, forkJoin, of, switchMap } from 'rxjs';
   ],
 })
 export class DataModelEntityComponent {
-  @ViewChild('table', { static: true }) table!: MatTable<LogicalAttribute>;
+  @ViewChild('table', { static: true }) table!: MatTable<DataModelField>;
   readonly ALL_COLUMNS = ['drag', 'primary-key', 'name', 'type', 'nullable', 'actions'];
 
   entityId = input.required<string>();
 
-  private store = inject(LogicalModelStore);
+  private store = inject(DataModelStore);
   translateService = inject(TranslateService);
 
   entity = linkedSignal(() => {
-    const entity = this.store.entities().find(e => e.entityId == +this.entityId());
+    const entity = this.store.nodes().find(e => e.nodeId == +this.entityId());
     // TODO: redirect on null
     return structuredClone(entity);
   });
 
-  entityAttributes = computed(() => this.entity()?.attributes ?? []);
+  entityAttributes = computed(() => this.entity()?.fields ?? []);
 
   loading = signal<boolean>(false);
   error = signal<boolean>(false);
@@ -97,7 +97,7 @@ export class DataModelEntityComponent {
           if (!confirmed) return EMPTY;
           const removeLocally = () => {
             const attrs = this.entityAttributes();
-            attrs.splice(attrs.findIndex(a => a.attributeId === attributeId), 1);
+            attrs.splice(attrs.findIndex(a => a.fieldId === attributeId), 1);
             this.table.renderRows();
           };
           if (attributeId === null) {
@@ -106,7 +106,7 @@ export class DataModelEntityComponent {
           }
           this.loading.set(true);
           this.error.set(false);
-          return this.store.deleteAttribute(+this.entityId(), attributeId);
+          return this.store.deleteField(+this.entityId(), attributeId);
         }),
       )
       .subscribe({
@@ -117,7 +117,7 @@ export class DataModelEntityComponent {
 
   addAttribute = () => {
     this.entityAttributes().push({
-      attributeId: null,
+      fieldId: null,
       name: this.translateService.translate('DATAMODEL.ENTITY.ATTRIBUTE_NEW.NAME')(),
       typeId: -1,
       isPrimaryKey: false,
@@ -133,7 +133,7 @@ export class DataModelEntityComponent {
     this.table.renderRows();
   }
 
-  openDataTypeDialog = (attribute: LogicalAttribute) => {
+  openDataTypeDialog = (attribute: DataModelField) => {
     this.dataModelDialogService.openDataTypeSelectorDialog(attribute, this.store.dataTypes())
       .subscribe(res => {
         if (res !== undefined) {
@@ -149,24 +149,24 @@ export class DataModelEntityComponent {
     if (!entity) return;
 
     const entityId = this.entityId();
-    const originalAttributes = this.store.entities().find(e => e.entityId === +entityId)?.attributes ?? [];
+    const originalFields = this.store.nodes().find(e => e.nodeId === +entityId)?.fields ?? [];
     const updatedAttributes = this.entityAttributes().map((a, i) => ({ ...a, position: i }));
 
-    const toCreate = updatedAttributes.filter(a => a.attributeId === null);
-    const toUpdate = updatedAttributes.filter(a => a.attributeId !== null);
-    const originalIds = new Set(originalAttributes.map(a => a.attributeId));
-    const updatedIds = new Set(updatedAttributes.filter(a => a.attributeId !== null).map(a => a.attributeId));
+    const toCreate = updatedAttributes.filter(a => a.fieldId === null);
+    const toUpdate = updatedAttributes.filter(a => a.fieldId !== null);
+    const originalIds = new Set(originalFields.map(a => a.fieldId));
+    const updatedIds = new Set(updatedAttributes.filter(a => a.fieldId !== null).map(a => a.fieldId));
     const toDeleteIds = [...originalIds].filter(id => !updatedIds.has(id)) as number[];
 
     this.loading.set(true);
     this.error.set(false);
 
-    const entityUpdate$ = this.store.updateEntity(entity);
-    const creates$ = toCreate.length ? forkJoin(toCreate.map(a => this.store.createAttribute(+entityId, a))) : of([]);
-    const updates$ = toUpdate.length ? forkJoin(toUpdate.map(a => this.store.updateAttribute(+entityId, a))) : of([]);
-    const deletes$ = toDeleteIds.length ? forkJoin(toDeleteIds.map(id => this.store.deleteAttribute(+entityId, id))) : of([]);
+    const nodeUpdate$ = this.store.updateNode(entity);
+    const creates$ = toCreate.length ? forkJoin(toCreate.map(a => this.store.createField(+entityId, a))) : of([]);
+    const updates$ = toUpdate.length ? forkJoin(toUpdate.map(a => this.store.updateField(+entityId, a))) : of([]);
+    const deletes$ = toDeleteIds.length ? forkJoin(toDeleteIds.map(id => this.store.deleteField(+entityId, id))) : of([]);
 
-    forkJoin([entityUpdate$, creates$, updates$, deletes$]).subscribe({
+    forkJoin([nodeUpdate$, creates$, updates$, deletes$]).subscribe({
       next: () => this.loading.set(false),
       error: () => { this.loading.set(false); this.error.set(true); },
     });
@@ -181,7 +181,7 @@ export class DataModelEntityComponent {
           if (!res) return;
           this.error.set(false);
           this.loading.set(true);
-          this.store.deleteEntity(+this.entityId()).subscribe({
+          this.store.deleteNode(+this.entityId()).subscribe({
             next: async () => {
               this.loading.set(false);
               await this.router.navigate(['/model', this.store.dataModelId]);
@@ -195,4 +195,3 @@ export class DataModelEntityComponent {
       });
   };
 }
-

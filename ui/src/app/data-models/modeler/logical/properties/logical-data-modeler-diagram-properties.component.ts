@@ -3,7 +3,7 @@ import { BaseDataModelerPropertiesComponent } from '../../properties/base-data-m
 import { SchemaDiagramSelection } from '../../../../diagrams/schema/model/schema-diagram-selection.model';
 import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { LogicalModelStore } from '../../../logical-model.store';
+import { DataModelStore } from '../../../data-model.store';
 import { LogicalDataModelingFacade } from '../logical-data-modeling.facade';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Router } from '@angular/router';
@@ -19,7 +19,7 @@ import { TranslatePipe } from '../../../../core/translate/translate.pipe';
 export class LogicalDataModelerDiagramPropertiesComponent implements BaseDataModelerPropertiesComponent {
   selection = input.required<SchemaDiagramSelection | null>();
 
-  private store = inject(LogicalModelStore);
+  private store = inject(DataModelStore);
   private facade = inject(LogicalDataModelingFacade);
   private router = inject(Router);
   private formModified = false;

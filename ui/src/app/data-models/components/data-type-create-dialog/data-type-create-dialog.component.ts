@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { LogicalDataType } from '../../models/logical-model.model';
+﻿import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { DataModelDataType } from '../../models/data-model-types.model';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { LogicalModelStore } from '../../logical-model.store';
+import { DataModelStore } from '../../data-model.store';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
@@ -15,7 +15,7 @@ import { finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface DataTypeCreateDialogData {
-  dataTypes: LogicalDataType[];
+  dataTypes: DataModelDataType[];
 }
 
 // TODO: inconsistent naming
@@ -44,7 +44,7 @@ export class DataTypeCreateDialogComponent {
   private destroyRef = inject(DestroyRef);
 
   data = inject<DataTypeCreateDialogData>(MAT_DIALOG_DATA);
-  private store = inject(LogicalModelStore);
+  private store = inject(DataModelStore);
 
   loading = signal<boolean>(false);
   error = signal<boolean>(false);

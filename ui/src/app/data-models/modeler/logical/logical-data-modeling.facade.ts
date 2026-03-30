@@ -1,28 +1,24 @@
-import { computed, inject, Injectable } from '@angular/core';
+﻿import { computed, inject, Injectable } from '@angular/core';
 import { DataModelingFacade } from '../data-modeling.facade';
 import { LogicalDataModelingState } from './logical-data-modeling.state';
 import { SchemaDiagramNode } from '../../../diagrams/schema/model/schema-diagram-node.model';
 import { catchError, defer, filter, finalize, Observable, switchMap, tap, throwError } from 'rxjs';
 import { SchemaDiagramPositionSnapshot } from '../../../diagrams/schema/model/schema-diagram-position-snapshot.model';
 import { LogicalDataModelerDialogService } from './logical-data-modeler-dialog.service';
-import { LogicalModelStore } from '../../logical-model.store';
+import { DataModelStore } from '../../data-model.store';
 import { LogicalDiagramMapper } from './logical-diagram.mapper';
-import { LogicalDataModel, LogicalAttribute, LogicalEntity, LogicalEntitySummary, LogicalRelationship } from '../../models/logical-model.model';
+import { DataModelDetails, DataModelEdge, DataModelField, DataModelNode, DataModelNodeSummary } from '../../models/data-model-types.model';
 import { LogicalModelDiagram } from '../../models/data-model-diagram.model';
 import { LogicalEntityAttributeResolverService } from '../../services/logical-entity-attribute-resolver.service';
-import { LogicalAttributeEditorService } from '../../services/logical-attribute-editor.service';
-import { LogicalRelationshipEditorService } from '../../services/logical-relationship-editor.service';
 import { ResolvedAttribute } from '../../models/resolved-attribute.model';
 
 @Injectable()
 export class LogicalDataModelingFacade implements DataModelingFacade {
-  private store = inject(LogicalModelStore);
+  private store = inject(DataModelStore);
   private state = inject(LogicalDataModelingState);
   private mapper = inject(LogicalDiagramMapper);
   private dialogs = inject(LogicalDataModelerDialogService);
   private attributeResolver = inject(LogicalEntityAttributeResolverService);
-  private attributeEditor = inject(LogicalAttributeEditorService);
-  private relationshipEditor = inject(LogicalRelationshipEditorService);
 
   private pendingEntityIds = new Set<number>();
 
@@ -41,37 +37,37 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
     this.state.patches$.next({ type: 'diagram:clear' });
     this.pendingEntityIds.clear();
 
-    const entities = model.entities;
-    const includedEntityIds = new Set(diagram.entities.map(e => e.entityId));
-    const entitiesToRender = entities.filter(e => includedEntityIds.has(e.entityId!));
+    const entities = model.nodes;
+    const includedEntityIds = new Set((diagram.nodes ?? []).map(e => e.nodeId));
+    const entitiesToRender = entities.filter(e => includedEntityIds.has(e.nodeId!));
 
     for (const entity of entitiesToRender) {
-      const position = this.entityPosition(entity.entityId!, diagram);
+      const position = this.entityPosition(entity.nodeId!, diagram);
       this.state.patches$.next({ type: 'node:add', node: this.resolveAndMapEntity(entity), position });
     }
 
-    for (const rel of model.relationships) {
-      if (!includedEntityIds.has(rel.fromEntityId) || !includedEntityIds.has(rel.toEntityId)) {
+    for (const rel of model.edges) {
+      if (!includedEntityIds.has(rel.fromNodeId) || !includedEntityIds.has(rel.toNodeId)) {
         continue;
       }
 
-      const position = this.relationshipPosition(rel.relationshipId!, diagram);
+      const position = this.relationshipPosition(rel.edgeId!, diagram);
       this.state.patches$.next({ type: 'edge:add', edge: this.mapper.relationshipToEdge(rel), position });
     }
   }
 
   addExistingNode(): void {
-    const model = this.store.model() as LogicalDataModel;
+    const model = this.store.model() as DataModelDetails;
     const diagram = this.store.activeDiagram() as LogicalModelDiagram;
 
-    const includedEntityIds = new Set(diagram.entities.map(e => e.entityId));
-    const availableEntities = model.entities.filter(e => e.entityId !== null && !includedEntityIds.has(e.entityId) && !this.pendingEntityIds.has(e.entityId!));
+    const includedEntityIds = new Set((diagram.nodes ?? []).map(e => e.nodeId));
+    const availableEntities = model.nodes.filter(e => e.nodeId !== null && !includedEntityIds.has(e.nodeId) && !this.pendingEntityIds.has(e.nodeId!));
 
     this.dialogs
       .openAddExistingEntity(availableEntities)
       .pipe(filter(entity => entity !== null))
       .subscribe(entity => {
-        const newEntityId = entity.entityId!;
+        const newEntityId = entity.nodeId!;
         this.pendingEntityIds.add(newEntityId);
         this.state.patches$.next({
           type: 'node:add',
@@ -83,13 +79,13 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
   }
 
   createNode(): void {
-    const model = this.store.model() as LogicalDataModel;
+    const model = this.store.model() as DataModelDetails;
 
     this.dialogs
-      .openCreateEntity(model.entities)
+      .openCreateEntity(model.nodes)
       .pipe(filter(entity => entity !== null))
       .subscribe(entity => {
-        this.pendingEntityIds.add(entity.entityId!);
+        this.pendingEntityIds.add(entity.nodeId!);
         this.state.patches$.next({
           type: 'node:add',
           node: this.resolveAndMapEntity(entity),
@@ -100,26 +96,27 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
   connect(from: SchemaDiagramNode, to: SchemaDiagramNode): void {
     const fromEntityPkAttributes = this.attributeResolver.resolveAttributes(from.id)().flatMap((resolved, index) => {
       if (resolved.source === 'direct' && resolved.attribute.isPrimaryKey) {
-        return [{ referencedAttributeId: resolved.attribute.attributeId as number, name: resolved.attribute.name, position: index }];
+        return [{ referencedFieldId: resolved.attribute.fieldId as number, name: resolved.attribute.name, position: index }];
       }
       if (resolved.source === 'relationship' && resolved.relationship.isIdentifying) {
-        return [{ referencedAttributeId: resolved.attribute.referencedAttributeId, name: resolved.attribute.name, position: index }];
+        return [{ referencedFieldId: resolved.attribute.referencedFieldId, name: resolved.attribute.name, position: index }];
       }
       return [];
     });
 
-    const relationship: LogicalRelationship = {
-      relationshipId: 0,
-      fromEntityId: from.id,
-      toEntityId: to.id,
+    const relationship: DataModelEdge = {
+      edgeId: 0,
+      modelId: this.store.dataModelId,
+      fromNodeId: from.id,
+      toNodeId: to.id,
       type: '1:N',
       isMandatory: false,
       isIdentifying: false,
-      attributes: fromEntityPkAttributes,
+      fields: fromEntityPkAttributes,
     };
 
     this.withLoading(
-      this.store.createRelationship(relationship).pipe(
+      this.store.createEdge(relationship).pipe(
         tap(created => {
           this.state.patches$.next({
             type: 'edge:add',
@@ -149,15 +146,15 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
 
     const updatedDiagram: LogicalModelDiagram = {
       ...diagram,
-      entities: Object.entries(snapshot.nodes).map(([id, pos]) => ({
-        entityId: Number(id),
+      nodes: Object.entries(snapshot.nodes).map(([id, pos]) => ({
+        nodeId: Number(id),
         x: pos.x,
         y: pos.y,
         width: pos.width,
         height: pos.height,
       })),
-      relationships: Object.entries(snapshot.edges).map(([id, pos]) => ({
-        relationshipId: Number(id),
+      edges: Object.entries(snapshot.edges).map(([id, pos]) => ({
+        edgeId: Number(id),
         points: pos.points,
       })),
     };
@@ -167,22 +164,21 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
     ));
   }
 
-  updateEntity(entity: LogicalEntitySummary): void {
+  updateEntity(entity: DataModelNodeSummary): void {
     this.withLoading(
-      this.store.updateEntity(entity).pipe(
+      this.store.updateNode(entity).pipe(
         tap(saved => this.notifyEntityUpdated(saved)),
       ),
     ).subscribe();
   }
 
-  updateRelationship(updated: LogicalRelationship): void {
-    const previous = this.store.relationships().find(r => r.relationshipId === updated.relationshipId) as LogicalRelationship;
-
+  updateRelationship(updated: DataModelEdge): void {
     this.withLoading(
-      this.relationshipEditor.updateRelationship(previous, updated).pipe(
-        tap(result => {
-          this.notifyRelationshipUpdated(result.updatedRelationship);
-          result.affectedEntityIds.forEach(entityId => this.notifyEntityUpdatedById(entityId));
+      this.store.updateEdge(updated).pipe(
+        tap(savedRelationship => {
+          this.notifyRelationshipUpdated(savedRelationship);
+          this.notifyEntityUpdatedById(savedRelationship.fromNodeId);
+          this.notifyEntityUpdatedById(savedRelationship.toNodeId);
         }),
       ),
     ).subscribe();
@@ -203,46 +199,52 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
     this.dialogs.openCreateAttribute(this.store.dataTypes()).pipe(
       filter(created => created !== null),
       switchMap(created => this.withLoading(
-        this.attributeEditor.createAttribute(entityId, { ...created, position: nextPosition }).pipe(
-          tap(result => this.notifyAttributeChangeResult(entityId, result.affectedRelationships)),
+        this.store.createField(entityId, { ...created, position: nextPosition }).pipe(
+          tap(() => {
+            this.notifyEntityUpdatedById(entityId);
+            this.notifyRelationshipsTargetingEntity(entityId);
+          }),
         ),
       )),
     ).subscribe();
   }
 
   // TODO: data type changed cascade
-  editAttribute(entityId: number, attribute: LogicalAttribute): void {
+  editAttribute(entityId: number, attribute: DataModelField): void {
     this.dialogs.openEditAttribute(attribute, this.store.dataTypes()).pipe(
       filter(updated => updated !== null),
       switchMap(updated => this.withLoading(
-        this.attributeEditor.editAttribute(entityId, attribute, updated).pipe(
-          tap(result => this.notifyAttributeChangeResult(entityId, result.affectedRelationships)),
+        this.store.updateField(entityId, updated).pipe(
+          tap(() => {
+            this.notifyEntityUpdatedById(entityId);
+            this.notifyRelationshipsTargetingEntity(entityId);
+          }),
         ),
       )),
     ).subscribe();
   }
 
-  deleteAttribute(entityId: number, attribute: LogicalAttribute): void {
+  deleteAttribute(entityId: number, attribute: DataModelField): void {
     this.dialogs.openDeleteAttributeConfirmation().pipe(
       filter(result => !!result),
       switchMap(() => this.withLoading(
-        this.store.deleteAttribute(entityId, attribute.attributeId as number).pipe(
-          tap(result => this.notifyAttributeChangeResult(entityId, result.affectedRelationships)),
+        this.store.deleteField(entityId, attribute.fieldId as number).pipe(
+          tap(result => this.notifyAttributeChangeResult(entityId, result.affectedEdges)),
         ),
       )),
     ).subscribe();
   }
 
-  private notifyAttributeChangeResult(ownerEntityId: number, affectedRelationships: LogicalRelationship[]): void {
+  private notifyAttributeChangeResult(ownerEntityId: number, affectedRelationships: DataModelEdge[]): void {
     this.notifyEntityUpdatedById(ownerEntityId);
     const notifiedEntityIds = new Set<number>([ownerEntityId]);
 
     for (const rel of affectedRelationships) {
       this.notifyRelationshipUpdated(rel);
 
-      if (!notifiedEntityIds.has(rel.toEntityId)) {
-        this.notifyEntityUpdatedById(rel.toEntityId);
-        notifiedEntityIds.add(rel.toEntityId);
+      if (!notifiedEntityIds.has(rel.toNodeId)) {
+        this.notifyEntityUpdatedById(rel.toNodeId);
+        notifiedEntityIds.add(rel.toNodeId);
       }
     }
   }
@@ -262,7 +264,7 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
     );
   }
 
-  private notifyEntityUpdated(entity: LogicalEntity): void {
+  private notifyEntityUpdated(entity: DataModelNode): void {
     this.state.patches$.next({
       type: 'node:update',
       node: this.resolveAndMapEntity(entity),
@@ -270,53 +272,60 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
   }
 
   private notifyEntityUpdatedById(entityId: number): void {
-    this.notifyEntityUpdated(this.store.entities().find(e => e.entityId === entityId) as LogicalEntity);
+    this.notifyEntityUpdated(this.store.nodes().find(e => e.nodeId === entityId) as DataModelNode);
   }
 
-  private resolveAndMapEntity(entity: LogicalEntity): SchemaDiagramNode {
-    const resolvedAttributes = this.attributeResolver.resolveAttributes(entity.entityId!)();
+  private resolveAndMapEntity(entity: DataModelNode): SchemaDiagramNode {
+    const resolvedAttributes = this.attributeResolver.resolveAttributes(entity.nodeId!)();
 
     const attributeTypeById = new Map<number, number>(
-      this.store.entities().flatMap(e =>
-        e.attributes.map(a => [a.attributeId as number, a.typeId]),
+      this.store.nodes().flatMap(e =>
+        e.fields.map(a => [a.fieldId as number, a.typeId]),
       ),
     );
 
-    const attributes: LogicalAttribute[] = resolvedAttributes.map(r => {
+    const fields: DataModelField[] = resolvedAttributes.map(r => {
       if (r.source === 'direct') {
         return r.attribute;
       }
 
       return {
-        attributeId: null,
+        fieldId: null,
         name: r.attribute.name,
-        typeId: attributeTypeById.get(r.attribute.referencedAttributeId) ?? 0,
+        typeId: attributeTypeById.get(r.attribute.referencedFieldId) ?? 0,
         isPrimaryKey: r.relationship.isIdentifying,
         isNullable: !r.relationship.isMandatory,
         position: r.position,
       };
     });
 
-    const parentRelationships = this.store.relationships().filter(rel => rel.toEntityId === entity.entityId);
-    return this.mapper.entityToNode({ ...entity, attributes }, this.store.dataTypes(), parentRelationships);
+    const parentEdges = this.store.edges().filter(edge => edge.toNodeId === entity.nodeId);
+    return this.mapper.entityToNode({ ...entity, fields }, this.store.dataTypes(), parentEdges);
   }
 
-  private notifyRelationshipUpdated(rel: LogicalRelationship): void {
+  private notifyRelationshipUpdated(rel: DataModelEdge): void {
     this.state.patches$.next({
       type: 'edge:update',
       edge: this.mapper.relationshipToEdge(rel),
     });
   }
 
+  private notifyRelationshipsTargetingEntity(entityId: number): void {
+    this.store.edges().filter(edge => edge.fromNodeId === entityId).forEach(edge => {
+      this.notifyRelationshipUpdated(edge);
+      this.notifyEntityUpdatedById(edge.toNodeId);
+    });
+  }
+
   private emitNewlyVisibleRelationships(newEntityId: number, previouslyIncludedEntityIds: Set<number>): void {
-    const model = this.store.model() as LogicalDataModel;
+    const model = this.store.model() as DataModelDetails;
     const diagram = this.store.activeDiagram() as LogicalModelDiagram;
 
     const visibleEntityIds = new Set([...previouslyIncludedEntityIds, ...this.pendingEntityIds]);
-    const newRelationships = model.relationships.filter(rel => {
-      const connectsNewEntity = rel.fromEntityId === newEntityId || rel.toEntityId === newEntityId;
-      const bothSidesVisible = visibleEntityIds.has(rel.fromEntityId) && visibleEntityIds.has(rel.toEntityId);
-      const alreadyInDiagram = diagram.relationships.some(r => r.relationshipId === rel.relationshipId);
+    const newRelationships = model.edges.filter(rel => {
+      const connectsNewEntity = rel.fromNodeId === newEntityId || rel.toNodeId === newEntityId;
+      const bothSidesVisible = visibleEntityIds.has(rel.fromNodeId) && visibleEntityIds.has(rel.toNodeId);
+      const alreadyInDiagram = (diagram.edges ?? []).some(r => r.edgeId === rel.edgeId);
       return connectsNewEntity && bothSidesVisible && !alreadyInDiagram;
     });
 
@@ -329,22 +338,22 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
   }
 
   private removeNodeEdges(nodeId: number): void {
-    const model = this.store.model() as LogicalDataModel;
-    const relatedEdges = model.relationships.filter(
-      rel => rel.fromEntityId === nodeId || rel.toEntityId === nodeId,
+    const model = this.store.model() as DataModelDetails;
+    const relatedEdges = model.edges.filter(
+      rel => rel.fromNodeId === nodeId || rel.toNodeId === nodeId,
     );
     for (const rel of relatedEdges) {
-      this.state.patches$.next({ type: 'edge:remove', edgeId: rel.relationshipId! });
+      this.state.patches$.next({ type: 'edge:remove', edgeId: rel.edgeId! });
     }
   }
 
   private entityPosition(entityId: number, diagram: LogicalModelDiagram) {
-    const pos = diagram.entities.find(e => e.entityId === entityId);
+    const pos = (diagram.nodes ?? []).find(e => e.nodeId === entityId);
     return pos ? { x: pos.x, y: pos.y, width: pos.width, height: pos.height } : undefined;
   }
 
   private relationshipPosition(relationshipId: number, diagram: LogicalModelDiagram) {
-    const pos = diagram.relationships.find(r => r.relationshipId === relationshipId);
+    const pos = (diagram.edges ?? []).find(r => r.edgeId === relationshipId);
     return pos ? { points: [...pos.points] } : undefined;
   }
 

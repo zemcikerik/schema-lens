@@ -1,17 +1,17 @@
-import { LogicalAttribute, LogicalRelationship, LogicalRelationshipAttribute } from './logical-model.model';
+﻿import { DataModelEdge, DataModelEdgeField, DataModelField } from './data-model-types.model';
 
 export type ResolvedAttributeSource = 'direct' | 'relationship';
 
 export interface DirectResolvedAttribute {
   source: 'direct';
-  attribute: LogicalAttribute;
+  attribute: DataModelField;
   position: number;
 }
 
 export interface RelationshipResolvedAttribute {
   source: 'relationship';
-  attribute: LogicalRelationshipAttribute;
-  relationship: LogicalRelationship;
+  attribute: DataModelEdgeField;
+  relationship: DataModelEdge;
   position: number;
 }
 

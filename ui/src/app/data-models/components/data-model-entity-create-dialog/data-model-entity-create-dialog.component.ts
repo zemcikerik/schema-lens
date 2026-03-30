@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { LogicalEntitySummary } from '../../models/logical-model.model';
+﻿import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
+import { DataModelNodeSummary } from '../../models/data-model-types.model';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
@@ -10,12 +10,12 @@ import { ProgressSpinnerComponent } from '../../../shared/components/progress-sp
 import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { uniqueStringValidator } from '../../../core/validators/unique-string.validator';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
-import { LogicalModelStore } from '../../logical-model.store';
+import { DataModelStore } from '../../data-model.store';
 import { finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 export interface DataModelEntityCreateDialogData {
-  entities: LogicalEntitySummary[];
+  entities: DataModelNodeSummary[];
 }
 
 @Component({
@@ -43,7 +43,7 @@ export class DataModelEntityCreateDialogComponent {
   private destroyRef = inject(DestroyRef);
 
   data = inject<DataModelEntityCreateDialogData>(MAT_DIALOG_DATA);
-  private store = inject(LogicalModelStore);
+  private store = inject(DataModelStore);
 
   loading = signal<boolean>(false);
   error = signal<boolean>(false);
@@ -65,7 +65,7 @@ export class DataModelEntityCreateDialogComponent {
     this.matDialogRef.disableClose = true;
 
     this.store
-      .createEntity({ name: name, entityId: null })
+      .createNode({ name: name, nodeId: null })
       .pipe(
         finalize(() => {
           this.loading.set(false);
@@ -79,4 +79,3 @@ export class DataModelEntityCreateDialogComponent {
       });
   }
 }
-

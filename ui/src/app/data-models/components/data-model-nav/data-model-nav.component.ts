@@ -12,7 +12,7 @@ import {
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { LogicalModelStore } from '../../logical-model.store';
+import { DataModelStore } from '../../data-model.store';
 import { DataModelDialogService } from '../../services/data-model-dialog.service';
 
 // TODO: routing
@@ -39,7 +39,7 @@ import { DataModelDialogService } from '../../services/data-model-dialog.service
 })
 export class DataModelNavComponent {
   dataModelId = input.required<number>();
-  store = inject(LogicalModelStore);
+  store = inject(DataModelStore);
   private dialogService = inject(DataModelDialogService);
 
   addNewDiagram(): void {
@@ -47,7 +47,7 @@ export class DataModelNavComponent {
   };
 
   addNewEntity(): void {
-    this.dialogService.openCreateEntityDialog(this.store.entities());
+    this.dialogService.openCreateEntityDialog(this.store.nodes());
   };
 
   addNewDataType(): void {

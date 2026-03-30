@@ -10,7 +10,7 @@ import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start
 import { uniqueStringValidator } from '../../../core/validators/unique-string.validator';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { DataModelDiagram } from '../../models/data-model-diagram.model';
-import { LogicalModelStore } from '../../logical-model.store';
+import { DataModelStore } from '../../data-model.store';
 import { finalize } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
@@ -43,7 +43,7 @@ export class DataModelDiagramCreateDialogComponent {
   private destroyRef = inject(DestroyRef);
 
   data = inject<DataModelDiagramCreateDialogData>(MAT_DIALOG_DATA);
-  private store = inject(LogicalModelStore);
+  private store = inject(DataModelStore);
 
   loading = signal<boolean>(false);
   error = signal<boolean>(false);
@@ -65,7 +65,7 @@ export class DataModelDiagramCreateDialogComponent {
     this.matDialogRef.disableClose = true;
 
     this.store
-      .createDiagram({ name, type: 'logical', id: null, relationships: [], entities: [] })
+      .createDiagram({ name, type: 'logical', id: null, edges: [], nodes: [] })
       .pipe(
         finalize(() => {
           this.loading.set(false);
@@ -79,4 +79,3 @@ export class DataModelDiagramCreateDialogComponent {
       });
   }
 }
-

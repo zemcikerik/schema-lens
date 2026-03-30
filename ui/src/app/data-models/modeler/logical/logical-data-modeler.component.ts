@@ -5,7 +5,7 @@ import { DATA_MODELER_DEFINITION } from '../data-modeler.definition';
 import { LogicalDataModelerDefinition } from './logical-data-modeler.definition';
 import { DATA_MODELING_FACADE } from '../data-modeling.facade';
 import { LogicalDataModelingFacade } from './logical-data-modeling.facade';
-import { LogicalModelStore } from '../../logical-model.store';
+import { DataModelStore } from '../../data-model.store';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { switchMap } from 'rxjs';
 import { MatProgressBar } from '@angular/material/progress-bar';
@@ -41,7 +41,7 @@ export class LogicalDataModelerComponent {
   diagramId = input.required<string>();
   dataModeler = viewChild(DataModelerComponent);
 
-  store = inject(LogicalModelStore);
+  store = inject(DataModelStore);
   private facade = inject(LogicalDataModelingFacade);
 
   constructor() {

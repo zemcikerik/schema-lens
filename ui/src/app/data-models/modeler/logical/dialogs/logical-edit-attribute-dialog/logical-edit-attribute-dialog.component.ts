@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
@@ -10,12 +10,12 @@ import { AlertComponent } from '../../../../../shared/components/alert/alert.com
 import { ProgressSpinnerComponent } from '../../../../../shared/components/progress-spinner/progress-spinner.component';
 import { FormatGenericValidationErrorsPipe } from '../../../../../shared/pipes/format-generic-validation-errors.pipe';
 import { noStartEndWhitespaceValidator } from '../../../../../core/validators/no-start-end-whitespace.validator';
-import { LogicalAttribute, LogicalDataType } from '../../../../models/logical-model.model';
+import { DataModelField, DataModelDataType } from '../../../../models/data-model-types.model';
 import { DataTypeNameFieldComponent } from '../../../../components/data-type-name-field/data-type-name-field.component';
 
 export interface LogicalEditAttributeDialogData {
-  attribute: LogicalAttribute;
-  dataTypes: LogicalDataType[];
+  attribute: DataModelField;
+  dataTypes: DataModelDataType[];
 }
 
 @Component({
@@ -41,7 +41,7 @@ export interface LogicalEditAttributeDialogData {
   ],
 })
 export class LogicalEditAttributeDialogComponent {
-  private matDialogRef = inject(MatDialogRef<LogicalEditAttributeDialogComponent, LogicalAttribute>);
+  private matDialogRef = inject(MatDialogRef<LogicalEditAttributeDialogComponent, DataModelField>);
   readonly data = inject<LogicalEditAttributeDialogData>(MAT_DIALOG_DATA);
 
   loading = signal(false);
@@ -88,7 +88,7 @@ export class LogicalEditAttributeDialogComponent {
       return;
     }
 
-    const updated: LogicalAttribute = {
+    const updated: DataModelField = {
       ...this.data.attribute,
       name,
       typeId: type.typeId as number,

@@ -1,10 +1,10 @@
-import { inject, Injectable, Injector } from '@angular/core';
+﻿import { inject, Injectable, Injector } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { map, Observable } from 'rxjs';
 import { DialogService } from '../../../core/dialog.service';
 import { LogicalAddExistingEntityDialogComponent, LogicalAddExistingEntityDialogData } from './dialogs/logical-add-existing-entity-dialog/logical-add-existing-entity-dialog.component';
 import { LogicalEditAttributeDialogComponent, LogicalEditAttributeDialogData } from './dialogs/logical-edit-attribute-dialog/logical-edit-attribute-dialog.component';
-import { LogicalAttribute, LogicalDataType, LogicalEntity, LogicalEntitySummary } from '../../models/logical-model.model';
+import { DataModelField, DataModelDataType, DataModelNode, DataModelNodeSummary } from '../../models/data-model-types.model';
 import { DataModelEntityCreateDialogComponent, DataModelEntityCreateDialogData } from '../../components/data-model-entity-create-dialog/data-model-entity-create-dialog.component';
 
 @Injectable()
@@ -13,23 +13,23 @@ export class LogicalDataModelerDialogService {
   private dialogService = inject(DialogService);
   private injector = inject(Injector);
 
-  openAddExistingEntity(entities: LogicalEntity[]): Observable<LogicalEntity | null> {
+  openAddExistingEntity(entities: DataModelNode[]): Observable<DataModelNode | null> {
     return this.matDialog
       .open(LogicalAddExistingEntityDialogComponent, { data: { entities } satisfies LogicalAddExistingEntityDialogData })
       .afterClosed()
-      .pipe(map((entity: LogicalEntity) => (entity ? entity : null)));
+      .pipe(map((entity: DataModelNode) => entity ? entity : null));
   }
 
-  openCreateEntity(entities: LogicalEntitySummary[]): Observable<LogicalEntity | null> {
+  openCreateEntity(entities: DataModelNodeSummary[]): Observable<DataModelNode | null> {
     return this.matDialog
       .open(DataModelEntityCreateDialogComponent, { data: { entities } satisfies DataModelEntityCreateDialogData, injector: this.injector })
       .afterClosed()
-      .pipe(map((entity: LogicalEntity) => (entity ? entity : null)));
+      .pipe(map((entity: DataModelNode) => entity ? entity : null));
   }
 
-  openCreateAttribute(dataTypes: LogicalDataType[]): Observable<LogicalAttribute | null> {
-    const blank: LogicalAttribute = {
-      attributeId: null,
+  openCreateAttribute(dataTypes: DataModelDataType[]): Observable<DataModelField | null> {
+    const blank: DataModelField = {
+      fieldId: null,
       name: '',
       typeId: dataTypes[0]?.typeId ?? -1,
       isPrimaryKey: false,
@@ -43,17 +43,17 @@ export class LogicalDataModelerDialogService {
         injector: this.injector,
       })
       .afterClosed()
-      .pipe(map((result: LogicalAttribute | undefined) => result ?? null));
+      .pipe(map((result: DataModelField | undefined) => result ?? null));
   }
 
-  openEditAttribute(attribute: LogicalAttribute, dataTypes: LogicalDataType[]): Observable<LogicalAttribute | null> {
+  openEditAttribute(attribute: DataModelField, dataTypes: DataModelDataType[]): Observable<DataModelField | null> {
     return this.matDialog
       .open(LogicalEditAttributeDialogComponent, {
         data: { attribute, dataTypes } satisfies LogicalEditAttributeDialogData,
         injector: this.injector,
       })
       .afterClosed()
-      .pipe(map((result: LogicalAttribute | undefined) => result ?? null));
+      .pipe(map((result: DataModelField | undefined) => result ?? null));
   }
 
   openDeleteEntityConfirmation(): Observable<boolean | null> {

@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, inject, input, linkedSignal, signal } from '@angular/core';
+﻿import { ChangeDetectionStrategy, Component, inject, input, linkedSignal, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIcon } from '@angular/material/icon';
@@ -8,12 +8,12 @@ import { MatButton } from '@angular/material/button';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
-import { LogicalDataType } from '../../models/logical-model.model';
+import { DataModelDataType } from '../../models/data-model-types.model';
 import { Router } from '@angular/router';
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { DialogService } from '../../../core/dialog.service';
-import { LogicalModelStore } from '../../logical-model.store';
+import { DataModelStore } from '../../data-model.store';
 
 // TODO: cleanup
 
@@ -37,7 +37,7 @@ import { LogicalModelStore } from '../../logical-model.store';
 export class DataTypeEditComponent {
   dataTypeId = input.required<number>();
 
-  private store = inject(LogicalModelStore);
+  private store = inject(DataModelStore);
   private dialogService = inject(DialogService);
   private router = inject(Router);
 
@@ -45,7 +45,7 @@ export class DataTypeEditComponent {
     name: new FormControl<string>('', [Validators.required, noStartEndWhitespaceValidator, Validators.maxLength(40)]),
   });
 
-  type = linkedSignal<LogicalDataType | null>(() => {
+  type = linkedSignal<DataModelDataType | null>(() => {
     const t = structuredClone(this.store.dataTypes().find(t => t.typeId == this.dataTypeId())) ?? null;
     this.form.patchValue({ name: t?.name ?? '' });
     // TODO: redirect on null

@@ -41,10 +41,10 @@
       </mat-expansion-panel-header>
 
       <ng-template matExpansionPanelContent>
-        @for (entity of store.entities(); track entity.entityId) {
+        @for (entity of store.nodes(); track entity.nodeId) {
           <a
             mat-list-item
-            [routerLink]="['/model', dataModelId(), 'entity', entity.entityId]"
+            [routerLink]="['/model', dataModelId(), 'entity', entity.nodeId]"
             routerLinkActive
             #rlaEntity="routerLinkActive"
             [activated]="rlaEntity.isActive"

@@ -7,7 +7,7 @@
     </app-alert>
   } @else {
     <mat-nav-list>
-      @for (entity of data.entities; track entity.entityId) {
+      @for (entity of data.entities; track entity.nodeId) {
         <mat-list-item (click)="select(entity)">
           {{ entity.name }}
         </mat-list-item>

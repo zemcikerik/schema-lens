@@ -1,5 +1,5 @@
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { LogicalAttribute, LogicalDataType } from '../../models/logical-model.model';
+﻿import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { DataModelField, DataModelDataType } from '../../models/data-model-types.model';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
@@ -7,8 +7,8 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { DataTypeNameFieldComponent } from '../data-type-name-field/data-type-name-field.component';
 
 export interface DataTypeDialogData {
-  dataTypes: LogicalDataType[];
-  targetAttribute: LogicalAttribute;
+  dataTypes: DataModelDataType[];
+  targetAttribute: DataModelField;
 }
 
 @Component({
@@ -44,7 +44,7 @@ export class DataTypeSelectorDialogComponent {
     }
   }
 
-  private findType(id: number): LogicalDataType | undefined {
+  private findType(id: number): DataModelDataType | undefined {
     return this.data.dataTypes.find(e => e.typeId === id);
   }
 }

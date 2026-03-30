@@ -8,7 +8,7 @@ import { ProgressSpinnerComponent } from '../shared/components/progress-spinner/
 import { AlertComponent } from '../shared/components/alert/alert.component';
 import { TranslatePipe } from '../core/translate/translate.pipe';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { LogicalModelStore } from './logical-model.store';
+import { DataModelStore } from './data-model.store';
 import { DataModelDialogService } from './services/data-model-dialog.service';
 
 @Component({
@@ -25,7 +25,7 @@ import { DataModelDialogService } from './services/data-model-dialog.service';
     TranslatePipe,
   ],
   providers: [
-    LogicalModelStore,
+    DataModelStore,
     DataModelDialogService,
   ],
 })
@@ -42,7 +42,7 @@ export class DataModelComponent {
     return -1;
   });
 
-  store = inject(LogicalModelStore);
+  store = inject(DataModelStore);
   private router = inject(Router);
 
   constructor() {
