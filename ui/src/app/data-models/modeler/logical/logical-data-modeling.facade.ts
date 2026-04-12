@@ -7,7 +7,9 @@ import { SchemaDiagramPositionSnapshot } from '../../../diagrams/schema/model/sc
 import { LogicalDataModelerDialogService } from './logical-data-modeler-dialog.service';
 import { DataModelStore } from '../../data-model.store';
 import { LogicalDiagramMapper } from './logical-diagram.mapper';
-import { DataModelDetails, DataModelEdge, DataModelField, DataModelNode, DataModelNodeSummary } from '../../models/data-model-types.model';
+import { DataModelDetails } from '../../models/data-model.model';
+import { DataModelEdge } from '../../models/data-model-edge.model';
+import { DataModelField, DataModelNode, DataModelNodeSummary } from '../../models/data-model-node.model';
 import { LogicalModelDiagram } from '../../models/data-model-diagram.model';
 import { DataModelNodeFieldResolverService } from '../../services/data-model-node-field-resolver.service';
 import { ResolvedField } from '../../models/resolved-field.model';

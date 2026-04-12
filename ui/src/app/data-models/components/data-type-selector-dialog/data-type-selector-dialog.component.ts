@@ -1,5 +1,6 @@
 ﻿import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
-import { DataModelField, DataModelDataType } from '../../models/data-model-types.model';
+import { DataModelField } from '../../models/data-model-node.model';
+import { DataModelDataType } from '../../models/data-model-data-type.model';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';

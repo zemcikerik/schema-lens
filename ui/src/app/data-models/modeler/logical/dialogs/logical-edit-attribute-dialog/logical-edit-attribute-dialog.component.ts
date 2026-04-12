@@ -10,7 +10,8 @@ import { AlertComponent } from '../../../../../shared/components/alert/alert.com
 import { ProgressSpinnerComponent } from '../../../../../shared/components/progress-spinner/progress-spinner.component';
 import { FormatGenericValidationErrorsPipe } from '../../../../../shared/pipes/format-generic-validation-errors.pipe';
 import { noStartEndWhitespaceValidator } from '../../../../../core/validators/no-start-end-whitespace.validator';
-import { DataModelField, DataModelDataType } from '../../../../models/data-model-types.model';
+import { DataModelField } from '../../../../models/data-model-node.model';
+import { DataModelDataType } from '../../../../models/data-model-data-type.model';
 import { DataTypeNameFieldComponent } from '../../../../components/data-type-name-field/data-type-name-field.component';
 
 export interface LogicalEditAttributeDialogData {

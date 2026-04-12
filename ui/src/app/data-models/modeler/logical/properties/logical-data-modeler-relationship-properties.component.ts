@@ -6,7 +6,7 @@ import {
 } from '../../../../diagrams/schema/model/schema-diagram-selection.model';
 import { DataModelStore } from '../../../data-model.store';
 import { LogicalDataModelingFacade } from '../logical-data-modeling.facade';
-import { DataModelEdge, DataModelEdgeType } from '../../../models/data-model-types.model';
+import { DataModelEdge, DataModelEdgeType } from '../../../models/data-model-edge.model';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormField, MatLabel } from '@angular/material/input';
 import { MatOption, MatSelect } from '@angular/material/select';

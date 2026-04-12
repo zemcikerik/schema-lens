@@ -1,6 +1,6 @@
 ﻿import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { DataModelDataType } from '../models/data-model-types.model';
+import { DataModelDataType } from '../models/data-model-data-type.model';
 import { DataModelDataTypeHttpClientService } from './data-model-data-type-http-client.service';
 
 @Injectable({

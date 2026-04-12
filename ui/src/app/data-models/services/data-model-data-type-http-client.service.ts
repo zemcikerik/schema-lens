@@ -1,7 +1,7 @@
 ﻿import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, Observable, of } from 'rxjs';
-import { DataModelDataType } from '../models/data-model-types.model';
+import { DataModelDataType } from '../models/data-model-data-type.model';
 import { catchSpecificHttpStatusError } from '../../core/rxjs-pipes';
 
 @Injectable({

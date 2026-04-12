@@ -4,7 +4,8 @@ import { map, Observable } from 'rxjs';
 import { DialogService } from '../../../core/dialog.service';
 import { LogicalAddExistingEntityDialogComponent, LogicalAddExistingEntityDialogData } from './dialogs/logical-add-existing-entity-dialog/logical-add-existing-entity-dialog.component';
 import { LogicalEditAttributeDialogComponent, LogicalEditAttributeDialogData } from './dialogs/logical-edit-attribute-dialog/logical-edit-attribute-dialog.component';
-import { DataModelField, DataModelDataType, DataModelNode, DataModelNodeSummary } from '../../models/data-model-types.model';
+import { DataModelField, DataModelNode, DataModelNodeSummary } from '../../models/data-model-node.model';
+import { DataModelDataType } from '../../models/data-model-data-type.model';
 import { DataModelEntityCreateDialogComponent, DataModelEntityCreateDialogData } from '../../components/data-model-entity-create-dialog/data-model-entity-create-dialog.component';
 
 @Injectable()

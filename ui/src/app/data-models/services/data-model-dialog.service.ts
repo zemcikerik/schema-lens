@@ -1,7 +1,8 @@
 ﻿import { inject, Injectable, Injector } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
-import { DataModelDataType, DataModelField, DataModelNodeSummary } from '../models/data-model-types.model';
+import { DataModelDataType } from '../models/data-model-data-type.model';
+import { DataModelField, DataModelNodeSummary } from '../models/data-model-node.model';
 import { DataModelDiagram } from '../models/data-model-diagram.model';
 import {
   DataTypeCreateDialogComponent,

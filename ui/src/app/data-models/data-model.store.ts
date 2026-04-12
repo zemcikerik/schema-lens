@@ -1,15 +1,9 @@
 ﻿import { computed, inject, Injectable, signal } from '@angular/core';
 import { Observable, tap, of, finalize, defer, map } from 'rxjs';
-import {
-  DataModelDetails,
-  DataModelEdge,
-  DataModelField,
-  DataModelFieldReorderRequest,
-  DataModelModification,
-  DataModelNode,
-  DataModelNodeSummary,
-  DataModelDataType,
-} from './models/data-model-types.model';
+import { DataModelDetails, DataModelModification } from './models/data-model.model';
+import { DataModelEdge } from './models/data-model-edge.model';
+import { DataModelField, DataModelFieldReorderRequest, DataModelNode, DataModelNodeSummary } from './models/data-model-node.model';
+import { DataModelDataType } from './models/data-model-data-type.model';
 import { DataModelFieldDeletionResult } from './models/data-model-field-deletion-result.model';
 import { DataModelDiagram, LogicalModelDiagram } from './models/data-model-diagram.model';
 import { DataModelDetailsService } from './services/data-model-details.service';

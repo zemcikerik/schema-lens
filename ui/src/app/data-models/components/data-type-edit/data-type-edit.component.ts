@@ -8,7 +8,7 @@ import { MatButton } from '@angular/material/button';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
-import { DataModelDataType } from '../../models/data-model-types.model';
+import { DataModelDataType } from '../../models/data-model-data-type.model';
 import { Router } from '@angular/router';
 import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';

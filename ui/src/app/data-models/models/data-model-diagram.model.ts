@@ -4,17 +4,17 @@ export interface BaseDataModelDiagram {
   id: number | null;
   name: string;
   type: DataModelDiagramType;
+  nodes?: DataModelDiagramNodePosition[];
+  edges?: DataModelDiagramEdgePosition[];
 }
 
 export interface LogicalModelDiagram extends BaseDataModelDiagram {
   type: 'logical';
-  nodes?: LogicalEntityPosition[];
-  edges?: LogicalRelationshipPosition[];
 }
 
 export type DataModelDiagram = LogicalModelDiagram;
 
-export interface LogicalEntityPosition {
+export interface DataModelDiagramNodePosition {
   nodeId: number;
   x: number;
   y: number;
@@ -22,7 +22,7 @@ export interface LogicalEntityPosition {
   height: number;
 }
 
-export interface LogicalRelationshipPosition {
+export interface DataModelDiagramEdgePosition {
   edgeId: number;
   points: {
     x: number;

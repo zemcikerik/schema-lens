@@ -1,7 +1,8 @@
 ﻿import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DataModelEdge, DataModelModification } from '../models/data-model-types.model';
+import { DataModelEdge } from '../models/data-model-edge.model';
+import { DataModelModification } from '../models/data-model.model';
 
 @Injectable({
   providedIn: 'root',

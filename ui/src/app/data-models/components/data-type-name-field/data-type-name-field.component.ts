@@ -5,7 +5,7 @@ import { MatAutocomplete, MatAutocompleteTrigger, MatOption } from '@angular/mat
 import { combineLatest, map, startWith, switchMap } from 'rxjs';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
-import { DataModelDataType } from '../../models/data-model-types.model';
+import { DataModelDataType } from '../../models/data-model-data-type.model';
 
 @Component({
   selector: 'app-data-type-name-field',

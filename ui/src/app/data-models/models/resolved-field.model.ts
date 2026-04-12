@@ -1,4 +1,5 @@
-﻿import { DataModelEdge, DataModelEdgeField, DataModelField } from './data-model-types.model';
+﻿import { DataModelEdge, DataModelEdgeField } from './data-model-edge.model';
+import { DataModelField } from './data-model-node.model';
 
 export interface DirectResolvedField {
   source: 'direct';

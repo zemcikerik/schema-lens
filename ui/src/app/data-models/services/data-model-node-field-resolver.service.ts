@@ -2,7 +2,7 @@
 import { Observable } from 'rxjs';
 import { DataModelStore } from '../data-model.store';
 import { DirectResolvedField, EdgeResolvedField, ResolvedField } from '../models/resolved-field.model';
-import { DataModelFieldReorderRequest } from '../models/data-model-types.model';
+import { DataModelFieldReorderRequest } from '../models/data-model-node.model';
 
 @Injectable()
 export class DataModelNodeFieldResolverService {

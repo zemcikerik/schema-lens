@@ -1,5 +1,7 @@
 ﻿import { Injectable } from '@angular/core';
-import { DataModelDataType, DataModelEdge, DataModelField, DataModelNode } from '../../models/data-model-types.model';
+import { DataModelDataType } from '../../models/data-model-data-type.model';
+import { DataModelEdge } from '../../models/data-model-edge.model';
+import { DataModelField, DataModelNode } from '../../models/data-model-node.model';
 import { SchemaDiagramNode } from '../../../diagrams/schema/model/schema-diagram-node.model';
 import { SchemaDiagramEdge, EDGE_TYPE_ONE_TO_MANY, EDGE_TYPE_ONE_TO_ONE } from '../../../diagrams/schema/model/schema-diagram-edge.model';
 import { SchemaDiagramField } from '../../../diagrams/schema/model/schema-diagram-field.model';

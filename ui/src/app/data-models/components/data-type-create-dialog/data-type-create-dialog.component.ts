@@ -1,5 +1,5 @@
 ﻿import { ChangeDetectionStrategy, Component, DestroyRef, inject, signal } from '@angular/core';
-import { DataModelDataType } from '../../models/data-model-types.model';
+import { DataModelDataType } from '../../models/data-model-data-type.model';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
 import { MatButton } from '@angular/material/button';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';

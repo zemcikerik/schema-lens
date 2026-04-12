@@ -2,7 +2,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchSpecificHttpStatusError } from '../../core/rxjs-pipes';
-import { DataModelDetails } from '../models/data-model-types.model';
+import { DataModelDetails } from '../models/data-model.model';
 
 @Injectable({
   providedIn: 'root',

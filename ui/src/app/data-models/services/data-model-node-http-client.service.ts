@@ -1,7 +1,8 @@
 ﻿import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { DataModelFieldReorderRequest, DataModelModification, DataModelNode, DataModelNodeSummary } from '../models/data-model-types.model';
+import { DataModelFieldReorderRequest, DataModelNode, DataModelNodeSummary } from '../models/data-model-node.model';
+import { DataModelModification } from '../models/data-model.model';
 
 @Injectable({
   providedIn: 'root',
