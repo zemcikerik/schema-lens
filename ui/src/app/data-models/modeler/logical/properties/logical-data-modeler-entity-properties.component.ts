@@ -15,7 +15,7 @@ import { LogicalDataModelingFacade } from '../logical-data-modeling.facade';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { combineWithPrevious } from '../../../../core/rxjs-pipes';
 import { DataModelEntityAttributesTableComponent } from '../../../components/data-model-entity-attributes-table/data-model-entity-attributes-table.component';
-import { ResolvedAttribute } from '../../../models/resolved-attribute.model';
+import { ResolvedField } from '../../../models/resolved-field.model';
 
 @Component({
   selector: 'app-logical-data-modeler-entity-properties',
@@ -56,7 +56,7 @@ export class LogicalDataModelerEntityPropertiesComponent implements BaseDataMode
     name: this.fb.nonNullable.control<string>('', [Validators.required, Validators.maxLength(30)]),
   });
 
-  private pendingAttributeOrder: ResolvedAttribute[] | null = null;
+  private pendingAttributeOrder: ResolvedField[] | null = null;
 
   constructor() {
     combineWithPrevious(toObservable(this.currentEntity))
@@ -79,22 +79,22 @@ export class LogicalDataModelerEntityPropertiesComponent implements BaseDataMode
     this.facade.addAttribute(this.currentEntity().nodeId as number);
   }
 
-  onAttributeOrderChanged(reordered: ResolvedAttribute[]): void {
+  onAttributeOrderChanged(reordered: ResolvedField[]): void {
     this.pendingAttributeOrder = reordered;
   }
 
-  onEditAttribute(attribute: ResolvedAttribute): void {
+  onEditAttribute(attribute: ResolvedField): void {
     if (attribute.source !== 'direct') {
       return;
     }
-    this.facade.editAttribute(this.currentEntity().nodeId as number, attribute.attribute);
+    this.facade.editAttribute(this.currentEntity().nodeId as number, attribute.field);
   }
 
-  onDeleteAttribute(attribute: ResolvedAttribute): void {
+  onDeleteAttribute(attribute: ResolvedField): void {
     if (attribute.source !== 'direct') {
       return;
     }
-    this.facade.deleteAttribute(this.currentEntity().nodeId as number, attribute.attribute);
+    this.facade.deleteAttribute(this.currentEntity().nodeId as number, attribute.field);
   }
 
   saveChanges(entityId: number = this.currentEntity().nodeId ?? -1): void {

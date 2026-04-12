@@ -5,7 +5,7 @@ import { LogicalDataModelingState } from './logical-data-modeling.state';
 import { LogicalDataModelerDialogService } from './logical-data-modeler-dialog.service';
 import { DataModelStore } from '../../data-model.store';
 import { LogicalDiagramMapper } from './logical-diagram.mapper';
-import { LogicalEntityAttributeResolverService } from '../../services/logical-entity-attribute-resolver.service';
+import { DataModelNodeFieldResolverService } from '../../services/data-model-node-field-resolver.service';
 
 @NgModule({
   providers: [
@@ -15,7 +15,7 @@ import { LogicalEntityAttributeResolverService } from '../../services/logical-en
     LogicalDataModelingState,
     LogicalDataModelingFacade,
     LogicalDataModelerDialogService,
-    LogicalEntityAttributeResolverService,
+    DataModelNodeFieldResolverService,
   ],
 })
 export class LogicalDataModelingModule {

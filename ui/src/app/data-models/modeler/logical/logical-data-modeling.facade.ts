@@ -9,8 +9,8 @@ import { DataModelStore } from '../../data-model.store';
 import { LogicalDiagramMapper } from './logical-diagram.mapper';
 import { DataModelDetails, DataModelEdge, DataModelField, DataModelNode, DataModelNodeSummary } from '../../models/data-model-types.model';
 import { LogicalModelDiagram } from '../../models/data-model-diagram.model';
-import { LogicalEntityAttributeResolverService } from '../../services/logical-entity-attribute-resolver.service';
-import { ResolvedAttribute } from '../../models/resolved-attribute.model';
+import { DataModelNodeFieldResolverService } from '../../services/data-model-node-field-resolver.service';
+import { ResolvedField } from '../../models/resolved-field.model';
 
 @Injectable()
 export class LogicalDataModelingFacade implements DataModelingFacade {
@@ -18,7 +18,7 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
   private state = inject(LogicalDataModelingState);
   private mapper = inject(LogicalDiagramMapper);
   private dialogs = inject(LogicalDataModelerDialogService);
-  private attributeResolver = inject(LogicalEntityAttributeResolverService);
+  private fieldResolver = inject(DataModelNodeFieldResolverService);
 
   private pendingEntityIds = new Set<number>();
 
@@ -94,12 +94,12 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
   }
 
   connect(from: SchemaDiagramNode, to: SchemaDiagramNode): void {
-    const fromEntityPkAttributes = this.attributeResolver.resolveAttributes(from.id)().flatMap((resolved, index) => {
-      if (resolved.source === 'direct' && resolved.attribute.isPrimaryKey) {
-        return [{ referencedFieldId: resolved.attribute.fieldId as number, name: resolved.attribute.name, position: index }];
+    const fromEntityPkAttributes = this.fieldResolver.resolveFields(from.id)().flatMap((resolved, index) => {
+      if (resolved.source === 'direct' && resolved.field.isPrimaryKey) {
+        return [{ referencedFieldId: resolved.field.fieldId as number, name: resolved.field.name, position: index }];
       }
-      if (resolved.source === 'relationship' && resolved.relationship.isIdentifying) {
-        return [{ referencedFieldId: resolved.attribute.referencedFieldId, name: resolved.attribute.name, position: index }];
+      if (resolved.source === 'edge' && resolved.edge.isIdentifying) {
+        return [{ referencedFieldId: resolved.field.referencedFieldId, name: resolved.field.name, position: index }];
       }
       return [];
     });
@@ -184,16 +184,16 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
     ).subscribe();
   }
 
-  reorderAttributes(entityId: number, orderedAttributes: ResolvedAttribute[]): void {
+  reorderAttributes(entityId: number, orderedAttributes: ResolvedField[]): void {
     this.withLoading(
-      this.attributeResolver
-        .reorderAttributes(entityId, orderedAttributes)
+      this.fieldResolver
+        .reorderFields(entityId, orderedAttributes)
         .pipe(tap(() => this.notifyEntityUpdatedById(entityId))),
     ).subscribe();
   }
 
   addAttribute(entityId: number): void {
-    const resolved = this.attributeResolver.resolveAttributes(entityId)();
+    const resolved = this.fieldResolver.resolveFields(entityId)();
     const nextPosition = resolved.length > 0 ? Math.max(...resolved.map(r => r.position)) + 1 : 0;
 
     this.dialogs.openCreateAttribute(this.store.dataTypes()).pipe(
@@ -276,7 +276,7 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
   }
 
   private resolveAndMapEntity(entity: DataModelNode): SchemaDiagramNode {
-    const resolvedAttributes = this.attributeResolver.resolveAttributes(entity.nodeId!)();
+    const resolvedAttributes = this.fieldResolver.resolveFields(entity.nodeId!)();
 
     const attributeTypeById = new Map<number, number>(
       this.store.nodes().flatMap(e =>
@@ -286,15 +286,15 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
 
     const fields: DataModelField[] = resolvedAttributes.map(r => {
       if (r.source === 'direct') {
-        return r.attribute;
+        return r.field;
       }
 
       return {
         fieldId: null,
-        name: r.attribute.name,
-        typeId: attributeTypeById.get(r.attribute.referencedFieldId) ?? 0,
-        isPrimaryKey: r.relationship.isIdentifying,
-        isNullable: !r.relationship.isMandatory,
+        name: r.field.name,
+        typeId: attributeTypeById.get(r.field.referencedFieldId) ?? 0,
+        isPrimaryKey: r.edge.isIdentifying,
+        isNullable: !r.edge.isMandatory,
         position: r.position,
       };
     });

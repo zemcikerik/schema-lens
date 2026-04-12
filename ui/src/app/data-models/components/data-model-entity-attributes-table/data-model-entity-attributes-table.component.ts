@@ -5,9 +5,9 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { CdkDrag, CdkDragHandle, CdkDropList, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { LogicalEntityAttributeResolverService } from '../../services/logical-entity-attribute-resolver.service';
+import { DataModelNodeFieldResolverService } from '../../services/data-model-node-field-resolver.service';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { ResolvedAttribute } from '../../models/resolved-attribute.model';
+import { ResolvedField } from '../../models/resolved-field.model';
 
 @Component({
   selector: 'app-data-model-entity-attributes-table',
@@ -44,15 +44,15 @@ import { ResolvedAttribute } from '../../models/resolved-attribute.model';
 export class DataModelEntityAttributesTableComponent {
   readonly DISPLAYED_COLUMNS = ['drag', 'name', 'actions'];
   entityId = input.required<number>();
-  orderChanged = output<ResolvedAttribute[]>();
-  editAttribute = output<ResolvedAttribute>();
-  deleteAttribute = output<ResolvedAttribute>();
-  goToRelationship = output<ResolvedAttribute>();
+  orderChanged = output<ResolvedField[]>();
+  editAttribute = output<ResolvedField>();
+  deleteAttribute = output<ResolvedField>();
+  goToRelationship = output<ResolvedField>();
 
-  private attributeResolver = inject(LogicalEntityAttributeResolverService);
-  readonly resolvedAttributes = linkedSignal(() => this.attributeResolver.resolveAttributes(this.entityId())());
+  private fieldResolver = inject(DataModelNodeFieldResolverService);
+  readonly resolvedAttributes = linkedSignal(() => this.fieldResolver.resolveFields(this.entityId())());
 
-  onDrop(event: CdkDragDrop<ResolvedAttribute[]>): void {
+  onDrop(event: CdkDragDrop<ResolvedField[]>): void {
     if (event.previousIndex === event.currentIndex) {
       return;
     }
