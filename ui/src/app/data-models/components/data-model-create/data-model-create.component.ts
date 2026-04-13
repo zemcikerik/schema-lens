@@ -15,7 +15,7 @@ import { DataModelPropertiesFormComponent } from '../data-model-properties-form/
   selector: 'app-data-model-create',
   template: `
     <app-content-card>
-      <app-layout-header-and-content title="Create new model" [includeSpacing]="loading() || error()">
+      <app-layout-header-and-content [title]="('DATA_MODEL.CREATE_TITLE' | translate)()" [includeSpacing]="loading() || error()">
         @if (loading()) {
           <app-progress-spinner [center]="true" />
         } @else if (error()) {

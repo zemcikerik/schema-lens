@@ -50,16 +50,20 @@ export const appRoutes: Route[] = [
           ),
       },
       {
-        path: 'entity/:entityId',
-        loadComponent: () =>
-          import('./data-models/components/data-model-entity/data-model-entity.component').then(c => c.DataModelEntityComponent),
-      },
-      {
-        path: 'data-type/:dataTypeId',
+        path: 'logical/data-type/:dataTypeId',
         loadComponent: () =>
           import('./data-models/components/data-model-data-type-properties/data-model-data-type-properties.component').then(
             c => c.DataModelDataTypePropertiesComponent,
           ),
+        data: { dataModelingLayer: 'logical' },
+      },
+      {
+        path: 'physical/data-type/:dataTypeId',
+        loadComponent: () =>
+          import('./data-models/components/data-model-data-type-properties/data-model-data-type-properties.component').then(
+            c => c.DataModelDataTypePropertiesComponent,
+          ),
+        data: { dataModelingLayer: 'physical' },
       },
     ],
   },
@@ -68,6 +72,7 @@ export const appRoutes: Route[] = [
     loadComponent: () =>
       import('./data-models/modeler/logical/logical-data-modeler.component').then(c => c.LogicalDataModelerComponent),
     canDeactivate: [logicalDataModelerUnsavedGuard],
+    data: { dataModelingLayer: 'logical' },
   },
   {
     path: 'project',
@@ -141,9 +146,9 @@ export const appRoutes: Route[] = [
       {
         path: 'table-relationships/view',
         loadComponent: () =>
-          import(
-            './tables/components/table-all-relationships/table-all-relationships-view/table-all-relationships-view.component'
-          ).then(c => c.TableAllRelationshipsViewComponent),
+          import('./tables/components/table-all-relationships/table-all-relationships-view/table-all-relationships-view.component').then(
+            c => c.TableAllRelationshipsViewComponent,
+          ),
       },
       {
         path: 'collaborators',
