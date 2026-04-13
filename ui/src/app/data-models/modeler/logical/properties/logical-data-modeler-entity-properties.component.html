@@ -17,7 +17,7 @@
 
 @if (currentEntity().nodeId; as entityId) {
   <!-- TODO: disable on loading, mat-menu triggers save -->
-  <app-data-model-entity-attributes-table [entityId]="entityId" (orderChanged)="onAttributeOrderChanged($event)"
-                                          (editAttribute)="onEditAttribute($event)"
-                                          (deleteAttribute)="onDeleteAttribute($event)"/>
+  <app-data-model-node-fields-table [nodeId]="entityId" (orderChanged)="onAttributeOrderChanged($event)"
+                                          (editField)="onEditAttribute($event)"
+                                          (deleteField)="onDeleteAttribute($event)"/>
 }

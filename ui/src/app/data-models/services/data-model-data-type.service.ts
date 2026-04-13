@@ -17,7 +17,7 @@ export class DataModelDataTypeService {
     return this.httpClient.updateDataType(dataModelId, dataType);
   }
 
-  deleteDataType(dataModelId: number, typeId: number): Observable<unknown> {
+  deleteDataType(dataModelId: number, typeId: number): Observable<boolean> {
     return this.httpClient.deleteDataType(dataModelId, typeId);
   }
 }

@@ -10,8 +10,8 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { ResolvedField } from '../../models/resolved-field.model';
 
 @Component({
-  selector: 'app-data-model-entity-attributes-table',
-  templateUrl: 'data-model-entity-attributes-table.component.html',
+  selector: 'app-data-model-node-fields-table',
+  templateUrl: 'data-model-node-fields-table.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatTable,
@@ -41,25 +41,25 @@ import { ResolvedField } from '../../models/resolved-field.model';
     TranslatePipe,
   ],
 })
-export class DataModelEntityAttributesTableComponent {
+export class DataModelNodeFieldsTableComponent {
   readonly DISPLAYED_COLUMNS = ['drag', 'name', 'actions'];
-  entityId = input.required<number>();
+  nodeId = input.required<number>();
   orderChanged = output<ResolvedField[]>();
-  editAttribute = output<ResolvedField>();
-  deleteAttribute = output<ResolvedField>();
-  goToRelationship = output<ResolvedField>();
+  editField = output<ResolvedField>();
+  deleteField = output<ResolvedField>();
+  goToEdge = output<ResolvedField>();
 
   private fieldResolver = inject(DataModelNodeFieldResolverService);
-  readonly resolvedAttributes = linkedSignal(() => this.fieldResolver.resolveFields(this.entityId())());
+  readonly resolvedFields = linkedSignal(() => this.fieldResolver.resolveFields(this.nodeId())());
 
   onDrop(event: CdkDragDrop<ResolvedField[]>): void {
     if (event.previousIndex === event.currentIndex) {
       return;
     }
 
-    const reordered = [...this.resolvedAttributes()];
+    const reordered = [...this.resolvedFields()];
     moveItemInArray(reordered, event.previousIndex, event.currentIndex);
-    this.resolvedAttributes.set(reordered);
+    this.resolvedFields.set(reordered);
     this.orderChanged.emit(reordered);
   }
 }

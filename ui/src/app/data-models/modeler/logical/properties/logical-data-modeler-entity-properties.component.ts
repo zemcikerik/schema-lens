@@ -14,7 +14,7 @@ import { DataModelStore } from '../../../data-model.store';
 import { LogicalDataModelingFacade } from '../logical-data-modeling.facade';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { combineWithPrevious } from '../../../../core/rxjs-pipes';
-import { DataModelEntityAttributesTableComponent } from '../../../components/data-model-entity-attributes-table/data-model-entity-attributes-table.component';
+import { DataModelNodeFieldsTableComponent } from '../../../components/data-model-node-fields-table/data-model-node-fields-table.component';
 import { ResolvedField } from '../../../models/resolved-field.model';
 
 @Component({
@@ -28,7 +28,7 @@ import { ResolvedField } from '../../../models/resolved-field.model';
     ReactiveFormsModule,
     MatError,
     FormatGenericValidationErrorsPipe,
-    DataModelEntityAttributesTableComponent,
+    DataModelNodeFieldsTableComponent,
     MatIconButton,
     MatIcon,
     MatTooltip,

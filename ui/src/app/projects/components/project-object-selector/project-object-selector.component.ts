@@ -9,30 +9,19 @@ import {
   untracked,
   viewChild,
 } from '@angular/core';
-import { MatExpansionPanel, MatExpansionPanelContent, MatExpansionPanelHeader } from '@angular/material/expansion';
-import { MatListItem } from '@angular/material/list';
-import { RouterLink, RouterLinkActive } from '@angular/router';
-import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { finalize, Observable, Subject, switchMap, tap } from 'rxjs';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { SidebarCloseDirective } from '../../../core/layouts/sidebar-close.directive';
+import { ObjectSelectorComponent, ObjectSelectorEntry } from '../../../shared/components/object-selector/object-selector.component';
 
 @Component({
   selector: 'app-project-object-selector',
   templateUrl: './project-object-selector.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
-    MatExpansionPanel,
-    MatExpansionPanelHeader,
-    MatExpansionPanelContent,
-    MatListItem,
-    RouterLink,
-    RouterLinkActive,
-    ProgressSpinnerComponent,
+    ObjectSelectorComponent,
     MatIconButton,
     MatIcon,
-    SidebarCloseDirective,
   ],
 })
 export class ProjectObjectSelectorComponent {
@@ -40,14 +29,14 @@ export class ProjectObjectSelectorComponent {
   baseRouterLink = input.required<string[]>();
   loadAction = input.required<() => Observable<string[]>>();
   displayError = output<unknown>();
-  expansionPanel = viewChild.required(MatExpansionPanel);
+  objectSelector = viewChild.required(ObjectSelectorComponent);
 
   objects = signal<string[] | null>(null);
   loading = signal<boolean>(false);
   error = signal<unknown | null>(null);
   private reload$ = new Subject<void>();
 
-  objectListEntries = computed(() => {
+  objectListEntries = computed<ObjectSelectorEntry[] | null>(() => {
     const objects = this.objects();
     if (objects === null) {
       return null;
@@ -55,7 +44,8 @@ export class ProjectObjectSelectorComponent {
     const baseRouterLink = this.baseRouterLink();
 
     return objects.map(object => ({
-      name: object,
+      id: object,
+      label: object,
       routerLink: [...baseRouterLink, object],
     }));
   });
@@ -85,7 +75,7 @@ export class ProjectObjectSelectorComponent {
       untracked(() => {
         this.objects.set(null);
         this.error.set(null);
-        this.expansionPanel().close();
+        this.objectSelector().closePanel();
       });
     });
 
@@ -93,7 +83,7 @@ export class ProjectObjectSelectorComponent {
       const error = this.error();
 
       if (error !== null) {
-        untracked(() => this.expansionPanel().close());
+        untracked(() => this.objectSelector().closePanel());
       }
     });
   }

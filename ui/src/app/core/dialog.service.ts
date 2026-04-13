@@ -6,6 +6,7 @@ import {
   ConfirmationDialogData,
 } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { TextDialogComponent, TextDialogData } from '../shared/components/text-dialog/text-dialog.component';
+import { InputDialogComponent, InputDialogData } from '../shared/components/input-dialog/input-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -31,4 +32,9 @@ export class DialogService {
     this.matDialog.open(TextDialogComponent, { data });
   }
 
+  openInputDialog(data: InputDialogData): Observable<string | null> {
+    return this.matDialog.open(InputDialogComponent, { data }).afterClosed().pipe(
+      map(result => result ?? null),
+    );
+  }
 }

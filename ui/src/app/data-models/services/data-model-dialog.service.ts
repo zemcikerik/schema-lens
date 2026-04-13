@@ -1,47 +1,79 @@
 ﻿import { inject, Injectable } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
-import { Observable } from 'rxjs';
+import { Validators } from '@angular/forms';
+import { catchError, Observable, of, switchMap } from 'rxjs';
 import { DataModelDataType } from '../models/data-model-data-type.model';
-import { DataModelField, DataModelNodeSummary } from '../models/data-model-node.model';
+import { DataModelNodeSummary } from '../models/data-model-node.model';
 import { DataModelDiagram } from '../models/data-model-diagram.model';
-import {
-  DataTypeCreateDialogComponent,
-  DataTypeCreateDialogData,
-} from '../components/data-type-create-dialog/data-type-create-dialog.component';
-import {
-  DataTypeSelectorDialogComponent,
-  DataTypeDialogData,
-} from '../components/data-type-selector-dialog/data-type-selector-dialog.component';
-import {
-  DataModelDiagramCreateDialogComponent,
-  DataModelDiagramCreateDialogData,
-} from '../components/data-model-diagram-create-dialog/data-model-diagram-create-dialog.component';
-import {
-  DataModelEntityCreateDialogComponent,
-  DataModelEntityCreateDialogData,
-} from '../components/data-model-entity-create-dialog/data-model-entity-create-dialog.component';
+import { DialogService } from '../../core/dialog.service';
+import { noStartEndWhitespaceValidator } from '../../core/validators/no-start-end-whitespace.validator';
+import { uniqueStringValidator } from '../../core/validators/unique-string.validator';
+import { DataModelStore } from '../data-model.store';
+
+// TODO: move from this service to nav
 
 @Injectable({ providedIn: 'root' })
 export class DataModelDialogService {
-  private matDialog = inject(MatDialog);
+  private dialogService = inject(DialogService);
+  private store = inject(DataModelStore);
 
-  openCreateDiagramDialog(diagrams: DataModelDiagram[]): Observable<DataModelDiagram | undefined> {
-    const data: DataModelDiagramCreateDialogData = { diagrams };
-    return this.matDialog.open(DataModelDiagramCreateDialogComponent, { data }).afterClosed();
+  openCreateDiagramDialog(diagrams: DataModelDiagram[]): Observable<DataModelDiagram | null> {
+    return this.dialogService.openInputDialog({
+      titleKey: 'DATA_MODEL.DIAGRAM.CREATE.TITLE',
+      labelKey: 'DATA_MODEL.DIAGRAM.CREATE.LABEL',
+      placeholderKey: 'DATA_MODEL.DIAGRAM.CREATE.PLACEHOLDER',
+      validators: this.createNameValidators(diagrams.map(diagram => diagram.name)),
+    }).pipe(
+      switchMap(name => name === null
+        ? of(null)
+        : this.store.createDiagram({ name, type: 'logical', id: null, edges: [], nodes: [] })),
+      catchError(() => {
+        this.dialogService.openTextDialog('GENERIC.TOOLTIP_ERROR_LABEL', 'GENERIC.ERROR_LABEL');
+        return of(null);
+      }),
+    );
   }
 
-  openCreateEntityDialog(entities: DataModelNodeSummary[]): Observable<DataModelNodeSummary | undefined> {
-    const data: DataModelEntityCreateDialogData = { entities };
-    return this.matDialog.open(DataModelEntityCreateDialogComponent, { data }).afterClosed();
+  openCreateEntityDialog(entities: DataModelNodeSummary[]): Observable<DataModelNodeSummary | null> {
+    return this.dialogService.openInputDialog({
+      titleKey: 'DATA_MODEL.ENTITY.CREATE.TITLE',
+      labelKey: 'DATA_MODEL.ENTITY.CREATE.LABEL',
+      placeholderKey: 'DATA_MODEL.ENTITY.CREATE.PLACEHOLDER',
+      validators: this.createNameValidators(entities.map(entity => entity.name)),
+    }).pipe(
+      switchMap(name => name === null
+        ? of(null)
+        : this.store.createNode({ name, nodeId: null })),
+      catchError(() => {
+        this.dialogService.openTextDialog('GENERIC.TOOLTIP_ERROR_LABEL', 'GENERIC.ERROR_LABEL');
+        return of(null);
+      }),
+    );
   }
 
-  openCreateDataTypeDialog(dataTypes: DataModelDataType[]): Observable<unknown> {
-    const data: DataTypeCreateDialogData = { dataTypes };
-    return this.matDialog.open(DataTypeCreateDialogComponent, { data }).afterClosed();
+  openCreateDataTypeDialog(dataTypes: DataModelDataType[]): Observable<DataModelDataType | null> {
+    return this.dialogService.openInputDialog({
+      titleKey: 'DATA_MODEL.DATA_TYPE.CREATE.TITLE',
+      labelKey: 'DATA_MODEL.DATA_TYPE.CREATE.LABEL',
+      placeholderKey: 'DATA_MODEL.DATA_TYPE.CREATE.PLACEHOLDER',
+      validators: this.createNameValidators(dataTypes.map(dataType => dataType.name)),
+    }).pipe(
+      switchMap(name => name === null
+        ? of(null)
+        : this.store.createDataType({ name, typeId: null })),
+      catchError(() => {
+        this.dialogService.openTextDialog('GENERIC.TOOLTIP_ERROR_LABEL', 'GENERIC.ERROR_LABEL');
+        return of(null);
+      }),
+    );
   }
 
-  openDataTypeSelectorDialog(attribute: DataModelField, dataTypes: DataModelDataType[]): Observable<DataModelDataType | undefined> {
-    const data: DataTypeDialogData = { targetAttribute: attribute, dataTypes };
-    return this.matDialog.open(DataTypeSelectorDialogComponent, { data }).afterClosed();
+  // Reuse the existing validation rules and allow each caller to supply uniqueness values.
+  private createNameValidators(existingNames: string[]) {
+    return [
+      Validators.required,
+      noStartEndWhitespaceValidator,
+      Validators.maxLength(40),
+      uniqueStringValidator(existingNames),
+    ];
   }
 }

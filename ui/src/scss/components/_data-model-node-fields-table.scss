@@ -1,7 +1,7 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
 
-.data-model-entity-attributes-table {
+.data-model-node-fields-table {
   width: 100%;
 
   &__row {
@@ -35,7 +35,7 @@
   }
 
   &__primary-key-icon,
-  &__relationship-icon {
+  &__edge-icon {
     margin-left: 0.5rem;
     font-size: 1rem;
     height: 1rem;
@@ -47,11 +47,11 @@
     color: mat.get-theme-color(t.$theme, primary);
   }
 
-  &__relationship-icon {
+  &__edge-icon {
     color: rgba(0, 0, 0, 0.54);
   }
 
-  &__primary-key-icon + &__relationship-icon {
+  &__primary-key-icon + &__edge-icon {
     margin-left: 0;
   }
 

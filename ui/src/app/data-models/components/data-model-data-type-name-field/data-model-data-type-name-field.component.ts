@@ -8,8 +8,8 @@ import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-
 import { DataModelDataType } from '../../models/data-model-data-type.model';
 
 @Component({
-  selector: 'app-data-type-name-field',
-  templateUrl: './data-type-name-field.component.html',
+  selector: 'app-data-model-data-type-name-field',
+  templateUrl: './data-model-data-type-name-field.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
@@ -23,9 +23,9 @@ import { DataModelDataType } from '../../models/data-model-data-type.model';
     FormatGenericValidationErrorsPipe,
   ],
 })
-export class DataTypeNameFieldComponent {
+export class DataModelDataTypeNameFieldComponent {
   dataTypes = input.required<DataModelDataType[]>();
-  control = input.required<FormControl<string>>();
+  control = input.required<FormControl<string | null>>();
   label = input.required<string>();
 
   private dataTypes$ = toObservable(this.dataTypes);
@@ -33,7 +33,9 @@ export class DataTypeNameFieldComponent {
   filteredTypes = toSignal(
     toObservable(this.control).pipe(
       switchMap(ctrl => combineLatest([ctrl.valueChanges.pipe(startWith(ctrl.value)), this.dataTypes$])),
-      map(([value, dataTypes]) => dataTypes.filter(t => t.name.toUpperCase().startsWith(value.toUpperCase()))),
+      map(([value, dataTypes]) =>
+        value ? dataTypes.filter(t => t.name.toUpperCase().includes(value?.toUpperCase() ?? '')) : dataTypes
+      ),
     ),
     { initialValue: [] as DataModelDataType[] },
   );

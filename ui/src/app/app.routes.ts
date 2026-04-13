@@ -57,7 +57,9 @@ export const appRoutes: Route[] = [
       {
         path: 'data-type/:dataTypeId',
         loadComponent: () =>
-          import('./data-models/components/data-type-edit/data-type-edit.component').then(c => c.DataTypeEditComponent),
+          import('./data-models/components/data-model-data-type-properties/data-model-data-type-properties.component').then(
+            c => c.DataModelDataTypePropertiesComponent,
+          ),
       },
     ],
   },

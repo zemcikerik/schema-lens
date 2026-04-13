@@ -2,78 +2,29 @@
   <mat-nav-list class="nav">
     <a
       mat-list-item
-      [routerLink]="['/model', dataModelId(), 'properties']"
+      [routerLink]="['/model', store.dataModelId, 'properties']"
       routerLinkActive
       #rla="routerLinkActive"
       [activated]="rla.isActive"
       appSidebarClose
     >{{ ('DATA_MODEL.NAV.PROPERTIES' | translate)() }}</a>
 
-    <!-- TODO: refactor to common component along with project-object-selector -->
-    <mat-expansion-panel class="object-selector">
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{ ('DATA_MODEL.NAV.DIAGRAMS' | translate)() }}</mat-panel-title>
-        <mat-panel-description>
-          <button matIconButton (click)="$event.stopPropagation(); addNewDiagram()">
-            <mat-icon>add</mat-icon>
-          </button>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
+    <app-object-selector [title]="('DATA_MODEL.NAV.DIAGRAMS' | translate)()" [entries]="diagramEntries()">
+      <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewDiagram()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </app-object-selector>
 
-      <ng-template matExpansionPanelContent>
-        @for (diagram of store.diagrams(); track diagram.id) {
-          <a
-            mat-list-item
-            [routerLink]="['/modeler', dataModelId(), 'logical', diagram.id]"
-          >{{ diagram.name }}</a>
-        }
-      </ng-template>
-    </mat-expansion-panel>
+    <app-object-selector [title]="('DATA_MODEL.NAV.ENTITIES' | translate)()" [entries]="entityEntries()">
+      <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewEntity()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </app-object-selector>
 
-    <mat-expansion-panel class="object-selector">
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{ ('DATA_MODEL.NAV.ENTITIES' | translate)() }}</mat-panel-title>
-        <mat-panel-description>
-          <button matIconButton (click)="$event.stopPropagation(); addNewEntity()">
-            <mat-icon>add</mat-icon>
-          </button>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-
-      <ng-template matExpansionPanelContent>
-        @for (entity of store.nodes(); track entity.nodeId) {
-          <a
-            mat-list-item
-            [routerLink]="['/model', dataModelId(), 'entity', entity.nodeId]"
-            routerLinkActive
-            #rlaEntity="routerLinkActive"
-            [activated]="rlaEntity.isActive"
-          >{{ entity.name }}</a>
-        }
-      </ng-template>
-    </mat-expansion-panel>
-
-    <mat-expansion-panel class="object-selector">
-      <mat-expansion-panel-header>
-        <mat-panel-title>{{ ('DATA_MODEL.NAV.DATA_TYPES' | translate)() }}</mat-panel-title>
-        <mat-panel-description>
-        <button matIconButton (click)="$event.stopPropagation(); addNewDataType()">
-          <mat-icon>add</mat-icon>
-        </button>
-        </mat-panel-description>
-      </mat-expansion-panel-header>
-
-      <ng-template matExpansionPanelContent>
-        @for (dataType of store.dataTypes(); track dataType.typeId) {
-          <a
-            mat-list-item
-            [routerLink]="['/model', dataModelId(), 'data-type', dataType.typeId]"
-            routerLinkActive
-            #rlaDataType="routerLinkActive"
-            [activated]="rlaDataType.isActive"
-          >{{ dataType.name }}</a>
-        }
-      </ng-template>
-    </mat-expansion-panel>
+    <app-object-selector [title]="('DATA_MODEL.NAV.DATA_TYPES' | translate)()" [entries]="dataTypeEntries()">
+      <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewDataType()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </app-object-selector>
   </mat-nav-list>
 </div>

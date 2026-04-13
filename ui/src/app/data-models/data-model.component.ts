@@ -26,6 +26,7 @@ import { DataModelStore } from './data-model.store';
 })
 export class DataModelComponent {
   dataModelId = input.required<string>();
+
   numericDataModelId = computed<number>(() => {
     const id = +this.dataModelId();
 
@@ -41,17 +42,15 @@ export class DataModelComponent {
   private router = inject(Router);
 
   constructor() {
-    toObservable(this.numericDataModelId)
-      .pipe(
-        switchMap(id => this.store.loadModel(id)),
-        tap(model => {
-          if (model === null) {
-            this.redirectTo404();
-          }
-        }),
-        takeUntilDestroyed(),
-      )
-      .subscribe();
+    toObservable(this.numericDataModelId).pipe(
+      switchMap(id => this.store.loadModel(id)),
+      tap(model => {
+        if (model === null) {
+          this.redirectTo404();
+        }
+      }),
+      takeUntilDestroyed(),
+    ).subscribe();
   }
 
   private async redirectTo404(): Promise<void> {

@@ -245,14 +245,14 @@ export class DataModelStore {
   }
 
   deleteDataType(typeId: number): Observable<unknown> {
-    return this.dataTypeService.deleteDataType(this.dataModelId, typeId).pipe(
-      tap(() =>
+    return this.dataTypeService.deleteDataType(this.dataModelId, typeId).pipe(tap(success => {
+      if (success) {
         this._model.update(m => m && {
           ...m,
           dataTypes: m.dataTypes.filter(t => t.typeId !== typeId),
-        }),
-      ),
-    );
+        });
+      }
+    }));
   }
 
   createDiagram(diagram: DataModelDiagram): Observable<DataModelDiagram> {

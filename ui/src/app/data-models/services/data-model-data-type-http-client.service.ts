@@ -18,7 +18,7 @@ export class DataModelDataTypeHttpClientService {
     return this.httpClient.put<DataModelDataType>(`/model/${dataModelId}/dataType/${dataType.typeId}`, { name: dataType.name });
   }
 
-  deleteDataType(dataModelId: number, typeId: number): Observable<unknown> {
+  deleteDataType(dataModelId: number, typeId: number): Observable<boolean> {
     return this.httpClient.delete(`/model/${dataModelId}/dataType/${typeId}`).pipe(
       map(() => true),
       catchSpecificHttpStatusError(409, () => of(false)),

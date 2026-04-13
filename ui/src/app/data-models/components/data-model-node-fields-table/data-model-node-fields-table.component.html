@@ -1,0 +1,82 @@
+<mat-table [dataSource]="resolvedFields()" cdkDropList cdkDropListLockAxis="y"
+           (cdkDropListDropped)="onDrop($event)"
+           class="data-model-node-fields-table">
+  <ng-container matColumnDef="drag">
+    <mat-header-cell *matHeaderCellDef/>
+    <mat-cell *matCellDef="let _row">
+      <mat-icon cdkDragHandle class="data-model-node-fields-table__drag-handle">drag_indicator</mat-icon>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+    <mat-cell *matCellDef="let row">
+      <span class="text-code">{{ row.field.name }}</span>
+      @if (row.source === 'direct' && row.field.isPrimaryKey) {
+        <mat-icon class="data-model-node-fields-table__primary-key-icon"
+                  matTooltip="Primary key">key
+        </mat-icon>
+      } @else if (row.source === 'edge') {
+        @if (row.edge.isIdentifying) {
+          <mat-icon class="data-model-node-fields-table__primary-key-icon"
+                    matTooltip="Primary key">key
+          </mat-icon>
+        }
+        <mat-icon class="data-model-node-fields-table__edge-icon"
+                  matTooltip="From edge">link
+        </mat-icon>
+      }
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <mat-header-cell *matHeaderCellDef/>
+    <mat-cell *matCellDef="let row">
+      @if (row.source === 'direct') {
+        <button mat-icon-button [matMenuTriggerFor]="directFieldMenu" [matMenuTriggerData]="{ row }">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      } @else {
+        <button mat-icon-button [matMenuTriggerFor]="edgeFieldMenu" [matMenuTriggerData]="{ row }">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      }
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="noData">
+    <mat-footer-cell *matFooterCellDef
+                     class="data-model-node-fields-table__empty">
+      {{ ('DATA_MODEL.ENTITY.ATTRIBUTES.EMPTY_LABEL' | translate)() }}
+    </mat-footer-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="DISPLAYED_COLUMNS" class="data-model-node-fields-table__row"/>
+  <mat-row *matRowDef="let row; columns: DISPLAYED_COLUMNS;" cdkDrag [cdkDragData]="row"
+           class="data-model-node-fields-table__row"/>
+  <mat-footer-row *matFooterRowDef="['noData']"
+                 [class.data-model-node-fields-table__empty-row--hidden]="resolvedFields().length > 0"/>
+</mat-table>
+
+<mat-menu #directFieldMenu xPosition="before">
+  <ng-template matMenuContent let-row="row">
+    <button mat-menu-item (click)="editField.emit(row)">
+      <mat-icon>edit</mat-icon>
+      Edit field
+    </button>
+    <button mat-menu-item (click)="deleteField.emit(row)">
+      <mat-icon>delete</mat-icon>
+      Delete field
+    </button>
+  </ng-template>
+</mat-menu>
+
+<!-- TODO: icon -->
+<mat-menu #edgeFieldMenu xPosition="before">
+  <ng-template matMenuContent let-row="row">
+    <button mat-menu-item (click)="goToEdge.emit(row)">
+      <mat-icon>open_in_new</mat-icon>
+      Go to edge
+    </button>
+  </ng-template>
+</mat-menu>

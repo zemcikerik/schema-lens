@@ -12,7 +12,7 @@ import { FormatGenericValidationErrorsPipe } from '../../../../../shared/pipes/f
 import { noStartEndWhitespaceValidator } from '../../../../../core/validators/no-start-end-whitespace.validator';
 import { DataModelField } from '../../../../models/data-model-node.model';
 import { DataModelDataType } from '../../../../models/data-model-data-type.model';
-import { DataTypeNameFieldComponent } from '../../../../components/data-type-name-field/data-type-name-field.component';
+import { DataModelDataTypeNameFieldComponent } from '../../../../components/data-model-data-type-name-field/data-model-data-type-name-field.component';
 
 export interface LogicalEditAttributeDialogData {
   attribute: DataModelField;
@@ -38,7 +38,7 @@ export interface LogicalEditAttributeDialogData {
     AlertComponent,
     ProgressSpinnerComponent,
     FormatGenericValidationErrorsPipe,
-    DataTypeNameFieldComponent,
+    DataModelDataTypeNameFieldComponent,
   ],
 })
 export class LogicalEditAttributeDialogComponent {

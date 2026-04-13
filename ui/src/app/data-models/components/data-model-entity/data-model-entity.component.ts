@@ -134,13 +134,7 @@ export class DataModelEntityComponent {
   }
 
   openDataTypeDialog = (attribute: DataModelField) => {
-    this.dataModelDialogService.openDataTypeSelectorDialog(attribute, this.store.dataTypes())
-      .subscribe(res => {
-        if (res !== undefined) {
-          attribute.typeId = res.typeId!;
-          this.changes.markForCheck();
-        }
-      });
+    // do nothing until this component is fixed
   };
 
   // generated quick fix start

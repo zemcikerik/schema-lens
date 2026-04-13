@@ -1,0 +1,141 @@
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, input, signal } from '@angular/core';
+import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatIcon } from '@angular/material/icon';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
+import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
+import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
+import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
+import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
+import { DataModelDataType } from '../../models/data-model-data-type.model';
+import { Router } from '@angular/router';
+import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
+import { AlertComponent } from '../../../shared/components/alert/alert.component';
+import { DialogService } from '../../../core/dialog.service';
+import { DataModelStore } from '../../data-model.store';
+import { filter, finalize, switchMap, tap } from 'rxjs';
+
+@Component({
+  selector: 'app-data-model-data-type-properties',
+  templateUrl: './data-model-data-type-properties.component.html',
+  changeDetection: ChangeDetectionStrategy.OnPush,
+  imports: [
+    ReactiveFormsModule,
+    MatButton,
+    MatIcon,
+    MatInput,
+    TranslatePipe,
+    FormatGenericValidationErrorsPipe,
+    LayoutHeaderAndContentComponent,
+    ProgressSpinnerComponent,
+    AlertComponent,
+    MatFormField,
+    MatLabel,
+    MatError,
+  ],
+})
+export class DataModelDataTypePropertiesComponent {
+  dataTypeId = input.required<string>();
+  loading = signal<boolean>(false);
+  error = signal<string | null>(null);
+
+  private fb = inject(FormBuilder);
+  private store = inject(DataModelStore);
+  private dialogService = inject(DialogService);
+  private destroyRef = inject(DestroyRef);
+  private router = inject(Router);
+
+  propertiesForm = this.fb.nonNullable.group({
+    name: this.fb.nonNullable.control('', [Validators.required, noStartEndWhitespaceValidator, Validators.maxLength(40)]),
+  });
+
+  dataType = computed<DataModelDataType | null>(() => {
+    const typeId = +this.dataTypeId();
+    return this.store.dataTypes().find(type => type.typeId === typeId) ?? null;
+  });
+
+  constructor() {
+    effect(() => {
+      const dataType = this.dataType();
+
+      if (dataType !== null) {
+        this.propertiesForm.reset({ name: dataType.name });
+        return;
+      }
+
+      if (!this.loading()) {
+        this.redirectToModel();
+      }
+    });
+  }
+
+  updateDataType(): void {
+    if (this.propertiesForm.invalid) {
+      this.propertiesForm.markAllAsTouched();
+      return;
+    }
+
+    const typeId = this.dataType()?.typeId;
+
+    if (typeId == null) {
+      return;
+    }
+
+    const { name } = this.propertiesForm.getRawValue();
+
+    this.loading.set(true);
+    this.error.set(null);
+
+    this.store
+      .updateDataType({ typeId, name })
+      .pipe(
+        finalize(() => this.loading.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        error: () => this.error.set('GENERIC.ERROR_LABEL'),
+      });
+  }
+
+  deleteDataType(): void {
+    const typeId = this.dataType()?.typeId;
+
+    if (typeId == null) {
+      return;
+    }
+
+    this.dialogService
+      .openConfirmationDialog('DATA_MODEL.DATA_TYPE.DELETE.TITLE', 'DATA_MODEL.DATA_TYPE.DELETE.DESCRIPTION', 'danger')
+      .pipe(
+        filter(result => result === true),
+        tap(() => {
+          this.loading.set(true);
+          this.error.set(null);
+        }),
+        switchMap(() => this.store.deleteDataType(typeId)),
+        finalize(() => this.loading.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe({
+        next: async result => {
+          if (result === false) {
+            this.error.set('DATA_MODEL.DATA_TYPE.ERROR.IN_USE');
+            return;
+          }
+
+          await this.redirectToModel();
+        },
+        error: () => this.error.set('GENERIC.ERROR_LABEL'),
+      });
+  }
+
+  get nameControl() {
+    return this.propertiesForm.controls.name;
+  }
+
+  private async redirectToModel(): Promise<void> {
+    await this.router.navigate(['/model', this.store.dataModelId]);
+  }
+}
