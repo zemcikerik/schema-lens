@@ -1,4 +1,4 @@
-﻿import { inject, Injectable, Injector } from '@angular/core';
+﻿import { inject, Injectable } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { DataModelDataType } from '../models/data-model-data-type.model';
@@ -21,28 +21,27 @@ import {
   DataModelEntityCreateDialogData,
 } from '../components/data-model-entity-create-dialog/data-model-entity-create-dialog.component';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DataModelDialogService {
   private matDialog = inject(MatDialog);
-  private injector = inject(Injector);
 
   openCreateDiagramDialog(diagrams: DataModelDiagram[]): Observable<DataModelDiagram | undefined> {
     const data: DataModelDiagramCreateDialogData = { diagrams };
-    return this.matDialog.open(DataModelDiagramCreateDialogComponent, { data, injector: this.injector }).afterClosed();
+    return this.matDialog.open(DataModelDiagramCreateDialogComponent, { data }).afterClosed();
   }
 
   openCreateEntityDialog(entities: DataModelNodeSummary[]): Observable<DataModelNodeSummary | undefined> {
     const data: DataModelEntityCreateDialogData = { entities };
-    return this.matDialog.open(DataModelEntityCreateDialogComponent, { data, injector: this.injector }).afterClosed();
+    return this.matDialog.open(DataModelEntityCreateDialogComponent, { data }).afterClosed();
   }
 
   openCreateDataTypeDialog(dataTypes: DataModelDataType[]): Observable<unknown> {
     const data: DataTypeCreateDialogData = { dataTypes };
-    return this.matDialog.open(DataTypeCreateDialogComponent, { data, injector: this.injector}).afterClosed();
+    return this.matDialog.open(DataTypeCreateDialogComponent, { data }).afterClosed();
   }
 
   openDataTypeSelectorDialog(attribute: DataModelField, dataTypes: DataModelDataType[]): Observable<DataModelDataType | undefined> {
     const data: DataTypeDialogData = { targetAttribute: attribute, dataTypes };
-    return this.matDialog.open(DataTypeSelectorDialogComponent, { data, injector: this.injector }).afterClosed();
+    return this.matDialog.open(DataTypeSelectorDialogComponent, { data }).afterClosed();
   }
 }

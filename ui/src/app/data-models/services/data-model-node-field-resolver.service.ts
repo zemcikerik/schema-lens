@@ -4,7 +4,7 @@ import { DataModelStore } from '../data-model.store';
 import { DirectResolvedField, EdgeResolvedField, ResolvedField } from '../models/resolved-field.model';
 import { DataModelFieldReorderRequest } from '../models/data-model-node.model';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DataModelNodeFieldResolverService {
   private readonly store = inject(DataModelStore);
 

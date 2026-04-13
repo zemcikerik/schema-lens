@@ -1,4 +1,4 @@
-<h2 mat-dialog-title>{{ ('DATAMODEL.DIAGRAM.CREATE.HEADER' | translate)() }}</h2>
+<h2 mat-dialog-title>{{ ('DATA_MODEL.DIAGRAM.CREATE.TITLE' | translate)() }}</h2>
 
 <mat-dialog-content>
   <div class="data-model-create-dialogs">
@@ -7,9 +7,9 @@
     }
     <form [formGroup]="form">
       <mat-form-field class="data-model-create-dialogs__form">
-        <mat-label>{{ ('DATAMODEL.DIAGRAM.CREATE.LABEL' | translate)() }}</mat-label>
+        <mat-label>{{ ('DATA_MODEL.DIAGRAM.CREATE.LABEL' | translate)() }}</mat-label>
         <input type="text"
-               [placeholder]="('DATAMODEL.DIAGRAM.CREATE.PLACEHOLDER' | translate)()"
+               [placeholder]="('DATA_MODEL.DIAGRAM.CREATE.PLACEHOLDER' | translate)()"
                matInput
                required
                formControlName="name">

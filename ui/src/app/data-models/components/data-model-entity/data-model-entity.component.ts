@@ -87,11 +87,11 @@ export class DataModelEntityComponent {
   dataTypeName = (id: number) =>
     id !== -1
       ? this.store.dataTypes().find(e => e.typeId === id)?.name
-      : this.translateService.translate('DATAMODEL.ENTITY.ATTRIBUTE_NEW.TYPE')();
+      : this.translateService.translate('DATA_MODEL.ENTITY.ATTRIBUTE_NEW.TYPE')();
 
   deleteAttribute = (attributeId: number | null) => {
     this.dialogService
-      .openConfirmationDialog('DATAMODEL.ENTITY.DELETE_ATTR.TITLE', 'DATAMODEL.ENTITY.DELETE_ATTR.DESC', 'danger')
+      .openConfirmationDialog('DATA_MODEL.ENTITY.DELETE_ATTRIBUTE.TITLE', 'DATA_MODEL.ENTITY.DELETE_ATTRIBUTE.DESCRIPTION', 'danger')
       .pipe(
         switchMap(confirmed => {
           if (!confirmed) return EMPTY;
@@ -118,7 +118,7 @@ export class DataModelEntityComponent {
   addAttribute = () => {
     this.entityAttributes().push({
       fieldId: null,
-      name: this.translateService.translate('DATAMODEL.ENTITY.ATTRIBUTE_NEW.NAME')(),
+      name: this.translateService.translate('DATA_MODEL.ENTITY.ATTRIBUTE_NEW.NAME')(),
       typeId: -1,
       isPrimaryKey: false,
       isNullable: false,
@@ -175,7 +175,7 @@ export class DataModelEntityComponent {
 
   delete = () => {
     this.dialogService
-      .openConfirmationDialog('DATAMODEL.ENTITY.DELETE.TITLE', 'DATAMODEL.ENTITY.DELETE.DESC', 'danger')
+      .openConfirmationDialog('DATA_MODEL.ENTITY.DELETE.TITLE', 'DATA_MODEL.ENTITY.DELETE.DESCRIPTION', 'danger')
       .subscribe({
         next: res => {
           if (!res) return;

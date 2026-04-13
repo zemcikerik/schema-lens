@@ -12,7 +12,7 @@ import { DataModelEdgeService } from './services/data-model-edge.service';
 import { DataModelDataTypeService } from './services/data-model-data-type.service';
 import { DataModelDiagramService } from './services/data-model-diagram.service';
 
-@Injectable()
+@Injectable({ providedIn: 'root' })
 export class DataModelStore {
   private dataModelDetailsService = inject(DataModelDetailsService);
   private nodeService = inject(DataModelNodeService);
@@ -43,7 +43,9 @@ export class DataModelStore {
 
   loadModel(dataModelId: number): Observable<DataModelDetails | null> {
     return defer(() => {
-      this.dataModelId = dataModelId;
+      if (this.dataModelId === dataModelId) {
+        return of(this._model());
+      }
 
       this._model.set(null);
       this._loading.set(true);
@@ -53,7 +55,10 @@ export class DataModelStore {
 
       return this.dataModelDetailsService.getDataModelDetails(dataModelId).pipe(
         tap({
-          next: model => this._model.set(model),
+          next: model => {
+            this.dataModelId = dataModelId;
+            this._model.set(model);
+          },
           error: err => this._error.set(err),
         }),
         finalize(() => this._loading.set(false)),

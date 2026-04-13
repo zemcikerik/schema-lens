@@ -318,11 +318,14 @@
       "CONFIRM_DELETE_DESCRIPTION": "Are you sure you want to delete this frequently asked question?"
     }
   },
-  "DATAMODEL": {
-    "LABEL": "Models",
-    "ADD_BUTTON_LABEL": "Create Model",
-    "LIST_COLUMN.NAME_LABEL": "Name",
-    "DELETE_DESCRIPTION": "Are you sure want to delete this model?",
+  "DATA_MODEL": {
+    "LIST_LABEL": "Models",
+    "LIST_EMPTY": "There are no models available! You can create one by clicking \"Create model\" button.",
+    "BUTTON_CREATE": "Create model",
+    "LIST_COLUMN": {
+      "NAME_LABEL": "Name"
+    },
+    "DELETE_CONFIRM_DESCRIPTION": "Are you sure you want to delete this model?",
     "NAV": {
       "PROPERTIES": "Properties",
       "DIAGRAMS": "Diagrams",
@@ -331,56 +334,63 @@
     },
     "PROPERTIES": {
       "TITLE": "Model Options",
-      "HEADER": "Model Properties",
+      "LABEL": "Model Properties",
       "NAME_LABEL": "Model Name"
     },
     "DIAGRAM": {
       "CREATE": {
-        "HEADER": "Create New Diagram",
+        "TITLE": "Create New Diagram",
         "LABEL": "Diagram Name",
         "PLACEHOLDER": "DIAGRAM"
       }
     },
     "ENTITY": {
+      "ENTITY_LABEL": "Entity",
       "CREATE": {
-        "HEADER": "Create New Entity",
+        "TITLE": "Create New Entity",
         "LABEL": "Entity Name",
         "PLACEHOLDER": "ENTITY"
       },
       "ATTRIBUTES": {
         "EMPTY_LABEL": "This entity does not contain any attributes."
       },
-      "DELETE_ATTR": {
+      "ATTRIBUTE_NEW": {
+        "NAME": "ATTRIBUTE",
+        "TYPE": "TYPE"
+      },
+      "DELETE_ATTRIBUTE": {
         "TITLE": "Are you sure want to delete this attribute?",
-        "DESC": "This operation cannot be reverted"
+        "DESCRIPTION": "This operation cannot be reverted"
       },
       "DELETE": {
         "TITLE": "Are you sure want to delete this entity?",
-        "DESC": "This operation cannot be reverted"
+        "DESCRIPTION": "This operation cannot be reverted"
       },
       "CANNOT_SET_ON_PK": "Cannot set on PK"
     },
     "DATA_TYPE": {
       "CREATE": {
-        "HEADER": "Create New Data Type",
+        "TITLE": "Create New Data Type",
         "LABEL": "Data Type Name",
         "PLACEHOLDER": "TYPE"
       },
       "SELECT": {
-        "HEADER": "Select Data Type",
+        "TITLE": "Select Data Type",
         "LABEL": "Data Type Name",
         "PLACEHOLDER": "TYPE"
       },
       "EDIT": {
         "TITLE": "Data Type Options",
-        "HEADER": "Data Type Properties",
-        "LABEL": "Name"
+        "PROPERTIES_LABEL": "Data Type Properties",
+        "NAME_LABEL": "Name"
       },
       "DELETE": {
         "TITLE": "Are you sure want to delete this data type?",
-        "DESC": "This operation cannot be reverted"
+        "DESCRIPTION": "This operation cannot be reverted"
       },
-      "ERROR.IN_USE": "This data type is still used in other entity!"
+      "ERROR": {
+        "IN_USE": "This data type is still used in other entity!"
+      }
     }
   }
 }

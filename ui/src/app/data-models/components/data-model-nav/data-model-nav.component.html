@@ -7,12 +7,12 @@
       #rla="routerLinkActive"
       [activated]="rla.isActive"
       appSidebarClose
-    >{{ ('DATAMODEL.NAV.PROPERTIES' | translate)() }}</a>
+    >{{ ('DATA_MODEL.NAV.PROPERTIES' | translate)() }}</a>
 
     <!-- TODO: refactor to common component along with project-object-selector -->
     <mat-expansion-panel class="object-selector">
       <mat-expansion-panel-header>
-        <mat-panel-title>{{ ('DATAMODEL.NAV.DIAGRAMS' | translate)() }}</mat-panel-title>
+        <mat-panel-title>{{ ('DATA_MODEL.NAV.DIAGRAMS' | translate)() }}</mat-panel-title>
         <mat-panel-description>
           <button matIconButton (click)="$event.stopPropagation(); addNewDiagram()">
             <mat-icon>add</mat-icon>
@@ -32,7 +32,7 @@
 
     <mat-expansion-panel class="object-selector">
       <mat-expansion-panel-header>
-        <mat-panel-title>{{ ('DATAMODEL.NAV.ENTITIES' | translate)() }}</mat-panel-title>
+        <mat-panel-title>{{ ('DATA_MODEL.NAV.ENTITIES' | translate)() }}</mat-panel-title>
         <mat-panel-description>
           <button matIconButton (click)="$event.stopPropagation(); addNewEntity()">
             <mat-icon>add</mat-icon>
@@ -55,7 +55,7 @@
 
     <mat-expansion-panel class="object-selector">
       <mat-expansion-panel-header>
-        <mat-panel-title>{{ ('DATAMODEL.NAV.DATA_TYPES' | translate)() }}</mat-panel-title>
+        <mat-panel-title>{{ ('DATA_MODEL.NAV.DATA_TYPES' | translate)() }}</mat-panel-title>
         <mat-panel-description>
         <button matIconButton (click)="$event.stopPropagation(); addNewDataType()">
           <mat-icon>add</mat-icon>

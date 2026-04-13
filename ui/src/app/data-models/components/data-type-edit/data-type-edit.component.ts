@@ -60,7 +60,7 @@ export class DataTypeEditComponent {
     if (type == null || type.typeId == null) return;
     const typeId = type.typeId;
     this.dialogService
-      .openConfirmationDialog('DATAMODEL.DATA_TYPE.DELETE.TITLE', 'DATAMODEL.DATA_TYPE.DELETE.DESC', 'danger')
+      .openConfirmationDialog('DATA_MODEL.DATA_TYPE.DELETE.TITLE', 'DATA_MODEL.DATA_TYPE.DELETE.DESCRIPTION', 'danger')
       .subscribe({
         next: res => {
           if (!res) return;
@@ -72,7 +72,7 @@ export class DataTypeEditComponent {
               if (deleted) {
                 await this.router.navigate(['/model', this.store.dataModelId]);
               } else {
-                this.error.set('DATAMODEL.DATATYPE.ERROR.IN_USE');
+                this.error.set('DATA_MODEL.DATA_TYPE.ERROR.IN_USE');
               }
             },
             error: () => {

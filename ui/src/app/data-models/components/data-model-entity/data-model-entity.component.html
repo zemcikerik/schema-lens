@@ -1,6 +1,6 @@
 <div class="entity-editor">
   <div class="table__header">
-    <mat-icon class="icon" [matTooltip]="('DATAMODEL.ENTITY' | translate)()">table</mat-icon>
+    <mat-icon class="icon" [matTooltip]="('DATA_MODEL.ENTITY.ENTITY_LABEL' | translate)()">table</mat-icon>
     <h2 class="text-code">{{ this.entity()?.name }}</h2>
   </div>
   @if (error()) {
@@ -71,7 +71,7 @@
       <mat-header-cell mat-header-cell *matHeaderCellDef>{{ ('TABLES.COLUMNS.NULLABLE_LABEL' | translate)() }}
       </mat-header-cell>
       <mat-cell class="column-icon" *matCellDef="let attribute">
-        <div [matTooltip]="(attribute.isPrimaryKey ? ('DATAMODEL.ENTITY.CANNOT_SET_ON_PK' | translate)() : null)">
+        <div [matTooltip]="(attribute.isPrimaryKey ? ('DATA_MODEL.ENTITY.CANNOT_SET_ON_PK' | translate)() : null)">
           <button mat-icon-button [disabled]="attribute.isPrimaryKey">
             <app-status-icon [status]="attribute.isNullable" (click)="attribute.isNullable = !attribute.isNullable"/>
           </button>

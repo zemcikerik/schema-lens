@@ -1,13 +1,13 @@
-<app-layout-header-and-content [title]="`${type()?.name} ${('DATAMODEL.DATA_TYPE.EDIT.TITLE' | translate)()}`" [includeSpacing]="!!error()">
+<app-layout-header-and-content [title]="`${type()?.name} ${('DATA_MODEL.DATA_TYPE.EDIT.TITLE' | translate)()}`" [includeSpacing]="!!error()">
   @if (error()) {
     <app-alert type="error">{{ (error() ?? 'GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
   }
   <form class="data-type-editor" [formGroup]="form" (ngSubmit)="submit()">
-    <h4>{{ ('DATAMODEL.DATA_TYPE.EDIT.HEADER' | translate)() }}</h4>
+    <h4>{{ ('DATA_MODEL.DATA_TYPE.EDIT.PROPERTIES_LABEL' | translate)() }}</h4>
 
     <div class="data-type-editor__main">
       <mat-form-field>
-        <mat-label>{{ ('DATAMODEL.DATA_TYPE.EDIT.LABEL' | translate)() }}</mat-label>
+        <mat-label>{{ ('DATA_MODEL.DATA_TYPE.EDIT.NAME_LABEL' | translate)() }}</mat-label>
         <input matInput required formControlName="name">
         @if (form.controls.name.invalid) {
           <mat-error>{{ (form.errors | formatGenericValidationErrors)() }}</mat-error>

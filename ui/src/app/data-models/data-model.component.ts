@@ -9,7 +9,6 @@ import { AlertComponent } from '../shared/components/alert/alert.component';
 import { TranslatePipe } from '../core/translate/translate.pipe';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DataModelStore } from './data-model.store';
-import { DataModelDialogService } from './services/data-model-dialog.service';
 
 @Component({
   selector: 'app-data-model',
@@ -23,10 +22,6 @@ import { DataModelDialogService } from './services/data-model-dialog.service';
     ProgressSpinnerComponent,
     AlertComponent,
     TranslatePipe,
-  ],
-  providers: [
-    DataModelStore,
-    DataModelDialogService,
   ],
 })
 export class DataModelComponent {

@@ -1,8 +1,8 @@
 <form class="data-model-properties" [formGroup]="propertiesForm" (ngSubmit)="submit()">
-  <h4>{{ ('DATAMODEL.PROPERTIES.HEADER' | translate)() }}</h4>
+  <h4>{{ ('DATA_MODEL.PROPERTIES.LABEL' | translate)() }}</h4>
   <div class="data-model-properties__main">
     <mat-form-field>
-      <mat-label>{{ ('DATAMODEL.PROPERTIES.NAME_LABEL' | translate)() }}</mat-label>
+      <mat-label>{{ ('DATA_MODEL.PROPERTIES.NAME_LABEL' | translate)() }}</mat-label>
       <input matInput required formControlName="name">
       @if (nameControl.invalid) {
         <mat-error>{{ (nameControl.errors | formatGenericValidationErrors)() }}</mat-error>

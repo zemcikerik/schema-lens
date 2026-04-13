@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-data-model-properties-edit',
   template: `
-    <app-layout-header-and-content [title]="('DATAMODEL.PROPERTIES.TITLE' | translate)()"
+    <app-layout-header-and-content [title]="('DATA_MODEL.PROPERTIES.TITLE' | translate)()"
                                    [includeSpacing]="loading() || error()">
       @if (loading()) {
         <app-progress-spinner [center]="true" />
@@ -86,7 +86,7 @@ export class DataModelPropertiesEditComponent {
     const dataModelId = +this.dataModelId();
 
     this.dialogService
-      .openConfirmationDialog('GENERIC.CONFIRM_LABEL', 'DATAMODEL.DELETE_DESCRIPTION', 'danger')
+      .openConfirmationDialog('GENERIC.CONFIRM_LABEL', 'DATA_MODEL.DELETE_CONFIRM_DESCRIPTION', 'danger')
       .pipe(
         filter(r => r === true),
         tap(() => this.loading.set(true)),
