@@ -41,13 +41,14 @@ export const appRoutes: Route[] = [
     loadComponent: () => import('./data-models/data-model.component').then(c => c.DataModelComponent),
     canActivate: [authGuard],
     children: [
-      { path: '', redirectTo: 'properties', pathMatch: 'full' },
+      { path: '', redirectTo: 'logical/properties', pathMatch: 'full' },
       {
-        path: 'properties',
+        path: 'logical/properties',
         loadComponent: () =>
           import('./data-models/components/data-model-properties-edit/data-model-properties-edit.component').then(
             c => c.DataModelPropertiesEditComponent,
           ),
+        data: { dataModelingContext: 'logical' },
       },
       {
         path: 'logical/data-type/:dataTypeId',
@@ -55,15 +56,23 @@ export const appRoutes: Route[] = [
           import('./data-models/components/data-model-data-type-properties/data-model-data-type-properties.component').then(
             c => c.DataModelDataTypePropertiesComponent,
           ),
-        data: { dataModelingLayer: 'logical' },
+        data: { dataModelingContext: 'logical' },
       },
       {
-        path: 'physical/data-type/:dataTypeId',
+        path: 'oracle/properties',
+        loadComponent: () =>
+          import('./data-models/components/data-model-properties-edit/data-model-properties-edit.component').then(
+            c => c.DataModelPropertiesEditComponent,
+          ),
+        data: { dataModelingContext: 'oracle' },
+      },
+      {
+        path: 'oracle/data-type/:dataTypeId',
         loadComponent: () =>
           import('./data-models/components/data-model-data-type-properties/data-model-data-type-properties.component').then(
             c => c.DataModelDataTypePropertiesComponent,
           ),
-        data: { dataModelingLayer: 'physical' },
+        data: { dataModelingContext: 'oracle' },
       },
     ],
   },

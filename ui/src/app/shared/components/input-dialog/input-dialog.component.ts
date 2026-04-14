@@ -22,7 +22,7 @@ export interface InputDialogData {
     <h2 mat-dialog-title>{{ (titleKey | translate)() }}</h2>
     <mat-dialog-content>
       <form [formGroup]="form">
-        <mat-form-field>
+        <mat-form-field class="w-100">
           <mat-label>{{ (labelKey | translate)() }}</mat-label>
           <input
             type="text"

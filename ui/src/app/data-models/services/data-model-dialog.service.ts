@@ -52,9 +52,8 @@ export class DataModelDialogService {
 
   openCreateDataTypeDialog(dataTypes: DataModelDataType[]): Observable<DataModelDataType | null> {
     return this.dialogService.openInputDialog({
-      titleKey: 'DATA_MODEL.DATA_TYPE.CREATE.TITLE',
-      labelKey: 'DATA_MODEL.DATA_TYPE.CREATE.LABEL',
-      placeholderKey: 'DATA_MODEL.DATA_TYPE.CREATE.PLACEHOLDER',
+      titleKey: 'DATA_MODEL.DATA_TYPE.CREATE_TITLE',
+      labelKey: 'DATA_MODEL.DATA_TYPE.NAME_LABEL',
       validators: this.createNameValidators(dataTypes.map(dataType => dataType.name)),
     }).pipe(
       switchMap(name => name === null

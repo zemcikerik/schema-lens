@@ -1,28 +1,32 @@
 <div class="nav__container">
+  <div class="data-model-nav__layer-switcher">
+    <app-data-model-context-switcher />
+  </div>
+
   <mat-nav-list class="nav">
     <a
       mat-list-item
-      [routerLink]="['/model', store.dataModelId, 'properties']"
+      [routerLink]="['/model', store.dataModelId, contextState.context(), 'properties']"
       routerLinkActive
       #rla="routerLinkActive"
       [activated]="rla.isActive"
       appSidebarClose
     >{{ ('DATA_MODEL.NAV.PROPERTIES' | translate)() }}</a>
 
-    <app-object-selector [title]="('DATA_MODEL.NAV.DIAGRAMS' | translate)()" [entries]="diagramEntries()">
+    <app-object-selector [title]="('DATA_MODEL.NAV.DATA_TYPES' | translate)()" [entries]="dataTypeEntries()">
+      <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewDataType()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </app-object-selector>
+
+    <app-object-selector [title]="('DATA_MODEL.NAV.$layer.DIAGRAMS' | dataModelingTranslate)()" [entries]="diagramEntries()">
       <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewDiagram()">
         <mat-icon>add</mat-icon>
       </button>
     </app-object-selector>
 
-    <app-object-selector [title]="('DATA_MODEL.NAV.ENTITIES' | translate)()" [entries]="entityEntries()">
-      <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewEntity()">
-        <mat-icon>add</mat-icon>
-      </button>
-    </app-object-selector>
-
-    <app-object-selector [title]="('DATA_MODEL.NAV.DATA_TYPES' | translate)()" [entries]="dataTypeEntries()">
-      <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewDataType()">
+    <app-object-selector [title]="('DATA_MODEL.NAV.$layer.NODES' | dataModelingTranslate)()" [entries]="nodeEntries()">
+      <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewNode()">
         <mat-icon>add</mat-icon>
       </button>
     </app-object-selector>

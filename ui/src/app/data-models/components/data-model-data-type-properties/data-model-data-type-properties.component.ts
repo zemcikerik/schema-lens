@@ -38,7 +38,9 @@ import { filter, finalize, switchMap, tap } from 'rxjs';
 })
 export class DataModelDataTypePropertiesComponent {
   dataTypeId = input.required<string>();
-  loading = signal<boolean>(false);
+  updateLoading = signal<boolean>(false);
+  deleteLoading = signal<boolean>(false);
+  loading = computed<boolean>(() => this.updateLoading() || this.deleteLoading());
   error = signal<string | null>(null);
 
   private fb = inject(FormBuilder);
@@ -85,13 +87,13 @@ export class DataModelDataTypePropertiesComponent {
 
     const { name } = this.propertiesForm.getRawValue();
 
-    this.loading.set(true);
+    this.updateLoading.set(true);
     this.error.set(null);
 
     this.store
       .updateDataType({ typeId, name })
       .pipe(
-        finalize(() => this.loading.set(false)),
+        finalize(() => this.updateLoading.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
@@ -107,21 +109,22 @@ export class DataModelDataTypePropertiesComponent {
     }
 
     this.dialogService
-      .openConfirmationDialog('DATA_MODEL.DATA_TYPE.DELETE.TITLE', 'DATA_MODEL.DATA_TYPE.DELETE.DESCRIPTION', 'danger')
+      .openConfirmationDialog('DATA_MODEL.DATA_TYPE.DELETE_TITLE', 'DATA_MODEL.DATA_TYPE.DELETE_DESCRIPTION', 'danger')
       .pipe(
         filter(result => result === true),
         tap(() => {
-          this.loading.set(true);
+          this.deleteLoading.set(true);
           this.error.set(null);
         }),
         switchMap(() => this.store.deleteDataType(typeId)),
-        finalize(() => this.loading.set(false)),
+        finalize(() => this.deleteLoading.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({
         next: async result => {
           if (result === false) {
-            this.error.set('DATA_MODEL.DATA_TYPE.ERROR.IN_USE');
+            // TODO: based on context
+            this.error.set('DATA_MODEL.DATA_TYPE.ERROR.LOGICAL.IN_USE');
             return;
           }
 
