@@ -2,7 +2,7 @@
 @use '../theme' as t;
 @use '../utilities/breakpoints' as breakpoints;
 
-.data-model-data-type-properties {
+.data-model-data-type {
   &__main {
     & > :first-child {
       width: 100%;

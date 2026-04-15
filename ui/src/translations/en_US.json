@@ -333,7 +333,15 @@
         "DIAGRAMS": "Diagrams",
         "NODES": "Entities"
       },
+      "PHYSICAL": {
+        "NODES": "Tables"
+      },
       "DATA_TYPES": "Data Types"
+    },
+    "CONTEXT": {
+      "SWITCHER_LABEL": "Modeling Context",
+      "LOGICAL": "Logical",
+      "ORACLE": "Physical (Oracle)"
     },
     "PROPERTIES": {
       "TITLE": "Model Options",

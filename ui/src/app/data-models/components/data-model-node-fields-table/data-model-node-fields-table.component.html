@@ -60,11 +60,11 @@
 
 <mat-menu #directFieldMenu xPosition="before">
   <ng-template matMenuContent let-row="row">
-    <button mat-menu-item (click)="editField.emit(row)">
+    <button mat-menu-item (click)="editDirectField.emit(row.field)">
       <mat-icon>edit</mat-icon>
       Edit field
     </button>
-    <button mat-menu-item (click)="deleteField.emit(row)">
+    <button mat-menu-item (click)="deleteDirectField.emit(row.field)">
       <mat-icon>delete</mat-icon>
       Delete field
     </button>
@@ -74,7 +74,7 @@
 <!-- TODO: icon -->
 <mat-menu #edgeFieldMenu xPosition="before">
   <ng-template matMenuContent let-row="row">
-    <button mat-menu-item (click)="goToEdge.emit(row)">
+    <button mat-menu-item (click)="goToEdge.emit(row.edge)">
       <mat-icon>open_in_new</mat-icon>
       Go to edge
     </button>

@@ -16,6 +16,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { combineWithPrevious } from '../../../../core/rxjs-pipes';
 import { DataModelNodeFieldsTableComponent } from '../../../components/data-model-node-fields-table/data-model-node-fields-table.component';
 import { ResolvedField } from '../../../models/resolved-field.model';
+import { DataModelField } from '../../../models/data-model-node.model';
 
 @Component({
   selector: 'app-logical-data-modeler-entity-properties',
@@ -83,18 +84,12 @@ export class LogicalDataModelerEntityPropertiesComponent implements BaseDataMode
     this.pendingAttributeOrder = reordered;
   }
 
-  onEditAttribute(attribute: ResolvedField): void {
-    if (attribute.source !== 'direct') {
-      return;
-    }
-    this.facade.editAttribute(this.currentEntity().nodeId as number, attribute.field);
+  onEditAttribute(field: DataModelField): void {
+    this.facade.editAttribute(this.currentEntity().nodeId as number, field);
   }
 
-  onDeleteAttribute(attribute: ResolvedField): void {
-    if (attribute.source !== 'direct') {
-      return;
-    }
-    this.facade.deleteAttribute(this.currentEntity().nodeId as number, attribute.field);
+  onDeleteAttribute(field: DataModelField): void {
+    this.facade.deleteAttribute(this.currentEntity().nodeId as number, field);
   }
 
   saveChanges(entityId: number = this.currentEntity().nodeId ?? -1): void {

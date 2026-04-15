@@ -18,8 +18,8 @@ import { DataModelStore } from '../../data-model.store';
 import { filter, finalize, switchMap, tap } from 'rxjs';
 
 @Component({
-  selector: 'app-data-model-data-type-properties',
-  templateUrl: './data-model-data-type-properties.component.html',
+  selector: 'app-data-model-data-type',
+  templateUrl: './data-model-data-type.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
@@ -36,7 +36,7 @@ import { filter, finalize, switchMap, tap } from 'rxjs';
     MatError,
   ],
 })
-export class DataModelDataTypePropertiesComponent {
+export class DataModelDataTypeComponent {
   dataTypeId = input.required<string>();
   updateLoading = signal<boolean>(false);
   deleteLoading = signal<boolean>(false);

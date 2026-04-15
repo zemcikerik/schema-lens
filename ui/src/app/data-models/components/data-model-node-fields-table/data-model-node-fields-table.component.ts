@@ -8,6 +8,8 @@ import { CdkDrag, CdkDragHandle, CdkDropList, CdkDragDrop, moveItemInArray } fro
 import { DataModelNodeFieldResolverService } from '../../services/data-model-node-field-resolver.service';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { ResolvedField } from '../../models/resolved-field.model';
+import { DataModelField } from '../../models/data-model-node.model';
+import { DataModelEdge } from '../../models/data-model-edge.model';
 
 @Component({
   selector: 'app-data-model-node-fields-table',
@@ -45,9 +47,9 @@ export class DataModelNodeFieldsTableComponent {
   readonly DISPLAYED_COLUMNS = ['drag', 'name', 'actions'];
   nodeId = input.required<number>();
   orderChanged = output<ResolvedField[]>();
-  editField = output<ResolvedField>();
-  deleteField = output<ResolvedField>();
-  goToEdge = output<ResolvedField>();
+  editDirectField = output<DataModelField>();
+  deleteDirectField = output<DataModelField>();
+  goToEdge = output<DataModelEdge>();
 
   private fieldResolver = inject(DataModelNodeFieldResolverService);
   readonly resolvedFields = linkedSignal(() => this.fieldResolver.resolveFields(this.nodeId())());

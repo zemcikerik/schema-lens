@@ -53,8 +53,16 @@ export const appRoutes: Route[] = [
       {
         path: 'logical/data-type/:dataTypeId',
         loadComponent: () =>
-          import('./data-models/components/data-model-data-type-properties/data-model-data-type-properties.component').then(
-            c => c.DataModelDataTypePropertiesComponent,
+          import('./data-models/components/data-model-data-type/data-model-data-type.component').then(
+            c => c.DataModelDataTypeComponent,
+          ),
+        data: { dataModelingContext: 'logical' },
+      },
+      {
+        path: 'logical/entity/:entityId',
+        loadComponent: () =>
+          import('./data-models/components/data-model-node/data-model-node.component').then(
+            c => c.DataModelNodeComponent,
           ),
         data: { dataModelingContext: 'logical' },
       },
@@ -69,8 +77,16 @@ export const appRoutes: Route[] = [
       {
         path: 'oracle/data-type/:dataTypeId',
         loadComponent: () =>
-          import('./data-models/components/data-model-data-type-properties/data-model-data-type-properties.component').then(
-            c => c.DataModelDataTypePropertiesComponent,
+          import('./data-models/components/data-model-data-type/data-model-data-type.component').then(
+            c => c.DataModelDataTypeComponent,
+          ),
+        data: { dataModelingContext: 'oracle' },
+      },
+      {
+        path: 'oracle/table/:tableId',
+        loadComponent: () =>
+          import('./data-models/components/data-model-node/data-model-node.component').then(
+            c => c.DataModelNodeComponent,
           ),
         data: { dataModelingContext: 'oracle' },
       },

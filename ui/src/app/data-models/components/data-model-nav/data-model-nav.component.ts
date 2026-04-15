@@ -53,7 +53,7 @@ export class DataModelNavComponent {
   nodeEntries = computed<ObjectSelectorEntry[]>(() => this.store.nodes().map(node => ({
     id: node.nodeId,
     label: node.name,
-    routerLink: ['/model', this.dataModelId(), this.contextState.context() === 'logical' ? 'entity' : 'table', node.nodeId!],
+    routerLink: ['/model', this.dataModelId(), this.contextState.context(), this.contextState.context() === 'logical' ? 'entity' : 'table', node.nodeId!],
   })));
 
   addNewDiagram(): void {

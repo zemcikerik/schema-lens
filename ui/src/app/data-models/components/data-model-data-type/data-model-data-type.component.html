@@ -4,10 +4,10 @@
   @if (error()) {
     <app-alert type="error">{{ ((error() ?? 'GENERIC.ERROR_LABEL') | translate)() }}</app-alert>
   }
-  <form class="data-model-data-type-properties" [formGroup]="propertiesForm" (ngSubmit)="updateDataType()">
+  <form class="data-model-data-type" [formGroup]="propertiesForm" (ngSubmit)="updateDataType()">
     <h4>{{ ('DATA_MODEL.DATA_TYPE.PROPERTIES_LABEL' | translate)() }}</h4>
 
-    <div class="data-model-data-type-properties__main">
+    <div class="data-model-data-type__main">
       <mat-form-field>
         <mat-label>{{ ('DATA_MODEL.DATA_TYPE.NAME_LABEL' | translate)() }}</mat-label>
         <input matInput required formControlName="name">
@@ -17,7 +17,7 @@
       </mat-form-field>
     </div>
 
-    <div class="data-model-data-type-properties__control">
+    <div class="data-model-data-type__control">
       <button mat-flat-button (click)="deleteDataType()" type="button" [disabled]="loading()">
         <mat-icon>delete</mat-icon>
         @if (deleteLoading()) {
