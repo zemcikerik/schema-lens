@@ -2,10 +2,10 @@
 import { Observable } from 'rxjs';
 import { DataModelStore } from '../data-model.store';
 import { DirectResolvedField, EdgeResolvedField, ResolvedField } from '../models/resolved-field.model';
-import { DataModelFieldReorderRequest } from '../models/data-model-node.model';
+import { DataModelField, DataModelFieldReorderRequest, DataModelNode } from '../models/data-model-node.model';
 
 @Injectable({ providedIn: 'root' })
-export class DataModelNodeFieldResolverService {
+export class DataModelNodeFieldResolver {
   private readonly store = inject(DataModelStore);
 
   resolveFields(nodeId: number): Signal<ResolvedField[]> {
@@ -23,14 +23,17 @@ export class DataModelNodeFieldResolverService {
 
       const fromEdges: EdgeResolvedField[] = edges
         .filter(e => e.toNodeId === nodeId)
-        .flatMap(e =>
-          e.fields.map(field => ({
+        .flatMap(e => {
+          const sourceNode = nodes.find(n => n.nodeId === e.fromNodeId) as DataModelNode;
+
+          return e.fields.map(field => ({
             source: 'edge' as const,
             field: field,
             edge: e,
+            referencedField: sourceNode.fields.find(f => f.fieldId === field.referencedFieldId) as DataModelField,
             position: field.position,
-          })),
-        );
+          }));
+        });
 
       return [...direct, ...fromEdges].sort((a, b) => {
         if (a.position !== b.position) {

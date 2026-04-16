@@ -2,20 +2,21 @@ import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, injec
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
 import { DataModelDataType } from '../../models/data-model-data-type.model';
 import { Router } from '@angular/router';
-import { ProgressSpinnerComponent } from '../../../shared/components/progress-spinner/progress-spinner.component';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { DialogService } from '../../../core/dialog.service';
 import { DataModelStore } from '../../data-model.store';
 import { filter, finalize, switchMap, tap } from 'rxjs';
+import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
+import {
+  SaveDeleteControlComponent
+} from '../../../shared/components/save-delete-control/save-delete-control.component';
 
 @Component({
   selector: 'app-data-model-data-type',
@@ -23,17 +24,16 @@ import { filter, finalize, switchMap, tap } from 'rxjs';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     ReactiveFormsModule,
-    MatButton,
-    MatIcon,
     MatInput,
     TranslatePipe,
     FormatGenericValidationErrorsPipe,
     LayoutHeaderAndContentComponent,
-    ProgressSpinnerComponent,
     AlertComponent,
     MatFormField,
     MatLabel,
     MatError,
+    SectionHeaderComponent,
+    SaveDeleteControlComponent,
   ],
 })
 export class DataModelDataTypeComponent {

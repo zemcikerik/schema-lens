@@ -1,20 +1,23 @@
-<app-layout-header-and-content [title]="node().name + ' Node'">
-  <form [formGroup]="nodeForm">
-    <h4>Properties</h4>
+<form class="data-model-node-editor" [formGroup]="nodeForm">
+  <app-section-header title="Properties" />
 
-    <div>
-      <mat-form-field>
-        <mat-label>Name</mat-label>
-        <input matInput required formControlName="name">
-      </mat-form-field>
-    </div>
+  <mat-form-field class="w-100">
+    <mat-label>Name</mat-label>
+    <input matInput required formControlName="name">
+  </mat-form-field>
 
-    <h4>Fields</h4>
-    <app-data-model-node-fields-table
-      [nodeId]="node().nodeId"
-      (orderChanged)="orderChanged($event)"
-      (editDirectField)="editDirectField($event)"
-      (deleteDirectField)="deleteDirectField($event)"
-      (goToEdge)="onGoToEdge($event)" />
-  </form>
-</app-layout-header-and-content>
+  <app-section-header title="Fields">
+    <button mat-icon-button (click)="addDirectField()" matTooltip="Add field">
+      <mat-icon>add</mat-icon>
+    </button>
+  </app-section-header>
+
+  <app-data-model-node-fields-table
+    [fields]="fields()"
+    [dataTypes]="store.dataTypes()"
+    [compact]="compact()"
+    (orderChanged)="orderChanged($event)"
+    (editDirectField)="editDirectField($event)"
+    (deleteDirectField)="deleteDirectField($event)"
+    (goToEdge)="goToEdge.emit($event)" />
+</form>

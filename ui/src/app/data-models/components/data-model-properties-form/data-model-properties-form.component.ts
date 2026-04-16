@@ -1,14 +1,16 @@
 import { ChangeDetectionStrategy, Component, inject, input, output } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatIcon } from '@angular/material/icon';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { DataModel } from '../../models/data-model.model';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
+import {
+  SaveDeleteControlComponent
+} from '../../../shared/components/save-delete-control/save-delete-control.component';
 
 @Component({
   selector: 'app-data-model-properties-form',
@@ -17,11 +19,11 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
   imports: [
     ReactiveFormsModule,
     MatFormFieldModule,
-    MatButton,
-    MatIcon,
     MatInput,
     TranslatePipe,
     FormatGenericValidationErrorsPipe,
+    SectionHeaderComponent,
+    SaveDeleteControlComponent,
   ],
 })
 export class DataModelPropertiesFormComponent {
@@ -35,13 +37,15 @@ export class DataModelPropertiesFormComponent {
   });
 
   constructor() {
-    toObservable(this.properties).pipe(takeUntilDestroyed()).subscribe(properties => {
-      if (properties !== null) {
-        this.propertiesForm.reset(properties);
-      } else {
-        this.propertiesForm.reset();
-      }
-    });
+    toObservable(this.properties)
+      .pipe(takeUntilDestroyed())
+      .subscribe(properties => {
+        if (properties !== null) {
+          this.propertiesForm.reset(properties);
+        } else {
+          this.propertiesForm.reset();
+        }
+      });
   }
 
   submit(): void {

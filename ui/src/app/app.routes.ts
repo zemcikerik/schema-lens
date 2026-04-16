@@ -59,7 +59,7 @@ export const appRoutes: Route[] = [
         data: { dataModelingContext: 'logical' },
       },
       {
-        path: 'logical/entity/:entityId',
+        path: 'logical/entity/:nodeId',
         loadComponent: () =>
           import('./data-models/components/data-model-node/data-model-node.component').then(
             c => c.DataModelNodeComponent,
@@ -83,7 +83,7 @@ export const appRoutes: Route[] = [
         data: { dataModelingContext: 'oracle' },
       },
       {
-        path: 'oracle/table/:tableId',
+        path: 'oracle/table/:nodeId',
         loadComponent: () =>
           import('./data-models/components/data-model-node/data-model-node.component').then(
             c => c.DataModelNodeComponent,

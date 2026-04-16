@@ -17,6 +17,7 @@ import { combineWithPrevious } from '../../../../core/rxjs-pipes';
 import { DataModelNodeFieldsTableComponent } from '../../../components/data-model-node-fields-table/data-model-node-fields-table.component';
 import { ResolvedField } from '../../../models/resolved-field.model';
 import { DataModelField } from '../../../models/data-model-node.model';
+import { SectionHeaderComponent } from '../../../../shared/components/section-header/section-header.component';
 
 @Component({
   selector: 'app-logical-data-modeler-entity-properties',
@@ -33,6 +34,7 @@ import { DataModelField } from '../../../models/data-model-node.model';
     MatIconButton,
     MatIcon,
     MatTooltip,
+    SectionHeaderComponent,
   ],
 })
 export class LogicalDataModelerEntityPropertiesComponent implements BaseDataModelerPropertiesComponent {

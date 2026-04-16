@@ -1,0 +1,87 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.data-model-node-editor {
+  // selector for specificity to override mat-table
+  & &__fields-table {
+    border-radius: 0.5rem 0.5rem 0 0;
+    overflow: hidden;
+    background-color: mat.get-theme-color(t.$theme, surface-container-high);
+  }
+
+  &__fields-table {
+    width: 100%;
+
+    &__row {
+      .mat-column-drag,
+      .mat-column-actions {
+        flex: 0 0 4rem;
+      }
+
+      .mat-column-nullable {
+        flex: 0 0 6rem;
+        justify-content: center;
+      }
+
+      .mat-column-actions {
+        justify-content: flex-end;
+      }
+
+      .mat-column-name {
+        min-width: 0;
+        overflow: hidden;
+
+        span {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
+
+    &__drag-handle {
+      cursor: move;
+      color: rgba(0, 0, 0, 0.38);
+      font-size: 1.25rem;
+      height: 1.25rem;
+      width: 1.25rem;
+    }
+
+    &__primary-key-icon,
+    &__edge-icon {
+      margin-left: 0.5rem;
+      font-size: 1rem;
+      height: 1rem;
+      width: 1rem;
+      line-height: 1.5rem;
+    }
+
+    &__primary-key-icon {
+      color: mat.get-theme-color(t.$theme, primary);
+    }
+
+    &__edge-icon {
+      color: rgba(0, 0, 0, 0.54);
+    }
+
+    &__primary-key-icon + &__edge-icon {
+      margin-left: 0;
+    }
+
+    &__nullable-status {
+      margin-top: 0.25rem;
+      color: mat.get-theme-color(t.$theme, secondary);
+    }
+
+    &__empty {
+      text-align: center;
+      padding: 1rem;
+      color: rgba(0, 0, 0, 0.54);
+      font-style: italic;
+    }
+
+    &__empty-row--hidden {
+      display: none;
+    }
+  }
+}

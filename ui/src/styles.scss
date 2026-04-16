@@ -30,7 +30,9 @@
 @use './scss/components/project-properties';
 @use './scss/components/project-selector';
 @use './scss/components/progress-spinner';
+@use './scss/components/save-delete-control';
 @use './scss/components/schema-diagram';
+@use './scss/components/section-header';
 @use './scss/components/selectable-list-table';
 @use './scss/components/table';
 @use './scss/components/table-all-relationships';
@@ -42,12 +44,9 @@
 @use './scss/components/top-bar';
 @use './scss/components/user-identifier';
 
-@use './scss/components/data-model-entiy';
 @use './scss/components/data-model-create-dialogs';
-@use './scss/components/data-model-data-type';
 @use './scss/components/data-model-nav';
-@use './scss/components/data-model-node-fields-table';
-@use './scss/components/data-model-properties';
+@use './scss/components/data-model-node-editor';
 
 @include mat.elevation-classes();
 @include mat.app-background();

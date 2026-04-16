@@ -1,0 +1,26 @@
+<h2 mat-dialog-title>{{ data.field ? 'Edit field' : 'Add field' }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field class="w-100">
+      <mat-label>Name</mat-label>
+      <input matInput formControlName="name" required>
+      @if (form.controls.name.invalid) {
+        <mat-error>{{ (form.controls.name.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+
+    <app-data-model-data-type-name-field
+      [dataTypes]="data.dataTypes"
+      [control]="form.controls.typeName"
+      [label]="'Data type'"/>
+
+    <mat-checkbox formControlName="isPrimaryKey">Primary key</mat-checkbox>
+    <mat-checkbox formControlName="isNullable">Nullable</mat-checkbox>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button (click)="confirm()" [disabled]="form.invalid">Confirm</button>
+</mat-dialog-actions>

@@ -11,7 +11,7 @@ import { DataModelDetails } from '../../models/data-model.model';
 import { DataModelEdge } from '../../models/data-model-edge.model';
 import { DataModelField, DataModelNode, DataModelNodeSummary } from '../../models/data-model-node.model';
 import { LogicalModelDiagram } from '../../models/data-model-diagram.model';
-import { DataModelNodeFieldResolverService } from '../../services/data-model-node-field-resolver.service';
+import { DataModelNodeFieldResolver } from '../../services/data-model-node-field.resolver';
 import { ResolvedField } from '../../models/resolved-field.model';
 
 @Injectable()
@@ -20,7 +20,7 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
   private state = inject(LogicalDataModelingState);
   private mapper = inject(LogicalDiagramMapper);
   private dialogs = inject(LogicalDataModelerDialogService);
-  private fieldResolver = inject(DataModelNodeFieldResolverService);
+  private fieldResolver = inject(DataModelNodeFieldResolver);
 
   private pendingEntityIds = new Set<number>();
 
@@ -167,11 +167,11 @@ export class LogicalDataModelingFacade implements DataModelingFacade {
   }
 
   updateEntity(entity: DataModelNodeSummary): void {
-    this.withLoading(
-      this.store.updateNode(entity).pipe(
-        tap(saved => this.notifyEntityUpdated(saved)),
-      ),
-    ).subscribe();
+    // this.withLoading(
+    //   this.store.updateNode(entity).pipe(
+    //     tap(saved => this.notifyEntityUpdated(saved)),
+    //   ),
+    // ).subscribe();
   }
 
   updateRelationship(updated: DataModelEdge): void {

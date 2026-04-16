@@ -8,16 +8,15 @@
   </mat-form-field>
 </form>
 
-<div class="data-modeler__properties__section-header">
-  <h4>Attributes</h4>
+<app-section-header title="Attributes">
   <button mat-icon-button (click)="onAddAttribute()" matTooltip="Add attribute">
     <mat-icon>add</mat-icon>
   </button>
-</div>
+</app-section-header>
 
 @if (currentEntity().nodeId; as entityId) {
   <!-- TODO: disable on loading, mat-menu triggers save -->
-  <app-data-model-node-fields-table [nodeId]="entityId" (orderChanged)="onAttributeOrderChanged($event)"
-                                          (editDirectField)="onEditAttribute($event)"
-                                          (deleteDirectField)="onDeleteAttribute($event)"/>
+<!--  <app-data-model-node-fields-table [nodeId]="entityId" (orderChanged)="onAttributeOrderChanged($event)"-->
+<!--                                          (editDirectField)="onEditAttribute($event)"-->
+<!--                                          (deleteDirectField)="onDeleteAttribute($event)"/>-->
 }

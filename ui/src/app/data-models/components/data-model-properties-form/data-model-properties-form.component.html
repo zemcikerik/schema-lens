@@ -1,24 +1,16 @@
-<form class="data-model-properties" [formGroup]="propertiesForm" (ngSubmit)="submit()">
-  <h4>{{ ('DATA_MODEL.PROPERTIES.LABEL' | translate)() }}</h4>
-  <div class="data-model-properties__main">
-    <mat-form-field>
-      <mat-label>{{ ('DATA_MODEL.PROPERTIES.NAME_LABEL' | translate)() }}</mat-label>
-      <input matInput required formControlName="name">
-      @if (nameControl.invalid) {
-        <mat-error>{{ (nameControl.errors | formatGenericValidationErrors)() }}</mat-error>
-      }
-    </mat-form-field>
-  </div>
+<form class="data-model-properties" [formGroup]="propertiesForm">
+  <app-section-header [title]="('DATA_MODEL.PROPERTIES.LABEL' | translate)()" />
 
-  <div class="data-model-properties__control">
-    @if (properties() !== null) {
-      <button mat-flat-button (click)="delete.emit()" type="button">
-        <mat-icon>delete</mat-icon> {{ ('GENERIC.DELETE_LABEL' | translate)() }}
-      </button>
+  <mat-form-field class="w-100">
+    <mat-label>{{ ('DATA_MODEL.PROPERTIES.NAME_LABEL' | translate)() }}</mat-label>
+    <input matInput required formControlName="name">
+    @if (nameControl.invalid) {
+      <mat-error>{{ (nameControl.errors | formatGenericValidationErrors)() }}</mat-error>
     }
+  </mat-form-field>
 
-    <button mat-flat-button type="submit">
-      <mat-icon>save</mat-icon> {{ ('GENERIC.SAVE_LABEL' | translate)() }}
-    </button>
-  </div>
+  <app-save-delete-control
+    [deleteVisible]="properties() !== null"
+    (save)="submit()"
+    (delete)="delete.emit()"/>
 </form>

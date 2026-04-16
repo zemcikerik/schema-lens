@@ -10,6 +10,7 @@ export interface DirectResolvedField {
 export interface EdgeResolvedField {
   source: 'edge';
   field: DataModelEdgeField;
+  referencedField: DataModelField;
   edge: DataModelEdge;
   position: number;
 }

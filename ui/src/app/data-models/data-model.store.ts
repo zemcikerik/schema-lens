@@ -99,13 +99,13 @@ export class DataModelStore {
       .pipe(tap(created => this._model.update(m => m && { ...m, nodes: [...m.nodes, created] })));
   }
 
-  updateNode(node: DataModelNodeSummary): Observable<DataModelNode> {
+  updateNode(node: DataModelNode): Observable<DataModelNode> {
     const current = this.nodes().find(n => n.nodeId === node.nodeId);
     if (!current) {
       throw new Error(`Cannot update missing node ${node.nodeId}`);
     }
 
-    return this.nodeService.updateNode(this.dataModelId, { ...current, name: node.name }).pipe(
+    return this.nodeService.updateNode(this.dataModelId, node).pipe(
       map(modification => {
         this.mergeModification(modification);
         return this.nodes().find(n => n.nodeId === node.nodeId) as DataModelNode;

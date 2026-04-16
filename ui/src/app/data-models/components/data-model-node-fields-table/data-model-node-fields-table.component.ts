@@ -1,15 +1,22 @@
-import { ChangeDetectionStrategy, Component, inject, input, linkedSignal, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, input, output } from '@angular/core';
 import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderCell, MatCellDef, MatCell, MatHeaderRowDef, MatHeaderRow, MatRowDef, MatRow, MatFooterCellDef, MatFooterCell, MatFooterRowDef, MatFooterRow } from '@angular/material/table';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatMenu, MatMenuContent, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { CdkDrag, CdkDragHandle, CdkDropList, CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { DataModelNodeFieldResolverService } from '../../services/data-model-node-field-resolver.service';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { ResolvedField } from '../../models/resolved-field.model';
 import { DataModelField } from '../../models/data-model-node.model';
 import { DataModelEdge } from '../../models/data-model-edge.model';
+import { StatusIconComponent } from '../../../shared/components/status-icon/status-icon.component';
+import { DataModelDataType } from '../../models/data-model-data-type.model';
+import { DataModelDataTypePipe } from '../../pipes/data-model-data-type.pipe';
+
+export interface DirectFieldReference {
+  index: number;
+  field: DataModelField;
+}
 
 @Component({
   selector: 'app-data-model-node-fields-table',
@@ -41,27 +48,30 @@ import { DataModelEdge } from '../../models/data-model-edge.model';
     CdkDrag,
     CdkDragHandle,
     TranslatePipe,
+    StatusIconComponent,
+    DataModelDataTypePipe,
   ],
 })
 export class DataModelNodeFieldsTableComponent {
-  readonly DISPLAYED_COLUMNS = ['drag', 'name', 'actions'];
-  nodeId = input.required<number>();
+  fields = input.required<ResolvedField[]>();
+  dataTypes = input.required<DataModelDataType[]>();
+  compact = input<boolean>(false);
   orderChanged = output<ResolvedField[]>();
-  editDirectField = output<DataModelField>();
-  deleteDirectField = output<DataModelField>();
+  editDirectField = output<DirectFieldReference>();
+  deleteDirectField = output<DirectFieldReference>();
   goToEdge = output<DataModelEdge>();
 
-  private fieldResolver = inject(DataModelNodeFieldResolverService);
-  readonly resolvedFields = linkedSignal(() => this.fieldResolver.resolveFields(this.nodeId())());
+  displayedColumns = computed(() =>
+    this.compact() ? ['drag', 'name', 'actions'] : ['drag', 'name', 'type', 'nullable', 'actions'],
+  );
 
   onDrop(event: CdkDragDrop<ResolvedField[]>): void {
     if (event.previousIndex === event.currentIndex) {
       return;
     }
 
-    const reordered = [...this.resolvedFields()];
+    const reordered = [...this.fields()];
     moveItemInArray(reordered, event.previousIndex, event.currentIndex);
-    this.resolvedFields.set(reordered);
     this.orderChanged.emit(reordered);
   }
 }
