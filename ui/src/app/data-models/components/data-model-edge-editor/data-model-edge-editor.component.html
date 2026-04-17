@@ -1,0 +1,12 @@
+<form [formGroup]="form">
+  <mat-form-field>
+    <mat-label>Type</mat-label>
+    <mat-select formControlName="type">
+      <mat-option [value]="'1:1'">1:1 (One to One)</mat-option>
+      <mat-option [value]="'1:N'">1:N (One to Many)</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-checkbox formControlName="isIdentifying">Identifying</mat-checkbox>
+  <mat-checkbox formControlName="isMandatory">Mandatory</mat-checkbox>
+</form>

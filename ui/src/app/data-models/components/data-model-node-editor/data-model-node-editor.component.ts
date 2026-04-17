@@ -6,8 +6,9 @@ import {
   effect,
   inject,
   input,
-  linkedSignal,
   output,
+  signal,
+  untracked,
 } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
@@ -20,7 +21,7 @@ import { DataModelField, DataModelNode } from '../../models/data-model-node.mode
 import { ResolvedField } from '../../models/resolved-field.model';
 import { DataModelEdge } from '../../models/data-model-edge.model';
 import { DataModelNodeFieldResolver } from '../../services/data-model-node-field.resolver';
-import { filter, mergeMap, Observable, of } from 'rxjs';
+import { filter, finalize, mergeMap, Observable, of, tap } from 'rxjs';
 import { DataModelStore } from '../../data-model.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconButton } from '@angular/material/button';
@@ -30,6 +31,8 @@ import { DataModelDialogService } from '../../services/data-model-dialog.service
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
+import { DataModelEditor } from '../data-model-editor/data-model-editor.component';
+import { DataModelModification } from '../../models/data-model.model';
 
 @Component({
   selector: 'app-data-model-node-editor',
@@ -49,7 +52,7 @@ import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
     DataModelingTranslatePipe,
   ],
 })
-export class DataModelNodeEditorComponent {
+export class DataModelNodeEditorComponent implements DataModelEditor {
   node = input.required<DataModelNode>();
   compact = input<boolean>(false);
   goToEdge = output<DataModelEdge>();
@@ -62,31 +65,41 @@ export class DataModelNodeEditorComponent {
   private modelDialogService = inject(DataModelDialogService);
   private destroyRef = inject(DestroyRef);
 
-  nodeForm = this.fb.nonNullable.group({
+  form = this.fb.nonNullable.group({
     name: this.fb.nonNullable.control('', []), // TODO: validators
   });
-  fields = linkedSignal(() => this.fieldResolver.resolveFields(this.nodeId())());
+  fields = signal<ResolvedField[]>([]);
 
   nodeModified = false;
   positionsChanged = false;
+  pendingSaveId = signal<number | null>(null);
 
   constructor() {
     effect(() => {
       const node = this.node();
 
-      this.nodeForm.reset({
+      this.form.reset({
         name: node.name,
       });
 
       this.nodeModified = false;
+      this.positionsChanged = false;
     });
 
-    this.nodeForm.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => (this.nodeModified = true));
+    effect(() => {
+      if (this.pendingSaveId() !== null) {
+        return;
+      }
+
+      const fields = this.fieldResolver.resolveFields(this.nodeId());
+      untracked(() => this.fields.set(fields()));
+    });
+
+    this.form.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => (this.nodeModified = true));
   }
 
   orderChanged(fields: ResolvedField[]): void {
     this.fields.set(fields);
-    this.nodeModified = true;
     this.positionsChanged = true;
   }
 
@@ -128,7 +141,10 @@ export class DataModelNodeEditorComponent {
   deleteDirectField({ index }: DirectFieldReference): void {
     this.modelDialogService
       .openDeleteFieldConfirmationDialog()
-      .pipe(filter(r => !!r), takeUntilDestroyed(this.destroyRef))
+      .pipe(
+        filter(r => !!r),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe(() => {
         this.fields.update(fields => {
           const result = [...fields];
@@ -140,28 +156,38 @@ export class DataModelNodeEditorComponent {
       });
   }
 
-  // TODO: return value
-  save(): Observable<unknown> | null {
-    if (!this.nodeModified) {
+  save(): Observable<DataModelModification> | null {
+    if (!this.nodeModified && !this.positionsChanged && this.pendingSaveId() !== null) {
       return null;
     }
 
-    if (this.nodeForm.invalid) {
-      this.nodeForm.markAllAsTouched();
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return null;
     }
 
-    const { name } = this.nodeForm.getRawValue();
+    const saveNode$ = this.nodeModified ? this.saveNodePropertiesWithoutOrder() : of(this.node());
     const allFields = this.fields();
-    const fields = this.getDirectFields();
     const positionsChanged = this.positionsChanged;
+    this.pendingSaveId.set(this.nodeId());
 
-    return this.store
-      .updateNode({ nodeId: this.nodeId(), name, fields })
-      .pipe(mergeMap(node => positionsChanged
-        ? this.fieldResolver.reorderFields(this.nodeId(), this.updateIdsForNewDirectFields(node, allFields))
-        : of(null)
-      ));
+    return saveNode$.pipe(
+      tap(() => (this.nodeModified = false)),
+      mergeMap(
+        node =>
+          positionsChanged
+            ? this.fieldResolver.reorderFields(this.nodeId(), this.updateIdsForNewDirectFields(node, allFields))
+            : of({ updatedNodes: [node], updatedEdges: [] }), // TODO: migrate
+      ),
+      tap(() => (this.positionsChanged = false)),
+      finalize(() => this.pendingSaveId.set(null)),
+    );
+  }
+
+  private saveNodePropertiesWithoutOrder(): Observable<DataModelNode> {
+    const { name } = this.form.getRawValue();
+    const fields = this.getDirectFields();
+    return this.store.updateNode({ nodeId: this.nodeId(), name, fields });
   }
 
   private getDirectFields(): DataModelField[] {
@@ -177,7 +203,7 @@ export class DataModelNodeEditorComponent {
   // TODO: enforce that field names are unique
   private updateIdsForNewDirectFields(node: DataModelNode, allFields: ResolvedField[]): ResolvedField[] {
     const fieldNameToFieldMapping: Record<string, DataModelField> = Object.fromEntries(
-      node.fields.map(field => [field.name, field])
+      node.fields.map(field => [field.name, field]),
     );
 
     return allFields.map(resolvedField => {

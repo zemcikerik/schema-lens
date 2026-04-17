@@ -10,6 +10,8 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { DataModelDataType } from '../../models/data-model-data-type.model';
 import { DataModelField } from '../../models/data-model-node.model';
+import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
 export interface DataModelNodeFieldFormDialogData {
   field: DataModelField | null;
@@ -33,6 +35,8 @@ export interface DataModelNodeFieldFormDialogData {
     MatButton,
     DataModelDataTypeNameFieldComponent,
     FormatGenericValidationErrorsPipe,
+    DataModelingTranslatePipe,
+    TranslatePipe,
   ],
 })
 export class DataModelNodeFieldFormDialogComponent {
@@ -47,10 +51,9 @@ export class DataModelNodeFieldFormDialogComponent {
       Validators.maxLength(40),
       noStartEndWhitespaceValidator,
     ]),
-    typeName: this.fb.nonNullable.control(
-      this.data.dataTypes.find(type => type.typeId === this.data.field?.typeId)?.name ?? '',
-      [Validators.required],
-    ),
+    typeName: this.fb.nonNullable.control(this.data.dataTypes.find(type => type.typeId === this.data.field?.typeId)?.name ?? '', [
+      Validators.required,
+    ]),
     isPrimaryKey: this.fb.nonNullable.control(this.data.field?.isPrimaryKey ?? false),
     isNullable: this.fb.nonNullable.control({
       value: this.data.field?.isNullable ?? true,

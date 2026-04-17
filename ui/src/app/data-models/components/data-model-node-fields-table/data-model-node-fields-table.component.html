@@ -9,28 +9,28 @@
   </ng-container>
 
   <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELDS_TABLE.NAME' | translate)() }}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.NAME' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let row">
       <span class="text-code">{{ row.field.name }}</span>
       @if (row.source === 'direct' && row.field.isPrimaryKey) {
         <mat-icon class="data-model-node-editor__fields-table__primary-key-icon"
-                  matTooltip="Primary key">key
+                  [matTooltip]="('DATA_MODEL.NODE.FIELD_PROPERTIES.PRIMARY_KEY' | translate)()">key
         </mat-icon>
       } @else if (row.source === 'edge') {
         @if (row.edge.isIdentifying) {
           <mat-icon class="data-model-node-editor__fields-table__primary-key-icon"
-                    matTooltip="Primary key">key
+                    [matTooltip]="('DATA_MODEL.NODE.FIELD_PROPERTIES.PRIMARY_KEY' | translate)()">key
           </mat-icon>
         }
         <mat-icon class="data-model-node-editor__fields-table__edge-icon"
-                  matTooltip="From edge">link
+                  [matTooltip]="('DATA_MODEL.NODE.FIELDS_TABLE.$layer.FROM_EDGE' | dataModelingTranslate)()">link
         </mat-icon>
       }
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="type">
-    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELDS_TABLE.DATA_TYPE' | translate)() }}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.DATA_TYPE' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let row">
       @let typeId = row.source === 'direct' ? row.field.typeId : row.referencedField.typeId;
       <span class="text-code">{{ typeId | dataModelDataType: dataTypes() }}</span>
@@ -38,7 +38,7 @@
   </ng-container>
 
   <ng-container matColumnDef="nullable">
-    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELDS_TABLE.NULLABLE' | translate)() }}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.NULLABLE' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let row" class="data-model-node-editor__fields-table__nullable-status">
       <app-status-icon [status]="row.source === 'direct' ? row.field.isNullable : !row.edge.isMandatory" />
     </mat-cell>

@@ -352,7 +352,7 @@
       "NAME_LABEL": "Name",
       "CREATE_TITLE": "Create New Data Type",
       "SELECT_TITLE": "Select Data Type",
-      "EDIT_TITLE": "{name} Data Type",
+      "EDIT_TITLE": "{name}",
       "PROPERTIES_LABEL": "Data Type Properties",
       "DELETE_TITLE": "Are you sure want to delete this data type?",
       "DELETE_DESCRIPTION": "This operation cannot be reverted!",
@@ -370,31 +370,38 @@
       "NAME_LABEL": "Name",
       "LOGICAL": {
         "CREATE_TITLE": "Create Entity",
-        "EDIT_TITLE": "{name} Entity",
+        "EDIT_TITLE": "{name}",
         "FIELDS_LABEL": "Attributes",
-        "ADD_FIELD_LABEL": "Add attribute"
+        "ADD_FIELD_LABEL": "Add attribute",
+        "EDIT_FIELD_LABEL": "Edit attribute"
       },
       "PHYSICAL": {
         "CREATE_TITLE": "Create Table",
-        "EDIT_TITLE": "{name} Table",
+        "EDIT_TITLE": "{name}",
         "FIELDS_LABEL": "Columns",
-        "ADD_FIELD_LABEL": "Add column"
+        "ADD_FIELD_LABEL": "Add column",
+        "EDIT_FIELD_LABEL": "Edit column"
       },
-      "FIELDS_TABLE": {
+      "FIELD_PROPERTIES": {
         "NAME": "Name",
         "DATA_TYPE": "Type",
         "NULLABLE": "Nullable",
+        "PRIMARY_KEY": "Primary key"
+      },
+      "FIELDS_TABLE": {
         "LOGICAL": {
           "EMPTY_LABEL": "This entity does not contain any attributes.",
           "EDIT_FIELD": "Edit attribute",
           "DELETE_FIELD": "Delete attribute",
-          "GO_TO_EDGE": "Go to relationship"
+          "GO_TO_EDGE": "Go to relationship",
+          "FROM_EDGE": "From relationship"
         },
         "PHYSICAL": {
           "EMPTY_LABEL": "This table does not contain any columns.",
           "EDIT_FIELD": "Edit column",
           "DELETE_FIELD": "Delete column",
-          "GO_TO_EDGE": "Go to relationship"
+          "GO_TO_EDGE": "Go to relationship",
+          "FROM_EDGE": "From relationship"
         }
       }
     }

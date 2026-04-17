@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { DataModelStore } from '../data-model.store';
 import { DirectResolvedField, EdgeResolvedField, ResolvedField } from '../models/resolved-field.model';
 import { DataModelField, DataModelFieldReorderRequest, DataModelNode } from '../models/data-model-node.model';
+import { DataModelModification } from '../models/data-model.model';
 
 @Injectable({ providedIn: 'root' })
 export class DataModelNodeFieldResolver {
@@ -50,7 +51,7 @@ export class DataModelNodeFieldResolver {
     });
   }
 
-  reorderFields(nodeId: number, orderedFields: ResolvedField[]): Observable<unknown> {
+  reorderFields(nodeId: number, orderedFields: ResolvedField[]): Observable<DataModelModification> {
     const request: DataModelFieldReorderRequest = {
       directFields: [],
       edgeFields: [],

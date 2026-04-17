@@ -1,10 +1,10 @@
-<!-- TODO: translate -->
-<h2 mat-dialog-title>{{ data.field ? 'Edit field' : 'Add field' }}</h2>
+@let titleKey = 'DATA_MODEL.NODE.$layer.' + (data.field ? 'EDIT_FIELD_LABEL' : 'ADD_FIELD_LABEL');
+<h2 mat-dialog-title>{{ (titleKey | dataModelingTranslate)() }}</h2>
 
 <mat-dialog-content>
   <form [formGroup]="form" class="data-model-node-editor__field-form">
     <mat-form-field class="w-100">
-      <mat-label>Name</mat-label>
+      <mat-label>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.NAME' | translate)() }}</mat-label>
       <input matInput formControlName="name" required>
       @if (form.controls.name.invalid) {
         <mat-error>{{ (form.controls.name.errors | formatGenericValidationErrors)() }}</mat-error>
@@ -14,10 +14,15 @@
     <app-data-model-data-type-name-field
       [dataTypes]="data.dataTypes"
       [control]="form.controls.typeName"
-      [label]="'Data type'"/>
+      [label]="('DATA_MODEL.NODE.FIELD_PROPERTIES.DATA_TYPE' | translate)()"/>
 
-    <mat-checkbox formControlName="isPrimaryKey">Primary key</mat-checkbox>
-    <mat-checkbox formControlName="isNullable">Nullable</mat-checkbox>
+    <mat-checkbox formControlName="isPrimaryKey">
+      {{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.PRIMARY_KEY' | translate)() }}
+    </mat-checkbox>
+
+    <mat-checkbox formControlName="isNullable">
+      {{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.NULLABLE' | translate)() }}
+    </mat-checkbox>
   </form>
 </mat-dialog-content>
 

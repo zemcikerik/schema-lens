@@ -1,91 +1,30 @@
-import { ChangeDetectionStrategy, Component, computed, DestroyRef, inject, input, signal, viewChild } from '@angular/core';
-import { DataModelStore } from '../../data-model.store';
-import { Router } from '@angular/router';
+import { ChangeDetectionStrategy, Component, inject, input } from '@angular/core';
+import { DataModelEditorSimpleHostComponent } from '../data-model-editor/data-model-editor-simple-host.component';
 import { DataModelNodeEditorComponent } from '../data-model-node-editor/data-model-node-editor.component';
-import {
-  SaveDeleteControlComponent
-} from '../../../shared/components/save-delete-control/save-delete-control.component';
-import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { DataModelNode } from '../../models/data-model-node.model';
+import { DataModelStore } from '../../data-model.store';
+import { DataModelEditorSimpleHostConfig } from '../data-model-editor/data-model-editor-simple-host.config';
 import { DataModelDialogService } from '../../services/data-model-dialog.service';
-import { filter, finalize, mergeMap, tap } from 'rxjs';
-import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 
 @Component({
   selector: 'app-data-model-node',
-  templateUrl: 'data-model-node.component.html',
+  template: '<app-data-model-editor-simple-host [config]="EDITOR_CONFIG" [currentRawObjectId]="nodeId()" />',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DataModelNodeEditorComponent, SaveDeleteControlComponent, LayoutHeaderAndContentComponent, DataModelingTranslatePipe],
+  imports: [DataModelEditorSimpleHostComponent],
 })
 export class DataModelNodeComponent {
   nodeId = input.required<string>();
 
-  node = computed(() => {
-    const nodeId = +this.nodeId();
-    const node = this.store.nodes().find(n => n.nodeId === nodeId);
-
-    if (node) {
-      return node;
-    }
-
-    this.redirectToModel();
-    return null;
-  });
-
-  updateLoading = signal<boolean>(false);
-  deleteLoading = signal<boolean>(false);
-  loading = computed<boolean>(() => this.updateLoading() || this.deleteLoading());
-  error = signal<boolean>(false);
-  editor = viewChild.required(DataModelNodeEditorComponent);
-
   private store = inject(DataModelStore);
-  private router = inject(Router);
-  private destroyRef = inject(DestroyRef);
   private dialogService = inject(DataModelDialogService);
 
-  updateNode(): void {
-    const save$ = this.editor().save();
-
-    if (save$ === null) {
-      return;
-    }
-
-    this.updateLoading.set(true);
-    this.error.set(false);
-
-    save$.pipe(
-      tap({ error: () => this.error.set(true) }),
-      finalize(() => this.updateLoading.set(false)),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe();
-  }
-
-  deleteNode(): void {
-    const nodeId = this.node()?.nodeId;
-
-    if (!nodeId) {
-      return;
-    }
-
-    this.dialogService
-      .openDeleteNodeConfirmationDialog()
-      .pipe(
-        filter(result => !!result),
-        tap(() =>{
-          this.deleteLoading.set(true);
-          this.error.set(false);
-        }),
-        mergeMap(() => this.store.deleteNode(nodeId)),
-        tap({ error: () => this.error.set(true), }),
-        finalize(() => this.deleteLoading.set(false)),
-        takeUntilDestroyed(this.destroyRef),
-      )
-      .subscribe(async () => {
-        await this.redirectToModel();
-      });
-  }
-
-  private async redirectToModel(): Promise<void> {
-    await this.router.navigate(['/model', this.store.dataModelId]);
-  }
+  readonly EDITOR_CONFIG: DataModelEditorSimpleHostConfig<DataModelNode, DataModelNodeEditorComponent> = {
+    editorComponent: DataModelNodeEditorComponent,
+    objectInputPropertyKey: 'node',
+    objectResolver: (id: number): DataModelNode | null => this.store.nodes().find(n => n.nodeId === id) ?? null,
+    titleKey: 'DATA_MODEL.NODE.$layer.EDIT_TITLE',
+    titleParamsResolver: (node: DataModelNode) => ({ name: node.name }),
+    deleteConfirmationOpener: () => this.dialogService.openDeleteNodeConfirmationDialog(),
+    objectDeleter: (id: number) => this.store.deleteNode(id),
+  };
 }

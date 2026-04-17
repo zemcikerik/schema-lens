@@ -17,6 +17,7 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import {
   SaveDeleteControlComponent
 } from '../../../shared/components/save-delete-control/save-delete-control.component';
+import { DataModelingTranslationKeyResolver } from '../../services/data-modeling-translation-key-resolver.service';
 
 @Component({
   selector: 'app-data-model-data-type',
@@ -48,6 +49,7 @@ export class DataModelDataTypeComponent {
   private dialogService = inject(DialogService);
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
+  private keyResolver = inject(DataModelingTranslationKeyResolver);
 
   propertiesForm = this.fb.nonNullable.group({
     name: this.fb.nonNullable.control('', [Validators.required, noStartEndWhitespaceValidator, Validators.maxLength(40)]),
@@ -123,8 +125,7 @@ export class DataModelDataTypeComponent {
       .subscribe({
         next: async result => {
           if (result === false) {
-            // TODO: based on context
-            this.error.set('DATA_MODEL.DATA_TYPE.ERROR.LOGICAL.IN_USE');
+            this.error.set(this.keyResolver.resolveKey('DATA_MODEL.DATA_TYPE.ERROR.$layer.IN_USE'));
             return;
           }
 
