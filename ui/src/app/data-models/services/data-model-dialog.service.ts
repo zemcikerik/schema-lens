@@ -13,6 +13,7 @@ import {
   DataModelNodeFieldFormDialogComponent,
   DataModelNodeFieldFormDialogData,
 } from '../components/data-model-node-field-form-dialog/data-model-node-field-form-dialog.component';
+import { DataModelingTranslationKeyResolver } from './data-modeling-translation-key-resolver.service';
 
 // TODO: move from this service to nav
 
@@ -21,6 +22,7 @@ export class DataModelDialogService {
   private dialogService = inject(DialogService);
   private matDialog = inject(MatDialog);
   private store = inject(DataModelStore);
+  private keyResolver = inject(DataModelingTranslationKeyResolver);
 
   openCreateDiagramDialog(diagrams: DataModelDiagram[]): Observable<DataModelDiagram | null> {
     return this.dialogService
@@ -44,9 +46,8 @@ export class DataModelDialogService {
   openCreateEntityDialog(entities: DataModelNodeSummary[]): Observable<DataModelNodeSummary | null> {
     return this.dialogService
       .openInputDialog({
-        titleKey: 'DATA_MODEL.ENTITY.CREATE.TITLE',
-        labelKey: 'DATA_MODEL.ENTITY.CREATE.LABEL',
-        placeholderKey: 'DATA_MODEL.ENTITY.CREATE.PLACEHOLDER',
+        titleKey: this.keyResolver.resolveKey('DATA_MODEL.NODE.$layer.CREATE_TITLE'),
+        labelKey: this.keyResolver.resolveKey('DATA_MODEL.NODE.NAME_LABEL'),
         validators: this.createNameValidators(entities.map(entity => entity.name)),
       })
       .pipe(

@@ -1,7 +1,8 @@
+<!-- TODO: translate -->
 <h2 mat-dialog-title>{{ data.field ? 'Edit field' : 'Add field' }}</h2>
 
 <mat-dialog-content>
-  <form [formGroup]="form">
+  <form [formGroup]="form" class="data-model-node-editor__field-form">
     <mat-form-field class="w-100">
       <mat-label>Name</mat-label>
       <input matInput formControlName="name" required>

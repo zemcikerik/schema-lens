@@ -30,10 +30,6 @@
       display: block;
       margin-right: 1rem;
     }
-
-    > button {
-      @include mat.icon-button-color(t.$theme, $color-variant: error);
-    }
   }
 
   // data-model specific

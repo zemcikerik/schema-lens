@@ -27,6 +27,7 @@
 @use './scss/components/profile';
 @use './scss/components/profile-picture';
 @use './scss/components/project-collaborators-table';
+@use './scss/components/project-object-selector';
 @use './scss/components/project-properties';
 @use './scss/components/project-selector';
 @use './scss/components/progress-spinner';
@@ -55,6 +56,7 @@ html {
   @include mat.elevation-classes();
   @include mat.app-background();
 
+  @include mat.autocomplete-theme(t.$theme);
   @include mat.button-theme(t.$theme);
   @include mat.checkbox-theme(t.$theme);
   @include mat.dialog-theme(t.$theme);

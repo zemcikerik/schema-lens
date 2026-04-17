@@ -1,13 +1,17 @@
 <form class="data-model-node-editor" [formGroup]="nodeForm">
-  <app-section-header title="Properties" />
+  <app-section-header [title]="('DATA_MODEL.NODE.PROPERTIES_LABEL' | translate)()" />
 
   <mat-form-field class="w-100">
-    <mat-label>Name</mat-label>
+    <mat-label>{{ ('DATA_MODEL.NODE.NAME_LABEL' | translate)() }}</mat-label>
     <input matInput required formControlName="name">
   </mat-form-field>
 
-  <app-section-header title="Fields">
-    <button mat-icon-button (click)="addDirectField()" matTooltip="Add field">
+  <app-section-header [title]="('DATA_MODEL.NODE.$layer.FIELDS_LABEL' | dataModelingTranslate)()">
+    <button
+      mat-icon-button
+      (click)="addDirectField()"
+      [matTooltip]="('DATA_MODEL.NODE.$layer.ADD_FIELD_LABEL' | dataModelingTranslate)()"
+    >
       <mat-icon>add</mat-icon>
     </button>
   </app-section-header>

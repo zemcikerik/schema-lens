@@ -44,7 +44,7 @@ class OracleTableColumnMetadataReader : TableColumnMetadataReader {
             "CHAR", "VARCHAR2", "NCHAR", "NVARCHAR2" -> {
                 val length = getNullableInt("char_length") ?: DEFAULT_CHAR_LENGTH
                 val hasCharSemantics = getString("char_used") == "C"
-                val isVarChar = dataType === "VARCHAR2" || dataType === "NVARCHAR2"
+                val isVarChar = dataType == "VARCHAR2" || dataType == "NVARCHAR2"
 
                 if (length == DEFAULT_CHAR_LENGTH && !hasCharSemantics && !isVarChar) {
                     dataType

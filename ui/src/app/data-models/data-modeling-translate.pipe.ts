@@ -1,22 +1,19 @@
 import { computed, inject, Pipe, PipeTransform, Signal } from '@angular/core';
-import { DataModelingContextState } from './data-modeling-context.state';
 import { TranslationParams } from '../core/translate/translate.types';
 import { TranslatePipe } from '../core/translate/translate.pipe';
+import { DataModelingTranslationKeyResolver } from './services/data-modeling-translation-key-resolver.service';
 
 @Pipe({
   name: 'dataModelingTranslate',
   pure: true,
 })
 export class DataModelingTranslatePipe extends TranslatePipe implements PipeTransform {
-  private contextState = inject(DataModelingContextState);
+  private keyResolver = inject(DataModelingTranslationKeyResolver);
 
   override transform(key: string, params?: TranslationParams): Signal<string> {
     return computed(() => {
-      const actualKey = key
-        .replace('$layer', this.contextState.layer().toUpperCase())
-        .replace('$context', this.contextState.context().toUpperCase());
-
-      return super.transform(actualKey, params)();
+      const resolvedKey = this.keyResolver.resolveKey(key);
+      return super.transform(resolvedKey, params)();
     });
   }
 }

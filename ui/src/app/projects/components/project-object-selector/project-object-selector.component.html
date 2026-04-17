@@ -7,7 +7,12 @@
 >
   @let err = error();
   @if (err) {
-    <button mat-icon-button object-selector-action (click)="$event.stopPropagation(); displayError.emit(err)">
+    <button
+      mat-icon-button
+      object-selector-action
+      class="project-object-selector__error"
+      (click)="$event.stopPropagation(); displayError.emit(err)"
+    >
       <mat-icon>error</mat-icon>
     </button>
   }

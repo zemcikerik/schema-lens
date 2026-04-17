@@ -9,7 +9,7 @@
   </ng-container>
 
   <ng-container matColumnDef="name">
-    <mat-header-cell *matHeaderCellDef>Name</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELDS_TABLE.NAME' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let row">
       <span class="text-code">{{ row.field.name }}</span>
       @if (row.source === 'direct' && row.field.isPrimaryKey) {
@@ -30,7 +30,7 @@
   </ng-container>
 
   <ng-container matColumnDef="type">
-    <mat-header-cell *matHeaderCellDef>Type</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELDS_TABLE.DATA_TYPE' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let row">
       @let typeId = row.source === 'direct' ? row.field.typeId : row.referencedField.typeId;
       <span class="text-code">{{ typeId | dataModelDataType: dataTypes() }}</span>
@@ -38,7 +38,7 @@
   </ng-container>
 
   <ng-container matColumnDef="nullable">
-    <mat-header-cell *matHeaderCellDef>Nullable</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELDS_TABLE.NULLABLE' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let row" class="data-model-node-editor__fields-table__nullable-status">
       <app-status-icon [status]="row.source === 'direct' ? row.field.isNullable : !row.edge.isMandatory" />
     </mat-cell>
@@ -60,9 +60,8 @@
   </ng-container>
 
   <ng-container matColumnDef="noData">
-    <mat-footer-cell *matFooterCellDef
-                     class="data-model-node-editor__fields-table__empty">
-      {{ ('DATA_MODEL.ENTITY.ATTRIBUTES.EMPTY_LABEL' | translate)() }}
+    <mat-footer-cell *matFooterCellDef class="data-model-node-editor__fields-table__empty">
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.EMPTY_LABEL' | dataModelingTranslate)() }}
     </mat-footer-cell>
   </ng-container>
 
@@ -77,21 +76,20 @@
   <ng-template matMenuContent let-index="index" let-row="row">
     <button mat-menu-item (click)="editDirectField.emit({ index: index, field: row.field })">
       <mat-icon>edit</mat-icon>
-      Edit field
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.EDIT_FIELD' | dataModelingTranslate)() }}
     </button>
     <button mat-menu-item (click)="deleteDirectField.emit({ index: index, field: row.field })">
       <mat-icon>delete</mat-icon>
-      Delete field
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.DELETE_FIELD' | dataModelingTranslate)() }}
     </button>
   </ng-template>
 </mat-menu>
 
-<!-- TODO: icon -->
 <mat-menu #edgeFieldMenu xPosition="before">
   <ng-template matMenuContent let-row="row">
     <button mat-menu-item (click)="goToEdge.emit(row.edge)">
-      <mat-icon>open_in_new</mat-icon>
-      Go to edge
+      <mat-icon>link</mat-icon>
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.GO_TO_EDGE' | dataModelingTranslate)() }}
     </button>
   </ng-template>
 </mat-menu>

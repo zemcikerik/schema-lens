@@ -9,12 +9,13 @@ import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-he
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DataModelDialogService } from '../../services/data-model-dialog.service';
 import { filter, finalize, mergeMap, tap } from 'rxjs';
+import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 
 @Component({
   selector: 'app-data-model-node',
   templateUrl: 'data-model-node.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DataModelNodeEditorComponent, SaveDeleteControlComponent, LayoutHeaderAndContentComponent],
+  imports: [DataModelNodeEditorComponent, SaveDeleteControlComponent, LayoutHeaderAndContentComponent, DataModelingTranslatePipe],
 })
 export class DataModelNodeComponent {
   nodeId = input.required<string>();

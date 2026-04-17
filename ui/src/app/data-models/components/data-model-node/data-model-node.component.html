@@ -1,5 +1,5 @@
 @if (node(); as node) {
-  <app-layout-header-and-content [title]="node.name + ' Node'">
+  <app-layout-header-and-content [title]="('DATA_MODEL.NODE.$layer.EDIT_TITLE' | dataModelingTranslate: { name: node.name })()">
     <app-data-model-node-editor [node]="node" />
 
     <app-save-delete-control

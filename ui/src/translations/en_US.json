@@ -358,10 +358,43 @@
       "DELETE_DESCRIPTION": "This operation cannot be reverted!",
       "ERROR": {
         "LOGICAL": {
-          "IN_USE": "This data type is still used by an entity!"
+          "IN_USE": "This data type is still used by an attribute!"
         },
         "PHYSICAL": {
-          "IN_USE": "This data type is still used by a table!"
+          "IN_USE": "This data type is still used by a column!"
+        }
+      }
+    },
+    "NODE": {
+      "PROPERTIES_LABEL": "Properties",
+      "NAME_LABEL": "Name",
+      "LOGICAL": {
+        "CREATE_TITLE": "Create Entity",
+        "EDIT_TITLE": "{name} Entity",
+        "FIELDS_LABEL": "Attributes",
+        "ADD_FIELD_LABEL": "Add attribute"
+      },
+      "PHYSICAL": {
+        "CREATE_TITLE": "Create Table",
+        "EDIT_TITLE": "{name} Table",
+        "FIELDS_LABEL": "Columns",
+        "ADD_FIELD_LABEL": "Add column"
+      },
+      "FIELDS_TABLE": {
+        "NAME": "Name",
+        "DATA_TYPE": "Type",
+        "NULLABLE": "Nullable",
+        "LOGICAL": {
+          "EMPTY_LABEL": "This entity does not contain any attributes.",
+          "EDIT_FIELD": "Edit attribute",
+          "DELETE_FIELD": "Delete attribute",
+          "GO_TO_EDGE": "Go to relationship"
+        },
+        "PHYSICAL": {
+          "EMPTY_LABEL": "This table does not contain any columns.",
+          "EDIT_FIELD": "Edit column",
+          "DELETE_FIELD": "Delete column",
+          "GO_TO_EDGE": "Go to relationship"
         }
       }
     }

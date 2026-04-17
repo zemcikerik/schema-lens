@@ -1,0 +1,6 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.project-object-selector__error {
+  @include mat.icon-button-color(t.$theme, $color-variant: error);
+}

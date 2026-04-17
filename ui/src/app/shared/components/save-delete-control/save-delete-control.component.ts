@@ -9,7 +9,7 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
   template: `
     <div class="save-delete-control">
       @if (deleteVisible()) {
-        <button mat-flat-button class="save-delete-control__delete" [disabled]="deleteDisabled()" (click)="delete.emit()">
+        <button matButton="filled" class="save-delete-control__delete" [disabled]="deleteDisabled()" (click)="delete.emit()">
           <mat-icon>delete</mat-icon>
           @if (deleteLoading()) {
             <app-progress-spinner [center]="true" size="small" />
@@ -20,7 +20,7 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
       }
 
       @if (saveVisible()) {
-        <button mat-flat-button (click)="save.emit()" [disabled]="saveDisabled()">
+        <button matButton="filled" (click)="save.emit()" [disabled]="saveDisabled()">
           <mat-icon>save</mat-icon>
           @if (saveLoading()) {
             <app-progress-spinner [center]="true" size="small" />

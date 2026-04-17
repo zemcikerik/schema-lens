@@ -28,6 +28,8 @@ import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
 import { DataModelDialogService } from '../../services/data-model-dialog.service';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
+import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 
 @Component({
   selector: 'app-data-model-node-editor',
@@ -43,6 +45,8 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
     MatTooltip,
     MatIcon,
     SectionHeaderComponent,
+    TranslatePipe,
+    DataModelingTranslatePipe,
   ],
 })
 export class DataModelNodeEditorComponent {
@@ -81,7 +85,7 @@ export class DataModelNodeEditorComponent {
   }
 
   orderChanged(fields: ResolvedField[]): void {
-    this.fields.set(fields.map((f, index) => ({ ...f, position: index + 1 })));
+    this.fields.set(fields);
     this.nodeModified = true;
     this.positionsChanged = true;
   }
@@ -153,8 +157,11 @@ export class DataModelNodeEditorComponent {
     const positionsChanged = this.positionsChanged;
 
     return this.store
-      .updateNode({ nodeId: this.nodeId(), name, fields }) // TODO: for reorder we need ids, needs to be fixed
-      .pipe(mergeMap(() => positionsChanged ? this.fieldResolver.reorderFields(this.nodeId(), allFields) : of(null)));
+      .updateNode({ nodeId: this.nodeId(), name, fields })
+      .pipe(mergeMap(node => positionsChanged
+        ? this.fieldResolver.reorderFields(this.nodeId(), this.updateIdsForNewDirectFields(node, allFields))
+        : of(null)
+      ));
   }
 
   private getDirectFields(): DataModelField[] {
@@ -165,5 +172,21 @@ export class DataModelNodeEditorComponent {
 
   private nextFieldPosition(): number {
     return this.fields().reduce((max, field) => Math.max(max, field.position), 0) + 1;
+  }
+
+  // TODO: enforce that field names are unique
+  private updateIdsForNewDirectFields(node: DataModelNode, allFields: ResolvedField[]): ResolvedField[] {
+    const fieldNameToFieldMapping: Record<string, DataModelField> = Object.fromEntries(
+      node.fields.map(field => [field.name, field])
+    );
+
+    return allFields.map(resolvedField => {
+      if (resolvedField.source === 'edge' || resolvedField.field.fieldId !== null) {
+        return resolvedField;
+      }
+
+      const { fieldId } = fieldNameToFieldMapping[resolvedField.field.name];
+      return { ...resolvedField, field: { ...resolvedField.field, fieldId, position: resolvedField.position } };
+    });
   }
 }
