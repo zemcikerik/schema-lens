@@ -1,9 +1,17 @@
-<mat-expansion-panel class="object-selector" [disabled]="disabled()" (opened)="opened.emit()">
+<mat-expansion-panel class="object-selector" [disabled]="!!error()" (opened)="onOpened()">
   <mat-expansion-panel-header>
     <div class="object-selector__header">
       <span>{{ title() }}</span>
-      @if (loading()) {
+      @if (effectiveLoading()) {
         <app-progress-spinner size="small" />
+      } @else if (error(); as err) {
+        <button
+          mat-icon-button
+          class="object-selector__error"
+          (click)="$event.stopPropagation(); displayError.emit(err)"
+        >
+          <mat-icon>error</mat-icon>
+        </button>
       } @else {
         <ng-content select="[object-selector-action]" />
       }
@@ -11,7 +19,7 @@
   </mat-expansion-panel-header>
 
   <ng-template matExpansionPanelContent>
-    @for (entry of entries(); track entry.id) {
+    @for (entry of (entries() ?? []); track entry.id) {
       <a
         mat-list-item
         [routerLink]="entry.routerLink"

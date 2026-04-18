@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, input } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { Observable, of } from 'rxjs';
 import { MatListItem, MatNavList } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SidebarCloseDirective } from '../../../core/layouts/sidebar-close.directive';
@@ -38,23 +39,32 @@ export class DataModelNavComponent {
   private destroyRef = inject(DestroyRef);
   private dialogService = inject(DataModelDialogService);
 
-  dataTypeEntries = computed<ObjectSelectorEntry[]>(() => this.store.dataTypes().map(dataType => ({
-    id: dataType.typeId,
-    label: dataType.name,
-    routerLink: ['/model', this.dataModelId(), this.contextState.context(), 'data-type', dataType.typeId!],
-  })));
+  dataTypeLoadEntries = computed<() => Observable<ObjectSelectorEntry[]>>(() => {
+    const entries: ObjectSelectorEntry[] = this.store.dataTypes().map(dataType => ({
+      id: dataType.typeId,
+      label: dataType.name,
+      routerLink: ['/model', this.dataModelId(), this.contextState.context(), 'data-type', dataType.typeId!],
+    }));
+    return () => of(entries);
+  });
 
-  diagramEntries = computed<ObjectSelectorEntry[]>(() => this.store.diagrams().map(diagram => ({
-    id: diagram.id,
-    label: diagram.name,
-    routerLink: ['/modeler', this.dataModelId(), 'logical', diagram.id!],
-  })));
+  diagramLoadEntries = computed<() => Observable<ObjectSelectorEntry[]>>(() => {
+    const entries: ObjectSelectorEntry[] = this.store.diagrams().map(diagram => ({
+      id: diagram.id,
+      label: diagram.name,
+      routerLink: ['/modeler', this.dataModelId(), 'logical', diagram.id!],
+    }));
+    return () => of(entries);
+  });
 
-  nodeEntries = computed<ObjectSelectorEntry[]>(() => this.store.nodes().map(node => ({
-    id: node.nodeId,
-    label: node.name,
-    routerLink: ['/model', this.dataModelId(), this.contextState.context(), this.contextState.context() === 'logical' ? 'entity' : 'table', node.nodeId!],
-  })));
+  nodeLoadEntries = computed<() => Observable<ObjectSelectorEntry[]>>(() => {
+    const entries: ObjectSelectorEntry[] = this.store.nodes().map(node => ({
+      id: node.nodeId,
+      label: node.name,
+      routerLink: ['/model', this.dataModelId(), this.contextState.context(), this.contextState.context() === 'logical' ? 'entity' : 'table', node.nodeId!],
+    }));
+    return () => of(entries);
+  });
 
   addNewDiagram(): void {
     this.dialogService.openCreateDiagramDialog(this.store.diagrams())

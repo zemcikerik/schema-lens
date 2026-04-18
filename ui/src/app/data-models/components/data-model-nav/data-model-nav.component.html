@@ -13,19 +13,19 @@
       appSidebarClose
     >{{ ('DATA_MODEL.NAV.PROPERTIES' | translate)() }}</a>
 
-    <app-object-selector [title]="('DATA_MODEL.NAV.DATA_TYPES' | translate)()" [entries]="dataTypeEntries()">
+    <app-object-selector [title]="('DATA_MODEL.NAV.DATA_TYPES' | translate)()" [loadEntries]="dataTypeLoadEntries()">
       <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewDataType()">
         <mat-icon>add</mat-icon>
       </button>
     </app-object-selector>
 
-    <app-object-selector [title]="('DATA_MODEL.NAV.$layer.DIAGRAMS' | dataModelingTranslate)()" [entries]="diagramEntries()">
+    <app-object-selector [title]="('DATA_MODEL.NAV.$layer.DIAGRAMS' | dataModelingTranslate)()" [loadEntries]="diagramLoadEntries()">
       <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewDiagram()">
         <mat-icon>add</mat-icon>
       </button>
     </app-object-selector>
 
-    <app-object-selector [title]="('DATA_MODEL.NAV.$layer.NODES' | dataModelingTranslate)()" [entries]="nodeEntries()">
+    <app-object-selector [title]="('DATA_MODEL.NAV.$layer.NODES' | dataModelingTranslate)()" [loadEntries]="nodeLoadEntries()">
       <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewNode()">
         <mat-icon>add</mat-icon>
       </button>
