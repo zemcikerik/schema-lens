@@ -33,6 +33,7 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 import { DataModelEditor } from '../data-model-editor/data-model-editor.component';
 import { DataModelModification } from '../../models/data-model.model';
+import { dataModelNodeNameValidators } from '../../validators/data-model-name.validators';
 
 @Component({
   selector: 'app-data-model-node-editor',
@@ -66,7 +67,7 @@ export class DataModelNodeEditorComponent implements DataModelEditor {
   private destroyRef = inject(DestroyRef);
 
   form = this.fb.nonNullable.group({
-    name: this.fb.nonNullable.control('', []), // TODO: validators
+    name: this.fb.nonNullable.control('', []),
   });
   fields = signal<ResolvedField[]>([]);
 
@@ -75,6 +76,16 @@ export class DataModelNodeEditorComponent implements DataModelEditor {
   pendingSaveId = signal<number | null>(null);
 
   constructor() {
+    effect(() => {
+      const node = this.node();
+      const existingNames = this.store.nodes()
+        .filter(existingNode => existingNode.nodeId !== node.nodeId)
+        .map(existingNode => existingNode.name);
+
+      this.form.controls.name.setValidators(dataModelNodeNameValidators(existingNames));
+      this.form.controls.name.updateValueAndValidity({ emitEvent: false });
+    });
+
     effect(() => {
       const node = this.node();
 

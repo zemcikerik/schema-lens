@@ -13,19 +13,19 @@
       appSidebarClose
     >{{ ('DATA_MODEL.NAV.PROPERTIES' | translate)() }}</a>
 
-    <app-object-selector [title]="('DATA_MODEL.NAV.DATA_TYPES' | translate)()" [loadEntries]="dataTypeLoadEntries()">
+    <app-object-selector [title]="('DATA_MODEL.NAV.DATA_TYPES' | translate)()" [loadEntries]="dataTypeLoadEntries" [loading]="dataTypeCreating()">
       <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewDataType()">
         <mat-icon>add</mat-icon>
       </button>
     </app-object-selector>
 
-    <app-object-selector [title]="('DATA_MODEL.NAV.$layer.DIAGRAMS' | dataModelingTranslate)()" [loadEntries]="diagramLoadEntries()">
+    <app-object-selector [title]="('DATA_MODEL.NAV.$layer.DIAGRAMS' | dataModelingTranslate)()" [loadEntries]="diagramLoadEntries" [loading]="diagramCreating()">
       <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewDiagram()">
         <mat-icon>add</mat-icon>
       </button>
     </app-object-selector>
 
-    <app-object-selector [title]="('DATA_MODEL.NAV.$layer.NODES' | dataModelingTranslate)()" [loadEntries]="nodeLoadEntries()">
+    <app-object-selector [title]="('DATA_MODEL.NAV.$layer.NODES' | dataModelingTranslate)()" [loadEntries]="nodeLoadEntries" [loading]="nodeCreating()">
       <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewNode()">
         <mat-icon>add</mat-icon>
       </button>

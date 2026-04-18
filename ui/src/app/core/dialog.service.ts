@@ -7,6 +7,7 @@ import {
 } from '../shared/components/confirmation-dialog/confirmation-dialog.component';
 import { TextDialogComponent, TextDialogData } from '../shared/components/text-dialog/text-dialog.component';
 import { InputDialogComponent, InputDialogData } from '../shared/components/input-dialog/input-dialog.component';
+import { ErrorDialogComponent, ErrorDialogData } from '../shared/components/error-dialog/error-dialog.component';
 
 @Injectable({
   providedIn: 'root'
@@ -30,6 +31,11 @@ export class DialogService {
   openTextDialog(titleKey: string, descriptionKey: string): void {
     const data: TextDialogData = { titleKey, descriptionKey };
     this.matDialog.open(TextDialogComponent, { data });
+  }
+
+  openErrorDialog(titleKey: string, errorKey: string): void {
+    const data: ErrorDialogData = { titleKey, errorKey };
+    this.matDialog.open(ErrorDialogComponent, { data });
   }
 
   openInputDialog(data: InputDialogData): Observable<string | null> {

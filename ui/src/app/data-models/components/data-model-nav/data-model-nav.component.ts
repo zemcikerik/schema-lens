@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, input } from '@angular/core';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { Observable, of } from 'rxjs';
+import { ChangeDetectionStrategy, Component, DestroyRef, computed, inject, input, signal } from '@angular/core';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
+import { Observable, catchError, finalize, of, switchMap } from 'rxjs';
 import { MatListItem, MatNavList } from '@angular/material/list';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { SidebarCloseDirective } from '../../../core/layouts/sidebar-close.directive';
@@ -39,48 +39,104 @@ export class DataModelNavComponent {
   private destroyRef = inject(DestroyRef);
   private dialogService = inject(DataModelDialogService);
 
-  dataTypeLoadEntries = computed<() => Observable<ObjectSelectorEntry[]>>(() => {
-    const entries: ObjectSelectorEntry[] = this.store.dataTypes().map(dataType => ({
+  diagramCreating = signal<boolean>(false);
+  nodeCreating = signal<boolean>(false);
+  dataTypeCreating = signal<boolean>(false);
+
+  private dataTypeEntries$ = toObservable(computed(() =>
+    this.store.dataTypes().map(dataType => ({
       id: dataType.typeId,
       label: dataType.name,
-      routerLink: ['/model', this.dataModelId(), this.contextState.context(), 'data-type', dataType.typeId!],
-    }));
-    return () => of(entries);
-  });
+      routerLink: ['/model', this.dataModelId(), this.contextState.context(), 'data-type', dataType.typeId as number],
+    } satisfies ObjectSelectorEntry))
+  ));
 
-  diagramLoadEntries = computed<() => Observable<ObjectSelectorEntry[]>>(() => {
-    const entries: ObjectSelectorEntry[] = this.store.diagrams().map(diagram => ({
+  private diagramEntries$ = toObservable(computed(() =>
+    this.store.diagrams().map(diagram => ({
       id: diagram.id,
       label: diagram.name,
-      routerLink: ['/modeler', this.dataModelId(), 'logical', diagram.id!],
-    }));
-    return () => of(entries);
-  });
+      routerLink: ['/modeler', this.dataModelId(), 'logical', diagram.id as number],
+    } satisfies ObjectSelectorEntry))
+  ));
 
-  nodeLoadEntries = computed<() => Observable<ObjectSelectorEntry[]>>(() => {
-    const entries: ObjectSelectorEntry[] = this.store.nodes().map(node => ({
+  private nodeEntries$ = toObservable(computed(() =>
+    this.store.nodes().map(node => ({
       id: node.nodeId,
       label: node.name,
-      routerLink: ['/model', this.dataModelId(), this.contextState.context(), this.contextState.context() === 'logical' ? 'entity' : 'table', node.nodeId!],
-    }));
-    return () => of(entries);
-  });
+      routerLink: [
+        '/model',
+        this.dataModelId(),
+        this.contextState.context(),
+        this.contextState.context() === 'logical' ? 'entity' : 'table',
+        node.nodeId as number,
+      ],
+    } satisfies ObjectSelectorEntry))
+  ));
+
+  dataTypeLoadEntries: () => Observable<ObjectSelectorEntry[]> = () => this.dataTypeEntries$;
+  diagramLoadEntries: () => Observable<ObjectSelectorEntry[]> = () => this.diagramEntries$;
+  nodeLoadEntries: () => Observable<ObjectSelectorEntry[]> = () => this.nodeEntries$;
 
   addNewDiagram(): void {
-    this.dialogService.openCreateDiagramDialog(this.store.diagrams())
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.dialogService.openCreateDiagramDialog()
+      .pipe(
+        switchMap(name => {
+          if (name === null) {
+            return of(null);
+          }
+          this.diagramCreating.set(true);
+          return this.store.createDiagram({ name, type: 'logical', id: null, edges: [], nodes: [] }).pipe(
+            finalize(() => this.diagramCreating.set(false)),
+          );
+        }),
+        catchError(() => {
+          this.dialogService.openCreationErrorDialog();
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe();
-  };
+  }
 
   addNewNode(): void {
-    this.dialogService.openCreateEntityDialog(this.store.nodes())
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.dialogService.openCreateNodeDialog(this.store.nodes().map(n => n.name))
+      .pipe(
+        switchMap(name => {
+          if (name === null) {
+            return of(null);
+          }
+          this.nodeCreating.set(true);
+          return this.store.createNode({ name, nodeId: null }).pipe(
+            finalize(() => this.nodeCreating.set(false)),
+          );
+        }),
+        catchError(() => {
+          this.dialogService.openCreationErrorDialog();
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe();
-  };
+  }
 
   addNewDataType(): void {
-    this.dialogService.openCreateDataTypeDialog(this.store.dataTypes())
-      .pipe(takeUntilDestroyed(this.destroyRef))
+    this.dialogService.openCreateDataTypeDialog(this.store.dataTypes().map(dt => dt.name))
+      .pipe(
+        switchMap(name => {
+          if (name === null) {
+            return of(null);
+          }
+          this.dataTypeCreating.set(true);
+          return this.store.createDataType({ name, typeId: null }).pipe(
+            finalize(() => this.dataTypeCreating.set(false)),
+          );
+        }),
+        catchError(() => {
+          this.dialogService.openCreationErrorDialog();
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
       .subscribe();
-  };
+  }
 }

@@ -1,15 +1,13 @@
 ﻿import { inject, Injectable, Injector } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
-import { Validators } from '@angular/forms';
 import { catchError, map, Observable, of, switchMap } from 'rxjs';
 import { DialogService } from '../../../core/dialog.service';
 import { LogicalAddExistingEntityDialogComponent, LogicalAddExistingEntityDialogData } from './dialogs/logical-add-existing-entity-dialog/logical-add-existing-entity-dialog.component';
 import { LogicalEditAttributeDialogComponent, LogicalEditAttributeDialogData } from './dialogs/logical-edit-attribute-dialog/logical-edit-attribute-dialog.component';
 import { DataModelField, DataModelNode, DataModelNodeSummary } from '../../models/data-model-node.model';
 import { DataModelDataType } from '../../models/data-model-data-type.model';
-import { uniqueStringValidator } from '../../../core/validators/unique-string.validator';
-import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { DataModelStore } from '../../data-model.store';
+import { dataModelNodeNameValidators } from '../../validators/data-model-name.validators';
 
 @Injectable()
 export class LogicalDataModelerDialogService {
@@ -25,18 +23,12 @@ export class LogicalDataModelerDialogService {
       .pipe(map((entity: DataModelNode) => entity ? entity : null));
   }
 
-  // TODO: deduplicate
   openCreateEntity(entities: DataModelNodeSummary[]): Observable<DataModelNode | null> {
     return this.dialogService.openInputDialog({
       titleKey: 'DATA_MODEL.ENTITY.CREATE.TITLE',
       labelKey: 'DATA_MODEL.ENTITY.CREATE.LABEL',
       placeholderKey: 'DATA_MODEL.ENTITY.CREATE.PLACEHOLDER',
-      validators: [
-        Validators.required,
-        noStartEndWhitespaceValidator,
-        Validators.maxLength(40),
-        uniqueStringValidator(entities.map(entity => entity.name)),
-      ],
+      validators: dataModelNodeNameValidators(entities.map(entity => entity.name)),
     }).pipe(
       switchMap(name => name === null
         ? of(null)

@@ -52,6 +52,9 @@ export class FormatGenericValidationErrorsPipe implements PipeTransform {
     if (errors['verifyPassword']) {
       return this.translateService.translate('GENERIC.VALIDATION.VERIFY_PASSWORD');
     }
+    if (errors['notUnique']) {
+      return this.translateService.translate('GENERIC.VALIDATION.UNIQUE');
+    }
 
     return this.translateService.translate('GENERIC.VALIDATION.UNKNOWN');
   }
