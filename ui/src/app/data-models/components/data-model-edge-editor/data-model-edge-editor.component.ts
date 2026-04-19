@@ -68,6 +68,6 @@ export class DataModelEdgeEditorComponent implements DataModelEditor {
 
     return this.store
       .updateEdge(updated)
-      .pipe(tap(() => (this.edgeModified = false))) as unknown as Observable<DataModelModification>; // TODO: migrate without hack
+      .pipe(tap(() => (this.edgeModified = false)));
   }
 }

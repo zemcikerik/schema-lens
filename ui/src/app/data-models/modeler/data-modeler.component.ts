@@ -1,4 +1,15 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, signal, viewChild } from '@angular/core';
+import {
+  afterNextRender,
+  ChangeDetectionStrategy,
+  Component,
+  computed,
+  DestroyRef,
+  inject,
+  Injector,
+  input,
+  signal,
+  viewChild,
+} from '@angular/core';
 import { LayoutContentWithSidebarComponent } from '../../core/layouts/layout-content-with-sidebar.component';
 import { ContentCardComponent } from '../../shared/components/content-card/content-card.component';
 import { LayoutHeaderAndContentComponent } from '../../core/layouts/layout-header-and-content.component';
@@ -10,17 +21,23 @@ import { SchemaDiagramComponent } from '../../diagrams/schema/schema-diagram.com
 import { BlockExitDirective } from '../../core/directives/block-exit.directive';
 import { SchemaDiagramConnectNodes } from '../../diagrams/schema/model/schema-diagram-connect-nodes.model';
 import { MatProgressBar } from '@angular/material/progress-bar';
-import { DATA_MODELING_FACADE } from './data-modeling.facade';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
+import { switchMap } from 'rxjs';
+import { AlertComponent } from '../../shared/components/alert/alert.component';
+import { DataModelerState } from './data-modeler-state.service';
+import { DataModelStore } from '../data-model.store';
+import { TranslatePipe } from '../../core/translate/translate.pipe';
+import { DataModelerStateModule } from './data-modeler-state.module';
 
 @Component({
   selector: 'app-data-modeler',
   templateUrl: './data-modeler.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
+    DataModelerStateModule,
     LayoutContentWithSidebarComponent,
     ContentCardComponent,
     LayoutHeaderAndContentComponent,
@@ -33,28 +50,49 @@ import { MatIcon } from '@angular/material/icon';
     RouterLink,
     MatIconButton,
     MatIcon,
+    AlertComponent,
+    TranslatePipe,
   ],
 })
 export class DataModelerComponent {
-  modelingFacade = inject(DATA_MODELING_FACADE);
-  private destroyRef = inject(DestroyRef);
-  private diagram = viewChild.required(SchemaDiagramComponent);
+  dataModelId = input.required<string>();
+  diagramId = input.required<string>();
 
-  backLink = input.required<string>();
+  store = inject(DataModelStore);
+  state = inject(DataModelerState);
+  private destroyRef = inject(DestroyRef);
+  private injector = inject(Injector);
+  private diagram = viewChild(SchemaDiagramComponent);
+
+  backLink = computed(() => '/model/' + this.dataModelId());
   currentSelection = signal<SchemaDiagramSelection | null>(null);
   connectMode = signal<boolean>(false);
   hasUnsavedPositions = signal<boolean>(false);
 
+  constructor() {
+    const ids = computed(() => [this.dataModelId(), this.diagramId()] as const);
+
+    // TODO: validate, cleanup css
+    toObservable(ids)
+      .pipe(
+        switchMap(([dataModelId, diagramId]) =>
+          this.store.loadModel(+dataModelId).pipe(switchMap(() => this.store.loadDiagram(+diagramId))),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(() => afterNextRender({ mixedReadWrite: () => this.state.initDiagram() }, { injector: this.injector }));
+  }
+
   onConnectNodes({ from, to }: SchemaDiagramConnectNodes): void {
     this.connectMode.set(false);
-    this.executeModelingOperation(() => this.modelingFacade.connect(from, to));
+    this.executeModelingOperation(() => this.state.connect(from, to));
   }
 
   onDeletePressed(): void {
     const selection = this.currentSelection();
 
     if (selection?.type === 'node') {
-      this.modelingFacade.deleteNode(selection.node.id);
+      this.state.deleteNode(selection.node.id);
     }
   }
 
@@ -67,12 +105,15 @@ export class DataModelerComponent {
   }
 
   private savePositionsInternal(callback?: () => void): void {
-    if (!this.hasUnsavedPositions()) {
+    const diagram = this.diagram();
+
+    if (!diagram || !this.hasUnsavedPositions()) {
       callback?.();
       return;
     }
 
-    this.modelingFacade.savePositions(this.diagram().snapshotDiagramPositions())
+    this.state
+      .savePositions(diagram.snapshotDiagramPositions())
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.hasUnsavedPositions.set(false);

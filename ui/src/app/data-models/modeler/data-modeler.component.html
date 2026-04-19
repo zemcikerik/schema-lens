@@ -1,44 +1,53 @@
-<div
-  class="data-modeler"
-  appFullscreen
-  #fullscreenHost="appFullscreen"
-  [appBlockExit]="hasUnsavedPositions()"
->
-  <app-layout-content-with-sidebar [reverse]="true">
-    <app-data-modeler-properties-host ngProjectAs="sidebar" [selection]="currentSelection()" />
+@if (store.loading() && !store.model()) {
+  <mat-progress-bar mode="indeterminate" />
+} @else if (store.error()) {
+  <!-- TODO: verify -->
+  <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+} @else {
+  <div
+    class="data-modeler"
+    appFullscreen
+    #fullscreenHost="appFullscreen"
+    [appBlockExit]="hasUnsavedPositions()"
+  >
+    <app-layout-content-with-sidebar [reverse]="true">
+      <app-data-modeler-properties-host ngProjectAs="sidebar" [selection]="currentSelection()" />
 
-    <app-content-card
-      (keydown.escape)="connectMode.set(false)"
-      (keydown.delete)="onDeletePressed()"
-      (keydown.backspace)="onDeletePressed()"
-    >
-      <app-layout-header-and-content [title]="modelingFacade.diagramName()" [fullHeight]="true">
-        <a ngProjectAs="header-prefix" mat-icon-button [routerLink]="backLink()">
-          <mat-icon>arrow_back</mat-icon>
-        </a>
-        <app-data-modeler-actions
-          [diagramHost]="schemaDiagram.diagramHost()"
-          [fullscreenHost]="fullscreenHost"
-          [connectMode]="connectMode()"
-          [hasUnsavedPositions]="hasUnsavedPositions()"
-          (connectModeChange)="connectMode.set($event)"
-          (save)="savePositions()"
-        />
-        <div class="data-modeler__diagram">
-          <app-schema-diagram
-            #schemaDiagram
+      <app-content-card
+        (keydown.escape)="connectMode.set(false)"
+        (keydown.delete)="onDeletePressed()"
+        (keydown.backspace)="onDeletePressed()"
+      >
+        <app-layout-header-and-content [title]="state.diagramName()" [fullHeight]="true">
+          <a ngProjectAs="header-prefix" mat-icon-button [routerLink]="backLink()">
+            <mat-icon>arrow_back</mat-icon>
+          </a>
+
+          <app-data-modeler-actions
+            [diagramHost]="schemaDiagram.diagramHost()"
+            [fullscreenHost]="fullscreenHost"
             [connectMode]="connectMode()"
-            [patches$]="modelingFacade.patches$"
-            (connectNodes)="onConnectNodes($event)"
-            (selectionChanged)="currentSelection.set($event)"
-            (diagramModified)="hasUnsavedPositions.set(true)"
+            [hasUnsavedPositions]="hasUnsavedPositions()"
+            (connectModeChange)="connectMode.set($event)"
+            (save)="savePositions()"
           />
 
-          <div class="data-modeler__loading-overlay" [class.is-visible]="modelingFacade.loading()">
-            <mat-progress-bar mode="indeterminate" />
+          <div class="data-modeler__diagram">
+            <app-schema-diagram
+              #schemaDiagram
+              [connectMode]="connectMode()"
+              [patches$]="state.patches$"
+              (connectNodes)="onConnectNodes($event)"
+              (selectionChanged)="currentSelection.set($event)"
+              (diagramModified)="hasUnsavedPositions.set(true)"
+            />
+
+            <div class="data-modeler__loading-overlay" [class.is-visible]="state.loading()">
+              <mat-progress-bar mode="indeterminate" />
+            </div>
           </div>
-        </div>
-      </app-layout-header-and-content>
-    </app-content-card>
-  </app-layout-content-with-sidebar>
-</div>
+        </app-layout-header-and-content>
+      </app-content-card>
+    </app-layout-content-with-sidebar>
+  </div>
+}

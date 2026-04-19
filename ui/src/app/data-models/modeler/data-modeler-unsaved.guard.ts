@@ -1,17 +1,19 @@
 import { inject } from '@angular/core';
-import { DataModelerComponent } from './data-modeler.component';
-import { DialogService } from '../../core/dialog.service';
+import { CanDeactivateFn } from '@angular/router';
 import { map, Observable } from 'rxjs';
+import { DialogService } from '../../core/dialog.service';
+import { DataModelerComponent } from './data-modeler.component';
 
-export const dataModelerUnsavedGuard = (component: DataModelerComponent, type: string): boolean | Observable<boolean> => {
+export const dataModelerUnsavedGuard: CanDeactivateFn<DataModelerComponent> = (component): boolean | Observable<boolean> => {
   if (!component.hasUnsavedPositions()) {
     return true;
   }
 
-  const titleKey = `DATA_MODELER.${type}.DIALOGS.UNSAVED_TITLE`;
-  const descriptionKey = `DATA_MODELER.${type}.DIALOGS.UNSAVED_DESCRIPTION`;
-
-  return inject(DialogService).openConfirmationDialog(titleKey, descriptionKey, 'danger').pipe(
-    map(result => !!result),
-  );
+  return inject(DialogService)
+    .openConfirmationDialog(
+      'Unsaved Changes',
+      'You have unsaved layout changes. Are you sure you want to leave?',
+      'danger',
+    )
+    .pipe(map(result => !!result));
 };

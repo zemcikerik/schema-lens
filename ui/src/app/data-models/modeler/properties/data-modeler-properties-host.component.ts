@@ -4,51 +4,32 @@ import {
   ComponentRef,
   computed,
   DestroyRef,
+  effect,
   inject,
   input,
-  inputBinding,
   signal,
   viewChild,
   ViewContainerRef,
 } from '@angular/core';
 import { SchemaDiagramSelection } from '../../../diagrams/schema/model/schema-diagram-selection.model';
-import { DATA_MODELER_DEFINITION } from '../data-modeler.definition';
 import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
-import { DataModelerTranslatePipe } from '../data-modeler-translate.pipe';
 import { ContentCardComponent } from '../../../shared/components/content-card/content-card.component';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { BaseDataModelerPropertiesComponent } from './base-data-modeler-properties.component';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { TrapClicksDirective } from '../../../core/directives/trap-clicks.directive';
 import { FocusLeftDirective } from '../../../core/directives/focus-left.directive';
-import { concat, filter, map, of, switchMap, tap } from 'rxjs';
+import { concat, finalize, of, switchMap } from 'rxjs';
 import { DialogService } from '../../../core/dialog.service';
-import { DATA_MODELING_FACADE } from '../data-modeling.facade';
+import { DataModelerState } from '../data-modeler-state.service';
+import { DataModelerEditorResolverService } from './data-modeler-editor-resolver.service';
+import { DataModelEditor } from '../../components/data-model-editor/data-model-editor.component';
 
 @Component({
   selector: 'app-data-modeler-properties-host',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <app-content-card
-      class="data-modeler__properties"
-      [background]="'dim'"
-      [cdkTrapFocus]="formInvalid()"
-      [appTrapClicks]="formInvalid()"
-      appFocusLeft
-      [allowOverlayFocus]="false"
-      (clickTrapped)="notifyUserOfInvalidForm()"
-      (focusLeft)="saveChanges()">
-      <app-layout-header-and-content
-        [title]="('DATA_MODELER.$type.PROPERTIES.TITLE' | dataModelerTranslate)()"
-        [titleLevel]="'low'"
-        [fullHeight]="true">
-        <ng-container #propertiesTarget />
-      </app-layout-header-and-content>
-    </app-content-card>
-  `,
+  templateUrl: 'data-modeler-properties-host.component.html',
   imports: [
     LayoutHeaderAndContentComponent,
-    DataModelerTranslatePipe,
     ContentCardComponent,
     CdkTrapFocus,
     TrapClicksDirective,
@@ -56,78 +37,83 @@ import { DATA_MODELING_FACADE } from '../data-modeling.facade';
   ],
 })
 export class DataModelerPropertiesHostComponent {
-  private definition = inject(DATA_MODELER_DEFINITION);
   private dialogService = inject(DialogService);
-  private facade = inject(DATA_MODELING_FACADE);
+  private state = inject(DataModelerState);
+  private editorResolver = inject(DataModelerEditorResolverService);
+  private destroyRef = inject(DestroyRef);
 
   selection = input.required<SchemaDiagramSelection | null>();
-  propertiesTarget = viewChild.required('propertiesTarget', { read: ViewContainerRef });
-  propertiesComponentType = computed(() => this.definition.getPropertiesComponentFor(this.selection()));
+  editorTarget = viewChild.required('editorTarget', { read: ViewContainerRef });
 
-  private currentRef = signal<ComponentRef<BaseDataModelerPropertiesComponent> | undefined>(undefined);
+  private currentRef = signal<ComponentRef<DataModelEditor> | null>(null);
   formInvalid = signal<boolean>(false);
+  saving = signal<boolean>(false); // TODO: use the global state loading
+
+  private editorKind = computed(() => this.editorResolver.editorKind(this.selection()));
+  title = computed(() => this.editorResolver.editorTitle(this.selection()));
 
   constructor() {
-    this.renderPropertiesComponentBasedOnSelection();
-    this.trackPropertiesFormValidity();
-    this.disableFormWhenModelIsBeingUpdated();
-    this.destroyPropertiesComponentWhenHostIsDestroyed();
+    this.recreateEditorOnKindChange();
+    this.trackFormValidity();
+    this.disableFormWhenBusy();
+    this.destroyRef.onDestroy(() => this.currentRef()?.destroy());
   }
 
-  private renderPropertiesComponentBasedOnSelection(): void {
-    toObservable(this.propertiesComponentType)
-      .pipe(
-        tap(() => this.currentRef()?.destroy()),
-        map(propertiesType =>
-          this.propertiesTarget().createComponent(propertiesType, {
-            bindings: [inputBinding('selection', this.selection)],
-          }),
-        ),
-        takeUntilDestroyed(),
-      )
-      .subscribe(componentRef => this.currentRef.set(componentRef));
+  private recreateEditorOnKindChange(): void {
+    toObservable(this.editorKind)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(() => {
+        this.currentRef()?.destroy();
+        this.currentRef.set(this.editorResolver.createEditor(this.selection, this.editorTarget()));
+      });
   }
 
-  private trackPropertiesFormValidity(): void {
+  private trackFormValidity(): void {
     toObservable(this.currentRef)
       .pipe(
-        map(componentRef => componentRef?.instance?.propertiesForm),
-        filter(form => !!form),
-        switchMap(form => concat(of(form.status), form.statusChanges)),
-        takeUntilDestroyed(),
+        switchMap(ref => {
+          const form = ref?.instance.form;
+          return form ? concat(of(form.status), form.statusChanges) : of('VALID' as const);
+        }),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(status => this.formInvalid.set(status === 'INVALID'));
   }
 
-  private disableFormWhenModelIsBeingUpdated(): void {
-    toObservable(this.facade.loading)
-      .pipe(takeUntilDestroyed())
-      .subscribe(loading => {
-        const form = this.currentRef()?.instance?.propertiesForm;
+  private disableFormWhenBusy(): void {
+    effect(() => {
+      const busy = this.state.loading() || this.saving();
+      const form = this.currentRef()?.instance.form;
 
-        if (loading) {
-          form?.disable({ emitEvent: false });
-        } else {
-          form?.enable({ emitEvent: false });
-        }
-      });
-  }
+      if (!form) {
+        return;
+      }
 
-  private destroyPropertiesComponentWhenHostIsDestroyed(): void {
-    inject(DestroyRef).onDestroy(() => this.currentRef()?.destroy());
+      if (busy) {
+        form.disable({ emitEvent: false });
+      } else {
+        form.enable({ emitEvent: false });
+      }
+    });
   }
 
   notifyUserOfInvalidForm(): void {
-    this.currentRef()?.instance.propertiesForm?.markAllAsTouched();
-    this.dialogService.openTextDialog(
-      'DATA_MODELER.GENERIC.DIALOGS.PROPERTIES_INVALID_TITLE',
-      'DATA_MODELER.GENERIC.DIALOGS.PROPERTIES_INVALID_DESCRIPTION',
-    );
+    this.currentRef()?.instance.form?.markAllAsTouched();
+    this.dialogService.openTextDialog('Invalid Properties', 'Please fix validation errors before continuing.');
   }
 
   saveChanges(): void {
-    if (!this.formInvalid()) {
-      this.currentRef()?.instance.saveChanges();
-    }
+    if (this.formInvalid() || this.saving()) return;
+
+    const save$ = this.currentRef()?.instance.save();
+    if (!save$) return;
+
+    this.saving.set(true);
+    save$
+      .pipe(
+        finalize(() => this.saving.set(false)),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(modification => this.state.applyModification(modification));
   }
 }

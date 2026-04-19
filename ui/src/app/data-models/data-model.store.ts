@@ -1,16 +1,16 @@
-﻿import { computed, inject, Injectable, signal } from '@angular/core';
+import { computed, inject, Injectable, signal } from '@angular/core';
 import { Observable, tap, of, finalize, defer, map } from 'rxjs';
-import { DataModelDetails, DataModelModification } from './models/data-model.model';
+import { DataModelDetails, DataModelModification, DataModelModificationDto } from './models/data-model.model';
 import { DataModelEdge } from './models/data-model-edge.model';
-import { DataModelField, DataModelFieldReorderRequest, DataModelNode, DataModelNodeSummary } from './models/data-model-node.model';
+import { DataModelFieldReorderRequest, DataModelNode, DataModelNodeSummary } from './models/data-model-node.model';
 import { DataModelDataType } from './models/data-model-data-type.model';
-import { DataModelFieldDeletionResult } from './models/data-model-field-deletion-result.model';
 import { DataModelDiagram, LogicalModelDiagram } from './models/data-model-diagram.model';
 import { DataModelDetailsService } from './services/data-model-details.service';
 import { DataModelNodeService } from './services/data-model-node.service';
 import { DataModelEdgeService } from './services/data-model-edge.service';
 import { DataModelDataTypeService } from './services/data-model-data-type.service';
 import { DataModelDiagramService } from './services/data-model-diagram.service';
+import { DataModelCascadeDeletionService } from './services/data-model-cascade-deletion.service';
 
 @Injectable({ providedIn: 'root' })
 export class DataModelStore {
@@ -19,14 +19,15 @@ export class DataModelStore {
   private edgeService = inject(DataModelEdgeService);
   private dataTypeService = inject(DataModelDataTypeService);
   private diagramService = inject(DataModelDiagramService);
+  private cascadeDeletion = inject(DataModelCascadeDeletionService);
 
-  dataModelId = -1; // this is initialized first by loadModel()
+  dataModelId = -1;
 
-  private readonly _model = signal<DataModelDetails | null>(null);
-  private readonly _loading = signal<boolean>(false);
-  private readonly _error = signal<unknown>(null);
-  private readonly _activeDiagramId = signal<number | null>(null);
-  private readonly _loadedDiagramIds = new Set<number>();
+  private _model = signal<DataModelDetails | null>(null);
+  private _loading = signal<boolean>(false);
+  private _error = signal<unknown>(null);
+  private _activeDiagramId = signal<number | null>(null);
+  private _loadedDiagramIds = new Set<number>();
 
   readonly model = this._model.asReadonly();
   readonly loading = this._loading.asReadonly();
@@ -93,137 +94,49 @@ export class DataModelStore {
     });
   }
 
-  createNode(node: DataModelNodeSummary): Observable<DataModelNode> {
-    return this.nodeService
-      .createNode(this.dataModelId, node)
-      .pipe(tap(created => this._model.update(m => m && { ...m, nodes: [...m.nodes, created] })));
+  createNode(node: DataModelNodeSummary): Observable<DataModelModification> {
+    return this.nodeService.createNode(this.dataModelId, node).pipe(
+      map(created => this.withEmptyDeletions({ updatedNodes: [created], updatedEdges: [] })),
+      tap(modification => this.mergeModification(modification)),
+    );
   }
 
-  updateNode(node: DataModelNode): Observable<DataModelNode> {
-    const current = this.nodes().find(n => n.nodeId === node.nodeId);
-    if (!current) {
-      throw new Error(`Cannot update missing node ${node.nodeId}`);
-    }
-
+  updateNode(node: DataModelNode): Observable<DataModelModification> {
     return this.nodeService.updateNode(this.dataModelId, node).pipe(
-      map(modification => {
-        this.mergeModification(modification);
-        return this.nodes().find(n => n.nodeId === node.nodeId) as DataModelNode;
-      }),
+      map(dto => this.withEmptyDeletions(dto)),
+      tap(modification => this.mergeModification(modification)),
     );
   }
 
-  deleteNode(nodeId: number): Observable<unknown> {
+  deleteNode(nodeId: number): Observable<DataModelModification> {
+    const cascade = this.cascadeDeletion.resolveNodeDeletion(nodeId, this.edges());
+
     return this.nodeService.deleteNode(this.dataModelId, nodeId).pipe(
-      tap(modification => {
-        this._model.update(m => {
-          if (!m) {
-            return m;
-          }
-
-          const withoutDeletedNode = {
-            ...m,
-            nodes: m.nodes.filter(n => n.nodeId !== nodeId),
-            edges: m.edges.filter(e => e.fromNodeId !== nodeId && e.toNodeId !== nodeId),
-          };
-
-          return this.applyModification(withoutDeletedNode, modification);
-        });
-      }),
+      map(dto => ({ ...dto, ...cascade })),
+      tap(modification => this.mergeModification(modification)),
     );
   }
 
-  createField(nodeId: number, field: DataModelField): Observable<DataModelField> {
-    const node = this.nodes().find(n => n.nodeId === nodeId);
-
-    if (!node) {
-      throw new Error(`Cannot create field for missing node ${nodeId}`);
-    }
-
-    return this.nodeService.updateNode(this.dataModelId, { ...node, fields: [...node.fields, field] }).pipe(
-      map(modification => {
-        this.mergeModification(modification);
-
-        return this.nodes().find(n => n.nodeId === nodeId)?.fields
-          .find(f => f.name === field.name && f.position === field.position) as DataModelField;
-      }),
-    );
-  }
-
-  updateField(nodeId: number, field: DataModelField): Observable<DataModelField> {
-    const node = this.nodes().find(n => n.nodeId === nodeId);
-
-    if (!node) {
-      throw new Error(`Cannot update field for missing node ${nodeId}`);
-    }
-
-    return this.nodeService.updateNode(this.dataModelId, {
-      ...node,
-      fields: node.fields.map(f => (f.fieldId === field.fieldId ? field : f)),
-    }).pipe(
-      map(modification => {
-        this.mergeModification(modification);
-
-        return this.nodes()
-          .find(n => n.nodeId === nodeId)
-          ?.fields.find(f => f.fieldId === field.fieldId) as DataModelField;
-      }),
-    );
-  }
-
-  deleteField(nodeId: number, fieldId: number): Observable<DataModelFieldDeletionResult> {
-    const node = this.nodes().find(n => n.nodeId === nodeId);
-
-    if (!node) {
-      throw new Error(`Cannot delete field for missing node ${nodeId}`);
-    }
-
-    return this.nodeService.updateNode(this.dataModelId, {
-      ...node,
-      fields: node.fields.filter(f => f.fieldId !== fieldId),
-    }).pipe(
-      map(modification => {
-        this.mergeModification(modification);
-        return { affectedEdges: modification.updatedEdges };
-      }),
-    );
-  }
-
-  createEdge(edge: DataModelEdge): Observable<DataModelEdge> {
+  createEdge(edge: DataModelEdge): Observable<DataModelModification> {
     return this.edgeService.createEdge(this.dataModelId, edge).pipe(
-      map(modification => {
-        const existingIds = new Set(this.edges().map(e => e.edgeId));
-        this.mergeModification(modification);
-        return this.edges().find(e => !existingIds.has(e.edgeId)) as DataModelEdge;
-      }),
+      map(dto => this.withEmptyDeletions(dto)),
+      tap(modification => this.mergeModification(modification)),
     );
   }
 
-  updateEdge(edge: DataModelEdge): Observable<DataModelEdge> {
+  updateEdge(edge: DataModelEdge): Observable<DataModelModification> {
     return this.edgeService.updateEdge(this.dataModelId, edge).pipe(
-      map(modification => {
-        this.mergeModification(modification);
-        return this.edges().find(e => e.edgeId === edge.edgeId) as DataModelEdge;
-      }),
+      map(dto => this.withEmptyDeletions(dto)),
+      tap(modification => this.mergeModification(modification)),
     );
   }
 
-  deleteEdge(edgeId: number): Observable<unknown> {
+  deleteEdge(edgeId: number): Observable<DataModelModification> {
+    const cascade = this.cascadeDeletion.resolveEdgeDeletion(edgeId);
+
     return this.edgeService.deleteEdge(this.dataModelId, edgeId).pipe(
-      tap(modification => {
-        this._model.update(m => {
-          if (!m) {
-            return m;
-          }
-
-          const withoutDeletedEdge = {
-            ...m,
-            edges: m.edges.filter(e => e.edgeId !== edgeId),
-          };
-
-          return this.applyModification(withoutDeletedEdge, modification);
-        });
-      }),
+      map(dto => ({ ...dto, ...cascade })),
+      tap(modification => this.mergeModification(modification)),
     );
   }
 
@@ -284,9 +197,14 @@ export class DataModelStore {
   }
 
   reorderFields(nodeId: number, request: DataModelFieldReorderRequest): Observable<DataModelModification> {
-    return this.nodeService
-      .reorderNodeFields(this.dataModelId, nodeId, request)
-      .pipe(tap(modification => this.mergeModification(modification)));
+    return this.nodeService.reorderNodeFields(this.dataModelId, nodeId, request).pipe(
+      map(dto => this.withEmptyDeletions(dto)),
+      tap(modification => this.mergeModification(modification)),
+    );
+  }
+
+  private withEmptyDeletions(dto: DataModelModificationDto): DataModelModification {
+    return { ...dto, deletedNodeIds: [], deletedEdgeIds: [] };
   }
 
   private mergeModification(modification: DataModelModification): void {
@@ -294,27 +212,32 @@ export class DataModelStore {
   }
 
   private applyModification(model: DataModelDetails, modification: DataModelModification): DataModelDetails {
+    const deletedNodeIds = new Set(modification.deletedNodeIds);
+    const deletedEdgeIds = new Set(modification.deletedEdgeIds);
+
     const updatedNodesById = new Map(modification.updatedNodes.map(node => [node.nodeId, node]));
     const updatedEdgesById = new Map(modification.updatedEdges.map(edge => [edge.edgeId, edge]));
 
-    const mergedNodes = model.nodes.map(node => updatedNodesById.get(node.nodeId) ?? node);
+    const mergedNodes = model.nodes
+      .filter(node => !deletedNodeIds.has(node.nodeId as number))
+      .map(node => updatedNodesById.get(node.nodeId) ?? node);
+
     for (const node of modification.updatedNodes) {
-      if (!mergedNodes.some(existing => existing.nodeId === node.nodeId)) {
+      if (!deletedNodeIds.has(node.nodeId as number) && !mergedNodes.some(existing => existing.nodeId === node.nodeId)) {
         mergedNodes.push(node);
       }
     }
 
-    const mergedEdges = model.edges.map(edge => updatedEdgesById.get(edge.edgeId) ?? edge);
+    const mergedEdges = model.edges
+      .filter(edge => !deletedEdgeIds.has(edge.edgeId as number))
+      .map(edge => updatedEdgesById.get(edge.edgeId) ?? edge);
+
     for (const edge of modification.updatedEdges) {
-      if (!mergedEdges.some(existing => existing.edgeId === edge.edgeId)) {
+      if (!deletedEdgeIds.has(edge.edgeId as number) && !mergedEdges.some(existing => existing.edgeId === edge.edgeId)) {
         mergedEdges.push(edge);
       }
     }
 
-    return {
-      ...model,
-      nodes: mergedNodes,
-      edges: mergedEdges,
-    };
+    return { ...model, nodes: mergedNodes, edges: mergedEdges };
   }
 }

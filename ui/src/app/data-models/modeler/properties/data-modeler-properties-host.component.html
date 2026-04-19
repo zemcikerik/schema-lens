@@ -1,0 +1,18 @@
+<app-content-card
+  class="data-modeler__properties"
+  [background]="'dim'"
+  [cdkTrapFocus]="formInvalid()"
+  [appTrapClicks]="formInvalid()"
+  appFocusLeft
+  [allowOverlayFocus]="false"
+  (clickTrapped)="notifyUserOfInvalidForm()"
+  (focusLeft)="saveChanges()"
+>
+  <app-layout-header-and-content
+    [title]="title()"
+    [titleLevel]="'low'"
+    [fullHeight]="true"
+  >
+    <ng-container #editorTarget/>
+  </app-layout-header-and-content>
+</app-content-card>

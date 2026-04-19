@@ -2,9 +2,8 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
-import { DataModelerTranslatePipe } from '../data-modeler-translate.pipe';
 import { MatTooltip } from '@angular/material/tooltip';
-import { DATA_MODELING_FACADE } from '../data-modeling.facade';
+import { DataModelerState } from '../data-modeler-state.service';
 
 @Component({
   selector: 'app-data-modeler-add-action',
@@ -12,31 +11,23 @@ import { DATA_MODELING_FACADE } from '../data-modeling.facade';
   template: `
     <button
       mat-icon-button
-      [matTooltip]="('DATA_MODELER.$type.ACTION.ADD_NODE' | dataModelerTranslate)()"
+      matTooltip="Add Node"
       [matMenuTriggerFor]="addMenu"
     >
       <mat-icon>add_box</mat-icon>
     </button>
-    
+
     <mat-menu #addMenu>
-      <button mat-menu-item (click)="facade.createNode()">
-        <mat-icon>add_circle</mat-icon> {{ ('DATA_MODELER.$type.ACTION.CREATE_NODE' | dataModelerTranslate)() }}
+      <button mat-menu-item (click)="state.createNode()">
+        <mat-icon>add_circle</mat-icon> Create New Node
       </button>
-      <button mat-menu-item (click)="facade.addExistingNode()">
-        <mat-icon>folder_open</mat-icon> {{ ('DATA_MODELER.$type.ACTION.EXISTING_NODE' | dataModelerTranslate)() }}
+      <button mat-menu-item (click)="state.addExistingNode()">
+        <mat-icon>folder_open</mat-icon> Add Existing Node
       </button>
     </mat-menu>
   `,
-  imports: [
-    MatIconButton,
-    MatIcon,
-    MatMenu,
-    MatMenuItem,
-    MatMenuTrigger,
-    DataModelerTranslatePipe,
-    MatTooltip,
-  ],
+  imports: [MatIconButton, MatIcon, MatMenu, MatMenuItem, MatMenuTrigger, MatTooltip],
 })
 export class DataModelerAddActionComponent {
-  facade = inject(DATA_MODELING_FACADE);
+  state = inject(DataModelerState);
 }
