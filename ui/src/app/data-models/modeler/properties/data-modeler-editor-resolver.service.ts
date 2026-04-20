@@ -5,7 +5,6 @@ import { DataModelEditor } from '../../components/data-model-editor/data-model-e
 import { DataModelNodeEditorComponent } from '../../components/data-model-node-editor/data-model-node-editor.component';
 import { DataModelEdgeEditorComponent } from '../../components/data-model-edge-editor/data-model-edge-editor.component';
 import { DataModelerDiagramEditorComponent } from './data-modeler-diagram-editor.component';
-import { DataModelNode } from '../../models/data-model-node.model';
 import { DataModelEdge } from '../../models/data-model-edge.model';
 
 export type EditorKind = 'diagram' | 'node' | 'edge';
@@ -39,21 +38,29 @@ export class DataModelerEditorResolverService {
     if (kind === 'node') {
       const nodeSignal = computed(() => {
         const sel = selection();
-        return sel?.type === 'node' ? this.store.nodes().find(n => n.nodeId === sel.node.id) : undefined;
-      }) as Signal<DataModelNode>;
-      if (!nodeSignal()) return null;
+        return sel?.type === 'node' ? this.store.nodes().find(n => n.nodeId === sel.node.id) ?? null : null;
+      });
+
+      if (!nodeSignal()) {
+        return null;
+      }
+
       return target.createComponent(DataModelNodeEditorComponent, {
         bindings: [inputBinding('node', nodeSignal), inputBinding('compact', signal(true))],
-      }) as ComponentRef<DataModelEditor>;
+      });
     }
 
     const edgeSignal = computed(() => {
       const sel = selection();
-      return sel?.type === 'edge' ? this.store.edges().find(e => e.edgeId === sel.edge.id) : undefined;
+      return sel?.type === 'edge' ? this.store.edges().find(e => e.edgeId === sel.edge.id) ?? null : null;
     }) as Signal<DataModelEdge>;
-    if (!edgeSignal()) return null;
+
+    if (!edgeSignal()) {
+      return null;
+    }
+
     return target.createComponent(DataModelEdgeEditorComponent, {
       bindings: [inputBinding('edge', edgeSignal)],
-    }) as ComponentRef<DataModelEditor>;
+    });
   }
 }

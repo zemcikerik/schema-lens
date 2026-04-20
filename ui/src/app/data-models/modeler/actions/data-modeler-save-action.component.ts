@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, input, output } from '@angu
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { DataModelerState } from '../data-modeler-state.service';
+import { DataModelerDiagramState } from '../data-modeler-diagram-state.service';
 
 @Component({
   selector: 'app-data-modeler-save-action',
@@ -20,7 +20,7 @@ import { DataModelerState } from '../data-modeler-state.service';
   imports: [MatIconButton, MatIcon, MatTooltip],
 })
 export class DataModelerSaveActionComponent {
-  loading = inject(DataModelerState).loading;
+  loading = inject(DataModelerDiagramState).loading;
   hasUnsavedPositions = input.required<boolean>();
   save = output();
 }

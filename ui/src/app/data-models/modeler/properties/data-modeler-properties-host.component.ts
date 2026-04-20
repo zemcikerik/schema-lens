@@ -18,11 +18,14 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { TrapClicksDirective } from '../../../core/directives/trap-clicks.directive';
 import { FocusLeftDirective } from '../../../core/directives/focus-left.directive';
-import { concat, finalize, of, switchMap } from 'rxjs';
+import { catchError, concat, of, switchMap } from 'rxjs';
 import { DialogService } from '../../../core/dialog.service';
-import { DataModelerState } from '../data-modeler-state.service';
+import { DataModelerDiagramState } from '../data-modeler-diagram-state.service';
+import { DataModelerDialogService } from '../data-modeler-dialog.service';
 import { DataModelerEditorResolverService } from './data-modeler-editor-resolver.service';
 import { DataModelEditor } from '../../components/data-model-editor/data-model-editor.component';
+
+// TODO: support nested dropdowns / overlays / dialogs
 
 @Component({
   selector: 'app-data-modeler-properties-host',
@@ -38,7 +41,8 @@ import { DataModelEditor } from '../../components/data-model-editor/data-model-e
 })
 export class DataModelerPropertiesHostComponent {
   private dialogService = inject(DialogService);
-  private state = inject(DataModelerState);
+  private dialogs = inject(DataModelerDialogService);
+  private state = inject(DataModelerDiagramState);
   private editorResolver = inject(DataModelerEditorResolverService);
   private destroyRef = inject(DestroyRef);
 
@@ -47,7 +51,6 @@ export class DataModelerPropertiesHostComponent {
 
   private currentRef = signal<ComponentRef<DataModelEditor> | null>(null);
   formInvalid = signal<boolean>(false);
-  saving = signal<boolean>(false); // TODO: use the global state loading
 
   private editorKind = computed(() => this.editorResolver.editorKind(this.selection()));
   title = computed(() => this.editorResolver.editorTitle(this.selection()));
@@ -82,14 +85,13 @@ export class DataModelerPropertiesHostComponent {
 
   private disableFormWhenBusy(): void {
     effect(() => {
-      const busy = this.state.loading() || this.saving();
       const form = this.currentRef()?.instance.form;
 
       if (!form) {
         return;
       }
 
-      if (busy) {
+      if (this.state.loading()) {
         form.disable({ emitEvent: false });
       } else {
         form.enable({ emitEvent: false });
@@ -103,17 +105,28 @@ export class DataModelerPropertiesHostComponent {
   }
 
   saveChanges(): void {
-    if (this.formInvalid() || this.saving()) return;
+    if (this.formInvalid() || this.state.loading()) {
+      return;
+    }
 
     const save$ = this.currentRef()?.instance.save();
-    if (!save$) return;
 
-    this.saving.set(true);
-    save$
+    if (!save$) {
+      return;
+    }
+
+    this.state.withLoading(save$)
       .pipe(
-        finalize(() => this.saving.set(false)),
+        catchError(() => {
+          this.dialogs.openCreationErrorDialog();
+          return of(null);
+        }),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(modification => this.state.applyModification(modification));
+      .subscribe(modification => {
+        if (modification !== null) {
+          this.state.applyModification(modification);
+        }
+      });
   }
 }

@@ -3,9 +3,9 @@ import { MatDialog } from '@angular/material/dialog';
 import { map, Observable } from 'rxjs';
 import { DialogService } from '../../core/dialog.service';
 import {
-  AddExistingNodeDialogComponent,
-  AddExistingNodeDialogData,
-} from './dialogs/add-existing-node-dialog/add-existing-node-dialog.component';
+  DataModelerAddExistingNodeDialogComponent,
+  DataModelerAddExistingNodeDialogData,
+} from './dialogs/data-modeler-add-existing-node-dialog/data-modeler-add-existing-node-dialog.component';
 import { DataModelNode } from '../models/data-model-node.model';
 import { DataModelDialogService } from '../services/data-model-dialog.service';
 
@@ -17,7 +17,7 @@ export class DataModelerDialogService {
 
   openAddExistingNode(nodes: DataModelNode[]): Observable<DataModelNode | null> {
     return this.matDialog
-      .open(AddExistingNodeDialogComponent, { data: { nodes } satisfies AddExistingNodeDialogData })
+      .open(DataModelerAddExistingNodeDialogComponent, { data: { nodes } satisfies DataModelerAddExistingNodeDialogData })
       .afterClosed()
       .pipe(map((node: DataModelNode) => node ?? null));
   }

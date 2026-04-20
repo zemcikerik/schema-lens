@@ -5,13 +5,12 @@ import { MatButton } from '@angular/material/button';
 import { MatListItem, MatNavList } from '@angular/material/list';
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
 
-export interface AddExistingNodeDialogData {
+export interface DataModelerAddExistingNodeDialogData {
   nodes: DataModelNode[];
 }
 
-// TODO: rename
 @Component({
-  selector: 'app-add-existing-node-dialog',
+  selector: 'app-data-modeler-add-existing-node-dialog',
   template: `
     <h2 mat-dialog-title>Add Existing Node</h2>
 
@@ -42,9 +41,9 @@ export interface AddExistingNodeDialogData {
     AlertComponent,
   ],
 })
-export class AddExistingNodeDialogComponent {
-  private matDialogRef = inject(MatDialogRef<AddExistingNodeDialogComponent, DataModelNode>);
-  data = inject<AddExistingNodeDialogData>(MAT_DIALOG_DATA);
+export class DataModelerAddExistingNodeDialogComponent {
+  private matDialogRef = inject(MatDialogRef<DataModelerAddExistingNodeDialogComponent, DataModelNode>);
+  data = inject<DataModelerAddExistingNodeDialogData>(MAT_DIALOG_DATA);
 
   select(node: DataModelNode): void {
     this.matDialogRef.close(node);

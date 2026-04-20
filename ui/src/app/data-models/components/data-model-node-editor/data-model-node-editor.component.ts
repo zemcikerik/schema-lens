@@ -21,7 +21,7 @@ import { DataModelField, DataModelNode } from '../../models/data-model-node.mode
 import { ResolvedField } from '../../models/resolved-field.model';
 import { DataModelEdge } from '../../models/data-model-edge.model';
 import { DataModelNodeFieldResolver } from '../../services/data-model-node-field.resolver';
-import { filter, finalize, map, mergeMap, Observable, of, tap } from 'rxjs';
+import { filter, finalize, mergeMap, Observable, of, tap } from 'rxjs';
 import { DataModelStore } from '../../data-model.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconButton } from '@angular/material/button';
@@ -177,33 +177,35 @@ export class DataModelNodeEditorComponent implements DataModelEditor {
       return null;
     }
 
-    const saveNode$ = this.nodeModified ? this.saveNodePropertiesWithoutOrder() : of(this.node());
+    const saveNode$ = this.nodeModified
+      ? this.saveNodePropertiesWithoutOrder()
+      : of({ updatedNodes: [this.node()], updatedEdges: [], deletedNodeIds: [], deletedEdgeIds: [] } satisfies DataModelModification);
+
     const allFields = this.fields();
     const positionsChanged = this.positionsChanged;
     this.pendingSaveId.set(this.nodeId());
 
     return saveNode$.pipe(
       tap(() => (this.nodeModified = false)),
-      mergeMap(
-        node =>
-          positionsChanged
-            ? this.fieldResolver.reorderFields(this.nodeId(), this.updateIdsForNewDirectFields(node, allFields))
-            // TODO: fix
-            : of({ updatedNodes: [node], updatedEdges: [], deletedNodeIds: [], deletedEdgeIds: [] } satisfies DataModelModification),
-      ),
+      mergeMap(modification => {
+        if (!positionsChanged) {
+          return of(modification);
+        }
+
+        const savedNode = modification.updatedNodes.find(node => node.nodeId === this.pendingSaveId()) as DataModelNode;
+        return this.fieldResolver.reorderFields(this.nodeId(), this.updateIdsForNewDirectFields(savedNode, allFields));
+      }),
       tap(() => (this.positionsChanged = false)),
       finalize(() => this.pendingSaveId.set(null)),
     );
   }
 
-  private saveNodePropertiesWithoutOrder(): Observable<DataModelNode> {
+  private saveNodePropertiesWithoutOrder(): Observable<DataModelModification> {
     const { name } = this.form.getRawValue();
     const fields = this.getDirectFields();
     const nodeId = this.nodeId();
 
-    return this.store.updateNode({ nodeId, name, fields }).pipe(
-      map(modification => modification.updatedNodes[0]),
-    );
+    return this.store.updateNode({ nodeId, name, fields });
   }
 
   private getDirectFields(): DataModelField[] {

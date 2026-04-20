@@ -25,12 +25,14 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { switchMap } from 'rxjs';
+import { catchError, filter, of, switchMap, tap } from 'rxjs';
 import { AlertComponent } from '../../shared/components/alert/alert.component';
-import { DataModelerState } from './data-modeler-state.service';
+import { DataModelerDiagramState } from './data-modeler-diagram-state.service';
 import { DataModelStore } from '../data-model.store';
 import { TranslatePipe } from '../../core/translate/translate.pipe';
 import { DataModelerStateModule } from './data-modeler-state.module';
+import { DataModelerDialogService } from './data-modeler-dialog.service';
+import { DataModelEdge } from '../models/data-model-edge.model';
 
 @Component({
   selector: 'app-data-modeler',
@@ -59,7 +61,8 @@ export class DataModelerComponent {
   diagramId = input.required<string>();
 
   store = inject(DataModelStore);
-  state = inject(DataModelerState);
+  state = inject(DataModelerDiagramState);
+  private dialogs = inject(DataModelerDialogService);
   private destroyRef = inject(DestroyRef);
   private injector = inject(Injector);
   private diagram = viewChild(SchemaDiagramComponent);
@@ -85,15 +88,47 @@ export class DataModelerComponent {
 
   onConnectNodes({ from, to }: SchemaDiagramConnectNodes): void {
     this.connectMode.set(false);
-    this.executeModelingOperation(() => this.state.connect(from, to));
+    this.executeModelingOperation(() => {
+      const edge: DataModelEdge = {
+        edgeId: null,
+        modelId: this.store.dataModelId,
+        fromNodeId: from.id,
+        toNodeId: to.id,
+        type: '1:N',
+        isMandatory: false,
+        isIdentifying: false,
+        fields: [],
+      };
+
+      this.state.withLoading(this.store.createEdge(edge)).pipe(
+        tap(modification => this.state.applyModification(modification)),
+        catchError(() => {
+          this.dialogs.openCreationErrorDialog();
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      ).subscribe();
+    });
   }
 
   onDeletePressed(): void {
     const selection = this.currentSelection();
 
-    if (selection?.type === 'node') {
-      this.state.deleteNode(selection.node.id);
+    if (selection?.type !== 'node') {
+      return;
     }
+
+    const nodeId = selection.node.id;
+    this.dialogs.openDeleteNodeConfirmation().pipe(
+      filter(result => !!result),
+      switchMap(() =>
+        this.state.withLoading(this.store.deleteNode(nodeId)).pipe(
+          tap(modification => this.state.applyModification(modification)),
+        ),
+      ),
+      catchError(() => { this.dialogs.openCreationErrorDialog(); return of(null); }),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe();
   }
 
   savePositions(): void {
@@ -114,8 +149,18 @@ export class DataModelerComponent {
 
     this.state
       .savePositions(diagram.snapshotDiagramPositions())
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
+      .pipe(
+        catchError(() => {
+          this.dialogs.openCreationErrorDialog(); // TODO: custom error
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(result => {
+        if (result === null) {
+          return;
+        }
+
         this.hasUnsavedPositions.set(false);
         callback?.();
       });

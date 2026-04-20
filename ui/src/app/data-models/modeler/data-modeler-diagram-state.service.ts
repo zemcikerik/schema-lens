@@ -1,9 +1,8 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { catchError, defer, filter, finalize, Observable, of, switchMap, tap, throwError } from 'rxjs';
+import { catchError, defer, finalize, Observable, tap, throwError } from 'rxjs';
 import { Subject } from 'rxjs';
 import { DataModelStore } from '../data-model.store';
 import { DataModelerDiagramMapper } from './data-modeler-diagram.mapper';
-import { DataModelerDialogService } from './data-modeler-dialog.service';
 import { DataModelNodeFieldResolver } from '../services/data-model-node-field.resolver';
 import { SchemaDiagramPatch } from '../../diagrams/schema/model/schema-diagram-patches.model';
 import { SchemaDiagramNode } from '../../diagrams/schema/model/schema-diagram-node.model';
@@ -12,13 +11,10 @@ import { DataModelDetails, DataModelModification } from '../models/data-model.mo
 import { DataModelNode, DataModelField } from '../models/data-model-node.model';
 import { LogicalModelDiagram } from '../models/data-model-diagram.model';
 
-// TODO: move out presentation logic, handle subscriptions correctly
-
 @Injectable()
-export class DataModelerState {
+export class DataModelerDiagramState {
   private store = inject(DataModelStore);
   private mapper = inject(DataModelerDiagramMapper);
-  private dialogs = inject(DataModelerDialogService);
   private fieldResolver = inject(DataModelNodeFieldResolver);
 
   private _patches$ = new Subject<SchemaDiagramPatch>();
@@ -105,65 +101,19 @@ export class DataModelerState {
     }
   }
 
-  createNode(): void {
-    const model = this.store.model() as DataModelDetails;
-
-    this.dialogs
-      .openCreateNodeDialog(model.nodes.map(n => n.name))
-      .pipe(
-        filter((name: string | null): name is string => name !== null),
-        switchMap(name => this.withLoading(this.store.createNode({ name, nodeId: null }))),
-        catchError(() => {
-          this.dialogs.openCreationErrorDialog();
-          return of(null);
-        }),
-      )
-      .subscribe(result => {
-        const node = result?.updatedNodes[0];
-
-        if (!node || node.nodeId === null) {
-          return;
-        }
-
-        this.pendingNodeIds.add(node.nodeId);
-        this.visibleNodeIds.add(node.nodeId);
-        this._patches$.next({ type: 'node:add', node: this.resolveAndMapNode(node) });
-      });
+  addNodeToDiagram(node: DataModelNode): void {
+    const nodeId = node.nodeId as number;
+    this.pendingNodeIds.add(nodeId);
+    this.visibleNodeIds.add(nodeId);
+    this._patches$.next({ type: 'node:add', node: this.resolveAndMapNode(node) });
+    this.emitNewlyVisibleEdges(nodeId);
   }
 
-  addExistingNode(): void {
+  getAvailableNodes(): DataModelNode[] {
     const model = this.store.model() as DataModelDetails;
-
-    const availableNodes = model.nodes.filter(
+    return model.nodes.filter(
       n => n.nodeId !== null && !this.visibleNodeIds.has(n.nodeId) && !this.pendingNodeIds.has(n.nodeId),
     );
-
-    this.dialogs
-      .openAddExistingNode(availableNodes)
-      .pipe(filter(node => node !== null))
-      .subscribe(node => {
-        const nodeId = node.nodeId as number;
-        this.pendingNodeIds.add(nodeId);
-        this.visibleNodeIds.add(nodeId);
-        this._patches$.next({ type: 'node:add', node: this.resolveAndMapNode(node) });
-        this.emitNewlyVisibleEdges(nodeId);
-      });
-  }
-
-  connect(from: SchemaDiagramNode, to: SchemaDiagramNode): void {
-    // TODO: re-enable once edge creation is supported end-to-end
-    void from;
-    void to;
-  }
-
-  deleteNode(nodeId: number): void {
-    this.dialogs
-      .openDeleteNodeConfirmation()
-      .pipe(
-        filter(result => !!result),
-        switchMap(() => this.withLoading(this.store.deleteNode(nodeId))),
-      )
-      .subscribe(modification => this.applyModification(modification));
   }
 
   savePositions(snapshot: SchemaDiagramPositionSnapshot): Observable<unknown> {
@@ -194,11 +144,20 @@ export class DataModelerState {
 
   deleteDiagram(): Observable<boolean> {
     const diagram = this.store.activeDiagram() as LogicalModelDiagram;
+    return this.withLoading(this.store.deleteDiagram(diagram.id as number));
+  }
 
-    return this.dialogs.openDeleteDiagramConfirmation().pipe(
-      filter(result => !!result),
-      switchMap(() => this.withLoading(this.store.deleteDiagram(diagram.id as number))),
-    );
+  withLoading<T>(observable: Observable<T>): Observable<T> {
+    return defer(() => {
+      this._loading.set(true);
+      return observable.pipe(
+        catchError(err => {
+          console.error(err);
+          return throwError(() => err);
+        }),
+        finalize(() => this._loading.set(false)),
+      );
+    });
   }
 
   private resolveAndMapNode(node: DataModelNode): SchemaDiagramNode {
@@ -253,18 +212,5 @@ export class DataModelerState {
   private edgePosition(edgeId: number, diagram: LogicalModelDiagram) {
     const pos = (diagram.edges ?? []).find(e => e.edgeId === edgeId);
     return pos ? { points: [...pos.points] } : undefined;
-  }
-
-  private withLoading<T>(observable: Observable<T>): Observable<T> {
-    return defer(() => {
-      this._loading.set(true);
-      return observable.pipe(
-        catchError(err => {
-          console.error(err);
-          return throwError(() => err);
-        }),
-        finalize(() => this._loading.set(false)),
-      );
-    });
   }
 }
