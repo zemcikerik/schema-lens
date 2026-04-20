@@ -8,7 +8,7 @@
     class="data-modeler"
     appFullscreen
     #fullscreenHost="appFullscreen"
-    [appBlockExit]="hasUnsavedPositions()"
+    [appBlockExit]="state.hasUnsavedPositions()"
   >
     <app-layout-content-with-sidebar [reverse]="true">
       <app-data-modeler-properties-host ngProjectAs="sidebar" [selection]="currentSelection()" />
@@ -27,7 +27,7 @@
             [diagramHost]="schemaDiagram.diagramHost()"
             [fullscreenHost]="fullscreenHost"
             [connectMode]="connectMode()"
-            [hasUnsavedPositions]="hasUnsavedPositions()"
+            [hasUnsavedPositions]="state.hasUnsavedPositions()"
             (connectModeChange)="connectMode.set($event)"
             (save)="savePositions()"
           />
@@ -39,7 +39,7 @@
               [patches$]="state.patches$"
               (connectNodes)="onConnectNodes($event)"
               (selectionChanged)="currentSelection.set($event)"
-              (diagramModified)="hasUnsavedPositions.set(true)"
+              (diagramModified)="state.markPositionsUnsaved()"
             />
 
             <div class="data-modeler__loading-overlay" [class.is-visible]="state.loading()">

@@ -5,7 +5,7 @@ import { DialogService } from '../../core/dialog.service';
 import { DataModelerComponent } from './data-modeler.component';
 
 export const dataModelerUnsavedGuard: CanDeactivateFn<DataModelerComponent> = (component): boolean | Observable<boolean> => {
-  if (!component.hasUnsavedPositions()) {
+  if (!component.state.hasUnsavedPositions()) {
     return true;
   }
 

@@ -6,6 +6,10 @@ import {
   DataModelerAddExistingNodeDialogComponent,
   DataModelerAddExistingNodeDialogData,
 } from './dialogs/data-modeler-add-existing-node-dialog/data-modeler-add-existing-node-dialog.component';
+import {
+  DataModelerDeleteNodeDialogComponent,
+  DataModelerDeleteNodeDialogResult,
+} from './dialogs/data-modeler-delete-node-dialog/data-modeler-delete-node-dialog.component';
 import { DataModelNode } from '../models/data-model-node.model';
 import { DataModelDialogService } from '../services/data-model-dialog.service';
 
@@ -30,8 +34,11 @@ export class DataModelerDialogService {
     this.dataModelDialogService.openCreationErrorDialog();
   }
 
-  openDeleteNodeConfirmation(): Observable<boolean | null> {
-    return this.dataModelDialogService.openDeleteNodeConfirmationDialog(); // TODO: custom dialog
+  openDeleteNodeConfirmation(): Observable<DataModelerDeleteNodeDialogResult | null> {
+    return this.matDialog
+      .open(DataModelerDeleteNodeDialogComponent)
+      .afterClosed()
+      .pipe(map(result => result ?? null));
   }
 
   openDeleteDiagramConfirmation(): Observable<boolean | null> {

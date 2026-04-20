@@ -94,4 +94,8 @@
       }
     }
   }
+
+  &__delete-node-form mat-checkbox:last-child {
+    margin-bottom: 0.5rem;
+  }
 }

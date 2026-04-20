@@ -19,12 +19,13 @@ export class DataModelerDiagramState {
 
   private _patches$ = new Subject<SchemaDiagramPatch>();
   private _loading = signal<boolean>(false);
+  private _hasUnsavedPositions = signal<boolean>(false);
 
   patches$ = this._patches$.asObservable();
   loading = this._loading.asReadonly();
+  hasUnsavedPositions = this._hasUnsavedPositions.asReadonly();
   diagramName = computed(() => this.store.activeDiagram()?.name ?? '');
 
-  private pendingNodeIds = new Set<number>();
   private visibleNodeIds = new Set<number>();
   private visibleEdgeIds = new Set<number>();
 
@@ -37,7 +38,7 @@ export class DataModelerDiagramState {
     }
 
     this._patches$.next({ type: 'diagram:clear' });
-    this.pendingNodeIds.clear();
+    this.clearUnsavedPositions();
     this.visibleNodeIds.clear();
     this.visibleEdgeIds.clear();
 
@@ -62,15 +63,7 @@ export class DataModelerDiagramState {
   }
 
   applyModification(modification: DataModelModification): void {
-    for (const nodeId of modification.deletedNodeIds) {
-      if (!this.visibleNodeIds.has(nodeId)) {
-        continue;
-      }
-
-      this.visibleNodeIds.delete(nodeId);
-      this.pendingNodeIds.delete(nodeId);
-      this._patches$.next({ type: 'node:remove', nodeId });
-    }
+    let diagramStructureChanged = false;
 
     for (const edgeId of modification.deletedEdgeIds) {
       if (!this.visibleEdgeIds.has(edgeId)) {
@@ -79,6 +72,17 @@ export class DataModelerDiagramState {
 
       this.visibleEdgeIds.delete(edgeId);
       this._patches$.next({ type: 'edge:remove', edgeId });
+      diagramStructureChanged = true;
+    }
+
+    for (const nodeId of modification.deletedNodeIds) {
+      if (!this.visibleNodeIds.has(nodeId)) {
+        continue;
+      }
+
+      this.visibleNodeIds.delete(nodeId);
+      this._patches$.next({ type: 'node:remove', nodeId });
+      diagramStructureChanged = true;
     }
 
     for (const node of modification.updatedNodes) {
@@ -97,23 +101,26 @@ export class DataModelerDiagramState {
       } else if (this.visibleNodeIds.has(edge.fromNodeId) && this.visibleNodeIds.has(edge.toNodeId)) {
         this.visibleEdgeIds.add(edge.edgeId);
         this._patches$.next({ type: 'edge:add', edge: this.mapper.edgeToDiagramEdge(edge) });
+        diagramStructureChanged = true;
       }
+    }
+
+    if (diagramStructureChanged) {
+      this.markPositionsUnsaved();
     }
   }
 
   addNodeToDiagram(node: DataModelNode): void {
     const nodeId = node.nodeId as number;
-    this.pendingNodeIds.add(nodeId);
     this.visibleNodeIds.add(nodeId);
     this._patches$.next({ type: 'node:add', node: this.resolveAndMapNode(node) });
     this.emitNewlyVisibleEdges(nodeId);
+    this.markPositionsUnsaved();
   }
 
   getAvailableNodes(): DataModelNode[] {
     const model = this.store.model() as DataModelDetails;
-    return model.nodes.filter(
-      n => n.nodeId !== null && !this.visibleNodeIds.has(n.nodeId) && !this.pendingNodeIds.has(n.nodeId),
-    );
+    return model.nodes.filter(n => n.nodeId !== null && !this.visibleNodeIds.has(n.nodeId));
   }
 
   savePositions(snapshot: SchemaDiagramPositionSnapshot): Observable<unknown> {
@@ -134,7 +141,11 @@ export class DataModelerDiagramState {
       })),
     };
 
-    return this.withLoading(this.store.updateDiagram(updatedDiagram).pipe(tap(() => this.pendingNodeIds.clear())));
+    return this.withLoading(
+      this.store.updateDiagram(updatedDiagram).pipe(
+        tap(() => this.clearUnsavedPositions()),
+      ),
+    );
   }
 
   updateDiagramName(name: string): Observable<unknown> {
@@ -145,6 +156,31 @@ export class DataModelerDiagramState {
   deleteDiagram(): Observable<boolean> {
     const diagram = this.store.activeDiagram() as LogicalModelDiagram;
     return this.withLoading(this.store.deleteDiagram(diagram.id as number));
+  }
+
+  removeNodeFromDiagram(nodeId: number): void {
+    const model = this.store.model() as DataModelDetails;
+
+    for (const edge of model.edges) {
+      const edgeId = edge.edgeId as number;
+
+      if ((edge.fromNodeId === nodeId || edge.toNodeId === nodeId) && this.visibleEdgeIds.has(edgeId)) {
+        this.visibleEdgeIds.delete(edgeId);
+        this._patches$.next({ type: 'edge:remove', edgeId });
+      }
+    }
+
+    this.visibleNodeIds.delete(nodeId);
+    this._patches$.next({ type: 'node:remove', nodeId });
+    this.markPositionsUnsaved();
+  }
+
+  markPositionsUnsaved(): void {
+    this._hasUnsavedPositions.set(true);
+  }
+
+  clearUnsavedPositions(): void {
+    this._hasUnsavedPositions.set(false);
   }
 
   withLoading<T>(observable: Observable<T>): Observable<T> {

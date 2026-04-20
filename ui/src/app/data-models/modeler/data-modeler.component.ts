@@ -70,7 +70,6 @@ export class DataModelerComponent {
   backLink = computed(() => '/model/' + this.dataModelId());
   currentSelection = signal<SchemaDiagramSelection | null>(null);
   connectMode = signal<boolean>(false);
-  hasUnsavedPositions = signal<boolean>(false);
 
   constructor() {
     const ids = computed(() => [this.dataModelId(), this.diagramId()] as const);
@@ -119,16 +118,26 @@ export class DataModelerComponent {
     }
 
     const nodeId = selection.node.id;
+
     this.dialogs.openDeleteNodeConfirmation().pipe(
-      filter(result => !!result),
-      switchMap(() =>
+      filter(result => result !== null),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(({ deleteFromModel }) => {
+      if (!deleteFromModel) {
+        this.state.removeNodeFromDiagram(nodeId);
+        return;
+      }
+
+      this.executeModelingOperation(() => {
         this.state.withLoading(this.store.deleteNode(nodeId)).pipe(
           tap(modification => this.state.applyModification(modification)),
-        ),
-      ),
-      catchError(() => { this.dialogs.openCreationErrorDialog(); return of(null); }),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe();
+          catchError(() => {
+            this.dialogs.openCreationErrorDialog(); // TODO: custom error
+            return of(null);
+          }),
+        ).subscribe();
+      });
+    });
   }
 
   savePositions(): void {
@@ -142,7 +151,7 @@ export class DataModelerComponent {
   private savePositionsInternal(callback?: () => void): void {
     const diagram = this.diagram();
 
-    if (!diagram || !this.hasUnsavedPositions()) {
+    if (!diagram || !this.state.hasUnsavedPositions()) {
       callback?.();
       return;
     }
@@ -157,12 +166,9 @@ export class DataModelerComponent {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(result => {
-        if (result === null) {
-          return;
+        if (result !== null) {
+          callback?.();
         }
-
-        this.hasUnsavedPositions.set(false);
-        callback?.();
       });
   }
 }
