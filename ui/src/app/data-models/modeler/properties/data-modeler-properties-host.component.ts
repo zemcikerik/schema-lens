@@ -18,7 +18,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { TrapClicksDirective } from '../../../core/directives/trap-clicks.directive';
 import { FocusLeftDirective } from '../../../core/directives/focus-left.directive';
-import { catchError, concat, of, switchMap } from 'rxjs';
+import { catchError, concat, filter, of, switchMap } from 'rxjs';
 import { DataModelerDiagramState } from '../data-modeler-diagram-state.service';
 import { DataModelerDialogService } from '../data-modeler-dialog.service';
 import { DataModelerEditorResolverService } from './data-modeler-editor-resolver.service';
@@ -119,12 +119,9 @@ export class DataModelerPropertiesHostComponent {
           this.dialogs.openCreationErrorDialog();
           return of(null);
         }),
+        filter(modification => modification !== null),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(modification => {
-        if (modification !== null) {
-          this.state.applyModification(modification);
-        }
-      });
+      .subscribe(modification => this.state.applyModification(modification));
   }
 }

@@ -35,22 +35,31 @@ class DataModelNodeFieldReorderServiceImpl(
             throw DataModelNodeFieldReorderRequestInvalidException(nodeId)
         }
 
+        val expectedEdgeFieldKeys = model.edges.asSequence()
+            .filter { it.toNodeId == nodeId }
+            .flatMap { edge -> edge.fields.asSequence().map { it.id } }
+            .toSet()
+
+        if (edgeRequestsByKey.keys != expectedEdgeFieldKeys) {
+            throw DataModelNodeFieldReorderRequestInvalidException(nodeId)
+        }
+
         node.fields.forEach { field ->
             field.position = positionByFieldId[field.id]!!
         }
 
         val affectedEdgesById = mutableMapOf<Long, DataModelEdge>()
 
-        dto.edgeFields.forEach { edgeFieldRequest ->
-            val edge = model.findEdge(edgeFieldRequest.edgeId)
+        edgeRequestsByKey.forEach { (edgeFieldId, edgeFieldRequest) ->
+            val edge = model.findEdge(edgeFieldId.edgeId)
 
-            val edgeField = edge.fields.firstOrNull {
-                it.id.referencedFieldId == edgeFieldRequest.referencedFieldId
-            } ?: throw DataModelNodeFieldReorderRequestInvalidException(nodeId)
-
-            if (edgeField.referencedField.nodeId != nodeId) {
+            if (edge.toNodeId != nodeId) {
                 throw DataModelNodeFieldReorderRequestInvalidException(nodeId)
             }
+
+            val edgeField = edge.fields.firstOrNull {
+                it.id == edgeFieldId
+            } ?: throw DataModelNodeFieldReorderRequestInvalidException(nodeId)
 
             edgeField.position = edgeFieldRequest.position
             affectedEdgesById[edge.id!!] = edge

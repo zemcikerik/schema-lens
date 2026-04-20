@@ -163,12 +163,9 @@ export class DataModelerComponent {
           this.dialogs.openSavePositionsErrorDialog();
           return of(null);
         }),
+        filter(result => result !== null),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(result => {
-        if (result !== null) {
-          callback?.();
-        }
-      });
+      .subscribe(() => callback?.());
   }
 }

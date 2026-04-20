@@ -93,12 +93,9 @@ export class DataModelerDiagramEditorComponent implements DataModelEditor {
           this.dialogs.openCreationErrorDialog();
           return of(null);
         }),
+        filter(result => result !== null),
         takeUntilDestroyed(),
       )
-      .subscribe(result => {
-        if (result !== null) {
-          this.router.navigate(['/model', this.store.dataModelId]);
-        }
-      });
+      .subscribe(() => this.router.navigate(['/model', this.store.dataModelId]));
   }
 }
