@@ -1,5 +1,5 @@
 <app-content-card
-  class="data-modeler__properties"
+  class="data-modeler__properties-host"
   [background]="'dim'"
   [cdkTrapFocus]="formInvalid()"
   [appTrapClicks]="formInvalid()"
@@ -9,10 +9,12 @@
   (focusLeft)="saveChanges()"
 >
   <app-layout-header-and-content
-    [title]="title()"
+    [title]="(titleKey() | translate)()"
     [titleLevel]="'low'"
     [fullHeight]="true"
   >
-    <ng-container #editorTarget/>
+    <div class="data-modeler__properties-wrapper">
+      <ng-container #editorTarget/>
+    </div>
   </app-layout-header-and-content>
 </app-content-card>

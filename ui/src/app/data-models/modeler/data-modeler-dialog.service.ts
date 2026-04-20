@@ -31,17 +31,13 @@ export class DataModelerDialogService {
   }
 
   openDeleteNodeConfirmation(): Observable<boolean | null> {
-    return this.dialogService.openConfirmationDialog(
-      'Delete Node',
-      'Are you sure you want to delete this node? This will remove it from the data model.',
-      'danger',
-    );
+    return this.dataModelDialogService.openDeleteNodeConfirmationDialog(); // TODO: custom dialog
   }
 
   openDeleteDiagramConfirmation(): Observable<boolean | null> {
     return this.dialogService.openConfirmationDialog(
-      'Delete Diagram',
-      'Are you sure you want to delete this diagram?',
+      'DATA_MODEL.MODELER.DIALOGS.DELETE_DIAGRAM.TITLE',
+      'DATA_MODEL.MODELER.DIALOGS.DELETE_DIAGRAM.DESCRIPTION',
       'danger',
     );
   }

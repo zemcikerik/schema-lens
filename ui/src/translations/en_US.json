@@ -372,6 +372,80 @@
           "FROM_EDGE": "From relationship"
         }
       }
+    },
+    "EDGE": {
+      "PROPERTIES_LABEL": "Properties",
+      "LOGICAL": {
+        "TYPE_LABEL": "Relationship Type",
+        "TYPE_ONE_TO_ONE": "1:1 (One to One)",
+        "TYPE_ONE_TO_MANY": "1:N (One to Many)",
+        "IDENTIFYING_LABEL": "Identifying",
+        "MANDATORY_LABEL": "Mandatory"
+      },
+      "PHYSICAL": {
+        "TYPE_LABEL": "Relationship Type",
+        "TYPE_ONE_TO_ONE": "1:1 (One to One)",
+        "TYPE_ONE_TO_MANY": "1:N (One to Many)",
+        "IDENTIFYING_LABEL": "Identifying",
+        "MANDATORY_LABEL": "Mandatory"
+      }
+    },
+    "MODELER": {
+      "ACTIONS": {
+        "LOGICAL": {
+          "ADD_NODE_TOOLTIP": "Add entity",
+          "ADD_EXISTING_NODE_LABEL": "Add Existing Entity",
+          "CONNECT_NODES_TOOLTIP": "Create relationship"
+        },
+        "PHYSICAL": {
+          "ADD_NODE_TOOLTIP": "Add table",
+          "ADD_EXISTING_NODE_LABEL": "Add Existing Table",
+          "CONNECT_NODES_TOOLTIP": "Create relationship"
+        },
+        "VERIFY_TOOLTIP": "Verify"
+      },
+      "DIALOGS": {
+        "ADD_EXISTING_NODE": {
+          "LOGICAL": {
+            "TITLE": "Add Existing Entity",
+            "EMPTY_LABEL": "No available entities to add."
+          },
+          "PHYSICAL": {
+            "TITLE": "Add Existing Table",
+            "EMPTY_LABEL": "No available tables to add."
+          }
+        },
+        "DELETE_DIAGRAM": {
+          "TITLE": "Delete Diagram",
+          "DESCRIPTION": "Are you sure you want to delete this diagram?"
+        },
+        "UNSAVED_CHANGES": {
+          "TITLE": "Unsaved Changes",
+          "DESCRIPTION": "You have unsaved layout changes. Are you sure you want to leave?"
+        },
+        "INVALID_PROPERTIES": {
+          "TITLE": "Invalid Properties",
+          "DESCRIPTION": "Please fix validation errors before continuing."
+        }
+      },
+      "PROPERTIES": {
+        "LOGICAL": {
+          "DIAGRAM_TITLE": "Diagram",
+          "NODE_TITLE": "Entity",
+          "EDGE_TITLE": "Relationship"
+        },
+        "PHYSICAL": {
+          "DIAGRAM_TITLE": "Diagram",
+          "NODE_TITLE": "Table",
+          "EDGE_TITLE": "Relationship"
+        }
+      },
+      "DIAGRAM": {
+        "PROPERTIES_LABEL": "Properties",
+        "NAME_LABEL": "Name",
+        "DANGER_ZONE_LABEL": "Danger Zone",
+        "DELETE_LABEL": "Delete Diagram"
+      }
     }
   }
 }

@@ -24,6 +24,7 @@ import { DataModelerDiagramState } from '../data-modeler-diagram-state.service';
 import { DataModelerDialogService } from '../data-modeler-dialog.service';
 import { DataModelerEditorResolverService } from './data-modeler-editor-resolver.service';
 import { DataModelEditor } from '../../components/data-model-editor/data-model-editor.component';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
 // TODO: support nested dropdowns / overlays / dialogs
 
@@ -37,6 +38,7 @@ import { DataModelEditor } from '../../components/data-model-editor/data-model-e
     CdkTrapFocus,
     TrapClicksDirective,
     FocusLeftDirective,
+    TranslatePipe,
   ],
 })
 export class DataModelerPropertiesHostComponent {
@@ -53,7 +55,7 @@ export class DataModelerPropertiesHostComponent {
   formInvalid = signal<boolean>(false);
 
   private editorKind = computed(() => this.editorResolver.editorKind(this.selection()));
-  title = computed(() => this.editorResolver.editorTitle(this.selection()));
+  titleKey = computed(() => this.editorResolver.editorTitleKey(this.selection()));
 
   constructor() {
     this.recreateEditorOnKindChange();
@@ -101,7 +103,10 @@ export class DataModelerPropertiesHostComponent {
 
   notifyUserOfInvalidForm(): void {
     this.currentRef()?.instance.form?.markAllAsTouched();
-    this.dialogService.openTextDialog('Invalid Properties', 'Please fix validation errors before continuing.');
+    this.dialogService.openTextDialog( // TODO: move to modeler dialog service
+      'DATA_MODEL.MODELER.DIALOGS.INVALID_PROPERTIES.TITLE',
+      'DATA_MODEL.MODELER.DIALOGS.INVALID_PROPERTIES.DESCRIPTION',
+    );
   }
 
   saveChanges(): void {

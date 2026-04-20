@@ -57,33 +57,22 @@
     }
   }
 
-  &__properties {
+  &__properties-host {
     display: block;
-    height: 100%;
     margin-right: 1rem;
+    height: 100%;
+  }
 
-    mat-form-field {
-      margin-top: 0.5rem;
-      width: 100%;
-    }
+  &__properties-wrapper {
+    height: 100%;
+    overflow-y: auto;
+  }
 
-    mat-checkbox {
-      padding-bottom: 0.5rem;
-    }
-
-    &__checkbox-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.25rem;
-      margin-top: 1rem;
-    }
-
-    &__spread {
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      height: 100%;
-    }
+  &__diagram-editor {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
 
     &__danger-zone {
       padding: 1rem;

@@ -10,12 +10,25 @@ import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DataModelStore } from '../../data-model.store';
+import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
+import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
 @Component({
   selector: 'app-data-model-edge-editor',
   templateUrl: './data-model-edge-editor.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [MatCheckbox, MatFormField, MatLabel, MatOption, MatSelect, ReactiveFormsModule],
+  imports: [
+    MatCheckbox,
+    MatFormField,
+    MatLabel,
+    MatOption,
+    MatSelect,
+    ReactiveFormsModule,
+    DataModelingTranslatePipe,
+    SectionHeaderComponent,
+    TranslatePipe,
+  ],
 })
 export class DataModelEdgeEditorComponent implements DataModelEditor {
   edge = input.required<DataModelEdge>();
@@ -66,8 +79,6 @@ export class DataModelEdgeEditorComponent implements DataModelEditor {
     const { type, isMandatory, isIdentifying } = this.form.getRawValue();
     const updated: DataModelEdge = { ...this.edge(), type, isMandatory, isIdentifying };
 
-    return this.store
-      .updateEdge(updated)
-      .pipe(tap(() => (this.edgeModified = false)));
+    return this.store.updateEdge(updated).pipe(tap(() => (this.edgeModified = false)));
   }
 }

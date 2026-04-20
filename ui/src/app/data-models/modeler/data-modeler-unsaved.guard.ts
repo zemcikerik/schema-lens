@@ -11,8 +11,8 @@ export const dataModelerUnsavedGuard: CanDeactivateFn<DataModelerComponent> = (c
 
   return inject(DialogService)
     .openConfirmationDialog(
-      'Unsaved Changes',
-      'You have unsaved layout changes. Are you sure you want to leave?',
+      'DATA_MODEL.MODELER.DIALOGS.UNSAVED_CHANGES.TITLE',
+      'DATA_MODEL.MODELER.DIALOGS.UNSAVED_CHANGES.DESCRIPTION',
       'danger',
     )
     .pipe(map(result => !!result));

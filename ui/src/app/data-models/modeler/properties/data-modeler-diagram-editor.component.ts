@@ -11,21 +11,34 @@ import { DataModelEditor } from '../../components/data-model-editor/data-model-e
 import { DataModelModification } from '../../models/data-model.model';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { dataModelDiagramNameValidators } from '../../validators/data-model-name.validators';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
+import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 
 @Component({
   selector: 'app-data-modeler-diagram-editor',
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <form [formGroup]="form">
-      <mat-form-field class="w-100">
-        <mat-label>Diagram Name</mat-label>
-        <input matInput required formControlName="name" />
-      </mat-form-field>
-    </form>
+    <form class="data-modeler__diagram-editor" [formGroup]="form">
+      <div>
+        <app-section-header [title]="('DATA_MODEL.MODELER.DIAGRAM.PROPERTIES_LABEL' | translate)()" />
+        
+        <mat-form-field class="w-100">
+          <mat-label>{{ ('DATA_MODEL.MODELER.DIAGRAM.NAME_LABEL' | translate)() }}</mat-label>
+          <input matInput required formControlName="name" />
+        </mat-form-field>
+      </div>
 
-    <button mat-stroked-button color="warn" (click)="delete()">Delete Diagram</button>
+      <div class="data-modeler__diagram-editor__danger-zone">
+        <h4 class="data-modeler__diagram-editor__danger-zone__title">
+          {{ ('DATA_MODEL.MODELER.DIAGRAM.DANGER_ZONE_LABEL' | translate)() }}
+        </h4>
+        <button mat-stroked-button (click)="delete()">
+          {{ ('DATA_MODEL.MODELER.DIAGRAM.DELETE_LABEL' | translate)() }}
+        </button>
+      </div>
+    </form>
   `,
-  imports: [ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton],
+  imports: [ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, TranslatePipe, SectionHeaderComponent],
 })
 export class DataModelerDiagramEditorComponent implements DataModelEditor {
   private store = inject(DataModelStore);
@@ -61,24 +74,31 @@ export class DataModelerDiagramEditorComponent implements DataModelEditor {
     }
 
     this.modified = false;
-    return this.state.updateDiagramName(this.form.getRawValue().name).pipe(
-      map(() => ({ updatedNodes: [], updatedEdges: [], deletedNodeIds: [], deletedEdgeIds: [] }) satisfies DataModelModification),
-    );
+    return this.state
+      .updateDiagramName(this.form.getRawValue().name)
+      .pipe(
+        map(
+          () => ({ updatedNodes: [], updatedEdges: [], deletedNodeIds: [], deletedEdgeIds: [] }) satisfies DataModelModification,
+        ),
+      );
   }
 
   delete(): void {
-    this.dialogs.openDeleteDiagramConfirmation().pipe(
-      filter(result => !!result),
-      switchMap(() => this.state.deleteDiagram()),
-      catchError(() => {
-        this.dialogs.openCreationErrorDialog();
-        return of(null);
-      }),
-      takeUntilDestroyed(),
-    ).subscribe(result => {
-      if (result !== null) {
-        this.router.navigate(['/model', this.store.dataModelId]);
-      }
-    });
+    this.dialogs
+      .openDeleteDiagramConfirmation()
+      .pipe(
+        filter(result => !!result),
+        switchMap(() => this.state.deleteDiagram()),
+        catchError(() => {
+          this.dialogs.openCreationErrorDialog();
+          return of(null);
+        }),
+        takeUntilDestroyed(),
+      )
+      .subscribe(result => {
+        if (result !== null) {
+          this.router.navigate(['/model', this.store.dataModelId]);
+        }
+      });
   }
 }

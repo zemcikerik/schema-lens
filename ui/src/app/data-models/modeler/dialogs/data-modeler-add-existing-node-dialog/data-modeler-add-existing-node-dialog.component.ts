@@ -4,6 +4,8 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatD
 import { MatButton } from '@angular/material/button';
 import { MatListItem, MatNavList } from '@angular/material/list';
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
+import { DataModelingTranslatePipe } from '../../../data-modeling-translate.pipe';
+import { TranslatePipe } from '../../../../core/translate/translate.pipe';
 
 export interface DataModelerAddExistingNodeDialogData {
   nodes: DataModelNode[];
@@ -12,11 +14,11 @@ export interface DataModelerAddExistingNodeDialogData {
 @Component({
   selector: 'app-data-modeler-add-existing-node-dialog',
   template: `
-    <h2 mat-dialog-title>Add Existing Node</h2>
+    <h2 mat-dialog-title>{{ ('DATA_MODEL.MODELER.DIALOGS.ADD_EXISTING_NODE.$layer.TITLE' | dataModelingTranslate)() }}</h2>
 
     <mat-dialog-content>
       @if (data.nodes.length === 0) {
-        <app-alert>No available nodes to add.</app-alert>
+        <app-alert>{{ ('DATA_MODEL.MODELER.DIALOGS.ADD_EXISTING_NODE.$layer.EMPTY_LABEL' | dataModelingTranslate)() }}</app-alert>
       } @else {
         <mat-nav-list>
           @for (node of data.nodes; track node.nodeId) {
@@ -27,7 +29,7 @@ export interface DataModelerAddExistingNodeDialogData {
     </mat-dialog-content>
 
     <mat-dialog-actions align="end">
-      <button mat-button (click)="cancel()">Cancel</button>
+      <button mat-button (click)="cancel()">{{ ('GENERIC.CANCEL_LABEL' | translate)() }}</button>
     </mat-dialog-actions>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -39,6 +41,8 @@ export interface DataModelerAddExistingNodeDialogData {
     MatNavList,
     MatListItem,
     AlertComponent,
+    DataModelingTranslatePipe,
+    TranslatePipe,
   ],
 })
 export class DataModelerAddExistingNodeDialogComponent {

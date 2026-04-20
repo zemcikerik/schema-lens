@@ -8,6 +8,7 @@ import { catchError, filter, of, switchMap, tap } from 'rxjs';
 import { DataModelerDiagramState } from '../data-modeler-diagram-state.service';
 import { DataModelerDialogService } from '../data-modeler-dialog.service';
 import { DataModelStore } from '../../data-model.store';
+import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 
 @Component({
   selector: 'app-data-modeler-add-action',
@@ -15,7 +16,7 @@ import { DataModelStore } from '../../data-model.store';
   template: `
     <button
       mat-icon-button
-      matTooltip="Add Node"
+      [matTooltip]="('DATA_MODEL.MODELER.ACTIONS.$layer.ADD_NODE_TOOLTIP' | dataModelingTranslate)()"
       [matMenuTriggerFor]="addMenu"
     >
       <mat-icon>add_box</mat-icon>
@@ -23,14 +24,16 @@ import { DataModelStore } from '../../data-model.store';
 
     <mat-menu #addMenu>
       <button mat-menu-item (click)="createNode()">
-        <mat-icon>add_circle</mat-icon> Create New Node
+        <mat-icon>add_circle</mat-icon>
+        {{ ('DATA_MODEL.NODE.$layer.CREATE_TITLE' | dataModelingTranslate)() }}
       </button>
       <button mat-menu-item (click)="addExistingNode()">
-        <mat-icon>folder_open</mat-icon> Add Existing Node
+        <mat-icon>folder_open</mat-icon>
+        {{ ('DATA_MODEL.MODELER.ACTIONS.$layer.ADD_EXISTING_NODE_LABEL' | dataModelingTranslate)() }}
       </button>
     </mat-menu>
   `,
-  imports: [MatIconButton, MatIcon, MatMenu, MatMenuItem, MatMenuTrigger, MatTooltip],
+  imports: [MatIconButton, MatIcon, MatMenu, MatMenuItem, MatMenuTrigger, MatTooltip, DataModelingTranslatePipe],
 })
 export class DataModelerAddActionComponent {
   private state = inject(DataModelerDiagramState);
