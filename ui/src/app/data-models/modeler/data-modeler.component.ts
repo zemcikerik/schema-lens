@@ -113,12 +113,18 @@ export class DataModelerComponent {
   onDeletePressed(): void {
     const selection = this.currentSelection();
 
-    if (selection?.type !== 'node') {
+    if (!selection) {
       return;
     }
 
-    const nodeId = selection.node.id;
+    if (selection.type === 'node') {
+      this.deleteNode(selection.node.id);
+    } else {
+      this.deleteEdge(selection.edge.id);
+    }
+  }
 
+  private deleteNode(nodeId: number): void {
     this.dialogs.openDeleteNodeConfirmation().pipe(
       filter(result => result !== null),
       takeUntilDestroyed(this.destroyRef),
@@ -133,6 +139,23 @@ export class DataModelerComponent {
           tap(modification => this.state.applyModification(modification)),
           catchError(() => {
             this.dialogs.openDeleteNodeErrorDialog();
+            return of(null);
+          }),
+        ).subscribe();
+      });
+    });
+  }
+
+  private deleteEdge(edgeId: number): void {
+    this.dialogs.openDeleteEdgeConfirmation().pipe(
+      filter(result => result === true),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe(() => {
+      this.executeModelingOperation(() => {
+        this.state.withLoading(this.store.deleteEdge(edgeId)).pipe(
+          tap(modification => this.state.applyModification(modification)),
+          catchError(() => {
+            this.dialogs.openDeleteEdgeErrorDialog();
             return of(null);
           }),
         ).subscribe();

@@ -50,6 +50,13 @@ export class DataModelerDialogService {
     );
   }
 
+  openDeleteEdgeErrorDialog(): void {
+    this.dialogService.openErrorDialog(
+      this.keyResolver.resolveKey('DATA_MODEL.MODELER.DIALOGS.DELETE_EDGE.$layer.ERROR_TITLE'),
+      'GENERIC.ERROR_LABEL',
+    );
+  }
+
   openSavePositionsErrorDialog(): void {
     this.dialogService.openErrorDialog(
       'DATA_MODEL.MODELER.DIALOGS.SAVE_POSITIONS.ERROR_TITLE',
@@ -68,6 +75,14 @@ export class DataModelerDialogService {
     return this.dialogService.openConfirmationDialog(
       'DATA_MODEL.MODELER.DIALOGS.DELETE_DIAGRAM.TITLE',
       'DATA_MODEL.MODELER.DIALOGS.DELETE_DIAGRAM.DESCRIPTION',
+      'danger',
+    );
+  }
+
+  openDeleteEdgeConfirmation(): Observable<boolean | null> {
+    return this.dialogService.openConfirmationDialog(
+      this.keyResolver.resolveKey('DATA_MODEL.MODELER.DIALOGS.DELETE_EDGE.$layer.TITLE'),
+      this.keyResolver.resolveKey('DATA_MODEL.MODELER.DIALOGS.DELETE_EDGE.$layer.DESCRIPTION'),
       'danger',
     );
   }

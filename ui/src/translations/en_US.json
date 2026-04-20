@@ -429,6 +429,18 @@
             "ERROR_TITLE": "Delete Table Error"
           }
         },
+        "DELETE_EDGE": {
+          "LOGICAL": {
+            "TITLE": "Delete Relationship",
+            "DESCRIPTION": "Are you sure you want to permanently delete this relationship from the data model?",
+            "ERROR_TITLE": "Delete Relationship Error"
+          },
+          "PHYSICAL": {
+            "TITLE": "Delete Relationship",
+            "DESCRIPTION": "Are you sure you want to permanently delete this relationship from the data model?",
+            "ERROR_TITLE": "Delete Relationship Error"
+          }
+        },
         "SAVE_POSITIONS": {
           "ERROR_TITLE": "Save Layout Error"
         },
