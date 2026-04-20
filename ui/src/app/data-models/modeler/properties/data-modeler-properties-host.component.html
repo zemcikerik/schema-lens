@@ -4,7 +4,7 @@
   [cdkTrapFocus]="formInvalid()"
   [appTrapClicks]="formInvalid()"
   appFocusLeft
-  [allowOverlayFocus]="false"
+  [allowOverlayFocus]="true"
   (clickTrapped)="notifyUserOfInvalidForm()"
   (focusLeft)="saveChanges()"
 >

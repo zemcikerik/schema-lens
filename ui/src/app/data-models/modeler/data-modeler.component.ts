@@ -132,7 +132,7 @@ export class DataModelerComponent {
         this.state.withLoading(this.store.deleteNode(nodeId)).pipe(
           tap(modification => this.state.applyModification(modification)),
           catchError(() => {
-            this.dialogs.openCreationErrorDialog(); // TODO: custom error
+            this.dialogs.openDeleteNodeErrorDialog();
             return of(null);
           }),
         ).subscribe();
@@ -160,7 +160,7 @@ export class DataModelerComponent {
       .savePositions(diagram.snapshotDiagramPositions())
       .pipe(
         catchError(() => {
-          this.dialogs.openCreationErrorDialog(); // TODO: custom error
+          this.dialogs.openSavePositionsErrorDialog();
           return of(null);
         }),
         takeUntilDestroyed(this.destroyRef),

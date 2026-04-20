@@ -415,6 +415,23 @@
             "EMPTY_LABEL": "No available tables to add."
           }
         },
+        "DELETE_NODE": {
+          "LOGICAL": {
+            "TITLE": "Remove Entity from Diagram",
+            "DESCRIPTION": "The entity will be removed from this diagram. It will remain available in the data model and can be added to other diagrams.",
+            "DELETE_FROM_MODEL_LABEL": "Permanently delete this entity from the data model (removes all of its attributes and relationships)",
+            "ERROR_TITLE": "Delete Entity Error"
+          },
+          "PHYSICAL": {
+            "TITLE": "Remove Table from Diagram",
+            "DESCRIPTION": "The table will be removed from this diagram. It will remain available in the data model and can be added to other diagrams.",
+            "DELETE_FROM_MODEL_LABEL": "Permanently delete this table from the data model (removes all of its columns and relationships)",
+            "ERROR_TITLE": "Delete Table Error"
+          }
+        },
+        "SAVE_POSITIONS": {
+          "ERROR_TITLE": "Save Layout Error"
+        },
         "DELETE_DIAGRAM": {
           "TITLE": "Delete Diagram",
           "DESCRIPTION": "Are you sure you want to delete this diagram?"

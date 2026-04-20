@@ -19,14 +19,11 @@ import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { TrapClicksDirective } from '../../../core/directives/trap-clicks.directive';
 import { FocusLeftDirective } from '../../../core/directives/focus-left.directive';
 import { catchError, concat, of, switchMap } from 'rxjs';
-import { DialogService } from '../../../core/dialog.service';
 import { DataModelerDiagramState } from '../data-modeler-diagram-state.service';
 import { DataModelerDialogService } from '../data-modeler-dialog.service';
 import { DataModelerEditorResolverService } from './data-modeler-editor-resolver.service';
 import { DataModelEditor } from '../../components/data-model-editor/data-model-editor.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
-
-// TODO: support nested dropdowns / overlays / dialogs
 
 @Component({
   selector: 'app-data-modeler-properties-host',
@@ -42,7 +39,6 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
   ],
 })
 export class DataModelerPropertiesHostComponent {
-  private dialogService = inject(DialogService);
   private dialogs = inject(DataModelerDialogService);
   private state = inject(DataModelerDiagramState);
   private editorResolver = inject(DataModelerEditorResolverService);
@@ -103,10 +99,7 @@ export class DataModelerPropertiesHostComponent {
 
   notifyUserOfInvalidForm(): void {
     this.currentRef()?.instance.form?.markAllAsTouched();
-    this.dialogService.openTextDialog( // TODO: move to modeler dialog service
-      'DATA_MODEL.MODELER.DIALOGS.INVALID_PROPERTIES.TITLE',
-      'DATA_MODEL.MODELER.DIALOGS.INVALID_PROPERTIES.DESCRIPTION',
-    );
+    this.dialogs.openInvalidPropertiesDialog();
   }
 
   saveChanges(): void {
