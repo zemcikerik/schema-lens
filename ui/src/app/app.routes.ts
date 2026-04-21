@@ -96,6 +96,7 @@ export const appRoutes: Route[] = [
     path: 'modeler/:dataModelId/logical/:diagramId',
     loadComponent: () =>
       import('./data-models/modeler/data-modeler.component').then(c => c.DataModelerComponent),
+    canActivate: [authGuard],
     canDeactivate: [dataModelerUnsavedGuard],
     data: { dataModelingContext: 'logical' },
   },
