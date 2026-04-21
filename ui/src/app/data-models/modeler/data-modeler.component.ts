@@ -25,7 +25,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { catchError, filter, of, switchMap, tap } from 'rxjs';
+import { catchError, filter, mergeMap, of, switchMap, tap } from 'rxjs';
 import { AlertComponent } from '../../shared/components/alert/alert.component';
 import { DataModelerDiagramState } from './data-modeler-diagram-state.service';
 import { DataModelStore } from '../data-model.store';
@@ -78,36 +78,38 @@ export class DataModelerComponent {
     toObservable(ids)
       .pipe(
         switchMap(([dataModelId, diagramId]) =>
-          this.store.loadModel(+dataModelId).pipe(switchMap(() => this.store.loadDiagram(+diagramId))),
+          this.store.loadModel(+dataModelId)
+            .pipe(switchMap(() => this.store.loadDiagram(+diagramId))),
         ),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() => afterNextRender({ mixedReadWrite: () => this.state.initDiagram() }, { injector: this.injector }));
+      .subscribe(diagram =>
+        afterNextRender({ mixedReadWrite: () => this.state.initDiagram(diagram) }, { injector: this.injector }),
+      );
   }
 
   onConnectNodes({ from, to }: SchemaDiagramConnectNodes): void {
     this.connectMode.set(false);
-    this.executeModelingOperation(() => {
-      const edge: DataModelEdge = {
-        edgeId: null,
-        modelId: this.store.dataModelId,
-        fromNodeId: from.id,
-        toNodeId: to.id,
-        type: '1:N',
-        isMandatory: false,
-        isIdentifying: false,
-        fields: [],
-      };
 
-      this.state.withLoading(this.store.createEdge(edge)).pipe(
-        tap(modification => this.state.applyModification(modification)),
-        catchError(() => {
-          this.dialogs.openCreationErrorDialog();
-          return of(null);
-        }),
-        takeUntilDestroyed(this.destroyRef),
-      ).subscribe();
-    });
+    const edge: DataModelEdge = {
+      edgeId: null,
+      modelId: this.store.dataModelId,
+      fromNodeId: from.id,
+      toNodeId: to.id,
+      type: '1:N',
+      isMandatory: false,
+      isIdentifying: false,
+      fields: [],
+    };
+
+    this.state.withLoading(this.store.createEdge(edge)).pipe(
+      tap(modification => this.state.applyModification(modification)),
+      catchError(() => {
+        this.dialogs.openCreationErrorDialog();
+        return of(null);
+      }),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe();
   }
 
   onDeletePressed(): void {
@@ -127,55 +129,44 @@ export class DataModelerComponent {
   private deleteNode(nodeId: number): void {
     this.dialogs.openDeleteNodeConfirmation().pipe(
       filter(result => result !== null),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe(({ deleteFromModel }) => {
-      if (!deleteFromModel) {
-        this.state.removeNodeFromDiagram(nodeId);
-        return;
-      }
+      mergeMap(({ deleteFromModel }) => {
+        if (!deleteFromModel) {
+          this.state.removeNodeFromDiagram(nodeId);
+          return of(null);
+        }
 
-      this.executeModelingOperation(() => {
-        this.state.withLoading(this.store.deleteNode(nodeId)).pipe(
+        return this.state.withLoading(this.store.deleteNode(nodeId)).pipe(
           tap(modification => this.state.applyModification(modification)),
           catchError(() => {
             this.dialogs.openDeleteNodeErrorDialog();
             return of(null);
           }),
-        ).subscribe();
-      });
-    });
+        );
+      }),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe();
   }
 
   private deleteEdge(edgeId: number): void {
     this.dialogs.openDeleteEdgeConfirmation().pipe(
       filter(result => result === true),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe(() => {
-      this.executeModelingOperation(() => {
+      mergeMap(() =>
         this.state.withLoading(this.store.deleteEdge(edgeId)).pipe(
           tap(modification => this.state.applyModification(modification)),
           catchError(() => {
             this.dialogs.openDeleteEdgeErrorDialog();
             return of(null);
           }),
-        ).subscribe();
-      });
-    });
+        ),
+      ),
+      takeUntilDestroyed(this.destroyRef),
+    ).subscribe();
   }
 
   savePositions(): void {
-    this.savePositionsInternal();
-  }
-
-  private executeModelingOperation(operation: () => void): void {
-    this.savePositionsInternal(operation);
-  }
-
-  private savePositionsInternal(callback?: () => void): void {
     const diagram = this.diagram();
 
     if (!diagram || !this.state.hasUnsavedPositions()) {
-      callback?.();
       return;
     }
 
@@ -189,6 +180,6 @@ export class DataModelerComponent {
         filter(result => result !== null),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(() => callback?.());
+      .subscribe();
   }
 }

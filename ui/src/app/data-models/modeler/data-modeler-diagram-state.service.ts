@@ -20,20 +20,22 @@ export class DataModelerDiagramState {
   private _patches$ = new Subject<SchemaDiagramPatch>();
   private _loading = signal<boolean>(false);
   private _hasUnsavedPositions = signal<boolean>(false);
+  private _activeDiagram = signal<LogicalModelDiagram | null>(null);
 
   patches$ = this._patches$.asObservable();
   loading = this._loading.asReadonly();
   hasUnsavedPositions = this._hasUnsavedPositions.asReadonly();
-  diagramName = computed(() => this.store.activeDiagram()?.name ?? '');
+  activeDiagram = this._activeDiagram.asReadonly();
+  diagramName = computed(() => this._activeDiagram()?.name ?? '');
 
   private visibleNodeIds = new Set<number>();
   private visibleEdgeIds = new Set<number>();
 
-  initDiagram(): void {
+  initDiagram(diagram: LogicalModelDiagram): void {
     const model = this.store.model();
-    const diagram = this.store.activeDiagram();
+    this._activeDiagram.set(diagram);
 
-    if (!model || !diagram) {
+    if (!model) {
       throw new Error('Cannot initialize modeler without active model and diagram');
     }
 
@@ -124,7 +126,7 @@ export class DataModelerDiagramState {
   }
 
   savePositions(snapshot: SchemaDiagramPositionSnapshot): Observable<unknown> {
-    const diagram = this.store.activeDiagram() as LogicalModelDiagram;
+    const diagram = this.activeDiagram() as LogicalModelDiagram;
 
     const updatedDiagram: LogicalModelDiagram = {
       ...diagram,
@@ -143,19 +145,32 @@ export class DataModelerDiagramState {
 
     return this.withLoading(
       this.store.updateDiagram(updatedDiagram).pipe(
-        tap(() => this.clearUnsavedPositions()),
+        tap(updated => {
+          this._activeDiagram.set(updated as LogicalModelDiagram);
+          this.clearUnsavedPositions();
+        }),
       ),
     );
   }
 
   updateDiagramName(name: string): Observable<unknown> {
-    const diagram = this.store.activeDiagram() as LogicalModelDiagram;
-    return this.withLoading(this.store.updateDiagram({ ...diagram, name }));
+    const diagram = this.activeDiagram() as LogicalModelDiagram;
+
+    return this.withLoading(
+      this.store.updateDiagram({ ...diagram, name }).pipe(
+        tap(updated => this._activeDiagram.set(updated as LogicalModelDiagram)),
+      ),
+    );
   }
 
   deleteDiagram(): Observable<boolean> {
-    const diagram = this.store.activeDiagram() as LogicalModelDiagram;
-    return this.withLoading(this.store.deleteDiagram(diagram.id as number));
+    const diagram = this.activeDiagram() as LogicalModelDiagram;
+
+    return this.withLoading(
+      this.store.deleteDiagram(diagram.id as number).pipe(
+        tap(() => this._activeDiagram.set(null)),
+      ),
+    );
   }
 
   removeNodeFromDiagram(nodeId: number): void {

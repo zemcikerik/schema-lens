@@ -4,7 +4,7 @@ import { DataModelDetails, DataModelModification } from './models/data-model.mod
 import { DataModelEdge } from './models/data-model-edge.model';
 import { DataModelFieldReorderRequest, DataModelNode, DataModelNodeSummary } from './models/data-model-node.model';
 import { DataModelDataType } from './models/data-model-data-type.model';
-import { DataModelDiagram, LogicalModelDiagram } from './models/data-model-diagram.model';
+import { DataModelDiagram } from './models/data-model-diagram.model';
 import { DataModelDetailsService } from './services/data-model-details.service';
 import { DataModelNodeService } from './services/data-model-node.service';
 import { DataModelEdgeService } from './services/data-model-edge.service';
@@ -24,8 +24,6 @@ export class DataModelStore {
   private _model = signal<DataModelDetails | null>(null);
   private _loading = signal<boolean>(false);
   private _error = signal<unknown>(null);
-  private _activeDiagramId = signal<number | null>(null);
-  private _loadedDiagramIds = new Set<number>();
 
   readonly model = this._model.asReadonly();
   readonly loading = this._loading.asReadonly();
@@ -36,10 +34,6 @@ export class DataModelStore {
   readonly dataTypes = computed(() => this._model()?.dataTypes ?? []);
   readonly diagrams = computed(() => this._model()?.diagrams ?? []);
 
-  readonly activeDiagram = computed<LogicalModelDiagram | null>(
-    () => (this.diagrams().find(d => d.id === this._activeDiagramId()) ?? null) as LogicalModelDiagram | null,
-  );
-
   loadModel(dataModelId: number): Observable<DataModelDetails | null> {
     return defer(() => {
       if (this.dataModelId === dataModelId) {
@@ -49,8 +43,6 @@ export class DataModelStore {
       this._model.set(null);
       this._loading.set(true);
       this._error.set(null);
-      this._activeDiagramId.set(null);
-      this._loadedDiagramIds.clear();
 
       return this.dataModelDetailsService.getDataModelDetails(dataModelId).pipe(
         tap({
@@ -65,31 +57,8 @@ export class DataModelStore {
     });
   }
 
-  loadDiagram(diagramId: number): Observable<unknown> {
-    return defer(() => {
-      this._activeDiagramId.set(diagramId);
-
-      if (this._loadedDiagramIds.has(diagramId)) {
-        return of(null);
-      }
-
-      this._loading.set(true);
-      this._error.set(null);
-
-      return this.diagramService.getDiagram(this.dataModelId, diagramId).pipe(
-        tap({
-          next: diagram => {
-            this._loadedDiagramIds.add(diagramId);
-            this._model.update(m => m && {
-              ...m,
-              diagrams: m.diagrams.map(d => (d.id === diagram.id ? diagram : d)),
-            });
-          },
-          error: err => this._error.set(err),
-        }),
-        finalize(() => this._loading.set(false)),
-      );
-    });
+  loadDiagram(diagramId: number): Observable<DataModelDiagram> {
+    return this.diagramService.getDiagram(this.dataModelId, diagramId);
   }
 
   createNode(node: DataModelNodeSummary): Observable<DataModelModification> {

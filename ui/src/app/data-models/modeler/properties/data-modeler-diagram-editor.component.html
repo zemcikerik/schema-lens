@@ -1,0 +1,22 @@
+<form class="data-modeler__diagram-editor" [formGroup]="form">
+  <div>
+    <app-section-header [title]="('DATA_MODEL.MODELER.DIAGRAM.PROPERTIES_LABEL' | translate)()" />
+
+    <mat-form-field class="w-100">
+      <mat-label>{{ ('DATA_MODEL.MODELER.DIAGRAM.NAME_LABEL' | translate)() }}</mat-label>
+      <input matInput required formControlName="name" />
+      @if (form.controls.name.invalid) {
+        <mat-error>{{ (form.controls.name.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+  </div>
+
+  <div class="data-modeler__diagram-editor__danger-zone">
+    <h4 class="data-modeler__diagram-editor__danger-zone__title">
+      {{ ('DATA_MODEL.MODELER.DIAGRAM.DANGER_ZONE_LABEL' | translate)() }}
+    </h4>
+    <button mat-stroked-button (click)="delete()">
+      {{ ('DATA_MODEL.MODELER.DIAGRAM.DELETE_LABEL' | translate)() }}
+    </button>
+  </div>
+</form>

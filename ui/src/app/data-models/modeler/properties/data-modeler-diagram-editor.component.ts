@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/cor
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
+import { MatError } from '@angular/material/form-field';
 import { Router } from '@angular/router';
 import { catchError, filter, map, Observable, of, switchMap } from 'rxjs';
 import { DataModelStore } from '../../data-model.store';
@@ -13,32 +14,13 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { dataModelDiagramNameValidators } from '../../validators/data-model-name.validators';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
+import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 
 @Component({
   selector: 'app-data-modeler-diagram-editor',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  template: `
-    <form class="data-modeler__diagram-editor" [formGroup]="form">
-      <div>
-        <app-section-header [title]="('DATA_MODEL.MODELER.DIAGRAM.PROPERTIES_LABEL' | translate)()" />
-        
-        <mat-form-field class="w-100">
-          <mat-label>{{ ('DATA_MODEL.MODELER.DIAGRAM.NAME_LABEL' | translate)() }}</mat-label>
-          <input matInput required formControlName="name" />
-        </mat-form-field>
-      </div>
-
-      <div class="data-modeler__diagram-editor__danger-zone">
-        <h4 class="data-modeler__diagram-editor__danger-zone__title">
-          {{ ('DATA_MODEL.MODELER.DIAGRAM.DANGER_ZONE_LABEL' | translate)() }}
-        </h4>
-        <button mat-stroked-button (click)="delete()">
-          {{ ('DATA_MODEL.MODELER.DIAGRAM.DELETE_LABEL' | translate)() }}
-        </button>
-      </div>
-    </form>
-  `,
-  imports: [ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, TranslatePipe, SectionHeaderComponent],
+  templateUrl: './data-modeler-diagram-editor.component.html',
+  imports: [ReactiveFormsModule, MatFormField, MatLabel, MatInput, MatButton, MatError, TranslatePipe, FormatGenericValidationErrorsPipe, SectionHeaderComponent],
 })
 export class DataModelerDiagramEditorComponent implements DataModelEditor {
   private store = inject(DataModelStore);
@@ -55,7 +37,7 @@ export class DataModelerDiagramEditorComponent implements DataModelEditor {
 
   constructor() {
     effect(() => {
-      const diagram = this.store.activeDiagram();
+      const diagram = this.state.activeDiagram();
 
       if (diagram) {
         this.form.reset({ name: diagram.name });
