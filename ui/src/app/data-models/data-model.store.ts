@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Observable, tap, of, finalize, defer, map } from 'rxjs';
-import { DataModelDetails, DataModelModification, DataModelModificationDto } from './models/data-model.model';
+import { DataModelDetails, DataModelModification } from './models/data-model.model';
 import { DataModelEdge } from './models/data-model-edge.model';
 import { DataModelFieldReorderRequest, DataModelNode, DataModelNodeSummary } from './models/data-model-node.model';
 import { DataModelDataType } from './models/data-model-data-type.model';
@@ -10,7 +10,6 @@ import { DataModelNodeService } from './services/data-model-node.service';
 import { DataModelEdgeService } from './services/data-model-edge.service';
 import { DataModelDataTypeService } from './services/data-model-data-type.service';
 import { DataModelDiagramService } from './services/data-model-diagram.service';
-import { DataModelCascadeDeletionService } from './services/data-model-cascade-deletion.service';
 
 @Injectable({ providedIn: 'root' })
 export class DataModelStore {
@@ -19,7 +18,6 @@ export class DataModelStore {
   private edgeService = inject(DataModelEdgeService);
   private dataTypeService = inject(DataModelDataTypeService);
   private diagramService = inject(DataModelDiagramService);
-  private cascadeDeletion = inject(DataModelCascadeDeletionService);
 
   dataModelId = -1;
 
@@ -96,46 +94,37 @@ export class DataModelStore {
 
   createNode(node: DataModelNodeSummary): Observable<DataModelModification> {
     return this.nodeService.createNode(this.dataModelId, node).pipe(
-      map(created => this.withEmptyDeletions({ updatedNodes: [created], updatedEdges: [] })),
+      map(created => ({ updatedNodes: [created], updatedEdges: [], deletedNodeIds: [], deletedEdgeIds: [] })),
       tap(modification => this.mergeModification(modification)),
     );
   }
 
   updateNode(node: DataModelNode): Observable<DataModelModification> {
     return this.nodeService.updateNode(this.dataModelId, node).pipe(
-      map(dto => this.withEmptyDeletions(dto)),
       tap(modification => this.mergeModification(modification)),
     );
   }
 
   deleteNode(nodeId: number): Observable<DataModelModification> {
-    const cascade = this.cascadeDeletion.resolveNodeDeletion(nodeId, this.edges());
-
     return this.nodeService.deleteNode(this.dataModelId, nodeId).pipe(
-      map(dto => ({ ...dto, ...cascade })),
       tap(modification => this.mergeModification(modification)),
     );
   }
 
   createEdge(edge: DataModelEdge): Observable<DataModelModification> {
     return this.edgeService.createEdge(this.dataModelId, edge).pipe(
-      map(dto => this.withEmptyDeletions(dto)),
       tap(modification => this.mergeModification(modification)),
     );
   }
 
   updateEdge(edge: DataModelEdge): Observable<DataModelModification> {
     return this.edgeService.updateEdge(this.dataModelId, edge).pipe(
-      map(dto => this.withEmptyDeletions(dto)),
       tap(modification => this.mergeModification(modification)),
     );
   }
 
   deleteEdge(edgeId: number): Observable<DataModelModification> {
-    const cascade = this.cascadeDeletion.resolveEdgeDeletion(edgeId);
-
     return this.edgeService.deleteEdge(this.dataModelId, edgeId).pipe(
-      map(dto => ({ ...dto, ...cascade })),
       tap(modification => this.mergeModification(modification)),
     );
   }
@@ -198,13 +187,8 @@ export class DataModelStore {
 
   reorderFields(nodeId: number, request: DataModelFieldReorderRequest): Observable<DataModelModification> {
     return this.nodeService.reorderNodeFields(this.dataModelId, nodeId, request).pipe(
-      map(dto => this.withEmptyDeletions(dto)),
       tap(modification => this.mergeModification(modification)),
     );
-  }
-
-  private withEmptyDeletions(dto: DataModelModificationDto): DataModelModification {
-    return { ...dto, deletedNodeIds: [], deletedEdgeIds: [] };
   }
 
   private mergeModification(modification: DataModelModification): void {

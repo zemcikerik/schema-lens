@@ -97,6 +97,8 @@ class DataModelNodeServiceImpl(
             .map { model.findNode(it) }
             .toList()
 
+        val deletedEdgeIds = nodeEdges.map { it.id!! }
+
         model.edges.removeAll(nodeEdges)
         model.nodes.remove(node)
         nodeRepository.delete(node)
@@ -104,7 +106,11 @@ class DataModelNodeServiceImpl(
         val updatedEdges = edgeCascadeMutationService
             .collectCascadeEdgesAndSync(model, cascadeStartNodes)
 
-        return DataModelModificationDto(updatedEdges = edgeWriteService.persistAndMapEdges(updatedEdges))
+        return DataModelModificationDto(
+            updatedEdges = edgeWriteService.persistAndMapEdges(updatedEdges),
+            deletedNodeIds = listOf(nodeId),
+            deletedEdgeIds = deletedEdgeIds,
+        )
     }
 
     private fun hasPrimaryKeyChanged(

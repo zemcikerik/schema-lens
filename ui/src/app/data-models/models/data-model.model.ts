@@ -15,11 +15,6 @@ export interface DataModelDetails {
   diagrams: DataModelDiagram[];
 }
 
-export interface DataModelModificationDto {
-  updatedNodes: DataModelNode[];
-  updatedEdges: DataModelEdge[];
-}
-
 export interface DataModelModification {
   updatedNodes: DataModelNode[];
   updatedEdges: DataModelEdge[];

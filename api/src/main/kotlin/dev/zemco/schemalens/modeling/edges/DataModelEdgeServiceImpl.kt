@@ -3,7 +3,6 @@ package dev.zemco.schemalens.modeling.edges
 import dev.zemco.schemalens.modeling.models.DataModel
 import dev.zemco.schemalens.modeling.models.DataModelEdgeCascadeMutationService
 import dev.zemco.schemalens.modeling.models.DataModelModificationDto
-import dev.zemco.schemalens.modeling.models.DataModelModificationDto.Companion.emptyModification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -88,11 +87,14 @@ class DataModelEdgeServiceImpl(
         edgeRepository.delete(edge)
 
         if (!wasIdentifying) {
-            return emptyModification()
+            return DataModelModificationDto(deletedEdgeIds = listOf(deletedEdgeId))
         }
 
         val cascadeEdges = edgeCascadeMutationService.collectCascadeEdgesAndSync(model, edge.toNode)
-        return DataModelModificationDto(updatedEdges = edgeWriteService.persistAndMapEdges(cascadeEdges))
+        return DataModelModificationDto(
+            updatedEdges = edgeWriteService.persistAndMapEdges(cascadeEdges),
+            deletedEdgeIds = listOf(deletedEdgeId),
+        )
     }
 
     private fun persistUpdatedEdges(
