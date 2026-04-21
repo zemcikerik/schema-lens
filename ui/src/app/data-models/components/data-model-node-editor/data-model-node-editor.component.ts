@@ -179,7 +179,7 @@ export class DataModelNodeEditorComponent implements DataModelEditor {
 
     const saveNode$ = this.nodeModified
       ? this.saveNodePropertiesWithoutOrder()
-      : of({ updatedNodes: [this.node()], updatedEdges: [], deletedNodeIds: [], deletedEdgeIds: [] } satisfies DataModelModification);
+      : of({ updatedNodes: [this.node()], updatedEdges: [], deletedNodeIds: [], deletedEdgeIds: [], visuallyStaleNodeIds: [] } satisfies DataModelModification);
 
     const allFields = this.fields();
     const positionsChanged = this.positionsChanged;

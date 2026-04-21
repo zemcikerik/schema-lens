@@ -52,4 +52,5 @@ data class DataModelModificationDto(
     val updatedEdges: List<DataModelEdgeDto> = listOf(),
     val deletedNodeIds: List<Long> = listOf(),
     val deletedEdgeIds: List<Long> = listOf(),
+    val visuallyStaleNodeIds: List<Long> = listOf(),
 )

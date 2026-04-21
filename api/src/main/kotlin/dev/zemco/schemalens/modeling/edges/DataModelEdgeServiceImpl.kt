@@ -82,18 +82,26 @@ class DataModelEdgeServiceImpl(
         val edge = model.findEdge(edgeId)
         val deletedEdgeId = edge.id!!
         val wasIdentifying = edge.isIdentifying
+        val toNodeId = edge.toNodeId
 
         model.edges.removeIf { it.id == deletedEdgeId }
         edgeRepository.delete(edge)
 
         if (!wasIdentifying) {
-            return DataModelModificationDto(deletedEdgeIds = listOf(deletedEdgeId))
+            return DataModelModificationDto(
+                deletedEdgeIds = listOf(deletedEdgeId),
+                visuallyStaleNodeIds = listOf(toNodeId),
+            )
         }
 
         val cascadeEdges = edgeCascadeMutationService.collectCascadeEdgesAndSync(model, edge.toNode)
+        val updatedEdges = edgeWriteService.persistAndMapEdges(cascadeEdges)
+        val visuallyStaleNodeIds = (listOf(toNodeId) + updatedEdges.map { it.toNodeId }).distinct()
+
         return DataModelModificationDto(
-            updatedEdges = edgeWriteService.persistAndMapEdges(cascadeEdges),
+            updatedEdges = updatedEdges,
             deletedEdgeIds = listOf(deletedEdgeId),
+            visuallyStaleNodeIds = visuallyStaleNodeIds,
         )
     }
 
@@ -109,7 +117,10 @@ class DataModelEdgeServiceImpl(
 
         if (!syncCascade) {
             val persistedEdge = if (syncEdgeFields) edgeRepository.save(edge) else edge
-            return DataModelModificationDto(updatedEdges = listOf(DataModelEdgeDto.from(persistedEdge)))
+            return DataModelModificationDto(
+                updatedEdges = listOf(DataModelEdgeDto.from(persistedEdge)),
+                visuallyStaleNodeIds = listOf(edge.toNodeId),
+            )
         }
 
         val cascadeEdges = edgeCascadeMutationService.collectCascadeEdgesAndSync(model, edge.toNode)
@@ -118,6 +129,12 @@ class DataModelEdgeServiceImpl(
             .distinctBy { it.id }
             .toList()
 
-        return DataModelModificationDto(updatedEdges = edgeWriteService.persistAndMapEdges(edgesToPersist))
+        val updatedEdges = edgeWriteService.persistAndMapEdges(edgesToPersist)
+        val visuallyStaleNodeIds = updatedEdges.map { it.toNodeId }.distinct()
+
+        return DataModelModificationDto(
+            updatedEdges = updatedEdges,
+            visuallyStaleNodeIds = visuallyStaleNodeIds,
+        )
     }
 }

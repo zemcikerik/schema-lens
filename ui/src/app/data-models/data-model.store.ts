@@ -61,12 +61,12 @@ export class DataModelStore {
     return this.diagramService.getDiagram(this.dataModelId, diagramId);
   }
 
-  createNode(node: DataModelNodeSummary): Observable<DataModelModification> {
-    return this.nodeService.createNode(this.dataModelId, node).pipe(
-      map(created => ({ updatedNodes: [created], updatedEdges: [], deletedNodeIds: [], deletedEdgeIds: [] })),
-      tap(modification => this.mergeModification(modification)),
-    );
-  }
+   createNode(node: DataModelNodeSummary): Observable<DataModelModification> {
+     return this.nodeService.createNode(this.dataModelId, node).pipe(
+       map(created => ({ updatedNodes: [created], updatedEdges: [], deletedNodeIds: [], deletedEdgeIds: [], visuallyStaleNodeIds: [] })),
+       tap(modification => this.mergeModification(modification)),
+     );
+   }
 
   updateNode(node: DataModelNode): Observable<DataModelModification> {
     return this.nodeService.updateNode(this.dataModelId, node).pipe(

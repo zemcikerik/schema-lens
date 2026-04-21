@@ -50,19 +50,22 @@ export class DataModelerDiagramEditorComponent implements DataModelEditor {
   }
 
   save(): Observable<DataModelModification> | null {
-    if (!this.modified || this.form.invalid) {
-      if (this.form.invalid) this.form.markAllAsTouched();
+    if (!this.modified) {
+      return null;
+    }
+
+    if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return null;
     }
 
     this.modified = false;
+
     return this.state
       .updateDiagramName(this.form.getRawValue().name)
-      .pipe(
-        map(
-          () => ({ updatedNodes: [], updatedEdges: [], deletedNodeIds: [], deletedEdgeIds: [] }) satisfies DataModelModification,
-        ),
-      );
+      .pipe(map(() =>
+        ({ updatedNodes: [], updatedEdges: [], deletedNodeIds: [], deletedEdgeIds: [], visuallyStaleNodeIds: [] }) satisfies DataModelModification
+      ));
   }
 
   delete(): void {

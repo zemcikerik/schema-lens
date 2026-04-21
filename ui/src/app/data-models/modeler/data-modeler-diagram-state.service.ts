@@ -107,6 +107,17 @@ export class DataModelerDiagramState {
       }
     }
 
+    for (const nodeId of modification.visuallyStaleNodeIds) {
+      if (!this.visibleNodeIds.has(nodeId)) {
+        continue;
+      }
+
+      const node = this.store.nodes().find(n => n.nodeId === nodeId);
+      if (node) {
+        this._patches$.next({ type: 'node:update', node: this.resolveAndMapNode(node) });
+      }
+    }
+
     if (diagramStructureChanged) {
       this.markPositionsUnsaved();
     }

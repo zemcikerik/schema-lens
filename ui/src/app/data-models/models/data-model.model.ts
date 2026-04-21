@@ -20,4 +20,5 @@ export interface DataModelModification {
   updatedEdges: DataModelEdge[];
   deletedNodeIds: number[];
   deletedEdgeIds: number[];
+  visuallyStaleNodeIds: number[];
 }
