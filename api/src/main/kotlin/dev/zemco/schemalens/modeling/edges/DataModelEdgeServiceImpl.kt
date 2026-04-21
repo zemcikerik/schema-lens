@@ -3,7 +3,6 @@ package dev.zemco.schemalens.modeling.edges
 import dev.zemco.schemalens.modeling.models.DataModel
 import dev.zemco.schemalens.modeling.models.DataModelEdgeCascadeMutationService
 import dev.zemco.schemalens.modeling.models.DataModelModificationDto
-import dev.zemco.schemalens.modeling.models.DataModelModificationDto.Companion.emptyModification
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -83,16 +82,27 @@ class DataModelEdgeServiceImpl(
         val edge = model.findEdge(edgeId)
         val deletedEdgeId = edge.id!!
         val wasIdentifying = edge.isIdentifying
+        val toNodeId = edge.toNodeId
 
         model.edges.removeIf { it.id == deletedEdgeId }
         edgeRepository.delete(edge)
 
         if (!wasIdentifying) {
-            return emptyModification()
+            return DataModelModificationDto(
+                deletedEdgeIds = listOf(deletedEdgeId),
+                visuallyStaleNodeIds = listOf(toNodeId),
+            )
         }
 
         val cascadeEdges = edgeCascadeMutationService.collectCascadeEdgesAndSync(model, edge.toNode)
-        return DataModelModificationDto(updatedEdges = edgeWriteService.persistAndMapEdges(cascadeEdges))
+        val updatedEdges = edgeWriteService.persistAndMapEdges(cascadeEdges)
+        val visuallyStaleNodeIds = (listOf(toNodeId) + updatedEdges.map { it.toNodeId }).distinct()
+
+        return DataModelModificationDto(
+            updatedEdges = updatedEdges,
+            deletedEdgeIds = listOf(deletedEdgeId),
+            visuallyStaleNodeIds = visuallyStaleNodeIds,
+        )
     }
 
     private fun persistUpdatedEdges(
@@ -107,7 +117,10 @@ class DataModelEdgeServiceImpl(
 
         if (!syncCascade) {
             val persistedEdge = if (syncEdgeFields) edgeRepository.save(edge) else edge
-            return DataModelModificationDto(updatedEdges = listOf(DataModelEdgeDto.from(persistedEdge)))
+            return DataModelModificationDto(
+                updatedEdges = listOf(DataModelEdgeDto.from(persistedEdge)),
+                visuallyStaleNodeIds = listOf(edge.toNodeId),
+            )
         }
 
         val cascadeEdges = edgeCascadeMutationService.collectCascadeEdgesAndSync(model, edge.toNode)
@@ -116,6 +129,12 @@ class DataModelEdgeServiceImpl(
             .distinctBy { it.id }
             .toList()
 
-        return DataModelModificationDto(updatedEdges = edgeWriteService.persistAndMapEdges(edgesToPersist))
+        val updatedEdges = edgeWriteService.persistAndMapEdges(edgesToPersist)
+        val visuallyStaleNodeIds = updatedEdges.map { it.toNodeId }.distinct()
+
+        return DataModelModificationDto(
+            updatedEdges = updatedEdges,
+            visuallyStaleNodeIds = visuallyStaleNodeIds,
+        )
     }
 }

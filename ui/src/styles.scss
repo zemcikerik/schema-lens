@@ -17,30 +17,35 @@
 @use './scss/components/code-editor';
 @use './scss/components/confirmation-dialog';
 @use './scss/components/content-card';
+@use './scss/components/data-modeler';
 @use './scss/components/diagram';
-@use './scss/components/diagram-entity-relationship';
 @use './scss/components/diagram-export';
 @use './scss/components/diagram-fullscreen';
-@use './scss/components/diagram-grid-control';
-@use './scss/components/diagram-zoom-control';
 @use './scss/components/help-faq';
 @use './scss/components/nav';
-@use './scss/components/project-object-selector';
+@use './scss/components/object-selector';
 @use './scss/components/profile';
 @use './scss/components/profile-picture';
 @use './scss/components/project-collaborators-table';
-@use './scss/components/project-list-table';
 @use './scss/components/project-properties';
 @use './scss/components/project-selector';
 @use './scss/components/progress-spinner';
+@use './scss/components/save-delete-control';
+@use './scss/components/schema-diagram';
+@use './scss/components/section-header';
+@use './scss/components/selectable-list-table';
 @use './scss/components/table';
 @use './scss/components/table-all-relationships';
 @use './scss/components/table-constraint';
 @use './scss/components/table-index';
 @use './scss/components/table-modifying-dialog';
 @use './scss/components/table-objects';
+@use './scss/components/table-relationships-diagram';
 @use './scss/components/top-bar';
 @use './scss/components/user-identifier';
+
+@use './scss/components/data-model-nav';
+@use './scss/components/data-model-node-editor';
 
 @include mat.elevation-classes();
 @include mat.app-background();
@@ -49,6 +54,7 @@ html {
   @include mat.elevation-classes();
   @include mat.app-background();
 
+  @include mat.autocomplete-theme(t.$theme);
   @include mat.button-theme(t.$theme);
   @include mat.checkbox-theme(t.$theme);
   @include mat.dialog-theme(t.$theme);

@@ -1,0 +1,13 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.save-delete-control {
+  display: flex;
+  justify-content: right;
+  margin-top: 1.5rem;
+  gap: 1rem;
+
+  &__delete {
+    @include mat.button-color(t.$theme, $color-variant: error);
+  }
+}

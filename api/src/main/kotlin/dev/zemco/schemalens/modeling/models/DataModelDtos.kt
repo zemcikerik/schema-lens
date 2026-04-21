@@ -50,8 +50,7 @@ data class DataModelDetailsDto(
 data class DataModelModificationDto(
     val updatedNodes: List<DataModelNodeDto> = listOf(),
     val updatedEdges: List<DataModelEdgeDto> = listOf(),
-) {
-    companion object {
-        fun emptyModification(): DataModelModificationDto = DataModelModificationDto(emptyList(), emptyList())
-    }
-}
+    val deletedNodeIds: List<Long> = listOf(),
+    val deletedEdgeIds: List<Long> = listOf(),
+    val visuallyStaleNodeIds: List<Long> = listOf(),
+)

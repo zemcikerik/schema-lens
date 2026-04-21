@@ -72,11 +72,20 @@ class DataModelNodeServiceImpl(
             return DataModelModificationDto(updatedNodes = updatedNodes)
         }
 
+        val updatedEdges = edgeCascadeMutationService
+            .collectCascadeEdgesAndSync(model, savedNode)
+            .let { edgeWriteService.persistAndMapEdges(it) }
+
+        val updatedNodeIds = updatedNodes.map { it.nodeId }.toSet()
+        val visuallyStaleNodeIds = updatedEdges
+            .map { it.toNodeId }
+            .filter { it !in updatedNodeIds }
+            .distinct()
+
         return DataModelModificationDto(
             updatedNodes = updatedNodes,
-            updatedEdges = edgeCascadeMutationService
-                .collectCascadeEdgesAndSync(model, savedNode)
-                .let { edgeWriteService.persistAndMapEdges(it) },
+            updatedEdges = updatedEdges,
+            visuallyStaleNodeIds = visuallyStaleNodeIds,
         )
     }
 
@@ -97,14 +106,31 @@ class DataModelNodeServiceImpl(
             .map { model.findNode(it) }
             .toList()
 
+        val deletedEdgeIds = nodeEdges.map { it.id!! }
+
+        val directlyAffectedNodeIds = nodeEdges
+            .asSequence()
+            .filter { it.fromNodeId == nodeId }
+            .map { it.toNodeId }
+            .toList()
+
         model.edges.removeAll(nodeEdges)
         model.nodes.remove(node)
         nodeRepository.delete(node)
 
-        val updatedEdges = edgeCascadeMutationService
-            .collectCascadeEdgesAndSync(model, cascadeStartNodes)
+        val cascadeEdges = edgeCascadeMutationService.collectCascadeEdgesAndSync(model, cascadeStartNodes)
+        val updatedEdges = edgeWriteService.persistAndMapEdges(cascadeEdges)
 
-        return DataModelModificationDto(updatedEdges = edgeWriteService.persistAndMapEdges(updatedEdges))
+        val visuallyStaleNodeIds = (directlyAffectedNodeIds + updatedEdges.map { it.toNodeId })
+            .filter { it != nodeId }
+            .distinct()
+
+        return DataModelModificationDto(
+            updatedEdges = updatedEdges,
+            deletedNodeIds = listOf(nodeId),
+            deletedEdgeIds = deletedEdgeIds,
+            visuallyStaleNodeIds = visuallyStaleNodeIds,
+        )
     }
 
     private fun hasPrimaryKeyChanged(

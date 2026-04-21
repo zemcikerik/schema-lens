@@ -13,7 +13,6 @@ export interface ProjectObjectDefinition {
   providedIn: 'root',
 })
 export class ProjectObjectNavService {
-
   private tableService = inject(TableService);
 
   getObjectDefinitionsFor(projectId: string): ProjectObjectDefinition[] {
@@ -26,5 +25,4 @@ export class ProjectObjectNavService {
       },
     ];
   }
-
 }

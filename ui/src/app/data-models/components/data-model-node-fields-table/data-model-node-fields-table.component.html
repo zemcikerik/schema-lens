@@ -1,0 +1,95 @@
+<mat-table [dataSource]="fields()" cdkDropList cdkDropListLockAxis="y"
+           (cdkDropListDropped)="onDrop($event)"
+           class="data-model-node-editor__fields-table">
+  <ng-container matColumnDef="drag">
+    <mat-header-cell *matHeaderCellDef/>
+    <mat-cell *matCellDef="let _row">
+      <mat-icon cdkDragHandle class="data-model-node-editor__fields-table__drag-handle">drag_indicator</mat-icon>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.NAME' | translate)() }}</mat-header-cell>
+    <mat-cell *matCellDef="let row">
+      <span class="text-code">{{ row.field.name }}</span>
+      @if (row.source === 'direct' && row.field.isPrimaryKey) {
+        <mat-icon class="data-model-node-editor__fields-table__primary-key-icon"
+                  [matTooltip]="('DATA_MODEL.NODE.FIELD_PROPERTIES.PRIMARY_KEY' | translate)()">key
+        </mat-icon>
+      } @else if (row.source === 'edge') {
+        @if (row.edge.isIdentifying) {
+          <mat-icon class="data-model-node-editor__fields-table__primary-key-icon"
+                    [matTooltip]="('DATA_MODEL.NODE.FIELD_PROPERTIES.PRIMARY_KEY' | translate)()">key
+          </mat-icon>
+        }
+        <mat-icon class="data-model-node-editor__fields-table__edge-icon"
+                  [matTooltip]="('DATA_MODEL.NODE.FIELDS_TABLE.$layer.FROM_EDGE' | dataModelingTranslate)()">link
+        </mat-icon>
+      }
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="type">
+    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.DATA_TYPE' | translate)() }}</mat-header-cell>
+    <mat-cell *matCellDef="let row">
+      @let typeId = row.source === 'direct' ? row.field.typeId : row.referencedField.typeId;
+      <span class="text-code">{{ typeId | dataModelDataType: dataTypes() }}</span>
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="nullable">
+    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.NULLABLE' | translate)() }}</mat-header-cell>
+    <mat-cell *matCellDef="let row" class="data-model-node-editor__fields-table__nullable-status">
+      <app-status-icon [status]="row.source === 'direct' ? row.field.isNullable : !row.edge.isMandatory" />
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <mat-header-cell *matHeaderCellDef/>
+    <mat-cell *matCellDef="let row; let i = index">
+      @if (row.source === 'direct') {
+        <button mat-icon-button [matMenuTriggerFor]="directFieldMenu" [matMenuTriggerData]="{ index: i, row }">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      } @else {
+        <button mat-icon-button [matMenuTriggerFor]="edgeFieldMenu" [matMenuTriggerData]="{ index: i, row }">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+      }
+    </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="noData">
+    <mat-footer-cell *matFooterCellDef class="data-model-node-editor__fields-table__empty">
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.EMPTY_LABEL' | dataModelingTranslate)() }}
+    </mat-footer-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns()" class="data-model-node-editor__fields-table__row"/>
+  <mat-row *matRowDef="let row; columns: displayedColumns();" cdkDrag [cdkDragData]="row"
+           class="data-model-node-editor__fields-table__row"/>
+  <mat-footer-row *matFooterRowDef="['noData']"
+                 [class.data-model-node-editor__fields-table__empty-row--hidden]="fields().length > 0"/>
+</mat-table>
+
+<mat-menu #directFieldMenu xPosition="before">
+  <ng-template matMenuContent let-index="index" let-row="row">
+    <button mat-menu-item (click)="editDirectField.emit({ index: index, field: row.field })">
+      <mat-icon>edit</mat-icon>
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.EDIT_FIELD' | dataModelingTranslate)() }}
+    </button>
+    <button mat-menu-item (click)="deleteDirectField.emit({ index: index, field: row.field })">
+      <mat-icon>delete</mat-icon>
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.DELETE_FIELD' | dataModelingTranslate)() }}
+    </button>
+  </ng-template>
+</mat-menu>
+
+<mat-menu #edgeFieldMenu xPosition="before">
+  <ng-template matMenuContent let-row="row">
+    <button mat-menu-item (click)="goToEdge.emit(row.edge)">
+      <mat-icon>link</mat-icon>
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.GO_TO_EDGE' | dataModelingTranslate)() }}
+    </button>
+  </ng-template>
+</mat-menu>

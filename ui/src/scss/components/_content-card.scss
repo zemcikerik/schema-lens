@@ -8,6 +8,10 @@
   padding: 1rem;
   height: calc(100% - var(--content-card-bottom-spacing));
 
+  &.dim {
+    background-color: mat.get-theme-color(t.$theme, surface-container-low);
+  }
+
   @include breakpoints.breakpoint-up(md) {
     padding: 1rem 2rem;
   }
@@ -26,7 +30,15 @@
 
   // when used in main content of layout-content-with-sidebar
   .layout-content-with-sidebar {
+    &:not(.reverse) &__sidebar > * > .content-card {
+      margin-left: 1rem;
+    }
+
     &:not(.reverse) &__content > * > .content-card {
+      margin-right: 1rem;
+    }
+
+    &.reverse &__sidebar > * > .content-card {
       margin-right: 1rem;
     }
 

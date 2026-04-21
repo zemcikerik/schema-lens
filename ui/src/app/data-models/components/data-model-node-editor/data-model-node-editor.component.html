@@ -1,0 +1,28 @@
+<form class="data-model-node-editor" [formGroup]="form">
+  <app-section-header [title]="('DATA_MODEL.NODE.PROPERTIES_LABEL' | translate)()" />
+
+  <mat-form-field class="w-100">
+    <mat-label>{{ ('DATA_MODEL.NODE.NAME_LABEL' | translate)() }}</mat-label>
+    <input matInput required formControlName="name">
+  </mat-form-field>
+
+  <app-section-header [title]="('DATA_MODEL.NODE.$layer.FIELDS_LABEL' | dataModelingTranslate)()">
+    <button
+      mat-icon-button
+      [id]="addFieldButtonId()"
+      [matTooltip]="('DATA_MODEL.NODE.$layer.ADD_FIELD_LABEL' | dataModelingTranslate)()"
+      (click)="addDirectField()"
+    >
+      <mat-icon>add</mat-icon>
+    </button>
+  </app-section-header>
+
+  <app-data-model-node-fields-table
+    [fields]="fields()"
+    [dataTypes]="store.dataTypes()"
+    [compact]="compact()"
+    (orderChanged)="orderChanged($event)"
+    (editDirectField)="editDirectField($event)"
+    (deleteDirectField)="deleteDirectField($event)"
+    (goToEdge)="goToEdge.emit($event)" />
+</form>

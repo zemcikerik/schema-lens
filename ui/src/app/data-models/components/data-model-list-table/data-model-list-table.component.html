@@ -1,0 +1,9 @@
+<mat-table class="selectable-list-table" [dataSource]="dataModels()">
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.LIST_COLUMN.NAME_LABEL' | translate)() }}</mat-header-cell>
+    <mat-cell *matCellDef="let dataModel">{{ dataModel.name }}</mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="DISPLAYED_COLUMNS" />
+  <mat-row matRipple *matRowDef="let dataModel; columns: DISPLAYED_COLUMNS" (click)="selected.emit(dataModel)" />
+</mat-table>

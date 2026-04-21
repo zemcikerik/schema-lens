@@ -1,0 +1,28 @@
+<app-layout-header-and-content
+  [title]="('DATA_MODEL.DATA_TYPE.EDIT_TITLE' | translate: { name: dataType()?.name ?? '' })()"
+  [includeSpacing]="loading() || !!error()"
+>
+  @if (error()) {
+    <app-alert type="error">{{ ((error() ?? 'GENERIC.ERROR_LABEL') | translate)() }}</app-alert>
+  }
+
+  <form [formGroup]="propertiesForm">
+    <app-section-header [title]="('DATA_MODEL.DATA_TYPE.PROPERTIES_LABEL' | translate)()"/>
+
+    <mat-form-field class="w-100">
+      <mat-label>{{ ('DATA_MODEL.DATA_TYPE.NAME_LABEL' | translate)() }}</mat-label>
+      <input matInput required formControlName="name">
+      @if (nameControl.invalid) {
+        <mat-error>{{ (nameControl.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+
+    <app-save-delete-control
+      [deleteLoading]="deleteLoading()"
+      [saveLoading]="updateLoading()"
+      [deleteDisabled]="loading()"
+      [saveDisabled]="loading()"
+      (delete)="deleteDataType()"
+      (save)="updateDataType()" />
+  </form>
+</app-layout-header-and-content>

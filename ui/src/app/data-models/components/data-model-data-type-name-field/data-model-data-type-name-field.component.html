@@ -1,0 +1,14 @@
+<mat-form-field class="w-100">
+  <mat-label>{{ label() }}</mat-label>
+  <input matInput required [formControl]="control()" [matAutocomplete]="auto">
+
+  <mat-autocomplete #auto="matAutocomplete" requireSelection>
+    @for (type of filteredTypes(); track type.typeId) {
+      <mat-option [value]="type.name">{{ type.name }}</mat-option>
+    }
+  </mat-autocomplete>
+
+  @if (control().invalid) {
+    <mat-error>{{ (control().errors | formatGenericValidationErrors)() }}</mat-error>
+  }
+</mat-form-field>

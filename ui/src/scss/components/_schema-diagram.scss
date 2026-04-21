@@ -1,0 +1,154 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.schema-diagram {
+  background-color: mat.get-theme-color(t.$theme, surface);
+  height: 100%;
+
+  &.transparent {
+    background-color: transparent;
+  }
+
+  &.hide-grid .diagram__grid-background {
+    display: none;
+  }
+
+  .djs-bendpoint,
+  .djs-segment-dragger {
+    .djs-visual {
+      fill: mat.get-theme-color(t.$theme, tertiary);
+      stroke: mat.get-theme-color(t.$theme, surface);
+      stroke-width: 1px;
+    }
+  }
+
+  .djs-resizer-visual {
+    fill: mat.get-theme-color(t.$theme, tertiary);
+    stroke: mat.get-theme-color(t.$theme, surface);
+    stroke-width: 1px;
+  }
+
+  &__node {
+    display: flex;
+    flex-direction: column;
+    user-select: none;
+    height: 100%;
+
+    .djs-dragging & {
+      display: none;
+    }
+
+    &__name {
+      display: block;
+      font: mat.get-theme-typography(t.$theme, label-large);
+      padding: 0 0.5rem;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+      overflow-x: hidden;
+    }
+
+    &__fields {
+      border-collapse: collapse;
+
+      &__wrapper {
+        flex-grow: 1;
+        background-color: mat.get-theme-color(t.$theme, secondary-container);
+        border: 1px solid mat.get-theme-color(t.$theme, outline-variant);
+        color: mat.get-theme-color(t.$theme, on-secondary-container);
+        border-radius: 0.5rem;
+        padding: 0.5rem;
+        margin: 1px; // space for thicker border
+        transition: border-color 0.2s ease-in-out;
+      }
+
+      &__no-fields {
+        display: block;
+        text-align: center;
+        text-decoration: underline;
+        color: mat.get-theme-color(t.$theme, outline);
+      }
+
+      td {
+        height: 1.625rem;
+        padding: 1px;
+
+        mat-icon {
+          width: 1.25rem;
+          height: 1.25rem;
+          font-size: 1.25rem;
+        }
+
+        & + td {
+          padding-left: 1rem;
+        }
+
+        &.key {
+          color: mat.get-theme-color(t.$theme, primary);
+          padding: 0 1px;
+
+          & + td {
+            padding-left: 0.5rem;
+          }
+        }
+
+        &.reference {
+          color: mat.get-theme-color(t.$theme, secondary);
+          padding: 0 1px 0 0.5rem;
+
+          &.highlight {
+            color: mat.get-theme-color(t.$theme, tertiary);
+          }
+
+          & + td {
+            padding-left: 0.25rem;
+          }
+        }
+      }
+    }
+  }
+
+  &__edge {
+    fill: none;
+    stroke: mat.get-theme-color(t.$theme, on-surface-variant);
+    stroke-width: 0.125rem;
+    shape-rendering: geometricPrecision;
+
+    .djs-dragging & {
+      opacity: 75%;
+    }
+
+    .djs-dragging.djs-updating & {
+      display: none;
+    }
+
+    &.non-identifying {
+      stroke-dasharray: 8 4;
+    }
+
+    &__one-side,
+    &__many-side {
+      stroke: mat.get-theme-color(t.$theme, on-surface-variant);
+    }
+
+    &__one-side > circle {
+      fill: mat.get-theme-color(t.$theme, surface);
+    }
+  }
+
+  &__tooltip {
+    pointer-events: none;
+  }
+
+  &.connect-mode .djs-resizer {
+    display: none;
+  }
+
+  &.connect-mode .djs-element.hover &__node__fields__wrapper {
+    border-color: mat.get-theme-color(t.$theme, secondary);
+  }
+
+  &.connect-mode .djs-element.selected &__node__fields__wrapper {
+    border: 2px solid mat.get-theme-color(t.$theme, secondary);
+    margin: 0;
+  }
+}

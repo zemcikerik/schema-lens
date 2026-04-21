@@ -3,6 +3,10 @@
   "APP_TITLE_SHORT": "SL",
   "404_LABEL": "404",
   "404_DESCRIPTION": "Ako sme sa sem dostali?",
+  "LINKS": {
+    "PROJECT": "Projekty",
+    "MODEL": "Modely"
+  },
   "GENERIC": {
     "SAVE_LABEL": "Uložiť",
     "EDIT_LABEL": "Upraviť",
@@ -238,7 +242,8 @@
     "GRID_TOGGLE_LABEL": "Prepni mriežku",
     "ENTITY_RELATIONSHIP": {
       "PRIMARY_KEY": "Primárny kľúč",
-      "FOREIGN_KEY": "Cudzí kľúč{count, plural, =1 {} other { '#'{position}}}"
+      "FOREIGN_KEY": "Cudzí kľúč{count, plural, =1 {} other { '#'{position}}}",
+      "NO_FIELDS": "žiadne polia"
     },
     "EXPORT": {
       "LABEL": "Exportovať",

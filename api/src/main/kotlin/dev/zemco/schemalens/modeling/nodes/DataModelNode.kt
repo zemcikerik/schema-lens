@@ -1,5 +1,6 @@
 package dev.zemco.schemalens.modeling.nodes
 
+import dev.zemco.schemalens.modeling.edges.DataModelEdge
 import dev.zemco.schemalens.modeling.models.DataModel
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
@@ -33,4 +34,10 @@ class DataModelNode(
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "node", orphanRemoval = true, cascade = [CascadeType.ALL])
     var fields: MutableSet<DataModelField> = mutableSetOf(),
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fromNode", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    var outgoingEdges: MutableSet<DataModelEdge> = mutableSetOf(),
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "toNode", cascade = [CascadeType.REMOVE], orphanRemoval = true)
+    var incomingEdges: MutableSet<DataModelEdge> = mutableSetOf(),
 )

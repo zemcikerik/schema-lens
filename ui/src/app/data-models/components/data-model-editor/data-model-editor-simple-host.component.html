@@ -1,0 +1,21 @@
+@if (currentObject(); as o) {
+  <app-layout-header-and-content
+    [title]="(config().titleKey | dataModelingTranslate: config().titleParamsResolver?.(o))()"
+    [includeSpacing]="error()"
+  >
+    @if (error()) {
+      <app-alert type="error">{{ (('GENERIC.ERROR_LABEL') | translate)() }}</app-alert>
+    }
+
+    <ng-container #editorHost/>
+
+    <app-save-delete-control
+      [saveLoading]="updateLoading()"
+      [deleteLoading]="deleteLoading()"
+      [saveDisabled]="loading()"
+      [deleteDisabled]="loading()"
+      (save)="save()"
+      (delete)="delete()"
+    />
+  </app-layout-header-and-content>
+}

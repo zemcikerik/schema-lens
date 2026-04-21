@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
 import dagre from '@dagrejs/dagre';
 
-export interface Node {
+export interface LayoutNode {
   id: string;
   width: number;
   height: number;
 }
 
-export interface Edge {
+export interface LayoutEdge {
   id: string;
   fromId: string;
   toId: string;
@@ -26,7 +26,7 @@ export interface LayoutResult {
 @Injectable({ providedIn: 'root' })
 export class DiagramLayoutService {
 
-  layoutDigraph(nodes: Node[], edges: Edge[]): LayoutResult {
+  layoutDigraph(nodes: LayoutNode[], edges: LayoutEdge[]): LayoutResult {
     const graph = new dagre.graphlib.Graph({ directed: true, multigraph: true, compound: false });
     graph.setGraph({ nodesep: 50, edgesep: 50, ranksep: 75 });
     graph.setDefaultEdgeLabel(() => ({}));
@@ -65,5 +65,4 @@ export class DiagramLayoutService {
       ? [points[0], points[2]]
       : points;
   }
-
 }

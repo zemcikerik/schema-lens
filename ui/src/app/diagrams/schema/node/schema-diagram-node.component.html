@@ -1,0 +1,45 @@
+<div class="schema-diagram__node text-code">
+  <span class="schema-diagram__node__name">{{ node().name }}</span>
+  <div class="schema-diagram__node__fields__wrapper">
+    @if (node().fields.length === 0) {
+      <span class="schema-diagram__node__fields__no-fields">{{ ('DIAGRAM.ENTITY_RELATIONSHIP.NO_FIELDS' | translate)() }}</span>
+    }
+    <table class="schema-diagram__node__fields">
+      @for (field of node().fields; track field.name) {
+        <tr>
+          @if (hasKey()) {
+            <td class="key">
+              @if (field.key) {
+                <mat-icon
+                  [matTooltip]="('DIAGRAM.ENTITY_RELATIONSHIP.PRIMARY_KEY' | translate)()"
+                  [matTooltipClass]="['schema-diagram__tooltip']"
+                >key</mat-icon>
+              }
+            </td>
+          }
+          <td>{{ field.name }}</td>
+          <td>{{ field.type }}</td>
+          @if (hasNotNullField()) {
+            <td>{{ field.nullable ? '' : 'NN' }}</td>
+          }
+          @for (uniqueGroup of node().uniqueFieldGroups; track uniqueGroup; let index = $index; let count = $count) {
+            <td>{{ uniqueGroup.includes(field.name) ? formatUniqueGroupText(index, count) : '' }}</td>
+          }
+          @for (edge of node().parentEdges; track edge.id; let index = $index; let count = $count) {
+            @let highlight = highlightEdgeIds().includes(edge.id);
+
+            <td class="reference" [class.highlight]="highlight">
+              @if (isReferencedInEdge(edge, field.name)) {
+                <mat-icon
+                  [appIconEmphasis]="highlight ? 'high' : 'default'"
+                  [matTooltip]="('DIAGRAM.ENTITY_RELATIONSHIP.FOREIGN_KEY' | translate: { position: index + 1, count })()"
+                  [matTooltipClass]="['schema-diagram__tooltip']"
+                >key</mat-icon>
+              }
+            </td>
+          }
+        </tr>
+      }
+    </table>
+  </div>
+</div>

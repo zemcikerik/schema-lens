@@ -1,0 +1,14 @@
+<form [formGroup]="form">
+  <app-section-header [title]="('DATA_MODEL.EDGE.PROPERTIES_LABEL' | translate)()" />
+
+  <mat-form-field class="w-100">
+    <mat-label>{{ ('DATA_MODEL.EDGE.$layer.TYPE_LABEL' | dataModelingTranslate)() }}</mat-label>
+    <mat-select formControlName="type">
+      <mat-option [value]="'1:1'">{{ ('DATA_MODEL.EDGE.$layer.TYPE_ONE_TO_ONE' | dataModelingTranslate)() }}</mat-option>
+      <mat-option [value]="'1:N'">{{ ('DATA_MODEL.EDGE.$layer.TYPE_ONE_TO_MANY' | dataModelingTranslate)() }}</mat-option>
+    </mat-select>
+  </mat-form-field>
+
+  <mat-checkbox formControlName="isIdentifying">{{ ('DATA_MODEL.EDGE.$layer.IDENTIFYING_LABEL' | dataModelingTranslate)() }}</mat-checkbox>
+  <mat-checkbox formControlName="isMandatory">{{ ('DATA_MODEL.EDGE.$layer.MANDATORY_LABEL' | dataModelingTranslate)() }}</mat-checkbox>
+</form>

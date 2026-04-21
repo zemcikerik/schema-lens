@@ -1,0 +1,16 @@
+<form class="data-model-properties" [formGroup]="propertiesForm">
+  <app-section-header [title]="('DATA_MODEL.PROPERTIES.LABEL' | translate)()" />
+
+  <mat-form-field class="w-100">
+    <mat-label>{{ ('DATA_MODEL.PROPERTIES.NAME_LABEL' | translate)() }}</mat-label>
+    <input matInput required formControlName="name">
+    @if (nameControl.invalid) {
+      <mat-error>{{ (nameControl.errors | formatGenericValidationErrors)() }}</mat-error>
+    }
+  </mat-form-field>
+
+  <app-save-delete-control
+    [deleteVisible]="properties() !== null"
+    (save)="submit()"
+    (delete)="delete.emit()"/>
+</form>

@@ -1,0 +1,34 @@
+<div class="nav__container">
+  <div class="data-model-nav__layer-switcher">
+    <app-data-model-context-switcher />
+  </div>
+
+  <mat-nav-list class="nav">
+    <a
+      mat-list-item
+      [routerLink]="['/model', store.dataModelId, contextState.context(), 'properties']"
+      routerLinkActive
+      #rla="routerLinkActive"
+      [activated]="rla.isActive"
+      appSidebarClose
+    >{{ ('DATA_MODEL.NAV.PROPERTIES' | translate)() }}</a>
+
+    <app-object-selector [title]="('DATA_MODEL.NAV.DATA_TYPES' | translate)()" [loadEntries]="dataTypeLoadEntries" [loading]="dataTypeCreating()">
+      <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewDataType()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </app-object-selector>
+
+    <app-object-selector [title]="('DATA_MODEL.NAV.$layer.DIAGRAMS' | dataModelingTranslate)()" [loadEntries]="diagramLoadEntries" [loading]="diagramCreating()">
+      <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewDiagram()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </app-object-selector>
+
+    <app-object-selector [title]="('DATA_MODEL.NAV.$layer.NODES' | dataModelingTranslate)()" [loadEntries]="nodeLoadEntries" [loading]="nodeCreating()">
+      <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewNode()">
+        <mat-icon>add</mat-icon>
+      </button>
+    </app-object-selector>
+  </mat-nav-list>
+</div>

@@ -15,23 +15,23 @@ import { AuthService } from './core/auth/auth.service';
         <div class="top-bar__sidebar-toggle__wrapper">
           <button mat-icon-button (click)="toggleSidebar()">
             <mat-icon>menu</mat-icon>
-          </button>          
+          </button>
         </div>
       }
       <a class="top-bar__app-name" [routerLink]="homeLink()">{{ ('APP_TITLE' | translate)() }}</a>
       <a class="top-bar__app-name-short" [routerLink]="homeLink()">{{ ('APP_TITLE_SHORT' | translate)() }}</a>
+      @if (authService.isAuthenticated()) {
+        <div class="top-bar__menu">
+          <a [routerLink]="['/project']">{{ ('LINKS.PROJECT' | translate)() }}</a>
+          <a [routerLink]="['/model']">{{ ('LINKS.MODEL' | translate)() }}</a>
+        </div>
+      }
       <div class="top-bar__separator"></div>
       <ng-content />
     </mat-toolbar>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [
-    MatToolbar,
-    TranslatePipe,
-    MatIcon,
-    MatIconButton,
-    RouterLink,
-  ],
+  imports: [MatToolbar, TranslatePipe, MatIcon, MatIconButton, RouterLink],
 })
 export class TopBarComponent {
   authService = inject(AuthService);

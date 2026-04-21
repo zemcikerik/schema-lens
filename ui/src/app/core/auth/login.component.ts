@@ -4,7 +4,7 @@ import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angula
 import { AuthService, USERNAME_REGEX } from './auth.service';
 import { Router, RouterLink } from '@angular/router';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { finalize, map, mergeMap, of } from 'rxjs';
+import { finalize, forkJoin, map, mergeMap, of } from 'rxjs';
 import { LayoutAuthComponent } from '../layouts/layout-auth.component';
 import { MatInputModule } from '@angular/material/input';
 import { MatAnchor, MatButton } from '@angular/material/button';
@@ -13,9 +13,10 @@ import { FormatGenericValidationErrorsPipe } from '../../shared/pipes/format-gen
 import { ProjectService } from '../../projects/services/project.service';
 import { NgOptimizedImage } from '@angular/common';
 import {
-  ChangeLocaleButtonComponent
+  ChangeLocaleButtonComponent,
 } from '../../shared/components/change-locale-button/change-locale-button.component';
 import { IconLinkComponent } from '../../shared/components/icon-link/icon-link.component';
+import { DataModelService } from '../../data-models/services/data-model.service';
 
 @Component({
   selector: 'app-login',
@@ -40,6 +41,7 @@ export class LoginComponent {
   private authService = inject(AuthService);
   private destroyRef = inject(DestroyRef);
   private projectService = inject(ProjectService);
+  private dataModelService = inject(DataModelService);
   private router = inject(Router);
 
   loginForm = new FormGroup({
@@ -65,24 +67,28 @@ export class LoginComponent {
     this.loading.set(true);
     this.loginForm.disable();
 
-    this.authService.login(username, password).pipe(
-      mergeMap(authenticated => authenticated
-        ? this.projectService.loadProjects().pipe(map(() => true))
-        : of(false)),
-      takeUntilDestroyed(this.destroyRef),
-      finalize(() => {
-        this.loading.set(false);
-        this.loginForm.enable();
-      }),
-    ).subscribe({
-      next: async success => {
-        if (success) {
-          await this.router.navigate(['/project']);
-        } else {
-          this.error.set('AUTH.ERRORS.CREDENTIALS_WRONG');
-        }
-      },
-      error: () => this.error.set('GENERIC.ERROR_LABEL'),
-    });
+    this.authService
+      .login(username, password)
+      .pipe(
+        mergeMap(authenticated => (authenticated
+          ? forkJoin([this.projectService.loadProjects(), this.dataModelService.loadDataModels()]).pipe(map(() => true))
+          : of(false)),
+        ),
+        takeUntilDestroyed(this.destroyRef),
+        finalize(() => {
+          this.loading.set(false);
+          this.loginForm.enable();
+        }),
+      )
+      .subscribe({
+        next: async success => {
+          if (success) {
+            await this.router.navigate(['/project']);
+          } else {
+            this.error.set('AUTH.ERRORS.CREDENTIALS_WRONG');
+          }
+        },
+        error: () => this.error.set('GENERIC.ERROR_LABEL'),
+      });
   }
 }

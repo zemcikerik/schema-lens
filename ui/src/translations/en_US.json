@@ -3,6 +3,10 @@
   "APP_TITLE_SHORT": "SL",
   "404_LABEL": "404",
   "404_DESCRIPTION": "How did we get here?",
+  "LINKS": {
+    "PROJECT": "Projects",
+    "MODEL": "Models"
+  },
   "GENERIC": {
     "SAVE_LABEL": "Save",
     "EDIT_LABEL": "Edit",
@@ -23,6 +27,7 @@
       "PATTERN": "This field contains disallowed characters.",
       "EMAIL": "This e-mail is invalid.",
       "VERIFY_PASSWORD": "Verify password must match the password.",
+      "UNIQUE": "This value must be unique.",
       "UNKNOWN": "This field is invalid.",
       "IP_ADDRESS": {
         "INVALID": "This IP address is invalid.",
@@ -238,7 +243,8 @@
     "GRID_TOGGLE_LABEL": "Toggle Grid",
     "ENTITY_RELATIONSHIP": {
       "PRIMARY_KEY": "Primary Key",
-      "FOREIGN_KEY": "Foreign Key{count, plural, =1 {} other { '#'{position}}}"
+      "FOREIGN_KEY": "Foreign Key{count, plural, =1 {} other { '#'{position}}}",
+      "NO_FIELDS": "no fields"
     },
     "EXPORT": {
       "LABEL": "Export",
@@ -269,6 +275,206 @@
       "UPDATE_DESCRIPTION": "Update an existing frequently asked question. This question will be displayed only for the shown locale.",
       "CONFIRM_DELETE_TITLE": "Delete FAQ",
       "CONFIRM_DELETE_DESCRIPTION": "Are you sure you want to delete this frequently asked question?"
+    }
+  },
+  "DATA_MODEL": {
+    "LIST_LABEL": "Models",
+    "LIST_EMPTY": "There are no models available! You can create one by clicking \"Create model\" button.",
+    "BUTTON_CREATE": "Create model",
+    "CREATE_TITLE": "Create a new model",
+    "CREATION_ERROR_TITLE": "Creation error",
+    "LIST_COLUMN": {
+      "NAME_LABEL": "Name"
+    },
+    "DELETE_CONFIRM_DESCRIPTION": "Are you sure you want to delete this model?",
+    "NAV": {
+      "PROPERTIES": "Properties",
+      "LOGICAL": {
+        "DIAGRAMS": "Diagrams",
+        "NODES": "Entities"
+      },
+      "PHYSICAL": {
+        "NODES": "Tables"
+      },
+      "DATA_TYPES": "Data Types"
+    },
+    "CONTEXT": {
+      "SWITCHER_LABEL": "Modeling Context",
+      "LOGICAL": "Logical",
+      "ORACLE": "Physical (Oracle)"
+    },
+    "PROPERTIES": {
+      "TITLE": "Model Options",
+      "LABEL": "Model Properties",
+      "NAME_LABEL": "Model Name"
+    },
+    "DATA_TYPE": {
+      "NAME_LABEL": "Name",
+      "CREATE_TITLE": "Create New Data Type",
+      "SELECT_TITLE": "Select Data Type",
+      "EDIT_TITLE": "{name}",
+      "PROPERTIES_LABEL": "Data Type Properties",
+      "DELETE_TITLE": "Are you sure want to delete this data type?",
+      "DELETE_DESCRIPTION": "This operation cannot be reverted!",
+      "ERROR": {
+        "LOGICAL": {
+          "IN_USE": "This data type is still used by an attribute!"
+        },
+        "PHYSICAL": {
+          "IN_USE": "This data type is still used by a column!"
+        }
+      }
+    },
+    "NODE": {
+      "PROPERTIES_LABEL": "Properties",
+      "NAME_LABEL": "Name",
+      "LOGICAL": {
+        "CREATE_TITLE": "Create Entity",
+        "EDIT_TITLE": "{name}",
+        "FIELDS_LABEL": "Attributes",
+        "ADD_FIELD_LABEL": "Add attribute",
+        "EDIT_FIELD_LABEL": "Edit attribute",
+        "DELETE_TITLE": "Delete Entity",
+        "DELETE_DESCRIPTION": "Are you sure you want to delete this entity? This will delete all attributes and relationships associated with it.",
+        "DELETE_FIELD_TITLE": "Delete Attribute",
+        "DELETE_FIELD_DESCRIPTION": "Are you sure you want to delete this attribute?"
+      },
+      "PHYSICAL": {
+        "CREATE_TITLE": "Create Table",
+        "EDIT_TITLE": "{name}",
+        "FIELDS_LABEL": "Columns",
+        "ADD_FIELD_LABEL": "Add column",
+        "EDIT_FIELD_LABEL": "Edit column",
+        "DELETE_TITLE": "Delete Table",
+        "DELETE_DESCRIPTION": "Are you sure you want to delete this table? This will delete all columns and relationships associated with it.",
+        "DELETE_FIELD_TITLE": "Delete Column",
+        "DELETE_FIELD_DESCRIPTION": "Are you sure you want to delete this column?"
+      },
+      "FIELD_PROPERTIES": {
+        "NAME": "Name",
+        "DATA_TYPE": "Type",
+        "NULLABLE": "Nullable",
+        "PRIMARY_KEY": "Primary key"
+      },
+      "FIELDS_TABLE": {
+        "LOGICAL": {
+          "EMPTY_LABEL": "This entity does not contain any attributes.",
+          "EDIT_FIELD": "Edit attribute",
+          "DELETE_FIELD": "Delete attribute",
+          "GO_TO_EDGE": "Go to relationship",
+          "FROM_EDGE": "From relationship"
+        },
+        "PHYSICAL": {
+          "EMPTY_LABEL": "This table does not contain any columns.",
+          "EDIT_FIELD": "Edit column",
+          "DELETE_FIELD": "Delete column",
+          "GO_TO_EDGE": "Go to relationship",
+          "FROM_EDGE": "From relationship"
+        }
+      }
+    },
+    "EDGE": {
+      "PROPERTIES_LABEL": "Properties",
+      "LOGICAL": {
+        "TYPE_LABEL": "Relationship Type",
+        "TYPE_ONE_TO_ONE": "1:1 (One to One)",
+        "TYPE_ONE_TO_MANY": "1:N (One to Many)",
+        "IDENTIFYING_LABEL": "Identifying",
+        "MANDATORY_LABEL": "Mandatory"
+      },
+      "PHYSICAL": {
+        "TYPE_LABEL": "Relationship Type",
+        "TYPE_ONE_TO_ONE": "1:1 (One to One)",
+        "TYPE_ONE_TO_MANY": "1:N (One to Many)",
+        "IDENTIFYING_LABEL": "Identifying",
+        "MANDATORY_LABEL": "Mandatory"
+      }
+    },
+    "MODELER": {
+      "ACTIONS": {
+        "LOGICAL": {
+          "ADD_NODE_TOOLTIP": "Add entity",
+          "ADD_EXISTING_NODE_LABEL": "Add Existing Entity",
+          "CONNECT_NODES_TOOLTIP": "Create relationship"
+        },
+        "PHYSICAL": {
+          "ADD_NODE_TOOLTIP": "Add table",
+          "ADD_EXISTING_NODE_LABEL": "Add Existing Table",
+          "CONNECT_NODES_TOOLTIP": "Create relationship"
+        },
+        "VERIFY_TOOLTIP": "Verify"
+      },
+      "DIALOGS": {
+        "ADD_EXISTING_NODE": {
+          "LOGICAL": {
+            "TITLE": "Add Existing Entity",
+            "EMPTY_LABEL": "No available entities to add."
+          },
+          "PHYSICAL": {
+            "TITLE": "Add Existing Table",
+            "EMPTY_LABEL": "No available tables to add."
+          }
+        },
+        "DELETE_NODE": {
+          "LOGICAL": {
+            "TITLE": "Remove Entity from Diagram",
+            "DESCRIPTION": "The entity will be removed from this diagram. It will remain available in the data model and can be added to other diagrams.",
+            "DELETE_FROM_MODEL_LABEL": "Permanently delete this entity from the data model (removes all of its attributes and relationships)",
+            "ERROR_TITLE": "Delete Entity Error"
+          },
+          "PHYSICAL": {
+            "TITLE": "Remove Table from Diagram",
+            "DESCRIPTION": "The table will be removed from this diagram. It will remain available in the data model and can be added to other diagrams.",
+            "DELETE_FROM_MODEL_LABEL": "Permanently delete this table from the data model (removes all of its columns and relationships)",
+            "ERROR_TITLE": "Delete Table Error"
+          }
+        },
+        "DELETE_EDGE": {
+          "LOGICAL": {
+            "TITLE": "Delete Relationship",
+            "DESCRIPTION": "Are you sure you want to permanently delete this relationship from the data model?",
+            "ERROR_TITLE": "Delete Relationship Error"
+          },
+          "PHYSICAL": {
+            "TITLE": "Delete Relationship",
+            "DESCRIPTION": "Are you sure you want to permanently delete this relationship from the data model?",
+            "ERROR_TITLE": "Delete Relationship Error"
+          }
+        },
+        "SAVE_POSITIONS": {
+          "ERROR_TITLE": "Save Layout Error"
+        },
+        "DELETE_DIAGRAM": {
+          "TITLE": "Delete Diagram",
+          "DESCRIPTION": "Are you sure you want to delete this diagram?"
+        },
+        "UNSAVED_CHANGES": {
+          "TITLE": "Unsaved Changes",
+          "DESCRIPTION": "You have unsaved layout changes. Are you sure you want to leave?"
+        },
+        "INVALID_PROPERTIES": {
+          "TITLE": "Invalid Properties",
+          "DESCRIPTION": "Please fix validation errors before continuing."
+        }
+      },
+      "PROPERTIES": {
+        "LOGICAL": {
+          "DIAGRAM_TITLE": "Diagram",
+          "NODE_TITLE": "Entity",
+          "EDGE_TITLE": "Relationship"
+        },
+        "PHYSICAL": {
+          "DIAGRAM_TITLE": "Diagram",
+          "NODE_TITLE": "Table",
+          "EDGE_TITLE": "Relationship"
+        }
+      },
+      "DIAGRAM": {
+        "PROPERTIES_LABEL": "Properties",
+        "NAME_LABEL": "Name",
+        "DANGER_ZONE_LABEL": "Danger Zone",
+        "DELETE_LABEL": "Delete Diagram"
+      }
     }
   }
 }

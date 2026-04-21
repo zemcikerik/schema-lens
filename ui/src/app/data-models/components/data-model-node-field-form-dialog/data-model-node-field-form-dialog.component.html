@@ -1,0 +1,32 @@
+@let titleKey = 'DATA_MODEL.NODE.$layer.' + (data.field ? 'EDIT_FIELD_LABEL' : 'ADD_FIELD_LABEL');
+<h2 mat-dialog-title>{{ (titleKey | dataModelingTranslate)() }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="data-model-node-editor__field-form">
+    <mat-form-field class="w-100">
+      <mat-label>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.NAME' | translate)() }}</mat-label>
+      <input matInput formControlName="name" required>
+      @if (form.controls.name.invalid) {
+        <mat-error>{{ (form.controls.name.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+
+    <app-data-model-data-type-name-field
+      [dataTypes]="data.dataTypes"
+      [control]="form.controls.typeName"
+      [label]="('DATA_MODEL.NODE.FIELD_PROPERTIES.DATA_TYPE' | translate)()"/>
+
+    <mat-checkbox formControlName="isPrimaryKey">
+      {{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.PRIMARY_KEY' | translate)() }}
+    </mat-checkbox>
+
+    <mat-checkbox formControlName="isNullable">
+      {{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.NULLABLE' | translate)() }}
+    </mat-checkbox>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Cancel</button>
+  <button mat-flat-button (click)="confirm()" [disabled]="form.invalid">Confirm</button>
+</mat-dialog-actions>

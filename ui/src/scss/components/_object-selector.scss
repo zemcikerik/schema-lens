@@ -1,0 +1,48 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.object-selector {
+  --mat-list-list-item-one-line-container-height: 2.5rem;
+
+  @include mat.expansion-overrides((
+    container-background-color: transparent,
+  ));
+
+  .mat-expansion-panel-header {
+    padding-left: 1rem;
+  }
+
+  &.mat-expansion-panel:not([class*="mat-elevation-z"]) {
+    @include mat.elevation(0);
+  }
+
+  .mat-content.mat-content-hide-toggle {
+    margin-right: 0;
+  }
+
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+
+    > app-progress-spinner {
+      display: block;
+      margin-right: 1rem;
+    }
+  }
+
+  &__error {
+    @include mat.icon-button-color(t.$theme, $color-variant: error);
+  }
+
+  // data-model specific
+  .mat-expansion-panel-header-title {
+    text-wrap: nowrap;
+  }
+
+  .mat-expansion-panel-header-description {
+    display: flex;
+    justify-content: right;
+  }
+}

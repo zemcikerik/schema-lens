@@ -1,25 +1,19 @@
 @use '@angular/material' as mat;
 @use '../theme' as t;
 
-.diagram-export {
-  background-color: mat.get-theme-color(t.$theme, surface-container-low);
-  border: 1px solid mat.get-theme-color(t.$theme, outline-variant);
-  border-radius: 2rem;
+.diagram-export__dialog {
+  mat-checkbox,
+  mat-form-field,
+  mat-slider,
+  &__quality mat-label {
+    display: block;
+  }
 
-  &__dialog {
-    mat-checkbox,
-    mat-form-field,
-    mat-slider,
-    &__quality mat-label {
-      display: block;
-    }
+  mat-checkbox {
+    padding-bottom: 0.5rem;
+  }
 
-    mat-checkbox {
-      padding-bottom: 0.5rem;
-    }
-
-    mat-slider {
-      width: calc(100% - 10px);
-    }
+  mat-slider {
+    width: calc(100% - 10px);
   }
 }

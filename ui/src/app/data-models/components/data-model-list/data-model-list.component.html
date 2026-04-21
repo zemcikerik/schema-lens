@@ -1,0 +1,14 @@
+<app-content-card>
+  <app-layout-header-and-content [title]="('DATA_MODEL.LIST_LABEL' | translate)()" [includeSpacing]="dataModels().length === 0">
+    <a ngProjectAs="header-action" mat-flat-button [routerLink]="['/model', 'create']">
+      <mat-icon appIconEmphasis="high">add</mat-icon>
+      {{ ('DATA_MODEL.BUTTON_CREATE' | translate)() }}
+    </a>
+
+    @if (dataModels().length > 0) {
+      <app-data-model-list-table [dataModels]="dataModels()" (selected)="openDataModel($event)" />
+    } @else {
+      <app-alert type="info">{{ ('DATA_MODEL.LIST_EMPTY' | translate)() }}</app-alert>
+    }
+  </app-layout-header-and-content>
+</app-content-card>

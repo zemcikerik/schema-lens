@@ -2,7 +2,7 @@ package dev.zemco.schemalens.modeling.edges
 
 import dev.zemco.schemalens.validation.OnCreate
 import dev.zemco.schemalens.validation.OnUpdate
-import jakarta.validation.constraints.NotEmpty
+import jakarta.validation.constraints.NotNull
 import jakarta.validation.constraints.Null
 
 data class DataModelEdgeDto(
@@ -45,6 +45,6 @@ data class DataModelEdgeInputDto(
     var isMandatory: Boolean,
     var isIdentifying: Boolean,
     @field:Null(groups = [OnCreate::class])
-    @field:NotEmpty(groups = [OnUpdate::class])
+    @field:NotNull(groups = [OnUpdate::class])
     val fields: List<DataModelEdgeFieldDto>? = null,
 )

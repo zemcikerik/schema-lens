@@ -8,7 +8,11 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
         <div class="layout-header-and-content__header__prefix">
           <ng-content select="header-prefix" />
         </div>
-        <h2>{{ title() }}</h2>
+        @if (titleLevel() === 'normal') {
+          <h2>{{ title() }}</h2>
+        } @else {
+          <h3>{{ title() }}</h3>
+        }
         <div class="layout-header-and-content__header__action">
           <ng-content select="header-action" />
         </div>
@@ -22,6 +26,7 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
 })
 export class LayoutHeaderAndContentComponent {
   title = input.required<string>();
+  titleLevel = input<'normal' | 'low'>('normal');
   includeSpacing = input<boolean>(false);
   fullHeight = input<boolean>(false);
 }

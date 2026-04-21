@@ -18,8 +18,7 @@ import { SidebarResizeTargetDirective } from './sidebar-resize-target.directive'
       </aside>
       <div
         class="layout-content-with-sidebar__resizer"
-        appHorizontalResizer
-        [resizerTarget]="sidebarResizeTarget"
+        [appHorizontalResizer]="sidebarResizeTarget"
         [resizerReverse]="reverse()"
       ></div>
       <div class="layout-content-with-sidebar__content">
