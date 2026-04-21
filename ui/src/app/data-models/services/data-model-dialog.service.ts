@@ -14,6 +14,9 @@ import {
   dataModelDiagramNameValidators,
   dataModelNodeNameValidators,
 } from '../validators/data-model-name.validators';
+import {
+  DEFAULT_NODE_FIELD_ADD_BUTTON_ID
+} from '../components/data-model-node-editor/data-model-node-editor.component';
 
 @Injectable({ providedIn: 'root' })
 export class DataModelDialogService {
@@ -54,7 +57,8 @@ export class DataModelDialogService {
   openFieldFormDialog(field?: DataModelField): Observable<DataModelField | null> {
     const data: DataModelNodeFieldFormDialogData = { field: field ?? null, dataTypes: this.store.dataTypes() };
 
-    return this.matDialog.open(DataModelNodeFieldFormDialogComponent, { data })
+    return this.matDialog
+      .open(DataModelNodeFieldFormDialogComponent, { data, restoreFocus: `#${DEFAULT_NODE_FIELD_ADD_BUTTON_ID}` })
       .afterClosed()
       .pipe(map(result => result ?? null));
   }

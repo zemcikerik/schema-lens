@@ -1,7 +1,8 @@
 import { inject, Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 import { DataModelDiagram } from '../models/data-model-diagram.model';
 import { DataModelDiagramHttpClientService } from './data-model-diagram-http-client.service';
+import { catchSpecificHttpStatusError } from '../../core/rxjs-pipes';
 
 @Injectable({
   providedIn: 'root',
@@ -9,8 +10,10 @@ import { DataModelDiagramHttpClientService } from './data-model-diagram-http-cli
 export class DataModelDiagramService {
   private diagramHttpClient = inject(DataModelDiagramHttpClientService);
 
-  getDiagram(dataModelId: number, diagramId: number): Observable<DataModelDiagram> {
-    return this.diagramHttpClient.getDiagram(dataModelId, diagramId);
+  getDiagram(dataModelId: number, diagramId: number): Observable<DataModelDiagram | null> {
+    return this.diagramHttpClient.getDiagram(dataModelId, diagramId).pipe(
+      catchSpecificHttpStatusError(404, () => of(null)),
+    );
   }
 
   createDiagram(dataModelId: number, diagram: DataModelDiagram): Observable<DataModelDiagram> {

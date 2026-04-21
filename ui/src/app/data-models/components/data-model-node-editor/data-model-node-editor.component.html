@@ -9,8 +9,9 @@
   <app-section-header [title]="('DATA_MODEL.NODE.$layer.FIELDS_LABEL' | dataModelingTranslate)()">
     <button
       mat-icon-button
-      (click)="addDirectField()"
+      [id]="addFieldButtonId()"
       [matTooltip]="('DATA_MODEL.NODE.$layer.ADD_FIELD_LABEL' | dataModelingTranslate)()"
+      (click)="addDirectField()"
     >
       <mat-icon>add</mat-icon>
     </button>

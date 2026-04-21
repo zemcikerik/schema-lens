@@ -1,8 +1,9 @@
-@if (store.loading() && !store.model()) {
+@if (store.loading()) {
   <mat-progress-bar mode="indeterminate" />
 } @else if (store.error()) {
-  <!-- TODO: verify -->
-  <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+  <div class="data-modeler__error">
+    <app-alert type="error">{{ ('GENERIC.ERROR_LABEL' | translate)() }}</app-alert>
+  </div>
 } @else {
   <div
     class="data-modeler"

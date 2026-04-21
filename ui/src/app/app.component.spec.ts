@@ -13,6 +13,7 @@ import { TopBarComponent } from './top-bar.component';
 import { AuthService } from './core/auth/auth.service';
 import { HasRolePipe } from './core/pipes/has-role.pipe';
 import { TranslatePipe } from './core/translate/translate.pipe';
+import { DataModelService } from './data-models/services/data-model.service';
 
 describe('AppComponent', () => {
   ngMocks.faster();
@@ -23,7 +24,10 @@ describe('AppComponent', () => {
       trySetLocaleFromStorageOrDefault: () => of(null),
     })
     .mock(ProjectService, {
-      loadProjects: () => of(null),
+      loadProjects: () => of([]),
+    })
+    .mock(DataModelService, {
+      loadDataModels: () => of([]),
     })
     .mock(RouteDataService, {
       routeData: signal({ ...DEFAULT_ROUTE_DATA })

@@ -32,6 +32,10 @@
     }
   }
 
+  &__error {
+    padding: 1rem;
+  }
+
   &__connect-action.toggled {
     color: mat.get-theme-color(t.$theme, primary);
   }

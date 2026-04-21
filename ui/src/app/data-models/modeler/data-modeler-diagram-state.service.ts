@@ -90,6 +90,7 @@ export class DataModelerDiagramState {
     for (const node of modification.updatedNodes) {
       if (node.nodeId && this.visibleNodeIds.has(node.nodeId)) {
         this._patches$.next({ type: 'node:update', node: this.resolveAndMapNode(node) });
+        diagramStructureChanged = true;
       }
     }
 

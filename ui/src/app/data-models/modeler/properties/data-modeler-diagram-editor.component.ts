@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, DestroyRef, effect, inject } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
@@ -28,6 +28,7 @@ export class DataModelerDiagramEditorComponent implements DataModelEditor {
   private dialogs = inject(DataModelerDialogService);
   private router = inject(Router);
   private fb = inject(FormBuilder);
+  private destroyRef = inject(DestroyRef);
 
   readonly form = this.fb.nonNullable.group({
     name: this.fb.nonNullable.control('', dataModelDiagramNameValidators()),
@@ -79,7 +80,7 @@ export class DataModelerDiagramEditorComponent implements DataModelEditor {
           return of(null);
         }),
         filter(result => result !== null),
-        takeUntilDestroyed(),
+        takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(() => this.router.navigate(['/model', this.store.dataModelId]));
   }

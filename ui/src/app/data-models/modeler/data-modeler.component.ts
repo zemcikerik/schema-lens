@@ -22,10 +22,10 @@ import { BlockExitDirective } from '../../core/directives/block-exit.directive';
 import { SchemaDiagramConnectNodes } from '../../diagrams/schema/model/schema-diagram-connect-nodes.model';
 import { MatProgressBar } from '@angular/material/progress-bar';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { catchError, filter, mergeMap, of, switchMap, tap } from 'rxjs';
+import { catchError, defer, filter, map, mergeMap, NEVER, Observable, of, switchMap, tap } from 'rxjs';
 import { AlertComponent } from '../../shared/components/alert/alert.component';
 import { DataModelerDiagramState } from './data-modeler-diagram-state.service';
 import { DataModelStore } from '../data-model.store';
@@ -65,6 +65,7 @@ export class DataModelerComponent {
   private dialogs = inject(DataModelerDialogService);
   private destroyRef = inject(DestroyRef);
   private injector = inject(Injector);
+  private router = inject(Router);
   private diagram = viewChild(SchemaDiagramComponent);
 
   backLink = computed(() => '/model/' + this.dataModelId());
@@ -72,15 +73,21 @@ export class DataModelerComponent {
   connectMode = signal<boolean>(false);
 
   constructor() {
-    const ids = computed(() => [this.dataModelId(), this.diagramId()] as const);
-
-    // TODO: validate, cleanup css
-    toObservable(ids)
+    toObservable(computed(() => [this.dataModelId(), this.diagramId()] as const))
       .pipe(
-        switchMap(([dataModelId, diagramId]) =>
-          this.store.loadModel(+dataModelId)
-            .pipe(switchMap(() => this.store.loadDiagram(+diagramId))),
-        ),
+        map(([dataModelId, diagramId]) => [+dataModelId, +diagramId] as const),
+        switchMap(([dataModelId, diagramId]) => {
+          if (isNaN(dataModelId) || isNaN(diagramId)) {
+            return this.redirectTo404();
+          }
+
+          return this.store
+            .loadModel(dataModelId)
+            .pipe(
+              switchMap(model => model ? this.store.loadDiagram(diagramId) : this.redirectTo404()),
+              mergeMap(diagram => diagram ? of(diagram) : this.redirectTo404()),
+            );
+        }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(diagram =>
@@ -181,5 +188,9 @@ export class DataModelerComponent {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
+  }
+
+  private redirectTo404(): Observable<never> {
+    return defer(() => this.router.navigate(['/404'])).pipe(mergeMap(() => NEVER));
   }
 }

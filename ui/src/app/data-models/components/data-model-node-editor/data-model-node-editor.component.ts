@@ -35,6 +35,8 @@ import { DataModelEditor } from '../data-model-editor/data-model-editor.componen
 import { DataModelModification } from '../../models/data-model.model';
 import { dataModelNodeNameValidators } from '../../validators/data-model-name.validators';
 
+export const DEFAULT_NODE_FIELD_ADD_BUTTON_ID = 'node-editor-add-field-button';
+
 @Component({
   selector: 'app-data-model-node-editor',
   templateUrl: './data-model-node-editor.component.html',
@@ -56,6 +58,7 @@ import { dataModelNodeNameValidators } from '../../validators/data-model-name.va
 export class DataModelNodeEditorComponent implements DataModelEditor {
   node = input.required<DataModelNode>();
   compact = input<boolean>(false);
+  addFieldButtonId = input<string>(DEFAULT_NODE_FIELD_ADD_BUTTON_ID);
   goToEdge = output<DataModelEdge>();
 
   nodeId = computed(() => this.node().nodeId ?? -1);

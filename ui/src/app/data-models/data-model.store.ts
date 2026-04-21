@@ -57,8 +57,16 @@ export class DataModelStore {
     });
   }
 
-  loadDiagram(diagramId: number): Observable<DataModelDiagram> {
-    return this.diagramService.getDiagram(this.dataModelId, diagramId);
+  loadDiagram(diagramId: number): Observable<DataModelDiagram | null> {
+    return defer(() => {
+      this._loading.set(true);
+      this._error.set(null);
+
+      return this.diagramService.getDiagram(this.dataModelId, diagramId).pipe(
+        tap({ error: err => this._error.set(err) }),
+        finalize(() => this._loading.set(false)),
+      );
+    });
   }
 
    createNode(node: DataModelNodeSummary): Observable<DataModelModification> {
