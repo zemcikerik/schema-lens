@@ -27,7 +27,8 @@ import ZoomScrollModule from 'diagram-js/lib/navigation/zoomscroll';
 import type { ModuleDeclaration } from 'didi';
 import ElementFactory from 'diagram-js/lib/core/ElementFactory';
 import Canvas from 'diagram-js/lib/core/Canvas';
-import type { Connection, ElementLike, Parent, Root, Shape } from 'diagram-js/lib/model/Types';
+import type { Connection, Element, ElementLike, Parent, Root, Shape } from 'diagram-js/lib/model/Types';
+import { getBBox } from 'diagram-js/lib/util/Elements';
 import { AngularHostContextModuleFactory } from './angular/angular-host-context.module';
 import { GridBackground, GridBackgroundModule } from './util/grid-background.module';
 import EventBus from 'diagram-js/lib/core/EventBus';
@@ -36,6 +37,8 @@ import type { Point } from 'diagram-js/lib/util/Types';
 import Selection from 'diagram-js/lib/features/selection/Selection';
 import BaseLayouter from 'diagram-js/lib/layout/BaseLayouter';
 import ConnectionDocking from 'diagram-js/lib/layout/ConnectionDocking';
+
+const FOCUS_PADDING = 80;
 
 @Component({
   selector: 'app-diagram-host',
@@ -204,6 +207,31 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
     });
 
     this._gridVisible.set(visible);
+  }
+
+  focusElement(element: ElementLike): void {
+    this.runInDiagramContext(() => {
+      const bounds = getBBox(element as Element);
+      const { outer, scale } = this.canvas.viewbox();
+
+      const requiredZoom = Math.min(
+        outer.width / (Math.max(bounds.width, 1) + FOCUS_PADDING * 2),
+        outer.height / (Math.max(bounds.height, 1) + FOCUS_PADDING * 2),
+      );
+      const zoom = Math.min(scale, requiredZoom);
+
+      const centerX = bounds.x + bounds.width / 2;
+      const centerY = bounds.y + bounds.height / 2;
+
+      this.canvas.viewbox({
+        x: centerX - outer.width / zoom / 2,
+        y: centerY - outer.height / zoom / 2,
+        width: outer.width / zoom,
+        height: outer.height / zoom,
+      });
+
+      this.selection.select([element]);
+    });
   }
 
   unselectAll(): void {

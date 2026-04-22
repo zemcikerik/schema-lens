@@ -465,6 +465,22 @@
         "INVALID_PROPERTIES": {
           "TITLE": "Invalid Properties",
           "DESCRIPTION": "Please fix validation errors before continuing."
+        },
+        "GO_TO_EDGE": {
+          "UNSUPPORTED": {
+            "TITLE": "Not Supported",
+            "DESCRIPTION": "This feature is currently not supported :("
+          },
+          "NOT_VISIBLE": {
+            "LOGICAL": {
+              "TITLE": "Relationship Not Visible",
+              "DESCRIPTION": "This relationship is not visible in the current diagram."
+            },
+            "PHYSICAL": {
+              "TITLE": "Relationship Not Visible",
+              "DESCRIPTION": "This relationship is not visible in the current diagram."
+            }
+          }
         }
       },
       "PROPERTIES": {

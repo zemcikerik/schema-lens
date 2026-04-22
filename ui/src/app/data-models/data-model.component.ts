@@ -9,6 +9,10 @@ import { AlertComponent } from '../shared/components/alert/alert.component';
 import { TranslatePipe } from '../core/translate/translate.pipe';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DataModelStore } from './data-model.store';
+import {
+  GO_TO_EDGE_HANDLER,
+  UnsupportedDataModelGoToEdgeHandler,
+} from './services/data-model-go-to-edge-handler.service';
 
 @Component({
   selector: 'app-data-model',
@@ -23,6 +27,9 @@ import { DataModelStore } from './data-model.store';
     AlertComponent,
     TranslatePipe,
   ],
+  providers: [
+    { provide: GO_TO_EDGE_HANDLER, useClass: UnsupportedDataModelGoToEdgeHandler },
+  ]
 })
 export class DataModelComponent {
   dataModelId = input.required<string>();

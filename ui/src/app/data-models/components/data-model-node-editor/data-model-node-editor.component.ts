@@ -6,7 +6,6 @@ import {
   effect,
   inject,
   input,
-  output,
   signal,
   untracked,
 } from '@angular/core';
@@ -36,6 +35,7 @@ import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 import { DataModelEditor } from '../data-model-editor/data-model-editor.component';
 import { DataModelModification, mergeDataModelModification } from '../../models/data-model.model';
 import { dataModelNodeNameValidators } from '../../validators/data-model-name.validators';
+import { GO_TO_EDGE_HANDLER } from '../../services/data-model-go-to-edge-handler.service';
 
 export const DEFAULT_NODE_FIELD_ADD_BUTTON_ID = 'node-editor-add-field-button';
 
@@ -61,11 +61,11 @@ export class DataModelNodeEditorComponent implements DataModelEditor {
   node = input.required<DataModelNode>();
   compact = input<boolean>(false);
   addFieldButtonId = input<string>(DEFAULT_NODE_FIELD_ADD_BUTTON_ID);
-  goToEdge = output<DataModelEdge>();
 
   nodeId = computed(() => this.node().nodeId ?? -1);
 
   store = inject(DataModelStore);
+  private goToEdgeHandler = inject(GO_TO_EDGE_HANDLER);
   private fieldResolver = inject(DataModelNodeFieldResolver);
   private fb = inject(FormBuilder);
   private modelDialogService = inject(DataModelDialogService);
@@ -201,6 +201,10 @@ export class DataModelNodeEditorComponent implements DataModelEditor {
 
         this.edgeFieldModifications = [...modificationsWithoutCurrentField, { edge, field: updated }];
       });
+  }
+
+  goToEdge(edge: DataModelEdge): void {
+    this.goToEdgeHandler.goToEdge(edge);
   }
 
   save(): Observable<DataModelModification> | null {

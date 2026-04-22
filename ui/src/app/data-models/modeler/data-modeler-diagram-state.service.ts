@@ -202,6 +202,14 @@ export class DataModelerDiagramState {
     this.markPositionsUnsaved();
   }
 
+  isEdgeVisible(edgeId: number): boolean {
+    return this.visibleEdgeIds.has(edgeId);
+  }
+
+  focusEdge(edgeId: number): void {
+    this._patches$.next({ type: 'edge:focus', edgeId });
+  }
+
   markPositionsUnsaved(): void {
     this._hasUnsavedPositions.set(true);
   }

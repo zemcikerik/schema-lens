@@ -7,9 +7,11 @@ export type SchemaDiagramPatchType =
   | 'node:add'
   | 'node:update'
   | 'node:remove'
+  | 'node:focus'
   | 'edge:add'
   | 'edge:update'
   | 'edge:remove'
+  | 'edge:focus'
   | 'layout:auto'
   | 'diagram:clear';
 
@@ -33,6 +35,11 @@ export interface RemoveNodePatch extends BaseSchemaDiagramPatch {
   nodeId: number;
 }
 
+export interface FocusNodePatch extends BaseSchemaDiagramPatch {
+  type: 'node:focus';
+  nodeId: number;
+}
+
 export interface AddEdgePatch extends BaseSchemaDiagramPatch {
   type: 'edge:add';
   edge: SchemaDiagramEdge;
@@ -49,6 +56,11 @@ export interface RemoveEdgePatch extends BaseSchemaDiagramPatch {
   edgeId: number;
 }
 
+export interface FocusEdgePatch extends BaseSchemaDiagramPatch {
+  type: 'edge:focus';
+  edgeId: number;
+}
+
 export interface AutoLayoutPatch extends BaseSchemaDiagramPatch {
   type: 'layout:auto';
 }
@@ -61,8 +73,10 @@ export type SchemaDiagramPatch =
   | AddNodePatch
   | UpdateNodePatch
   | RemoveNodePatch
+  | FocusNodePatch
   | AddEdgePatch
   | UpdateEdgePatch
   | RemoveEdgePatch
+  | FocusEdgePatch
   | AutoLayoutPatch
   | ClearDiagramPatch;

@@ -21,6 +21,8 @@ import { EMPTY, Observable, switchMap } from 'rxjs';
 import {
   AddEdgePatch,
   AddNodePatch,
+  FocusEdgePatch,
+  FocusNodePatch,
   RemoveEdgePatch,
   RemoveNodePatch,
   SchemaDiagramPatch,
@@ -149,6 +151,10 @@ export class SchemaDiagramComponent implements AfterViewInit {
         this.updateEdge(patch);
       } else if (patch.type === 'edge:remove') {
         this.removeEdge(patch);
+      } else if (patch.type === 'node:focus') {
+        this.focusNode(patch);
+      } else if (patch.type === 'edge:focus') {
+        this.focusEdge(patch);
       } else if (patch.type === 'layout:auto') {
         this.autoLayout();
       } else if (patch.type === 'diagram:clear') {
@@ -256,6 +262,20 @@ export class SchemaDiagramComponent implements AfterViewInit {
 
     this.diagramHost().removeConnection(entry.connection);
     delete this.edges[edgeId];
+  }
+
+  private focusNode({ nodeId }: FocusNodePatch): void {
+    const entry = this.nodes[nodeId];
+    if (entry) {
+      this.diagramHost().focusElement(entry.shape);
+    }
+  }
+
+  private focusEdge({ edgeId }: FocusEdgePatch): void {
+    const entry = this.edges[edgeId];
+    if (entry) {
+      this.diagramHost().focusElement(entry.connection);
+    }
   }
 
   private autoLayout(): void {
