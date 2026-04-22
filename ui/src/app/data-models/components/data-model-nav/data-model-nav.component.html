@@ -13,7 +13,7 @@
       appSidebarClose
     >{{ ('DATA_MODEL.NAV.PROPERTIES' | translate)() }}</a>
 
-    <app-object-selector [title]="('DATA_MODEL.NAV.DATA_TYPES' | translate)()" [loadEntries]="dataTypeLoadEntries" [loading]="dataTypeCreating()">
+    <app-object-selector [title]="('DATA_MODEL.NAV.$layer.DATA_TYPES' | dataModelingTranslate)()" [loadEntries]="dataTypeLoadEntries" [loading]="dataTypeCreating()">
       <button matIconButton object-selector-action (click)="$event.stopPropagation(); addNewDataType()">
         <mat-icon>add</mat-icon>
       </button>

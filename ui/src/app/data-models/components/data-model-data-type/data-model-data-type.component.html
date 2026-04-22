@@ -1,5 +1,5 @@
 <app-layout-header-and-content
-  [title]="('DATA_MODEL.DATA_TYPE.EDIT_TITLE' | translate: { name: dataType()?.name ?? '' })()"
+  [title]="('DATA_MODEL.DATA_TYPE.$layer.EDIT_TITLE' | dataModelingTranslate: { name: dataType()?.name ?? '' })()"
   [includeSpacing]="loading() || !!error()"
 >
   @if (error()) {
@@ -7,10 +7,10 @@
   }
 
   <form [formGroup]="propertiesForm">
-    <app-section-header [title]="('DATA_MODEL.DATA_TYPE.PROPERTIES_LABEL' | translate)()"/>
+    <app-section-header [title]="('DATA_MODEL.DATA_TYPE.$layer.PROPERTIES_LABEL' | dataModelingTranslate)()"/>
 
     <mat-form-field class="w-100">
-      <mat-label>{{ ('DATA_MODEL.DATA_TYPE.NAME_LABEL' | translate)() }}</mat-label>
+      <mat-label>{{ ('DATA_MODEL.DATA_TYPE.$layer.NAME_LABEL' | dataModelingTranslate)() }}</mat-label>
       <input matInput required formControlName="name">
       @if (nameControl.invalid) {
         <mat-error>{{ (nameControl.errors | formatGenericValidationErrors)() }}</mat-error>

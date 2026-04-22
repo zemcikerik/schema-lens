@@ -33,8 +33,8 @@ export class DataModelingContextState {
       map: (match, context) => ['/model', match[1], context, 'properties'],
     },
     {
-      pattern: /^\/model\/([^/]+)\/(logical|oracle)\/data-type\/([^/]+)$/,
-      map: (match, context) => ['/model', match[1], context, 'data-type', match[3]],
+      pattern: /^\/model\/([^/]+)\/(logical|oracle)\/(domain|data-type)\/([^/]+)$/,
+      map: (match, context) => ['/model', match[1], context, this.mapDataTypeSegment(context), match[4]],
     },
     {
       pattern: /^\/model\/([^/]+)\/(logical|oracle)\/(entity|table)\/([^/]+)$/,
@@ -82,6 +82,10 @@ export class DataModelingContextState {
 
   private mapNodeSegment(context: SwitchableDataModelingContext): 'entity' | 'table' {
     return context === 'logical' ? 'entity' : 'table';
+  }
+
+  private mapDataTypeSegment(context: SwitchableDataModelingContext): 'domain' | 'data-type' {
+    return context === 'logical' ? 'domain' : 'data-type';
   }
 
   private extractDataModelId(path: string): string | null {

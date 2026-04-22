@@ -47,7 +47,13 @@ export class DataModelNavComponent {
     this.store.dataTypes().map(dataType => ({
       id: dataType.typeId,
       label: dataType.name,
-      routerLink: ['/model', this.dataModelId(), this.contextState.context(), 'data-type', dataType.typeId as number],
+      routerLink: [
+        '/model',
+        this.dataModelId(),
+        this.contextState.context(),
+        this.contextState.context() === 'logical' ? 'domain' : 'data-type',
+        dataType.typeId as number,
+      ],
     } satisfies ObjectSelectorEntry))
   ));
 

@@ -14,7 +14,7 @@
     <app-data-model-data-type-name-field
       [dataTypes]="data.dataTypes"
       [control]="form.controls.typeName"
-      [label]="('DATA_MODEL.NODE.FIELD_PROPERTIES.DATA_TYPE' | translate)()"/>
+      [label]="('DATA_MODEL.NODE.FIELD_PROPERTIES.$layer.DATA_TYPE' | dataModelingTranslate)()"/>
 
     <mat-checkbox formControlName="isPrimaryKey">
       {{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.PRIMARY_KEY' | translate)() }}

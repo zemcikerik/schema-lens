@@ -51,7 +51,7 @@ export const appRoutes: Route[] = [
         data: { dataModelingContext: 'logical' },
       },
       {
-        path: 'logical/data-type/:dataTypeId',
+        path: 'logical/domain/:dataTypeId',
         loadComponent: () =>
           import('./data-models/components/data-model-data-type/data-model-data-type.component').then(
             c => c.DataModelDataTypeComponent,

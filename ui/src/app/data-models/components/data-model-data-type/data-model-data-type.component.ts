@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
+import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 import { MatInput } from '@angular/material/input';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
@@ -35,6 +36,7 @@ import { DataModelingTranslationKeyResolver } from '../../services/data-modeling
     MatError,
     SectionHeaderComponent,
     SaveDeleteControlComponent,
+    DataModelingTranslatePipe,
   ],
 })
 export class DataModelDataTypeComponent {
@@ -111,7 +113,11 @@ export class DataModelDataTypeComponent {
     }
 
     this.dialogService
-      .openConfirmationDialog('DATA_MODEL.DATA_TYPE.DELETE_TITLE', 'DATA_MODEL.DATA_TYPE.DELETE_DESCRIPTION', 'danger')
+      .openConfirmationDialog(
+        this.keyResolver.resolveKey('DATA_MODEL.DATA_TYPE.$layer.DELETE_TITLE'),
+        this.keyResolver.resolveKey('DATA_MODEL.DATA_TYPE.$layer.DELETE_DESCRIPTION'),
+        'danger',
+      )
       .pipe(
         filter(result => result === true),
         tap(() => {
@@ -125,7 +131,7 @@ export class DataModelDataTypeComponent {
       .subscribe({
         next: async result => {
           if (result === false) {
-            this.error.set(this.keyResolver.resolveKey('DATA_MODEL.DATA_TYPE.ERROR.$layer.IN_USE'));
+            this.error.set(this.keyResolver.resolveKey('DATA_MODEL.DATA_TYPE.$layer.IN_USE'));
             return;
           }
 

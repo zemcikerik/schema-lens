@@ -30,7 +30,7 @@
   </ng-container>
 
   <ng-container matColumnDef="type">
-    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.DATA_TYPE' | translate)() }}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.$layer.DATA_TYPE' | dataModelingTranslate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let row">
       @let typeId = row.source === 'direct' ? row.field.typeId : row.referencedField.typeId;
       <span class="text-code">{{ typeId | dataModelDataType: dataTypes() }}</span>

@@ -49,8 +49,8 @@ export class DataModelDialogService {
 
   openCreateDataTypeDialog(existingNames: string[]): Observable<string | null> {
     return this.dialogService.openInputDialog({
-      titleKey: 'DATA_MODEL.DATA_TYPE.CREATE_TITLE',
-      labelKey: 'DATA_MODEL.DATA_TYPE.NAME_LABEL',
+      titleKey: this.keyResolver.resolveKey('DATA_MODEL.DATA_TYPE.$layer.CREATE_TITLE'),
+      labelKey: this.keyResolver.resolveKey('DATA_MODEL.DATA_TYPE.$layer.NAME_LABEL'),
       validators: dataModelDataTypeNameValidators(existingNames),
     });
   }
