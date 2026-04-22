@@ -6,7 +6,7 @@
   <mat-nav-list class="nav">
     <a
       mat-list-item
-      [routerLink]="['/model', store.dataModelId, contextState.context(), 'properties']"
+      [routerLink]="['/model', dataModelId(), contextState.context(), 'properties']"
       routerLinkActive
       #rla="routerLinkActive"
       [activated]="rla.isActive"
