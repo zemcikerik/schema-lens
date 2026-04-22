@@ -19,11 +19,19 @@ class DataModelNodeServiceImpl(
         model: DataModel,
         dto: DataModelNodeInputDto,
     ): DataModelNodeDto {
+        val normalizedName = dto.name.trim()
+
+        if (model.findNodeByNameOrNull(normalizedName) != null) {
+            throw NodeExistsException(normalizedName)
+        }
+
+        validateFieldNameUniqueness(dto.fields.map { it.name })
+
         val node = nodeRepository.save(
             DataModelNode(
                 modelId = model.id!!,
                 model = model,
-                name = dto.name,
+                name = normalizedName,
             )
         )
 
@@ -36,9 +44,22 @@ class DataModelNodeServiceImpl(
 
     @Transactional
     override fun updateNode(model: DataModel, nodeId: Long, dto: DataModelNodeInputDto): DataModelModificationDto {
-        val node = model.findNode(nodeId).apply {
-            name = dto.name
+        val normalizedName = dto.name.trim()
+        val existingNode = model.findNodeByNameOrNull(normalizedName)
+
+        if (existingNode != null && existingNode.id != nodeId) {
+            throw NodeExistsException(normalizedName)
         }
+
+        val node = model.findNode(nodeId)
+        val edgeFieldNames = model.edges
+            .filter { it.toNodeId == nodeId }
+            .flatMap { it.fields }
+            .map { it.name }
+
+        validateFieldNameUniqueness(dto.fields.map { it.name } + edgeFieldNames)
+
+        node.name = normalizedName
         val primaryKeyChanged = hasPrimaryKeyChanged(node.fields, dto.fields)
 
         val (toUpdate, toInsert) = dto.fields.partition { it.fieldId != null }
@@ -49,7 +70,7 @@ class DataModelNodeServiceImpl(
 
             if (input != null) {
                 existingField.apply {
-                    name = input.name
+                    name = input.name.trim()
                     typeId = input.typeId
                     type = model.findDataType(input.typeId)
                     isPrimaryKey = input.isPrimaryKey
@@ -162,6 +183,17 @@ class DataModelNodeServiceImpl(
         }
     }
 
+    private fun validateFieldNameUniqueness(fieldNames: List<String>) {
+        val seen = mutableSetOf<String>()
+
+        for (name in fieldNames) {
+            val normalized = name.trim().uppercase()
+            if (!seen.add(normalized)) {
+                throw FieldNameNotUniqueException(name.trim())
+            }
+        }
+    }
+
     private fun DataModelFieldInputDto.toEntity(model: DataModel, node: DataModelNode): DataModelField {
         val dataType = model.findDataType(typeId)
 
@@ -172,7 +204,7 @@ class DataModelNodeServiceImpl(
         return DataModelField(
             nodeId = node.id ?: 0,
             node = node,
-            name = name,
+            name = name.trim(),
             typeId = dataType.id!!,
             type = dataType,
             isPrimaryKey = isPrimaryKey,

@@ -56,6 +56,7 @@ class DataModelCascadeServiceImpl : DataModelCascadeService {
         val primaryKeyFields = getSourcePrimaryKeyFields(model, fromNode)
         val existingByReferencedFieldId = edge.fields.associateBy { it.id.referencedFieldId }.toMutableMap()
         var nextPosition = getNextFieldPosition(model, toNode)
+        val occupiedNames = collectOccupiedFieldNames(model, toNode, edge)
 
         primaryKeyFields.forEach { primaryKeyField ->
             val referencedFieldId = primaryKeyField.id!!
@@ -66,6 +67,9 @@ class DataModelCascadeServiceImpl : DataModelCascadeService {
                 return@forEach
             }
 
+            val uniqueName = resolveUniqueFieldName(primaryKeyField.name, occupiedNames)
+            occupiedNames.add(uniqueName.uppercase())
+
             edge.fields.add(DataModelEdgeField(
                 id = DataModelEdgeField.Id(
                     edgeId = edge.id ?: 0,
@@ -73,12 +77,44 @@ class DataModelCascadeServiceImpl : DataModelCascadeService {
                 ),
                 edge = edge,
                 referencedField = primaryKeyField,
-                name = primaryKeyField.name, // TODO: choose appropriate name
+                name = uniqueName,
                 position = nextPosition++,
             ))
         }
 
         existingByReferencedFieldId.values.forEach { edge.fields.remove(it) }
+    }
+
+    private fun collectOccupiedFieldNames(model: DataModel, node: DataModelNode, excludeEdge: DataModelEdge): MutableSet<String> {
+        val directNames = node.fields.asSequence().map { it.name }
+
+        val edgeNames = model.edges.asSequence()
+            .filter { it.toNodeId == node.id && it !== excludeEdge }
+            .flatMap { it.fields.asSequence() }
+            .map { it.name }
+
+        return (directNames + edgeNames)
+            .map { it.uppercase() }
+            .toMutableSet()
+    }
+
+    private fun resolveUniqueFieldName(baseName: String, occupiedNames: Set<String>): String {
+        val uppercaseBaseName = baseName.uppercase()
+
+        if (uppercaseBaseName !in occupiedNames) {
+            return baseName
+        }
+
+        var suffix = 2
+        while (true) {
+            val candidate = "${baseName}_$suffix"
+            val uppercaseCandidate = "${uppercaseBaseName}_$suffix"
+
+            if (uppercaseCandidate !in occupiedNames) {
+                return candidate
+            }
+            suffix++
+        }
     }
 
     private fun getSourcePrimaryKeyFields(model: DataModel, node: DataModelNode): Sequence<DataModelField> {

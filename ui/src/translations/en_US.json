@@ -362,15 +362,25 @@
           "EDIT_FIELD": "Edit attribute",
           "DELETE_FIELD": "Delete attribute",
           "GO_TO_EDGE": "Go to relationship",
-          "FROM_EDGE": "From relationship"
+          "FROM_EDGE": "From relationship",
+          "EDIT_EDGE_FIELD": "Edit attribute"
         },
         "PHYSICAL": {
           "EMPTY_LABEL": "This table does not contain any columns.",
           "EDIT_FIELD": "Edit column",
           "DELETE_FIELD": "Delete column",
           "GO_TO_EDGE": "Go to relationship",
-          "FROM_EDGE": "From relationship"
+          "FROM_EDGE": "From relationship",
+          "EDIT_EDGE_FIELD": "Edit column"
         }
+      }
+    },
+    "EDGE_FIELD": {
+      "LOGICAL": {
+        "EDIT_LABEL": "Edit Relationship Attribute"
+      },
+      "PHYSICAL": {
+        "EDIT_LABEL": "Edit Relationship Column"
       }
     },
     "EDGE": {

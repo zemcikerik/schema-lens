@@ -39,7 +39,7 @@ export interface InputDialogData {
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-button (click)="cancel()">{{ (cancelLabelKey | translate)() }}</button>
-      <button mat-flat-button (click)="confirm()" [disabled]="form.invalid">{{ (confirmLabelKey | translate)() }}</button>
+      <button mat-flat-button (click)="confirm()">{{ (confirmLabelKey | translate)() }}</button>
     </mat-dialog-actions>
   `,
   changeDetection: ChangeDetectionStrategy.OnPush,

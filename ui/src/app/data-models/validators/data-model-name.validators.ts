@@ -15,6 +15,13 @@ export const dataModelNodeNameValidators = (existingNames: string[]): ValidatorF
   uniqueStringValidator(existingNames),
 ];
 
+export const dataModelFieldNameValidators = (existingNames: string[]): ValidatorFn[] => [
+  Validators.required,
+  noStartEndWhitespaceValidator,
+  Validators.maxLength(30),
+  uniqueStringValidator(existingNames),
+];
+
 export const dataModelDataTypeNameValidators = (existingNames: string[]): ValidatorFn[] => [
   Validators.required,
   noStartEndWhitespaceValidator,

@@ -3,6 +3,7 @@ import type { Dimensions, Direction, Rect } from 'diagram-js/lib/util/Types';
 import { ResizerOffset, ResizerOffsets } from './resizer-offsets.model';
 import type EventBus from 'diagram-js/lib/core/EventBus';
 import type Canvas from 'diagram-js/lib/core/Canvas';
+import type Selection from 'diagram-js/lib/features/selection/Selection';
 import type { AngularElementTracker } from '../../angular/angular-element-tracker.module';
 import { translate } from 'diagram-js/lib/util/SvgTransformUtil';
 import { create as svgCreate, replace as svgReplace } from 'tiny-svg';
@@ -48,11 +49,12 @@ const RESIZER_OFFSETS_MAPPINGS: Record<Direction, keyof ResizerOffsets> = {
 
 export class SchemaDiagramNodeResizeHandler {
 
-  static readonly $inject = ['eventBus', 'canvas', 'angularElementTracker'];
+  static readonly $inject = ['eventBus', 'canvas', 'selection', 'angularElementTracker'];
 
   constructor(
     private readonly eventBus: EventBus,
     private readonly canvas: Canvas,
+    private readonly selection: Selection,
     private readonly angularElementTracker: AngularElementTracker
   ) {
     this.ensureMinimumDimensions();
@@ -99,17 +101,26 @@ export class SchemaDiagramNodeResizeHandler {
         return;
       }
 
-      const [node] = event.newSelection;
-      const resizers = this.canvas.getLayer('resizers');
-      const resizerOffsets = SchemaDiagramNodeComponent.calculateResizerHandleOffsets(node);
+      this.replaceResizers(event.newSelection[0]);
+    });
 
-      Object.entries(RESIZER_OFFSETS_MAPPINGS).map(([direction, offsetsKey]) => {
-        const resizer = resizers.getElementsByClassName(`${RESIZER_CLASS_PREFIX}${direction}`)[0];
+    this.eventBus.on('shape.changed', 250, ({ element }: { element: Shape }) => {
+      if (isNodeElement(element) && this.selection.isSelected(element)) {
+        this.replaceResizers(element);
+      }
+    });
+  }
 
-        if (resizer) {
-          this.updateNodeResizer(node, resizer as SVGElement, resizerOffsets[offsetsKey]);
-        }
-      });
+  private replaceResizers(node: SchemaDiagramNodeShape): void {
+    const resizers = this.canvas.getLayer('resizers');
+    const resizerOffsets = SchemaDiagramNodeComponent.calculateResizerHandleOffsets(node);
+
+    Object.entries(RESIZER_OFFSETS_MAPPINGS).map(([direction, offsetsKey]) => {
+      const resizer = resizers.getElementsByClassName(`${RESIZER_CLASS_PREFIX}${direction}`)[0];
+
+      if (resizer) {
+        this.updateNodeResizer(node, resizer as SVGElement, resizerOffsets[offsetsKey]);
+      }
     });
   }
 

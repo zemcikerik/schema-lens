@@ -8,7 +8,7 @@ import { CdkDrag, CdkDragHandle, CdkDropList, CdkDragDrop, moveItemInArray } fro
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { ResolvedField } from '../../models/resolved-field.model';
 import { DataModelField } from '../../models/data-model-node.model';
-import { DataModelEdge } from '../../models/data-model-edge.model';
+import { DataModelEdge, DataModelEdgeField } from '../../models/data-model-edge.model';
 import { StatusIconComponent } from '../../../shared/components/status-icon/status-icon.component';
 import { DataModelDataType } from '../../models/data-model-data-type.model';
 import { DataModelDataTypePipe } from '../../pipes/data-model-data-type.pipe';
@@ -17,6 +17,12 @@ import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 export interface DirectFieldReference {
   index: number;
   field: DataModelField;
+}
+
+export interface EdgeFieldReference {
+  index: number;
+  field: DataModelEdgeField;
+  edge: DataModelEdge;
 }
 
 @Component({
@@ -61,6 +67,7 @@ export class DataModelNodeFieldsTableComponent {
   orderChanged = output<ResolvedField[]>();
   editDirectField = output<DirectFieldReference>();
   deleteDirectField = output<DirectFieldReference>();
+  editEdgeField = output<EdgeFieldReference>();
   goToEdge = output<DataModelEdge>();
 
   displayedColumns = computed(() =>

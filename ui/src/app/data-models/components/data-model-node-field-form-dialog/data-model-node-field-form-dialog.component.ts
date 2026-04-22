@@ -7,15 +7,16 @@ import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/in
 import { DataModelDataTypeNameFieldComponent } from '../data-model-data-type-name-field/data-model-data-type-name-field.component';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { DataModelDataType } from '../../models/data-model-data-type.model';
 import { DataModelField } from '../../models/data-model-node.model';
 import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
+import { dataModelFieldNameValidators } from '../../validators/data-model-name.validators';
 
 export interface DataModelNodeFieldFormDialogData {
   field: DataModelField | null;
   dataTypes: DataModelDataType[];
+  existingFieldNames: string[];
 }
 
 @Component({
@@ -46,11 +47,9 @@ export class DataModelNodeFieldFormDialogComponent {
   private fb = inject(FormBuilder);
 
   form = this.fb.nonNullable.group({
-    name: this.fb.nonNullable.control(this.data.field?.name ?? '', [
-      Validators.required,
-      Validators.maxLength(40),
-      noStartEndWhitespaceValidator,
-    ]),
+    name: this.fb.nonNullable.control(this.data.field?.name ?? '',
+      dataModelFieldNameValidators(this.data.existingFieldNames),
+    ),
     typeName: this.fb.nonNullable.control(this.data.dataTypes.find(type => type.typeId === this.data.field?.typeId)?.name ?? '', [
       Validators.required,
     ]),
@@ -76,6 +75,7 @@ export class DataModelNodeFieldFormDialogComponent {
 
   confirm(): void {
     if (this.form.invalid) {
+      this.form.markAllAsTouched();
       return;
     }
 

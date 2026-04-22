@@ -1131,4 +1131,30 @@
       </sql>
     </rollback>
   </changeSet>
+
+  <changeSet id="2026-04-22T1200-data-model-data-type-unique-name-case-insensitive--drop-existing"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <dropUniqueConstraint tableName="data_model_data_type"
+                          constraintName="uc_data_model_data_type_per_model_name" />
+  </changeSet>
+
+  <changeSet id="2026-04-22T1201-data-model-data-type-unique-name-case-insensitive--create-new"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createIndex tableName="data_model_data_type"
+                 indexName="uc_data_model_data_type_per_model_name_ci"
+                 unique="true">
+      <column name="model_id" />
+      <column name="LOWER(name)" />
+    </createIndex>
+  </changeSet>
+
+  <changeSet id="2026-04-22T1202-data-model-node-unique-name-per-model-case-insensitive"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <createIndex tableName="data_model_node"
+                 indexName="uc_data_model_node_per_model_name_ci"
+                 unique="true">
+      <column name="model_id" />
+      <column name="LOWER(name)" />
+    </createIndex>
+  </changeSet>
 </databaseChangeLog>

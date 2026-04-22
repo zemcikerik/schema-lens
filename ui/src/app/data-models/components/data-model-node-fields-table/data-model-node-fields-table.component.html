@@ -86,7 +86,11 @@
 </mat-menu>
 
 <mat-menu #edgeFieldMenu xPosition="before">
-  <ng-template matMenuContent let-row="row">
+  <ng-template matMenuContent let-index="index" let-row="row">
+    <button mat-menu-item (click)="editEdgeField.emit({ index: index, field: row.field, edge: row.edge })">
+      <mat-icon>edit</mat-icon>
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.EDIT_EDGE_FIELD' | dataModelingTranslate)() }}
+    </button>
     <button mat-menu-item (click)="goToEdge.emit(row.edge)">
       <mat-icon>link</mat-icon>
       {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.GO_TO_EDGE' | dataModelingTranslate)() }}

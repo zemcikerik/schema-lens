@@ -81,6 +81,9 @@ class DataModel(
     fun findDataType(typeId: Long): DataModelDataType =
         findDataTypeOrNull(typeId) ?: throw ResourceNotFoundException.withId("Data type", typeId)
 
+    fun findNodeByNameOrNull(name: String): DataModelNode? =
+        nodes.firstOrNull { it.name.equals(name, ignoreCase = true) }
+
     fun findDataTypeByNameOrNull(name: String): DataModelDataType? =
         dataTypes.firstOrNull { it.name.equals(name, ignoreCase = true) }
 

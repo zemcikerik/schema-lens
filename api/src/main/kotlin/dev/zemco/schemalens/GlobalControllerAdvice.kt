@@ -1,6 +1,8 @@
 package dev.zemco.schemalens
 
 import dev.zemco.schemalens.auth.ResourceAccessDeniedException
+import dev.zemco.schemalens.modeling.nodes.FieldNameNotUniqueException
+import dev.zemco.schemalens.modeling.nodes.NodeExistsException
 import dev.zemco.schemalens.modeling.types.DataTypeExistsException
 import dev.zemco.schemalens.modeling.types.DataTypeInUseException
 import dev.zemco.schemalens.projects.ProjectConnectionException
@@ -22,8 +24,13 @@ class GlobalControllerAdvice {
     fun handleNotFoundException(ex: ResourceNotFoundException) =
         ResponseEntity.status(HttpStatus.NOT_FOUND).body(ex.message)
 
-    @ExceptionHandler(DataTypeInUseException::class, DataTypeExistsException::class)
-    fun handleDataTypeInUseAndExistsException(ex: RuntimeException) =
+    @ExceptionHandler(
+        DataTypeInUseException::class,
+        DataTypeExistsException::class,
+        NodeExistsException::class,
+        FieldNameNotUniqueException::class,
+    )
+    fun handleConflictException(ex: RuntimeException) =
         ResponseEntity.status(HttpStatus.CONFLICT).body(ex.message)
 
     @ExceptionHandler(ProjectConnectionException::class)

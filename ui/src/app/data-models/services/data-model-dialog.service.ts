@@ -8,6 +8,11 @@ import {
   DataModelNodeFieldFormDialogComponent,
   DataModelNodeFieldFormDialogData,
 } from '../components/data-model-node-field-form-dialog/data-model-node-field-form-dialog.component';
+import {
+  DataModelEdgeFieldFormDialogComponent,
+  DataModelEdgeFieldFormDialogData,
+} from '../components/data-model-edge-field-form-dialog/data-model-edge-field-form-dialog.component';
+import { DataModelEdgeField } from '../models/data-model-edge.model';
 import { DataModelingTranslationKeyResolver } from './data-modeling-translation-key-resolver.service';
 import {
   dataModelDataTypeNameValidators,
@@ -54,11 +59,24 @@ export class DataModelDialogService {
     this.dialogService.openErrorDialog('DATA_MODEL.CREATION_ERROR_TITLE', 'GENERIC.ERROR_LABEL');
   }
 
-  openFieldFormDialog(field?: DataModelField): Observable<DataModelField | null> {
-    const data: DataModelNodeFieldFormDialogData = { field: field ?? null, dataTypes: this.store.dataTypes() };
+  openFieldFormDialog(existingFieldNames: string[], field?: DataModelField): Observable<DataModelField | null> {
+    const data: DataModelNodeFieldFormDialogData = {
+      field: field ?? null,
+      dataTypes: this.store.dataTypes(),
+      existingFieldNames,
+    };
 
     return this.matDialog
       .open(DataModelNodeFieldFormDialogComponent, { data, restoreFocus: `#${DEFAULT_NODE_FIELD_ADD_BUTTON_ID}` })
+      .afterClosed()
+      .pipe(map(result => result ?? null));
+  }
+
+  openEdgeFieldFormDialog(existingFieldNames: string[], field: DataModelEdgeField): Observable<DataModelEdgeField | null> {
+    const data: DataModelEdgeFieldFormDialogData = { field, existingFieldNames };
+
+    return this.matDialog
+      .open(DataModelEdgeFieldFormDialogComponent, { data, restoreFocus: `#${DEFAULT_NODE_FIELD_ADD_BUTTON_ID}` })
       .afterClosed()
       .pipe(map(result => result ?? null));
   }
@@ -76,6 +94,7 @@ export class DataModelDialogService {
       this.keyResolver.resolveKey('DATA_MODEL.NODE.$layer.DELETE_FIELD_TITLE'),
       this.keyResolver.resolveKey('DATA_MODEL.NODE.$layer.DELETE_FIELD_DESCRIPTION'),
       'danger',
+      { restoreFocus: `#${DEFAULT_NODE_FIELD_ADD_BUTTON_ID}` },
     );
   }
 }

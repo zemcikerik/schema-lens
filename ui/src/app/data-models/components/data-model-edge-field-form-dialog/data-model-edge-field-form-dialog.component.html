@@ -1,0 +1,18 @@
+<h2 mat-dialog-title>{{ ('DATA_MODEL.EDGE_FIELD.$layer.EDIT_LABEL' | dataModelingTranslate)() }}</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field class="w-100">
+      <mat-label>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.NAME' | translate)() }}</mat-label>
+      <input matInput formControlName="name" required>
+      @if (form.controls.name.invalid) {
+        <mat-error>{{ (form.controls.name.errors | formatGenericValidationErrors)() }}</mat-error>
+      }
+    </mat-form-field>
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">{{ ('GENERIC.CANCEL_LABEL' | translate)() }}</button>
+  <button mat-flat-button (click)="confirm()">{{ ('GENERIC.CONFIRM_LABEL' | translate)() }}</button>
+</mat-dialog-actions>

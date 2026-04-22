@@ -8,6 +8,7 @@ import {
 import { TextDialogComponent, TextDialogData } from '../shared/components/text-dialog/text-dialog.component';
 import { InputDialogComponent, InputDialogData } from '../shared/components/input-dialog/input-dialog.component';
 import { ErrorDialogComponent, ErrorDialogData } from '../shared/components/error-dialog/error-dialog.component';
+import { RestoreFocusValue } from '@angular/cdk/dialog';
 
 @Injectable({
   providedIn: 'root'
@@ -19,11 +20,13 @@ export class DialogService {
   openConfirmationDialog(
     titleKey: string,
     descriptionKey: string,
-    type: 'classic' | 'danger' = 'classic'
+    type: 'classic' | 'danger' = 'classic',
+    additionalConfig?: { restoreFocus?: RestoreFocusValue }
   ): Observable<boolean | null> {
     const data: ConfirmationDialogData = { titleKey, descriptionKey, type };
+    const restoreFocus = additionalConfig?.restoreFocus;
 
-    return this.matDialog.open(ConfirmationDialogComponent, { data }).afterClosed().pipe(
+    return this.matDialog.open(ConfirmationDialogComponent, { data, restoreFocus }).afterClosed().pipe(
       map(result => result ?? null),
     );
   }

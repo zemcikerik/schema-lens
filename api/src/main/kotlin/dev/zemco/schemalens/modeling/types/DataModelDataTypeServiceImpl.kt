@@ -15,7 +15,6 @@ class DataModelDataTypeServiceImpl(
         val modelId = model.id!!
         val normalizedName = dto.name.trim()
 
-        // TODO: make sure that name normalization also happens on FE and in nodes
         if (model.findDataTypeByNameOrNull(normalizedName) != null) {
             throw DataTypeExistsException(normalizedName)
         }

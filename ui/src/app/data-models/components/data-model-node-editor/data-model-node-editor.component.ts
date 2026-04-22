@@ -16,12 +16,14 @@ import { MatInput } from '@angular/material/input';
 import {
   DataModelNodeFieldsTableComponent,
   DirectFieldReference,
+  EdgeFieldReference,
 } from '../data-model-node-fields-table/data-model-node-fields-table.component';
 import { DataModelField, DataModelNode } from '../../models/data-model-node.model';
-import { ResolvedField } from '../../models/resolved-field.model';
+import { EdgeResolvedField, ResolvedField } from '../../models/resolved-field.model';
 import { DataModelEdge } from '../../models/data-model-edge.model';
+import { applyEdgeFieldModifications, EdgeFieldModification } from '../../models/edge-field-modification.model';
 import { DataModelNodeFieldResolver } from '../../services/data-model-node-field.resolver';
-import { filter, finalize, mergeMap, Observable, of, tap } from 'rxjs';
+import { concatMap, filter, finalize, from, map, mergeMap, Observable, of, reduce, tap } from 'rxjs';
 import { DataModelStore } from '../../data-model.store';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIconButton } from '@angular/material/button';
@@ -32,7 +34,7 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 import { DataModelEditor } from '../data-model-editor/data-model-editor.component';
-import { DataModelModification } from '../../models/data-model.model';
+import { DataModelModification, mergeDataModelModification } from '../../models/data-model.model';
 import { dataModelNodeNameValidators } from '../../validators/data-model-name.validators';
 
 export const DEFAULT_NODE_FIELD_ADD_BUTTON_ID = 'node-editor-add-field-button';
@@ -76,6 +78,7 @@ export class DataModelNodeEditorComponent implements DataModelEditor {
 
   nodeModified = false;
   positionsChanged = false;
+  edgeFieldModifications: EdgeFieldModification[] = [];
   pendingSaveId = signal<number | null>(null);
 
   constructor() {
@@ -98,6 +101,7 @@ export class DataModelNodeEditorComponent implements DataModelEditor {
 
       this.nodeModified = false;
       this.positionsChanged = false;
+      this.edgeFieldModifications = [];
     });
 
     effect(() => {
@@ -118,8 +122,10 @@ export class DataModelNodeEditorComponent implements DataModelEditor {
   }
 
   addDirectField(): void {
+    const existingNames = this.getExistingFieldNames();
+
     this.modelDialogService
-      .openFieldFormDialog()
+      .openFieldFormDialog(existingNames)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(field => {
         if (!field) {
@@ -134,8 +140,10 @@ export class DataModelNodeEditorComponent implements DataModelEditor {
   }
 
   editDirectField({ index, field }: DirectFieldReference): void {
+    const existingNames = this.getExistingFieldNames(field.name);
+
     this.modelDialogService
-      .openFieldFormDialog(field)
+      .openFieldFormDialog(existingNames, field)
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(updated => {
         if (!updated) {
@@ -170,8 +178,33 @@ export class DataModelNodeEditorComponent implements DataModelEditor {
       });
   }
 
+  editEdgeField({ index, field, edge }: EdgeFieldReference): void {
+    const existingNames = this.getExistingFieldNames(field.name);
+
+    this.modelDialogService
+      .openEdgeFieldFormDialog(existingNames, field)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(updated => {
+        if (!updated) {
+          return;
+        }
+
+        this.fields.update(fields => {
+          const result = [...fields];
+          result[index] = { ...(result[index] as EdgeResolvedField), field: updated };
+          return result;
+        });
+
+        const modificationsWithoutCurrentField = this.edgeFieldModifications.filter(
+          m => m.edge.edgeId !== edge.edgeId || m.field.referencedFieldId !== field.referencedFieldId
+        );
+
+        this.edgeFieldModifications = [...modificationsWithoutCurrentField, { edge, field: updated }];
+      });
+  }
+
   save(): Observable<DataModelModification> | null {
-    if (!this.nodeModified && !this.positionsChanged && this.pendingSaveId() !== null) {
+    if (!this.nodeModified && !this.positionsChanged && !this.edgeFieldModifications.length && this.pendingSaveId() !== null) {
       return null;
     }
 
@@ -186,17 +219,32 @@ export class DataModelNodeEditorComponent implements DataModelEditor {
 
     const allFields = this.fields();
     const positionsChanged = this.positionsChanged;
+    const edgeFieldModifications = this.edgeFieldModifications;
     this.pendingSaveId.set(this.nodeId());
 
     return saveNode$.pipe(
       tap(() => (this.nodeModified = false)),
+      mergeMap(modification => {
+        if (!edgeFieldModifications.length) {
+          return of(modification);
+        }
+
+        const updatedEdges = applyEdgeFieldModifications(edgeFieldModifications);
+        return from(updatedEdges).pipe(
+          concatMap(edge => this.store.updateEdge(edge)),
+          reduce((acc, mod) => mergeDataModelModification(acc, mod), modification),
+          tap(() => (this.edgeFieldModifications = [])),
+        );
+      }),
       mergeMap(modification => {
         if (!positionsChanged) {
           return of(modification);
         }
 
         const savedNode = modification.updatedNodes.find(node => node.nodeId === this.pendingSaveId()) as DataModelNode;
-        return this.fieldResolver.reorderFields(this.nodeId(), this.updateIdsForNewDirectFields(savedNode, allFields));
+        return this.fieldResolver.reorderFields(this.nodeId(), this.updateIdsForNewDirectFields(savedNode, allFields)).pipe(
+          map(mod => mergeDataModelModification(modification, mod)),
+        );
       }),
       tap(() => (this.positionsChanged = false)),
       finalize(() => this.pendingSaveId.set(null)),
@@ -221,7 +269,14 @@ export class DataModelNodeEditorComponent implements DataModelEditor {
     return this.fields().reduce((max, field) => Math.max(max, field.position), 0) + 1;
   }
 
-  // TODO: enforce that field names are unique
+  private getExistingFieldNames(excludeName?: string): string[] {
+    const names = this.fields().map(f => f.field.name);
+
+    return excludeName !== undefined
+      ? names.filter(n => n !== excludeName)
+      : names;
+  }
+
   private updateIdsForNewDirectFields(node: DataModelNode, allFields: ResolvedField[]): ResolvedField[] {
     const fieldNameToFieldMapping: Record<string, DataModelField> = Object.fromEntries(
       node.fields.map(field => [field.name, field]),
