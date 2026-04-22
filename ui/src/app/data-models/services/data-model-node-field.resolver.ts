@@ -2,7 +2,7 @@
 import { Observable } from 'rxjs';
 import { DataModelStore } from '../data-model.store';
 import { DirectResolvedField, EdgeResolvedField, ResolvedField } from '../models/resolved-field.model';
-import { DataModelField, DataModelFieldReorderRequest, DataModelNode } from '../models/data-model-node.model';
+import { DataModelField, DataModelFieldReorderRequest } from '../models/data-model-node.model';
 import { DataModelModification } from '../models/data-model.model';
 
 @Injectable({ providedIn: 'root' })
@@ -22,16 +22,16 @@ export class DataModelNodeFieldResolver {
         position: field.position,
       }));
 
+      const allFields = nodes.flatMap(n => n.fields);
+
       const fromEdges: EdgeResolvedField[] = edges
         .filter(e => e.toNodeId === nodeId)
         .flatMap(e => {
-          const sourceNode = nodes.find(n => n.nodeId === e.fromNodeId) as DataModelNode;
-
           return e.fields.map(field => ({
             source: 'edge' as const,
             field: field,
             edge: e,
-            referencedField: sourceNode.fields.find(f => f.fieldId === field.referencedFieldId) as DataModelField,
+            referencedField: allFields.find(f => f.fieldId === field.referencedFieldId) as DataModelField,
             position: field.position,
           }));
         });
