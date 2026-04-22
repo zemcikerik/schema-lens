@@ -1,13 +1,16 @@
 package dev.zemco.schemalens.modeling.models
 
 import dev.zemco.schemalens.auth.User
-
+import dev.zemco.schemalens.modeling.nodes.DataModelNodeRepository
+import dev.zemco.schemalens.modeling.types.DataModelDataTypeRepository
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
 @Service
 class DataModelServiceImpl(
     private val repository: DataModelRepository,
+    private val nodeRepository: DataModelNodeRepository,
+    private val dataTypeRepository: DataModelDataTypeRepository,
 ) : DataModelService {
 
     override fun getAllModels(userId: Long): List<DataModelDto> =
@@ -28,8 +31,10 @@ class DataModelServiceImpl(
     }
 
     @Transactional
-    override fun deleteModel(model: DataModel) {
-        repository.delete(model)
+    override fun deleteModel(modelId: Long) {
+        nodeRepository.bulkDeleteByModelId(modelId)
+        dataTypeRepository.bulkDeleteByModelId(modelId)
+        repository.deleteById(modelId)
     }
 
     @Transactional(readOnly = true)

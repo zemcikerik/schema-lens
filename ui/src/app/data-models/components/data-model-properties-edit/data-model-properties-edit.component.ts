@@ -91,6 +91,7 @@ export class DataModelPropertiesEditComponent {
         filter(r => r === true),
         tap(() => this.loading.set(true)),
         switchMap(() => this.dataModelService.deleteDataModel(dataModelId)),
+        finalize(() => this.loading.set(false)),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe({

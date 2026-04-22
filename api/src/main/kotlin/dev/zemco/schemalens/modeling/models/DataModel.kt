@@ -7,6 +7,7 @@ import dev.zemco.schemalens.modeling.edges.DataModelEdge
 import dev.zemco.schemalens.modeling.nodes.DataModelField
 import dev.zemco.schemalens.modeling.nodes.DataModelNode
 import dev.zemco.schemalens.modeling.types.DataModelDataType
+import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -36,16 +37,16 @@ class DataModel(
     @JoinColumn(name = "owner_id", nullable = false, insertable = false, updatable = false)
     var owner: User,
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     var dataTypes: MutableSet<DataModelDataType> = mutableSetOf(),
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     var nodes: MutableSet<DataModelNode> = mutableSetOf(),
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     var edges: MutableSet<DataModelEdge> = mutableSetOf(),
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "model", cascade = [CascadeType.REMOVE], orphanRemoval = true)
     var diagrams: MutableSet<DataModelDiagram> = mutableSetOf(),
 ) {
     fun findNodeOrNull(nodeId: Long): DataModelNode? =

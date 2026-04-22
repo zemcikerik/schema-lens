@@ -40,6 +40,6 @@ class DataModelController(
     @DeleteMapping("/{model}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun deleteModel(@PathVariable model: DataModel) {
-        service.deleteModel(model)
+        service.deleteModel(model.id!!)
     }
 }
