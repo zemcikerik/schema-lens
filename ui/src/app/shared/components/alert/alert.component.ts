@@ -3,7 +3,7 @@ import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
-export type AlertType = 'info' | 'error';
+export type AlertType = 'info' | 'warning' | 'error';
 
 @Component({
   selector: 'app-alert',
@@ -15,9 +15,11 @@ export class AlertComponent {
   type = input<AlertType>('info');
   showIcon = input<boolean>(true);
 
-  tooltipKey = computed(() =>
-    this.type() === 'info'
-      ? 'GENERIC.TOOLTIP_INFO_LABEL'
-      : 'GENERIC.TOOLTIP_ERROR_LABEL'
-  );
+  tooltipKey = computed(() => {
+    switch (this.type()) {
+      case 'info': return 'GENERIC.TOOLTIP_INFO_LABEL';
+      case 'warning': return 'GENERIC.TOOLTIP_WARNING_LABEL';
+      case 'error': return 'GENERIC.TOOLTIP_ERROR_LABEL';
+    }
+  });
 }

@@ -42,7 +42,7 @@ export class DialogService {
   }
 
   openWarningDialog(titleKey: string, messageKey: string): void {
-    const data: AlertDialogData = { titleKey, messageKey, type: 'info' };
+    const data: AlertDialogData = { titleKey, messageKey, type: 'warning' };
     this.matDialog.open(AlertDialogComponent, { data });
   }
 

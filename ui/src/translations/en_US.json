@@ -18,6 +18,7 @@
     "SUCCESS_LABEL": "Your request was performed successfully.",
     "ERROR_LABEL": "There was an error processing your request. Please try again later.",
     "TOOLTIP_INFO_LABEL": "Information",
+    "TOOLTIP_WARNING_LABEL": "Warning",
     "TOOLTIP_ERROR_LABEL": "Error",
     "VALIDATION": {
       "REQUIRED": "This field is required.",

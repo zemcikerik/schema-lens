@@ -1,6 +1,7 @@
 <div
   class="alert"
   [class.alert--info]="type() === 'info'"
+  [class.alert--warning]="type() === 'warning'"
   [class.alert--error]="type() === 'error'"
 >
   @if (showIcon()) {
@@ -8,6 +9,9 @@
       @switch (type()) {
         @case ('info') {
           <mat-icon [matTooltip]="(tooltipKey() | translate)()">info</mat-icon>
+        }
+        @case ('warning') {
+          <mat-icon [matTooltip]="(tooltipKey() | translate)()">warning</mat-icon>
         }
         @case ('error') {
           <mat-icon [matTooltip]="(tooltipKey() | translate)()">error</mat-icon>

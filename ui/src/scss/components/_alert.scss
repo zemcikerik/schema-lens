@@ -17,6 +17,15 @@
     color: mat.get-theme-color(t.$theme, secondary);
   }
 
+  &--warning {
+    background-color: #ffecb3;
+    color: #2c1f00;
+  }
+
+  &--warning &__icon {
+    color: #e65100;
+  }
+
   &--error {
     background-color: mat.get-theme-color(t.$theme, error-container);
     color: mat.get-theme-color(t.$theme, on-error-container);
