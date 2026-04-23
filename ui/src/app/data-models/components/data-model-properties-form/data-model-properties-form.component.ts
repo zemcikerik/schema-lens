@@ -3,6 +3,7 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { MatInput } from '@angular/material/input';
+import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { DataModel } from '../../models/data-model.model';
@@ -24,6 +25,7 @@ import {
     FormatGenericValidationErrorsPipe,
     SectionHeaderComponent,
     SaveDeleteControlComponent,
+    MatSlideToggle,
   ],
 })
 export class DataModelPropertiesFormComponent {
@@ -34,6 +36,7 @@ export class DataModelPropertiesFormComponent {
   private fb = inject(FormBuilder);
   propertiesForm = this.fb.nonNullable.group({
     name: this.fb.nonNullable.control('', [Validators.required, noStartEndWhitespaceValidator, Validators.maxLength(64)]),
+    oracleEnabled: this.fb.nonNullable.control(true),
   });
 
   constructor() {
@@ -41,7 +44,10 @@ export class DataModelPropertiesFormComponent {
       .pipe(takeUntilDestroyed())
       .subscribe(properties => {
         if (properties !== null) {
-          this.propertiesForm.reset(properties);
+          this.propertiesForm.reset({
+            name: properties.name,
+            oracleEnabled: properties.enabledContexts.oracleEnabled,
+          });
         } else {
           this.propertiesForm.reset();
         }
@@ -54,11 +60,12 @@ export class DataModelPropertiesFormComponent {
       return;
     }
 
-    const { name } = this.propertiesForm.getRawValue();
+    const { name, oracleEnabled } = this.propertiesForm.getRawValue();
 
     this.save.emit({
       id: this.properties()?.id ?? null,
       name: name,
+      enabledContexts: { oracleEnabled },
     });
   }
 

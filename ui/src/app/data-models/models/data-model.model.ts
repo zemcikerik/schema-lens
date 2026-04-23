@@ -6,9 +6,15 @@ import { DataModelDataType } from './data-model-data-type.model';
 export interface DataModel {
   id: number | null;
   name: string;
+  enabledContexts: DataModelEnabledContexts;
+}
+
+export interface DataModelEnabledContexts {
+  oracleEnabled: boolean;
 }
 
 export interface DataModelDetails {
+  enabledContexts: DataModelEnabledContexts;
   dataTypes: DataModelDataType[];
   nodes: DataModelNode[];
   edges: DataModelEdge[];

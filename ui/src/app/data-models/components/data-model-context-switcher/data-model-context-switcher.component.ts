@@ -11,7 +11,9 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
       <mat-label>{{ ('DATA_MODEL.CONTEXT.SWITCHER_LABEL' | translate)() }}</mat-label>
       <mat-select required [value]="contextState.context()" (selectionChange)="onContextChange($event.value)">
         <mat-option value="logical">{{ ('DATA_MODEL.CONTEXT.LOGICAL' | translate)() }}</mat-option>
-        <mat-option value="oracle">{{ ('DATA_MODEL.CONTEXT.ORACLE' | translate)() }}</mat-option>
+        @if (contextState.availableContexts().includes('oracle')) {
+          <mat-option value="oracle">{{ ('DATA_MODEL.CONTEXT.ORACLE' | translate)() }}</mat-option>
+        }
       </mat-select>
     </mat-form-field>
   `,

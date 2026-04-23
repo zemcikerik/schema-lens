@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, DestroyRef, inject, input, signal } from '@angular/core';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DataModelService } from '../../services/data-model.service';
+import { DataModelStore } from '../../data-model.store';
 import { catchError, filter, finalize, of, switchMap, tap } from 'rxjs';
 import { DataModelPropertiesFormComponent } from '../data-model-properties-form/data-model-properties-form.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
@@ -43,6 +44,7 @@ export class DataModelPropertiesEditComponent {
 
   private dialogService = inject(DialogService);
   private dataModelService = inject(DataModelService);
+  private dataModelStore = inject(DataModelStore);
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
 
@@ -70,8 +72,8 @@ export class DataModelPropertiesEditComponent {
   updateProperties(properties: DataModel): void {
     this.loading.set(true);
 
-    this.dataModelService
-      .updateDataModel(properties)
+    this.dataModelStore
+      .updateProperties(properties)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.loading.set(false)),

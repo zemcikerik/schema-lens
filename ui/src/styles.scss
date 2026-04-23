@@ -68,6 +68,7 @@ html {
   @include mat.progress-spinner-theme(t.$theme);
   @include mat.ripple-theme(t.$theme);
   @include mat.select-theme(t.$theme);
+  @include mat.slide-toggle-theme(t.$theme);
   @include mat.slider-theme(t.$theme);
   @include mat.table-theme(t.$theme);
   @include mat.tabs-theme(t.$theme);

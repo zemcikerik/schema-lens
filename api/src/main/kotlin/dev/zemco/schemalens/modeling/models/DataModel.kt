@@ -9,6 +9,7 @@ import dev.zemco.schemalens.modeling.nodes.DataModelNode
 import dev.zemco.schemalens.modeling.types.DataModelDataType
 import jakarta.persistence.CascadeType
 import jakarta.persistence.Column
+import jakarta.persistence.Embedded
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
@@ -32,6 +33,9 @@ class DataModel(
 
     @Column(name = "owner_id", nullable = false)
     var ownerId: Long,
+
+    @Embedded
+    var enabledContexts: DataModelEnabledContexts = DataModelEnabledContexts(),
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "owner_id", nullable = false, insertable = false, updatable = false)

@@ -1157,4 +1157,15 @@
       <column name="LOWER(name)" />
     </createIndex>
   </changeSet>
+
+  <changeSet id="2026-04-23T1400-add-data-model-oracle-physical-context-toggle"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <addColumn tableName="data_model">
+      <column name="oracle_physical_context_enabled"
+              type="NUMBER(1,0)"
+              defaultValue="1">
+        <constraints nullable="false" />
+      </column>
+    </addColumn>
+  </changeSet>
 </databaseChangeLog>

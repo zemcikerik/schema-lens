@@ -1,7 +1,8 @@
-import { computed, inject, Injectable } from '@angular/core';
+import { computed, effect, inject, Injectable } from '@angular/core';
 import { RouteDataService } from '../core/routing/route-data.service';
 import { RouteData } from '../core/models/route-data.model';
 import { Router } from '@angular/router';
+import { DataModelStore } from './data-model.store';
 
 export type DataModelingLayer = 'logical' | 'physical' | 'unknown';
 export type DataModelingContext = 'logical' | 'oracle' | 'unknown';
@@ -16,6 +17,7 @@ interface ContextRouteMapper {
 export class DataModelContextState {
   private routeData = inject(RouteDataService).routeData;
   private router = inject(Router);
+  private store = inject(DataModelStore);
 
   context = computed<DataModelingContext>(() => {
     const data = this.routeData() as RouteData & { dataModelingContext?: DataModelingContext };
@@ -25,6 +27,17 @@ export class DataModelContextState {
   layer = computed<DataModelingLayer>(() => {
     const context = this.context();
     return context === 'oracle' ? 'physical' : context;
+  });
+
+  availableContexts = computed(() => {
+    const contexts: DataModelingContext[] = ['logical'];
+    const modelContexts = this.store.model()?.enabledContexts ?? { oracleEnabled: false };
+
+    if (modelContexts.oracleEnabled) {
+      contexts.push('oracle');
+    }
+
+    return contexts;
   });
 
   private readonly contextRouteMappers: ContextRouteMapper[] = [
@@ -41,6 +54,17 @@ export class DataModelContextState {
       map: (match, context) => ['/model', match[1], context, this.mapNodeSegment(context), match[4]],
     },
   ];
+
+  constructor() {
+    effect(() => {
+      const context = this.context();
+      const available = this.availableContexts();
+
+      if (context !== 'unknown' && !available.includes(context)) {
+        this.switchToContext('logical');
+      }
+    });
+  }
 
   async switchToContext(context: DataModelingContext): Promise<void> {
     if (this.context() === 'unknown' || this.context() === context) {

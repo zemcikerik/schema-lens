@@ -18,14 +18,23 @@ class DataModelServiceImpl(
 
     @Transactional
     override fun createModel(dto: DataModelInputDto, user: User): DataModelDto {
-        val entity = DataModel(name = dto.name, ownerId = user.id!!, owner = user)
+        val entity = DataModel(
+            name = dto.name,
+            ownerId = user.id!!,
+            enabledContexts = dto.enabledContexts.toEntity(),
+            owner = user,
+        )
         val saved = repository.save(entity)
         return DataModelDto.from(saved)
     }
 
     @Transactional
     override fun updateModel(model: DataModel, dto: DataModelInputDto): DataModelDto {
-        model.name = dto.name
+        model.apply {
+            name = dto.name
+            enabledContexts = dto.enabledContexts.toEntity()
+        }
+
         val saved = repository.save(model)
         return DataModelDto.from(saved)
     }

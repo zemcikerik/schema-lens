@@ -14,11 +14,17 @@ export class DataModelHttpClientService {
   }
 
   createDataModel(dataModel: DataModel): Observable<DataModel> {
-    return this.httpClient.post<DataModel>('/model', { name: dataModel.name });
+    return this.httpClient.post<DataModel>('/model', {
+      name: dataModel.name,
+      enabledContexts: dataModel.enabledContexts,
+    });
   }
 
   updateDataModel(updatedModel: DataModel): Observable<DataModel> {
-    return this.httpClient.put<DataModel>(`/model/${updatedModel.id}`, { name: updatedModel.name });
+    return this.httpClient.put<DataModel>(`/model/${updatedModel.id}`, {
+      name: updatedModel.name,
+      enabledContexts: updatedModel.enabledContexts,
+    });
   }
 
   deleteDataModel(dataModelId: number): Observable<unknown> {

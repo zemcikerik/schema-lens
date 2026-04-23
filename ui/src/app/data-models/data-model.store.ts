@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
 import { Observable, tap, of, finalize, defer, map } from 'rxjs';
-import { DataModelDetails, DataModelModification } from './models/data-model.model';
+import { DataModel, DataModelDetails, DataModelModification } from './models/data-model.model';
 import { DataModelEdge } from './models/data-model-edge.model';
 import { DataModelFieldReorderRequest, DataModelNode, DataModelNodeSummary } from './models/data-model-node.model';
 import { DataModelDataType } from './models/data-model-data-type.model';
@@ -10,10 +10,12 @@ import { DataModelNodeService } from './services/data-model-node.service';
 import { DataModelEdgeService } from './services/data-model-edge.service';
 import { DataModelDataTypeService } from './services/data-model-data-type.service';
 import { DataModelDiagramService } from './services/data-model-diagram.service';
+import { DataModelService } from './services/data-model.service';
 
 @Injectable({ providedIn: 'root' })
 export class DataModelStore {
   private dataModelDetailsService = inject(DataModelDetailsService);
+  private dataModelService = inject(DataModelService);
   private nodeService = inject(DataModelNodeService);
   private edgeService = inject(DataModelEdgeService);
   private dataTypeService = inject(DataModelDataTypeService);
@@ -67,6 +69,12 @@ export class DataModelStore {
         finalize(() => this._loading.set(false)),
       );
     });
+  }
+
+  updateProperties(dataModel: DataModel): Observable<DataModel> {
+    return this.dataModelService.updateDataModel(dataModel).pipe(
+      tap(updated => this._model.update(m => m && this.dataModelId === updated.id ? { ...m, enabledContexts: updated.enabledContexts } : m)),
+    );
   }
 
    createNode(node: DataModelNodeSummary): Observable<DataModelModification> {

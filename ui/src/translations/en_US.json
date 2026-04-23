@@ -301,7 +301,9 @@
     "PROPERTIES": {
       "TITLE": "Model Options",
       "LABEL": "Model Properties",
-      "NAME_LABEL": "Model Name"
+      "CONTEXT_SECTION_LABEL": "Modeling Contexts",
+      "NAME_LABEL": "Model Name",
+      "ORACLE_ENABLED_LABEL": "Enable physical modeling (Oracle)"
     },
     "DATA_TYPE": {
       "NAME_LABEL": "Name",
