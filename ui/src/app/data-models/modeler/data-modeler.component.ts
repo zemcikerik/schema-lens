@@ -16,7 +16,6 @@ import { LayoutHeaderAndContentComponent } from '../../core/layouts/layout-heade
 import { DataModelerActionsComponent } from './actions/data-modeler-actions.component';
 import { FullscreenDirective } from '../../core/directives/fullscreen.directive';
 import { DataModelerPropertiesHostComponent } from './properties/data-modeler-properties-host.component';
-import { SchemaDiagramSelection } from '../../diagrams/schema/model/schema-diagram-selection.model';
 import { SchemaDiagramComponent } from '../../diagrams/schema/schema-diagram.component';
 import { BlockExitDirective } from '../../core/directives/block-exit.directive';
 import { SchemaDiagramConnectNodes } from '../../diagrams/schema/model/schema-diagram-connect-nodes.model';
@@ -27,7 +26,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { catchError, defer, filter, map, mergeMap, NEVER, Observable, of, switchMap, tap } from 'rxjs';
 import { AlertComponent } from '../../shared/components/alert/alert.component';
-import { DataModelerDiagramState } from './data-modeler-diagram-state.service';
+import { DataModelerDiagramState } from './data-modeler-diagram.state';
 import { DataModelStore } from '../data-model.store';
 import { TranslatePipe } from '../../core/translate/translate.pipe';
 import { DataModelerStateModule } from './data-modeler-state.module';
@@ -69,7 +68,6 @@ export class DataModelerComponent {
   private diagram = viewChild(SchemaDiagramComponent);
 
   backLink = computed(() => '/model/' + this.dataModelId());
-  currentSelection = signal<SchemaDiagramSelection | null>(null);
   connectMode = signal<boolean>(false);
 
   constructor() {
@@ -120,7 +118,7 @@ export class DataModelerComponent {
   }
 
   onDeletePressed(): void {
-    const selection = this.currentSelection();
+    const selection = this.state.currentSelection();
 
     if (!selection) {
       return;

@@ -12,7 +12,7 @@
     [appBlockExit]="state.hasUnsavedPositions()"
   >
     <app-layout-content-with-sidebar [reverse]="true">
-      <app-data-modeler-properties-host ngProjectAs="sidebar" [selection]="currentSelection()" />
+      <app-data-modeler-properties-host ngProjectAs="sidebar" />
 
       <app-content-card
         (keydown.escape)="connectMode.set(false)"
@@ -39,7 +39,7 @@
               [connectMode]="connectMode()"
               [patches$]="state.patches$"
               (connectNodes)="onConnectNodes($event)"
-              (selectionChanged)="currentSelection.set($event)"
+              (selectionChanged)="state.setCurrentSelection($event)"
               (diagramModified)="state.markPositionsUnsaved()"
             />
 

@@ -7,6 +7,7 @@ import { DataModelNodeFieldResolver } from '../services/data-model-node-field.re
 import { SchemaDiagramPatch } from '../../diagrams/schema/model/schema-diagram-patches.model';
 import { SchemaDiagramNode } from '../../diagrams/schema/model/schema-diagram-node.model';
 import { SchemaDiagramPositionSnapshot } from '../../diagrams/schema/model/schema-diagram-position-snapshot.model';
+import { SchemaDiagramSelection } from '../../diagrams/schema/model/schema-diagram-selection.model';
 import { DataModelDetails, DataModelModification } from '../models/data-model.model';
 import { DataModelNode, DataModelField } from '../models/data-model-node.model';
 import { LogicalModelDiagram } from '../models/data-model-diagram.model';
@@ -21,11 +22,13 @@ export class DataModelerDiagramState {
   private _loading = signal<boolean>(false);
   private _hasUnsavedPositions = signal<boolean>(false);
   private _activeDiagram = signal<LogicalModelDiagram | null>(null);
+  private _currentSelection = signal<SchemaDiagramSelection | null>(null);
 
   patches$ = this._patches$.asObservable();
   loading = this._loading.asReadonly();
   hasUnsavedPositions = this._hasUnsavedPositions.asReadonly();
   activeDiagram = this._activeDiagram.asReadonly();
+  currentSelection = this._currentSelection.asReadonly();
   diagramName = computed(() => this._activeDiagram()?.name ?? '');
 
   private visibleNodeIds = new Set<number>();
@@ -40,6 +43,7 @@ export class DataModelerDiagramState {
     }
 
     this._patches$.next({ type: 'diagram:clear' });
+    this.clearCurrentSelection();
     this.clearUnsavedPositions();
     this.visibleNodeIds.clear();
     this.visibleEdgeIds.clear();
@@ -208,6 +212,18 @@ export class DataModelerDiagramState {
 
   focusEdge(edgeId: number): void {
     this._patches$.next({ type: 'edge:focus', edgeId });
+  }
+
+  focusNode(nodeId: number): void {
+    this._patches$.next({ type: 'node:focus', nodeId });
+  }
+
+  setCurrentSelection(selection: SchemaDiagramSelection | null): void {
+    this._currentSelection.set(selection);
+  }
+
+  clearCurrentSelection(): void {
+    this._currentSelection.set(null);
   }
 
   markPositionsUnsaved(): void {

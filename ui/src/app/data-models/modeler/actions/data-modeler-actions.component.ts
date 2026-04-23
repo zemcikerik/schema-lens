@@ -7,6 +7,7 @@ import { DiagramExportControlComponent } from '../../../diagrams/export/diagram-
 import { DiagramGridControlComponent } from '../../../diagrams/diagram-grid-control.component';
 import { DataModelerAddActionComponent } from './data-modeler-add-action.component';
 import { DataModelerConnectActionComponent } from './data-modeler-connect-action.component';
+import { DataModelerFocusSelectionActionComponent } from './data-modeler-focus-selection-action.component';
 import { DataModelerSaveActionComponent } from './data-modeler-save-action.component';
 import { DataModelerVerifyActionComponent } from './data-modeler-verify-action.component';
 
@@ -17,6 +18,7 @@ import { DataModelerVerifyActionComponent } from './data-modeler-verify-action.c
     <div class="data-modeler__actions">
       <app-data-modeler-add-action />
       <app-data-modeler-connect-action [(active)]="connectMode" />
+      <app-data-modeler-focus-selection-action />
       <div class="separator"></div>
       <app-data-modeler-save-action [hasUnsavedPositions]="hasUnsavedPositions()" (save)="save.emit()" />
       <app-data-modeler-verify-action />
@@ -35,6 +37,7 @@ import { DataModelerVerifyActionComponent } from './data-modeler-verify-action.c
     DiagramGridControlComponent,
     DataModelerAddActionComponent,
     DataModelerConnectActionComponent,
+    DataModelerFocusSelectionActionComponent,
     DataModelerSaveActionComponent,
     DataModelerVerifyActionComponent,
   ],

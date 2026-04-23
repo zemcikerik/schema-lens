@@ -6,7 +6,7 @@ import { MatError } from '@angular/material/form-field';
 import { Router } from '@angular/router';
 import { catchError, filter, map, Observable, of, switchMap } from 'rxjs';
 import { DataModelStore } from '../../data-model.store';
-import { DataModelerDiagramState } from '../data-modeler-diagram-state.service';
+import { DataModelerDiagramState } from '../data-modeler-diagram.state';
 import { DataModelerDialogService } from '../data-modeler-dialog.service';
 import { DataModelEditor } from '../../components/data-model-editor/data-model-editor.component';
 import { DataModelModification } from '../../models/data-model.model';

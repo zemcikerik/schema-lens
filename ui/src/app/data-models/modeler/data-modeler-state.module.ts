@@ -1,5 +1,5 @@
 import { NgModule } from '@angular/core';
-import { DataModelerDiagramState } from './data-modeler-diagram-state.service';
+import { DataModelerDiagramState } from './data-modeler-diagram.state';
 import { DataModelerDiagramMapper } from './data-modeler-diagram.mapper';
 import { DataModelerDialogService } from './data-modeler-dialog.service';
 import { DataModelerEditorResolverService } from './properties/data-modeler-editor-resolver.service';

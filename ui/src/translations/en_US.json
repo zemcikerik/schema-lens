@@ -356,6 +356,7 @@
         "ADD_NODE_TOOLTIP": "Add {layer, select, logical {entity} other {table}}",
         "ADD_EXISTING_NODE_LABEL": "Add Existing {layer, select, logical {Entity} other {Table}}",
         "CONNECT_NODES_TOOLTIP": "Create relationship",
+        "FOCUS_SELECTION_TOOLTIP": "Focus selection",
         "VERIFY_TOOLTIP": "Verify"
       },
       "DIALOGS": {

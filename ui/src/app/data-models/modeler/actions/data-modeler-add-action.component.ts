@@ -5,7 +5,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
-import { DataModelerDiagramState } from '../data-modeler-diagram-state.service';
+import { DataModelerDiagramState } from '../data-modeler-diagram.state';
 import { DataModelerDialogService } from '../data-modeler-dialog.service';
 import { DataModelStore } from '../../data-model.store';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';

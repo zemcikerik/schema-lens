@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, input, output } from '@angu
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { DataModelerDiagramState } from '../data-modeler-diagram-state.service';
+import { DataModelerDiagramState } from '../data-modeler-diagram.state';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
 @Component({

@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { DialogService } from '../../core/dialog.service';
 import { DataModelEdge } from '../models/data-model-edge.model';
-import { DataModelerDiagramState } from './data-modeler-diagram-state.service';
+import { DataModelerDiagramState } from './data-modeler-diagram.state';
 import { DataModelGoToEdgeHandler } from '../services/data-model-go-to-edge-handler.service';
 
 @Injectable()

@@ -6,12 +6,10 @@ import {
   DestroyRef,
   effect,
   inject,
-  input,
   signal,
   viewChild,
   ViewContainerRef,
 } from '@angular/core';
-import { SchemaDiagramSelection } from '../../../diagrams/schema/model/schema-diagram-selection.model';
 import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
 import { ContentCardComponent } from '../../../shared/components/content-card/content-card.component';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
@@ -19,7 +17,7 @@ import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { TrapClicksDirective } from '../../../core/directives/trap-clicks.directive';
 import { FocusLeftDirective } from '../../../core/directives/focus-left.directive';
 import { catchError, concat, filter, of, switchMap } from 'rxjs';
-import { DataModelerDiagramState } from '../data-modeler-diagram-state.service';
+import { DataModelerDiagramState } from '../data-modeler-diagram.state';
 import { DataModelerDialogService } from '../data-modeler-dialog.service';
 import { DataModelerEditorResolverService } from './data-modeler-editor-resolver.service';
 import { DataModelEditor } from '../../components/data-model-editor/data-model-editor.component';
@@ -44,14 +42,13 @@ export class DataModelerPropertiesHostComponent {
   private editorResolver = inject(DataModelerEditorResolverService);
   private destroyRef = inject(DestroyRef);
 
-  selection = input.required<SchemaDiagramSelection | null>();
   editorTarget = viewChild.required('editorTarget', { read: ViewContainerRef });
 
   private currentRef = signal<ComponentRef<DataModelEditor> | null>(null);
   formInvalid = signal<boolean>(false);
 
-  private editorKind = computed(() => this.editorResolver.editorKind(this.selection()));
-  titleKey = computed(() => this.editorResolver.editorTitleKey(this.selection()));
+  private editorKind = computed(() => this.editorResolver.editorKind(this.state.currentSelection()));
+  titleKey = computed(() => this.editorResolver.editorTitleKey(this.state.currentSelection()));
 
   constructor() {
     this.recreateEditorOnKindChange();
@@ -65,7 +62,7 @@ export class DataModelerPropertiesHostComponent {
       .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe(() => {
         this.currentRef()?.destroy();
-        this.currentRef.set(this.editorResolver.createEditor(this.selection, this.editorTarget()));
+        this.currentRef.set(this.editorResolver.createEditor(this.state.currentSelection, this.editorTarget()));
       });
   }
 
