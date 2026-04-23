@@ -407,6 +407,10 @@
             "TITLE": "Relationship Not Visible",
             "DESCRIPTION": "This relationship is not visible in the current diagram."
           }
+        },
+        "TOUCH_NOT_SUPPORTED": {
+          "TITLE": "Touch Input Detected",
+          "DESCRIPTION": "Diagram editing is only supported with a keyboard and mouse."
         }
       },
       "PROPERTIES": {

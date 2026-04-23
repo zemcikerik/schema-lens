@@ -4,6 +4,7 @@ import {
   Component,
   computed,
   DestroyRef,
+  effect,
   inject,
   Injector,
   input,
@@ -34,6 +35,7 @@ import { DataModelerDialogService } from './data-modeler-dialog.service';
 import { DataModelEdge } from '../models/data-model-edge.model';
 import { DataModelContextState } from '../data-model-context.state';
 import { mapContextToDataModelDiagramType, mapDataModelDiagramTypeToContext } from '../models/data-model-diagram.model';
+import { InputDeviceService } from '../../core/services/input-device.service';
 
 @Component({
   selector: 'app-data-modeler',
@@ -74,6 +76,8 @@ export class DataModelerComponent {
   connectMode = signal<boolean>(false);
 
   constructor() {
+    this.notifyUserOfUnsupportedInputDevice();
+
     toObservable(computed(() => [this.dataModelId(), this.diagramId()] as const))
       .pipe(
         map(([dataModelId, diagramId]) => [+dataModelId, +diagramId] as const),
@@ -104,6 +108,17 @@ export class DataModelerComponent {
       .subscribe(diagram =>
         afterNextRender({ mixedReadWrite: () => this.state.initDiagram(diagram) }, { injector: this.injector }),
       );
+  }
+
+  private notifyUserOfUnsupportedInputDevice(): void {
+    const inputDevice = inject(InputDeviceService);
+
+    effect(() => {
+      if (this.state.activeDiagram() && inputDevice.isTouchPrimary()) {
+        this.connectMode.set(false);
+        this.dialogs.openTouchNotSupportedWarning();
+      }
+    });
   }
 
   onConnectNodes({ from, to }: SchemaDiagramConnectNodes): void {

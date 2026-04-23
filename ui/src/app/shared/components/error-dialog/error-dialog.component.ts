@@ -2,19 +2,20 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { MatButton } from '@angular/material/button';
-import { AlertComponent } from '../alert/alert.component';
+import { AlertComponent, AlertType } from '../alert/alert.component';
 
-export interface ErrorDialogData {
+export interface AlertDialogData {
   titleKey: string;
-  errorKey: string;
+  messageKey: string;
+  type: AlertType;
 }
 
 @Component({
-  selector: 'app-error-dialog',
+  selector: 'app-alert-dialog',
   template: `
-    <h2 mat-dialog-title>{{ (titleKey | translate)() }}</h2>
+    <h2 mat-dialog-title>{{ (data.titleKey | translate)() }}</h2>
     <mat-dialog-content>
-      <app-alert type="error">{{ (errorKey | translate)() }}</app-alert>
+      <app-alert [type]="data.type">{{ (data.messageKey | translate)() }}</app-alert>
     </mat-dialog-content>
     <mat-dialog-actions align="end">
       <button mat-flat-button [mat-dialog-close]="true">{{ ('GENERIC.CLOSE_LABEL' | translate)() }}</button>
@@ -23,8 +24,6 @@ export interface ErrorDialogData {
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [MatDialogModule, TranslatePipe, MatButton, AlertComponent],
 })
-export class ErrorDialogComponent {
-  private data = inject<ErrorDialogData>(MAT_DIALOG_DATA);
-  titleKey = this.data.titleKey;
-  errorKey = this.data.errorKey;
+export class AlertDialogComponent {
+  data = inject<AlertDialogData>(MAT_DIALOG_DATA);
 }

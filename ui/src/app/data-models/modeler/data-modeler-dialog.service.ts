@@ -34,6 +34,13 @@ export class DataModelerDialogService {
     this.dataModelDialogService.openCreationErrorDialog();
   }
 
+  openTouchNotSupportedWarning(): void {
+    this.dialogService.openWarningDialog(
+      'DATA_MODEL.MODELER.DIALOGS.TOUCH_NOT_SUPPORTED.TITLE',
+      'DATA_MODEL.MODELER.DIALOGS.TOUCH_NOT_SUPPORTED.DESCRIPTION',
+    );
+  }
+
   openInvalidPropertiesDialog(): void {
     this.dialogService.openTextDialog(
       'DATA_MODEL.MODELER.DIALOGS.INVALID_PROPERTIES.TITLE',
