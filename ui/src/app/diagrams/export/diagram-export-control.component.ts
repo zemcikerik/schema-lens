@@ -28,6 +28,7 @@ export class DiagramExportControlComponent {
   private matDialog = inject(MatDialog);
 
   export(): void {
+    this.diagramHost().unselectAll();
     const diagramRoot = this.diagramHost().getDiagramRoot();
     const data: DiagramExportDialogData = { diagramRoot, additionalClasses: this.additionalClasses() };
     this.matDialog.open(DiagramExportDialogComponent, { data });

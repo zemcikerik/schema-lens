@@ -69,7 +69,7 @@ export class DiagramExportDialogComponent {
   private matDialogRef = inject(MatDialogRef);
   private translateService = inject(TranslateService);
 
-  async export(): Promise<void> {
+  export(): void {
     const { diagramRoot, additionalClasses } = this.exportData;
     const { format, transparent: transparentValue, quality: qualityValue } = this.optionsForm.value;
 
