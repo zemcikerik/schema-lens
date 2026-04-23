@@ -4,7 +4,6 @@ import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatD
 import { MatButton } from '@angular/material/button';
 import { MatListItem, MatNavList } from '@angular/material/list';
 import { AlertComponent } from '../../../../shared/components/alert/alert.component';
-import { DataModelingTranslatePipe } from '../../../data-modeling-translate.pipe';
 import { TranslatePipe } from '../../../../core/translate/translate.pipe';
 
 export interface DataModelerAddExistingNodeDialogData {
@@ -14,11 +13,11 @@ export interface DataModelerAddExistingNodeDialogData {
 @Component({
   selector: 'app-data-modeler-add-existing-node-dialog',
   template: `
-    <h2 mat-dialog-title>{{ ('DATA_MODEL.MODELER.DIALOGS.ADD_EXISTING_NODE.$layer.TITLE' | dataModelingTranslate)() }}</h2>
+    <h2 mat-dialog-title>{{ ('DATA_MODEL.MODELER.DIALOGS.ADD_EXISTING_NODE.TITLE' | translate)() }}</h2>
 
     <mat-dialog-content>
       @if (data.nodes.length === 0) {
-        <app-alert>{{ ('DATA_MODEL.MODELER.DIALOGS.ADD_EXISTING_NODE.$layer.EMPTY_LABEL' | dataModelingTranslate)() }}</app-alert>
+        <app-alert>{{ ('DATA_MODEL.MODELER.DIALOGS.ADD_EXISTING_NODE.EMPTY_LABEL' | translate)() }}</app-alert>
       } @else {
         <mat-nav-list>
           @for (node of data.nodes; track node.nodeId) {
@@ -41,7 +40,6 @@ export interface DataModelerAddExistingNodeDialogData {
     MatNavList,
     MatListItem,
     AlertComponent,
-    DataModelingTranslatePipe,
     TranslatePipe,
   ],
 })

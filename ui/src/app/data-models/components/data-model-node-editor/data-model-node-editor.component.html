@@ -6,11 +6,11 @@
     <input matInput required formControlName="name">
   </mat-form-field>
 
-  <app-section-header [title]="('DATA_MODEL.NODE.$layer.FIELDS_LABEL' | dataModelingTranslate)()">
+  <app-section-header [title]="('DATA_MODEL.NODE.FIELDS_LABEL' | translate)()">
     <button
       mat-icon-button
       [id]="addFieldButtonId()"
-      [matTooltip]="('DATA_MODEL.NODE.$layer.ADD_FIELD_LABEL' | dataModelingTranslate)()"
+      [matTooltip]="('DATA_MODEL.NODE.ADD_FIELD_LABEL' | translate)()"
       (click)="addDirectField()"
     >
       <mat-icon>add</mat-icon>

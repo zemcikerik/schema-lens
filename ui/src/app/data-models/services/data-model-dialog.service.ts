@@ -13,7 +13,6 @@ import {
   DataModelEdgeFieldFormDialogData,
 } from '../components/data-model-edge-field-form-dialog/data-model-edge-field-form-dialog.component';
 import { DataModelEdgeField } from '../models/data-model-edge.model';
-import { DataModelingTranslationKeyResolver } from './data-modeling-translation-key-resolver.service';
 import {
   dataModelDataTypeNameValidators,
   dataModelDiagramNameValidators,
@@ -28,7 +27,6 @@ export class DataModelDialogService {
   private dialogService = inject(DialogService);
   private matDialog = inject(MatDialog);
   private store = inject(DataModelStore);
-  private keyResolver = inject(DataModelingTranslationKeyResolver);
 
   openCreateDiagramDialog(): Observable<string | null> {
     return this.dialogService.openInputDialog({
@@ -41,7 +39,7 @@ export class DataModelDialogService {
 
   openCreateNodeDialog(existingNames: string[]): Observable<string | null> {
     return this.dialogService.openInputDialog({
-      titleKey: this.keyResolver.resolveKey('DATA_MODEL.NODE.$layer.CREATE_TITLE'),
+      titleKey: 'DATA_MODEL.NODE.CREATE_TITLE',
       labelKey: 'DATA_MODEL.NODE.NAME_LABEL',
       validators: dataModelNodeNameValidators(existingNames),
     });
@@ -49,8 +47,8 @@ export class DataModelDialogService {
 
   openCreateDataTypeDialog(existingNames: string[]): Observable<string | null> {
     return this.dialogService.openInputDialog({
-      titleKey: this.keyResolver.resolveKey('DATA_MODEL.DATA_TYPE.$layer.CREATE_TITLE'),
-      labelKey: this.keyResolver.resolveKey('DATA_MODEL.DATA_TYPE.$layer.NAME_LABEL'),
+      titleKey: 'DATA_MODEL.DATA_TYPE.CREATE_TITLE',
+      labelKey: 'DATA_MODEL.DATA_TYPE.NAME_LABEL',
       validators: dataModelDataTypeNameValidators(existingNames),
     });
   }
@@ -83,16 +81,16 @@ export class DataModelDialogService {
 
   openDeleteNodeConfirmationDialog(): Observable<boolean | null> {
     return this.dialogService.openConfirmationDialog(
-      this.keyResolver.resolveKey('DATA_MODEL.NODE.$layer.DELETE_TITLE'),
-      this.keyResolver.resolveKey('DATA_MODEL.NODE.$layer.DELETE_DESCRIPTION'),
+      'DATA_MODEL.NODE.DELETE_TITLE',
+      'DATA_MODEL.NODE.DELETE_DESCRIPTION',
       'danger',
     );
   }
 
   openDeleteFieldConfirmationDialog(): Observable<boolean | null> {
     return this.dialogService.openConfirmationDialog(
-      this.keyResolver.resolveKey('DATA_MODEL.NODE.$layer.DELETE_FIELD_TITLE'),
-      this.keyResolver.resolveKey('DATA_MODEL.NODE.$layer.DELETE_FIELD_DESCRIPTION'),
+      'DATA_MODEL.NODE.DELETE_FIELD_TITLE',
+      'DATA_MODEL.NODE.DELETE_FIELD_DESCRIPTION',
       'danger',
       { restoreFocus: `#${DEFAULT_NODE_FIELD_ADD_BUTTON_ID}` },
     );

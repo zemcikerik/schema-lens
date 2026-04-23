@@ -14,7 +14,6 @@ import {
 } from '@angular/core';
 import { DataModelEditor } from './data-model-editor.component';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
-import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
 import { SaveDeleteControlComponent } from '../../../shared/components/save-delete-control/save-delete-control.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
@@ -30,7 +29,6 @@ import { DataModelEditorSimpleHostConfig } from './data-model-editor-simple-host
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     AlertComponent,
-    DataModelingTranslatePipe,
     LayoutHeaderAndContentComponent,
     SaveDeleteControlComponent,
     TranslatePipe,

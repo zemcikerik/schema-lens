@@ -12,7 +12,6 @@ import { DataModelEdge, DataModelEdgeField } from '../../models/data-model-edge.
 import { StatusIconComponent } from '../../../shared/components/status-icon/status-icon.component';
 import { DataModelDataType } from '../../models/data-model-data-type.model';
 import { DataModelDataTypePipe } from '../../pipes/data-model-data-type.pipe';
-import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 
 export interface DirectFieldReference {
   index: number;
@@ -57,7 +56,6 @@ export interface EdgeFieldReference {
     TranslatePipe,
     StatusIconComponent,
     DataModelDataTypePipe,
-    DataModelingTranslatePipe,
   ],
 })
 export class DataModelNodeFieldsTableComponent {

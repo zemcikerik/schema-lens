@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatOption, MatSelect } from '@angular/material/select';
-import { DataModelingContext, DataModelingContextState } from '../../data-modeling-context.state';
+import { DataModelingContext, DataModelContextState } from '../../data-model-context.state';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
 @Component({
@@ -25,7 +25,7 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
   ],
 })
 export class DataModelContextSwitcherComponent {
-  contextState = inject(DataModelingContextState);
+  contextState = inject(DataModelContextState);
 
   async onContextChange(context: DataModelingContext): Promise<void> {
     await this.contextState.switchToContext(context);

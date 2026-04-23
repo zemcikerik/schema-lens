@@ -3,7 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 import { MatInput } from '@angular/material/input';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
@@ -18,7 +17,6 @@ import { SectionHeaderComponent } from '../../../shared/components/section-heade
 import {
   SaveDeleteControlComponent
 } from '../../../shared/components/save-delete-control/save-delete-control.component';
-import { DataModelingTranslationKeyResolver } from '../../services/data-modeling-translation-key-resolver.service';
 
 @Component({
   selector: 'app-data-model-data-type',
@@ -36,7 +34,6 @@ import { DataModelingTranslationKeyResolver } from '../../services/data-modeling
     MatError,
     SectionHeaderComponent,
     SaveDeleteControlComponent,
-    DataModelingTranslatePipe,
   ],
 })
 export class DataModelDataTypeComponent {
@@ -51,7 +48,6 @@ export class DataModelDataTypeComponent {
   private dialogService = inject(DialogService);
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
-  private keyResolver = inject(DataModelingTranslationKeyResolver);
 
   propertiesForm = this.fb.nonNullable.group({
     name: this.fb.nonNullable.control('', [Validators.required, noStartEndWhitespaceValidator, Validators.maxLength(40)]),
@@ -114,8 +110,8 @@ export class DataModelDataTypeComponent {
 
     this.dialogService
       .openConfirmationDialog(
-        this.keyResolver.resolveKey('DATA_MODEL.DATA_TYPE.$layer.DELETE_TITLE'),
-        this.keyResolver.resolveKey('DATA_MODEL.DATA_TYPE.$layer.DELETE_DESCRIPTION'),
+        'DATA_MODEL.DATA_TYPE.DELETE_TITLE',
+        'DATA_MODEL.DATA_TYPE.DELETE_DESCRIPTION',
         'danger',
       )
       .pipe(
@@ -131,7 +127,7 @@ export class DataModelDataTypeComponent {
       .subscribe({
         next: async result => {
           if (result === false) {
-            this.error.set(this.keyResolver.resolveKey('DATA_MODEL.DATA_TYPE.$layer.IN_USE'));
+            this.error.set('DATA_MODEL.DATA_TYPE.IN_USE');
             return;
           }
 

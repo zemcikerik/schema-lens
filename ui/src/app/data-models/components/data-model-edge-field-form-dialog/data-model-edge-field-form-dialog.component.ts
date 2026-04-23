@@ -4,7 +4,6 @@ import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
 import { DataModelEdgeField } from '../../models/data-model-edge.model';
 import { dataModelFieldNameValidators } from '../../validators/data-model-name.validators';
@@ -30,7 +29,6 @@ export interface DataModelEdgeFieldFormDialogData {
     MatButton,
     FormatGenericValidationErrorsPipe,
     TranslatePipe,
-    DataModelingTranslatePipe,
   ],
 })
 export class DataModelEdgeFieldFormDialogComponent {

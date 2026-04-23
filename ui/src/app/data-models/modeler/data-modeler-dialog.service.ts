@@ -12,14 +12,12 @@ import {
 } from './dialogs/data-modeler-delete-node-dialog/data-modeler-delete-node-dialog.component';
 import { DataModelNode } from '../models/data-model-node.model';
 import { DataModelDialogService } from '../services/data-model-dialog.service';
-import { DataModelingTranslationKeyResolver } from '../services/data-modeling-translation-key-resolver.service';
 
 @Injectable()
 export class DataModelerDialogService {
   private matDialog = inject(MatDialog);
   private dialogService = inject(DialogService);
   private dataModelDialogService = inject(DataModelDialogService);
-  private keyResolver = inject(DataModelingTranslationKeyResolver);
 
   openAddExistingNode(nodes: DataModelNode[]): Observable<DataModelNode | null> {
     return this.matDialog
@@ -45,14 +43,14 @@ export class DataModelerDialogService {
 
   openDeleteNodeErrorDialog(): void {
     this.dialogService.openErrorDialog(
-      this.keyResolver.resolveKey('DATA_MODEL.MODELER.DIALOGS.DELETE_NODE.$layer.ERROR_TITLE'),
+      'DATA_MODEL.MODELER.DIALOGS.DELETE_NODE.ERROR_TITLE',
       'GENERIC.ERROR_LABEL',
     );
   }
 
   openDeleteEdgeErrorDialog(): void {
     this.dialogService.openErrorDialog(
-      this.keyResolver.resolveKey('DATA_MODEL.MODELER.DIALOGS.DELETE_EDGE.$layer.ERROR_TITLE'),
+      'DATA_MODEL.MODELER.DIALOGS.DELETE_EDGE.ERROR_TITLE',
       'GENERIC.ERROR_LABEL',
     );
   }
@@ -81,8 +79,8 @@ export class DataModelerDialogService {
 
   openDeleteEdgeConfirmation(): Observable<boolean | null> {
     return this.dialogService.openConfirmationDialog(
-      this.keyResolver.resolveKey('DATA_MODEL.MODELER.DIALOGS.DELETE_EDGE.$layer.TITLE'),
-      this.keyResolver.resolveKey('DATA_MODEL.MODELER.DIALOGS.DELETE_EDGE.$layer.DESCRIPTION'),
+      'DATA_MODEL.MODELER.DIALOGS.DELETE_EDGE.TITLE',
+      'DATA_MODEL.MODELER.DIALOGS.DELETE_EDGE.DESCRIPTION',
       'danger',
     );
   }

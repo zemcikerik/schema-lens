@@ -1,5 +1,5 @@
-@let titleKey = 'DATA_MODEL.NODE.$layer.' + (data.field ? 'EDIT_FIELD_LABEL' : 'ADD_FIELD_LABEL');
-<h2 mat-dialog-title>{{ (titleKey | dataModelingTranslate)() }}</h2>
+@let titleKey = 'DATA_MODEL.NODE.' + (data.field ? 'EDIT_FIELD_LABEL' : 'ADD_FIELD_LABEL');
+<h2 mat-dialog-title>{{ (titleKey | translate)() }}</h2>
 
 <mat-dialog-content>
   <form [formGroup]="form" class="data-model-node-editor__field-form">
@@ -14,7 +14,7 @@
     <app-data-model-data-type-name-field
       [dataTypes]="data.dataTypes"
       [control]="form.controls.typeName"
-      [label]="('DATA_MODEL.NODE.FIELD_PROPERTIES.$layer.DATA_TYPE' | dataModelingTranslate)()"/>
+      [label]="('DATA_MODEL.NODE.FIELD_PROPERTIES.DATA_TYPE' | translate)()"/>
 
     <mat-checkbox formControlName="isPrimaryKey">
       {{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.PRIMARY_KEY' | translate)() }}

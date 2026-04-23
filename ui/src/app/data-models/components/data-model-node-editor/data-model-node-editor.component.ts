@@ -31,7 +31,6 @@ import { MatIcon } from '@angular/material/icon';
 import { DataModelDialogService } from '../../services/data-model-dialog.service';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
-import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 import { DataModelEditor } from '../data-model-editor/data-model-editor.component';
 import { DataModelModification, mergeDataModelModification } from '../../models/data-model.model';
 import { dataModelNodeNameValidators } from '../../validators/data-model-name.validators';
@@ -54,7 +53,6 @@ export const DEFAULT_NODE_FIELD_ADD_BUTTON_ID = 'node-editor-add-field-button';
     MatIcon,
     SectionHeaderComponent,
     TranslatePipe,
-    DataModelingTranslatePipe,
   ],
 })
 export class DataModelNodeEditorComponent implements DataModelEditor {

@@ -23,14 +23,14 @@
           </mat-icon>
         }
         <mat-icon class="data-model-node-editor__fields-table__edge-icon"
-                  [matTooltip]="('DATA_MODEL.NODE.FIELDS_TABLE.$layer.FROM_EDGE' | dataModelingTranslate)()">link
+                  [matTooltip]="('DATA_MODEL.NODE.FIELDS_TABLE.FROM_EDGE' | translate)()">link
         </mat-icon>
       }
     </mat-cell>
   </ng-container>
 
   <ng-container matColumnDef="type">
-    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.$layer.DATA_TYPE' | dataModelingTranslate)() }}</mat-header-cell>
+    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.DATA_TYPE' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let row">
       @let typeId = row.source === 'direct' ? row.field.typeId : row.referencedField.typeId;
       <span class="text-code">{{ typeId | dataModelDataType: dataTypes() }}</span>
@@ -61,7 +61,7 @@
 
   <ng-container matColumnDef="noData">
     <mat-footer-cell *matFooterCellDef class="data-model-node-editor__fields-table__empty">
-      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.EMPTY_LABEL' | dataModelingTranslate)() }}
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.EMPTY_LABEL' | translate)() }}
     </mat-footer-cell>
   </ng-container>
 
@@ -76,11 +76,11 @@
   <ng-template matMenuContent let-index="index" let-row="row">
     <button mat-menu-item (click)="editDirectField.emit({ index: index, field: row.field })">
       <mat-icon>edit</mat-icon>
-      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.EDIT_FIELD' | dataModelingTranslate)() }}
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.EDIT_FIELD' | translate)() }}
     </button>
     <button mat-menu-item (click)="deleteDirectField.emit({ index: index, field: row.field })">
       <mat-icon>delete</mat-icon>
-      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.DELETE_FIELD' | dataModelingTranslate)() }}
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.DELETE_FIELD' | translate)() }}
     </button>
   </ng-template>
 </mat-menu>
@@ -89,11 +89,11 @@
   <ng-template matMenuContent let-index="index" let-row="row">
     <button mat-menu-item (click)="editEdgeField.emit({ index: index, field: row.field, edge: row.edge })">
       <mat-icon>edit</mat-icon>
-      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.EDIT_EDGE_FIELD' | dataModelingTranslate)() }}
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.EDIT_EDGE_FIELD' | translate)() }}
     </button>
     <button mat-menu-item (click)="goToEdge.emit(row.edge)">
       <mat-icon>link</mat-icon>
-      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.$layer.GO_TO_EDGE' | dataModelingTranslate)() }}
+      {{ ('DATA_MODEL.NODE.FIELDS_TABLE.GO_TO_EDGE' | translate)() }}
     </button>
   </ng-template>
 </mat-menu>

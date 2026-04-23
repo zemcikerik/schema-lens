@@ -10,7 +10,6 @@ import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DataModelStore } from '../../data-model.store';
-import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
@@ -25,7 +24,6 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
     MatOption,
     MatSelect,
     ReactiveFormsModule,
-    DataModelingTranslatePipe,
     SectionHeaderComponent,
     TranslatePipe,
   ],

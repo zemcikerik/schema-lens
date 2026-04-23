@@ -9,7 +9,6 @@ import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { DataModelDataType } from '../../models/data-model-data-type.model';
 import { DataModelField } from '../../models/data-model-node.model';
-import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { dataModelFieldNameValidators } from '../../validators/data-model-name.validators';
 
@@ -36,7 +35,6 @@ export interface DataModelNodeFieldFormDialogData {
     MatButton,
     DataModelDataTypeNameFieldComponent,
     FormatGenericValidationErrorsPipe,
-    DataModelingTranslatePipe,
     TranslatePipe,
   ],
 })

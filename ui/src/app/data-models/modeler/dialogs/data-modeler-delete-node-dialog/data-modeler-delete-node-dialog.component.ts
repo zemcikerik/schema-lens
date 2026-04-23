@@ -3,7 +3,6 @@ import { MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from
 import { MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { FormsModule } from '@angular/forms';
-import { DataModelingTranslatePipe } from '../../../data-modeling-translate.pipe';
 import { TranslatePipe } from '../../../../core/translate/translate.pipe';
 
 export interface DataModelerDeleteNodeDialogResult {
@@ -13,12 +12,12 @@ export interface DataModelerDeleteNodeDialogResult {
 @Component({
   selector: 'app-data-modeler-delete-node-dialog',
   template: `
-    <h2 mat-dialog-title>{{ ('DATA_MODEL.MODELER.DIALOGS.DELETE_NODE.$layer.TITLE' | dataModelingTranslate)() }}</h2>
+    <h2 mat-dialog-title>{{ ('DATA_MODEL.MODELER.DIALOGS.DELETE_NODE.TITLE' | translate)() }}</h2>
 
     <mat-dialog-content class="data-modeler__delete-node-form">
-      <p>{{ ('DATA_MODEL.MODELER.DIALOGS.DELETE_NODE.$layer.DESCRIPTION' | dataModelingTranslate)() }}</p>
+      <p>{{ ('DATA_MODEL.MODELER.DIALOGS.DELETE_NODE.DESCRIPTION' | translate)() }}</p>
       <mat-checkbox [(ngModel)]="deleteFromModel">
-        {{ ('DATA_MODEL.MODELER.DIALOGS.DELETE_NODE.$layer.DELETE_FROM_MODEL_LABEL' | dataModelingTranslate)() }}
+        {{ ('DATA_MODEL.MODELER.DIALOGS.DELETE_NODE.DELETE_FROM_MODEL_LABEL' | translate)() }}
       </mat-checkbox>
     </mat-dialog-content>
 
@@ -37,7 +36,6 @@ export interface DataModelerDeleteNodeDialogResult {
     MatButton,
     MatCheckbox,
     FormsModule,
-    DataModelingTranslatePipe,
     TranslatePipe,
   ],
 })

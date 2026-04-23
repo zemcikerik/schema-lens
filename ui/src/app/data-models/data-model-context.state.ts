@@ -13,7 +13,7 @@ interface ContextRouteMapper {
 }
 
 @Injectable({ providedIn: 'root' })
-export class DataModelingContextState {
+export class DataModelContextState {
   private routeData = inject(RouteDataService).routeData;
   private router = inject(Router);
 

@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, model } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
-import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
+import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
 @Component({
   selector: 'app-data-modeler-connect-action',
@@ -12,13 +12,13 @@ import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
       mat-icon-button
       class="data-modeler__connect-action"
       [class.toggled]="active()"
-      [matTooltip]="('DATA_MODEL.MODELER.ACTIONS.$layer.CONNECT_NODES_TOOLTIP' | dataModelingTranslate)()"
+      [matTooltip]="('DATA_MODEL.MODELER.ACTIONS.CONNECT_NODES_TOOLTIP' | translate)()"
       (click)="active.set(!active())"
     >
       <mat-icon>add_link</mat-icon>
     </button>
   `,
-  imports: [MatIconButton, MatIcon, MatTooltip, DataModelingTranslatePipe],
+  imports: [MatIconButton, MatIcon, MatTooltip, TranslatePipe],
 })
 export class DataModelerConnectActionComponent {
   active = model<boolean>(false);

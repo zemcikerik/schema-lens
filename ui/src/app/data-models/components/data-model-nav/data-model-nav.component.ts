@@ -11,8 +11,7 @@ import { DataModelStore } from '../../data-model.store';
 import { DataModelDialogService } from '../../services/data-model-dialog.service';
 import { ObjectSelectorComponent, ObjectSelectorEntry } from '../../../shared/components/object-selector/object-selector.component';
 import { DataModelContextSwitcherComponent } from '../data-model-context-switcher/data-model-context-switcher.component';
-import { DataModelingContextState } from '../../data-modeling-context.state';
-import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
+import { DataModelContextState } from '../../data-model-context.state';
 
 @Component({
   selector: 'app-data-model-nav',
@@ -29,12 +28,11 @@ import { DataModelingTranslatePipe } from '../../data-modeling-translate.pipe';
     ObjectSelectorComponent,
     TranslatePipe,
     DataModelContextSwitcherComponent,
-    DataModelingTranslatePipe,
   ],
 })
 export class DataModelNavComponent {
   dataModelId = input.required<number>();
-  contextState = inject(DataModelingContextState);
+  contextState = inject(DataModelContextState);
   store = inject(DataModelStore);
   private destroyRef = inject(DestroyRef);
   private dialogService = inject(DataModelDialogService);

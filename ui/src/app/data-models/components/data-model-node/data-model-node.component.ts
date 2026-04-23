@@ -22,7 +22,7 @@ export class DataModelNodeComponent {
     editorComponent: DataModelNodeEditorComponent,
     objectInputPropertyKey: 'node',
     objectResolver: (id: number): DataModelNode | null => this.store.nodes().find(n => n.nodeId === id) ?? null,
-    titleKey: 'DATA_MODEL.NODE.$layer.EDIT_TITLE',
+    titleKey: 'DATA_MODEL.NODE.EDIT_TITLE',
     titleParamsResolver: (node: DataModelNode) => ({ name: node.name }),
     deleteConfirmationOpener: () => this.dialogService.openDeleteNodeConfirmationDialog(),
     objectDeleter: (id: number) => this.store.deleteNode(id),
