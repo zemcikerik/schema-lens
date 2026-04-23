@@ -24,7 +24,7 @@ import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { Router, RouterLink } from '@angular/router';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
-import { catchError, defer, filter, map, mergeMap, NEVER, Observable, of, switchMap, tap } from 'rxjs';
+import { catchError, defer, filter, from, map, mergeMap, NEVER, Observable, of, switchMap, tap } from 'rxjs';
 import { AlertComponent } from '../../shared/components/alert/alert.component';
 import { DataModelerDiagramState } from './data-modeler-diagram.state';
 import { DataModelStore } from '../data-model.store';
@@ -32,6 +32,8 @@ import { TranslatePipe } from '../../core/translate/translate.pipe';
 import { DataModelerStateModule } from './data-modeler-state.module';
 import { DataModelerDialogService } from './data-modeler-dialog.service';
 import { DataModelEdge } from '../models/data-model-edge.model';
+import { DataModelContextState } from '../data-model-context.state';
+import { mapContextToDataModelDiagramType, mapDataModelDiagramTypeToContext } from '../models/data-model-diagram.model';
 
 @Component({
   selector: 'app-data-modeler',
@@ -61,13 +63,14 @@ export class DataModelerComponent {
 
   store = inject(DataModelStore);
   state = inject(DataModelerDiagramState);
+  private contextState = inject(DataModelContextState);
   private dialogs = inject(DataModelerDialogService);
   private destroyRef = inject(DestroyRef);
   private injector = inject(Injector);
   private router = inject(Router);
   private diagram = viewChild(SchemaDiagramComponent);
 
-  backLink = computed(() => '/model/' + this.dataModelId());
+  backNavigationCommand = computed(() => ['/model', this.dataModelId(), this.contextState.context()]);
   connectMode = signal<boolean>(false);
 
   constructor() {
@@ -83,7 +86,17 @@ export class DataModelerComponent {
             .loadModel(dataModelId)
             .pipe(
               switchMap(model => model ? this.store.loadDiagram(diagramId) : this.redirectTo404()),
-              mergeMap(diagram => diagram ? of(diagram) : this.redirectTo404()),
+              mergeMap(diagram => {
+                if (!diagram) {
+                  return this.redirectTo404();
+                }
+
+                const switchToCorrectContext$ = diagram.type !== mapContextToDataModelDiagramType(this.contextState.context())
+                  ? from(this.contextState.switchToContext(mapDataModelDiagramTypeToContext(diagram.type)))
+                  : of(false);
+
+                return switchToCorrectContext$.pipe(map(() => diagram));
+              }),
             );
         }),
         takeUntilDestroyed(this.destroyRef),

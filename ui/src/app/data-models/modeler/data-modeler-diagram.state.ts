@@ -10,7 +10,7 @@ import { SchemaDiagramPositionSnapshot } from '../../diagrams/schema/model/schem
 import { SchemaDiagramSelection } from '../../diagrams/schema/model/schema-diagram-selection.model';
 import { DataModelDetails, DataModelModification } from '../models/data-model.model';
 import { DataModelNode, DataModelField } from '../models/data-model-node.model';
-import { LogicalModelDiagram } from '../models/data-model-diagram.model';
+import { DataModelDiagram } from '../models/data-model-diagram.model';
 
 @Injectable()
 export class DataModelerDiagramState {
@@ -21,7 +21,7 @@ export class DataModelerDiagramState {
   private _patches$ = new Subject<SchemaDiagramPatch>();
   private _loading = signal<boolean>(false);
   private _hasUnsavedPositions = signal<boolean>(false);
-  private _activeDiagram = signal<LogicalModelDiagram | null>(null);
+  private _activeDiagram = signal<DataModelDiagram | null>(null);
   private _currentSelection = signal<SchemaDiagramSelection | null>(null);
 
   patches$ = this._patches$.asObservable();
@@ -34,7 +34,7 @@ export class DataModelerDiagramState {
   private visibleNodeIds = new Set<number>();
   private visibleEdgeIds = new Set<number>();
 
-  initDiagram(diagram: LogicalModelDiagram): void {
+  initDiagram(diagram: DataModelDiagram): void {
     const model = this.store.model();
     this._activeDiagram.set(diagram);
 
@@ -142,9 +142,9 @@ export class DataModelerDiagramState {
   }
 
   savePositions(snapshot: SchemaDiagramPositionSnapshot): Observable<unknown> {
-    const diagram = this.activeDiagram() as LogicalModelDiagram;
+    const diagram = this.activeDiagram() as DataModelDiagram;
 
-    const updatedDiagram: LogicalModelDiagram = {
+    const updatedDiagram: DataModelDiagram = {
       ...diagram,
       nodes: Object.entries(snapshot.nodes).map(([id, pos]) => ({
         nodeId: Number(id),
@@ -162,7 +162,7 @@ export class DataModelerDiagramState {
     return this.withLoading(
       this.store.updateDiagram(updatedDiagram).pipe(
         tap(updated => {
-          this._activeDiagram.set(updated as LogicalModelDiagram);
+          this._activeDiagram.set(updated);
           this.clearUnsavedPositions();
         }),
       ),
@@ -170,17 +170,17 @@ export class DataModelerDiagramState {
   }
 
   updateDiagramName(name: string): Observable<unknown> {
-    const diagram = this.activeDiagram() as LogicalModelDiagram;
+    const diagram = this.activeDiagram() as DataModelDiagram;
 
     return this.withLoading(
       this.store.updateDiagram({ ...diagram, name }).pipe(
-        tap(updated => this._activeDiagram.set(updated as LogicalModelDiagram)),
+        tap(updated => this._activeDiagram.set(updated)),
       ),
     );
   }
 
   deleteDiagram(): Observable<boolean> {
-    const diagram = this.activeDiagram() as LogicalModelDiagram;
+    const diagram = this.activeDiagram() as DataModelDiagram;
 
     return this.withLoading(
       this.store.deleteDiagram(diagram.id as number).pipe(
@@ -291,12 +291,12 @@ export class DataModelerDiagramState {
     }
   }
 
-  private nodePosition(nodeId: number, diagram: LogicalModelDiagram) {
+  private nodePosition(nodeId: number, diagram: DataModelDiagram) {
     const pos = (diagram.nodes ?? []).find(n => n.nodeId === nodeId);
     return pos ? { x: pos.x, y: pos.y, width: pos.width, height: pos.height } : undefined;
   }
 
-  private edgePosition(edgeId: number, diagram: LogicalModelDiagram) {
+  private edgePosition(edgeId: number, diagram: DataModelDiagram) {
     const pos = (diagram.edges ?? []).find(e => e.edgeId === edgeId);
     return pos ? { points: [...pos.points] } : undefined;
   }

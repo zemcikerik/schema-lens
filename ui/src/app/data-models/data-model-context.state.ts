@@ -29,11 +29,16 @@ export class DataModelContextState {
     return context === 'oracle' ? 'physical' : context;
   });
 
-  availableContexts = computed(() => {
-    const contexts: DataModelingContext[] = ['logical'];
-    const modelContexts = this.store.model()?.enabledContexts ?? { oracleEnabled: false };
+  availableContexts = computed<DataModelingContext[] | null>(() => {
+    const model = this.store.model();
 
-    if (modelContexts.oracleEnabled) {
+    if (!model) {
+      return null;
+    }
+
+    const contexts: DataModelingContext[] = ['logical'];
+
+    if (model.enabledContexts.oracleEnabled) {
       contexts.push('oracle');
     }
 
@@ -53,6 +58,10 @@ export class DataModelContextState {
       pattern: /^\/model\/([^/]+)\/(logical|oracle)\/(entity|table)\/([^/]+)$/,
       map: (match, context) => ['/model', match[1], context, this.mapNodeSegment(context), match[4]],
     },
+    {
+      pattern: /^\/modeler\/([^/]+)\/(logical|oracle)\/([^/]+)$/,
+      map: (match, context) => ['/modeler', match[1], context, match[3]],
+    },
   ];
 
   constructor() {
@@ -60,15 +69,15 @@ export class DataModelContextState {
       const context = this.context();
       const available = this.availableContexts();
 
-      if (context !== 'unknown' && !available.includes(context)) {
+      if (context !== 'unknown' && available && !available.includes(context)) {
         this.switchToContext('logical');
       }
     });
   }
 
-  async switchToContext(context: DataModelingContext): Promise<void> {
+  async switchToContext(context: DataModelingContext): Promise<boolean> {
     if (this.context() === 'unknown' || this.context() === context) {
-      return;
+      return true;
     }
 
     if (context === 'unknown') {
@@ -80,7 +89,7 @@ export class DataModelContextState {
 
     if (commands) {
       await this.router.navigate(commands);
-      return;
+      return true;
     }
 
     const dataModelId = this.extractDataModelId(currentPath);
@@ -90,6 +99,7 @@ export class DataModelContextState {
     }
 
     await this.router.navigate(['/model', dataModelId, context]);
+    return true;
   }
 
   private findContextSwitchCommands(path: string, targetContext: SwitchableDataModelingContext): string[] | null {

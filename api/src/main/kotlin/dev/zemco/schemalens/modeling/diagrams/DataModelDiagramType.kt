@@ -6,7 +6,8 @@ import jakarta.persistence.AttributeConverter
 import jakarta.persistence.Converter
 
 enum class DataModelDiagramType(private val apiValue: String) {
-    LOGICAL("logical");
+    LOGICAL("logical"),
+    ORACLE("oracle");
 
     @JsonValue
     fun toApiValue(): String = apiValue
@@ -22,10 +23,12 @@ enum class DataModelDiagramType(private val apiValue: String) {
 
 fun DataModelDiagramType.mapToCharacter(): Char = when (this) {
     DataModelDiagramType.LOGICAL -> 'L'
+    DataModelDiagramType.ORACLE -> 'O'
 }
 
 fun Char.mapToDataModelDiagramType(): DataModelDiagramType = when (this) {
     'L' -> DataModelDiagramType.LOGICAL
+    'O' -> DataModelDiagramType.ORACLE
     else -> throw IllegalArgumentException("Invalid diagram type '$this'")
 }
 

@@ -12,6 +12,7 @@ import { DataModelDialogService } from '../../services/data-model-dialog.service
 import { ObjectSelectorComponent, ObjectSelectorEntry } from '../../../shared/components/object-selector/object-selector.component';
 import { DataModelContextSwitcherComponent } from '../data-model-context-switcher/data-model-context-switcher.component';
 import { DataModelContextState } from '../../data-model-context.state';
+import { mapContextToDataModelDiagramType } from '../../models/data-model-diagram.model';
 
 @Component({
   selector: 'app-data-model-nav',
@@ -56,11 +57,14 @@ export class DataModelNavComponent {
   ));
 
   private diagramEntries$ = toObservable(computed(() =>
-    this.store.diagrams().map(diagram => ({
-      id: diagram.id,
-      label: diagram.name,
-      routerLink: ['/modeler', this.dataModelId(), 'logical', diagram.id as number],
-    } satisfies ObjectSelectorEntry))
+    this.store
+      .diagrams()
+      .filter(diagram => diagram.type === mapContextToDataModelDiagramType(this.contextState.context()))
+      .map(diagram => ({
+        id: diagram.id,
+        label: diagram.name,
+        routerLink: ['/modeler', this.dataModelId(), diagram.type, diagram.id as number],
+      } satisfies ObjectSelectorEntry))
   ));
 
   private nodeEntries$ = toObservable(computed(() =>
@@ -88,8 +92,11 @@ export class DataModelNavComponent {
           if (name === null) {
             return of(null);
           }
+          
           this.diagramCreating.set(true);
-          return this.store.createDiagram({ name, type: 'logical', id: null, edges: [], nodes: [] }).pipe(
+          const type = mapContextToDataModelDiagramType(this.contextState.context());
+
+          return this.store.createDiagram({ name, type, id: null, edges: [], nodes: [] }).pipe(
             finalize(() => this.diagramCreating.set(false)),
           );
         }),

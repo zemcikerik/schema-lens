@@ -42,6 +42,8 @@ export const appRoutes: Route[] = [
     canActivate: [authGuard],
     children: [
       { path: '', redirectTo: 'logical/properties', pathMatch: 'full' },
+      { path: 'logical', redirectTo: 'logical/properties', pathMatch: 'full' },
+      { path: 'oracle', redirectTo: 'oracle/properties', pathMatch: 'full' },
       {
         path: 'logical/properties',
         loadComponent: () =>
@@ -99,6 +101,14 @@ export const appRoutes: Route[] = [
     canActivate: [authGuard],
     canDeactivate: [dataModelerUnsavedGuard],
     data: { dataModelingContext: 'logical' },
+  },
+  {
+    path: 'modeler/:dataModelId/oracle/:diagramId',
+    loadComponent: () =>
+      import('./data-models/modeler/data-modeler.component').then(c => c.DataModelerComponent),
+    canActivate: [authGuard],
+    canDeactivate: [dataModelerUnsavedGuard],
+    data: { dataModelingContext: 'oracle' },
   },
   {
     path: 'project',

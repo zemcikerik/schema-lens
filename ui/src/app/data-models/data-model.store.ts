@@ -34,7 +34,10 @@ export class DataModelStore {
   readonly nodes = computed(() => this._model()?.nodes ?? []);
   readonly edges = computed(() => this._model()?.edges ?? []);
   readonly dataTypes = computed(() => this._model()?.dataTypes ?? []);
-  readonly diagrams = computed(() => this._model()?.diagrams ?? []);
+  readonly diagrams = computed(() => {
+    const model = this._model();
+    return model ? model.diagrams.filter(d => d.type !== 'oracle' || model.enabledContexts.oracleEnabled) : [];
+  });
 
   loadModel(dataModelId: number): Observable<DataModelDetails | null> {
     return defer(() => {

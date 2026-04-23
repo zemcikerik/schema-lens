@@ -20,7 +20,7 @@
         (keydown.backspace)="onDeletePressed()"
       >
         <app-layout-header-and-content [title]="state.diagramName()" [fullHeight]="true">
-          <a ngProjectAs="header-prefix" mat-icon-button [routerLink]="backLink()">
+          <a ngProjectAs="header-prefix" mat-icon-button [routerLink]="backNavigationCommand()">
             <mat-icon>arrow_back</mat-icon>
           </a>
 

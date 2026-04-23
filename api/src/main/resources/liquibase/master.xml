@@ -1168,4 +1168,33 @@
       </column>
     </addColumn>
   </changeSet>
+
+  <changeSet id="2026-04-23T1500-allow-oracle-physical-diagram-type"
+             author="Erik Zemčík (zemcik.erik@gmail.com)">
+    <sql dbms="oracle"
+         splitStatements="false">
+      ALTER TABLE data_model_diagram
+      DROP CONSTRAINT cc_data_model_diagram_type
+    </sql>
+
+    <sql dbms="oracle"
+         splitStatements="false">
+      ALTER TABLE data_model_diagram
+      ADD CONSTRAINT cc_data_model_diagram_type CHECK (type IN ('L', 'O'))
+    </sql>
+
+    <rollback>
+      <sql dbms="oracle"
+           splitStatements="false">
+        ALTER TABLE data_model_diagram
+        DROP CONSTRAINT cc_data_model_diagram_type
+      </sql>
+
+      <sql dbms="oracle"
+           splitStatements="false">
+        ALTER TABLE data_model_diagram
+        ADD CONSTRAINT cc_data_model_diagram_type CHECK (type IN ('L'))
+      </sql>
+    </rollback>
+  </changeSet>
 </databaseChangeLog>

@@ -32,7 +32,6 @@ export class DataModelDialogService {
     return this.dialogService.openInputDialog({
       titleKey: 'DATA_MODEL.DIAGRAM.CREATE.TITLE',
       labelKey: 'DATA_MODEL.DIAGRAM.CREATE.LABEL',
-      placeholderKey: 'DATA_MODEL.DIAGRAM.CREATE.PLACEHOLDER',
       validators: dataModelDiagramNameValidators(),
     });
   }
