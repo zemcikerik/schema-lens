@@ -30,6 +30,8 @@ import Canvas from 'diagram-js/lib/core/Canvas';
 import type { Connection, Element, ElementLike, Parent, Root, Shape } from 'diagram-js/lib/model/Types';
 import { getBBox } from 'diagram-js/lib/util/Elements';
 import { AngularHostContextModuleFactory } from './angular/angular-host-context.module';
+import GridSnappingModule from 'diagram-js/lib/features/grid-snapping';
+import type GridSnapping from 'diagram-js/lib/features/grid-snapping/GridSnapping';
 import { GridBackground, GridBackgroundModule } from './util/grid-background.module';
 import EventBus from 'diagram-js/lib/core/EventBus';
 import { CroppingConnectionDockingModule } from './util/cropping-connection-docking.module';
@@ -50,14 +52,15 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
   modules = input<ModuleDeclaration[]>([]);
   elementsChanged = output<ElementLike[]>();
 
-  private _gridVisible = signal<boolean>(false);
-  readonly gridVisible = this._gridVisible.asReadonly();
+  private _gridEnabled = signal<boolean>(false);
+  readonly gridEnabled = this._gridEnabled.asReadonly();
 
   private diagram: Diagram = null!;
   private canvas: Canvas = null!;
   private elementFactory: ElementFactory = null!;
   private eventBus: EventBus = null!;
   private gridBackground: GridBackground = null!;
+  private gridSnapping: GridSnapping = null!;
   private selection: Selection = null!;
   private layouter: BaseLayouter = null!;
   private connectionDocking: ConnectionDocking = null!;
@@ -79,6 +82,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
           BendpointsModule,
           ConnectionPreviewModule,
           GridBackgroundModule,
+          GridSnappingModule,
           ModelingModule,
           MoveModule,
           MoveCanvasModule,
@@ -100,6 +104,8 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
       this.elementFactory = this.diagram.get<ElementFactory>('elementFactory');
       this.eventBus = this.diagram.get<EventBus>('eventBus');
       this.gridBackground = this.diagram.get<GridBackground>('gridBackground');
+      this.gridSnapping = this.diagram.get<GridSnapping>('gridSnapping');
+      this.gridSnapping.setActive(this.gridBackground.isBackgroundShown());
       this.selection = this.diagram.get<Selection>('selection');
       this.layouter = this.diagram.get<BaseLayouter>('layouter');
       this.connectionDocking = this.diagram.get<ConnectionDocking>('connectionDocking');
@@ -109,7 +115,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
       });
     });
 
-    this._gridVisible.set(this.runInDiagramContext(() => this.gridBackground.isBackgroundShown()));
+    this._gridEnabled.set(this.runInDiagramContext(() => this.gridBackground.isBackgroundShown()));
   }
 
   isInitialized(): boolean {
@@ -215,16 +221,17 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
     this.runInDiagramContext(() => this.canvas.zoom(zoomLevel));
   }
 
-  setGridVisibility(visible: boolean): void {
+  setGridEnabled(enabled: boolean): void {
     this.runInDiagramContext(() => {
-      if (visible) {
+      if (enabled) {
         this.gridBackground.showBackground();
       } else {
         this.gridBackground.hideBackground();
       }
+      this.gridSnapping.setActive(enabled);
     });
 
-    this._gridVisible.set(visible);
+    this._gridEnabled.set(enabled);
   }
 
   focusElement(element: ElementLike): void {

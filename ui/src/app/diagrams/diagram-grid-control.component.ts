@@ -17,9 +17,9 @@ import { TranslatePipe } from '../core/translate/translate.pipe';
 })
 export class DiagramGridControlComponent {
   diagramHost = input.required<DiagramHostComponent>();
-  enabled = computed(() => this.diagramHost().gridVisible());
+  enabled = computed(() => this.diagramHost().gridEnabled());
 
   toggle(): void {
-    this.diagramHost().setGridVisibility(!this.enabled());
+    this.diagramHost().setGridEnabled(!this.enabled());
   }
 }
