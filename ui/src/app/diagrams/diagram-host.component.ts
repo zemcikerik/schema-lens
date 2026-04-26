@@ -33,6 +33,7 @@ import { AngularHostContextModuleFactory } from './angular/angular-host-context.
 import { GridBackground, GridBackgroundModule } from './util/grid-background.module';
 import EventBus from 'diagram-js/lib/core/EventBus';
 import { CroppingConnectionDockingModule } from './util/cropping-connection-docking.module';
+import { CropWaypointsAfterLayoutModule } from './util/crop-waypoints-after-layout.module';
 import type { Point } from 'diagram-js/lib/util/Types';
 import Selection from 'diagram-js/lib/features/selection/Selection';
 import BaseLayouter from 'diagram-js/lib/layout/BaseLayouter';
@@ -86,6 +87,7 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
           SelectionModule,
           ZoomScrollModule,
           CroppingConnectionDockingModule,
+          CropWaypointsAfterLayoutModule,
           AngularHostContextModuleFactory.create({
             ngZone: this.ngZone,
             viewContainerRef: this.viewContainerRef,
