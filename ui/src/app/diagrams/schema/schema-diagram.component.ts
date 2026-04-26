@@ -17,6 +17,7 @@ import { AngularSelectionSupportModuleFactory } from '../angular/angular-selecti
 import { SchemaDiagramNodeComponent } from './node/schema-diagram-node.component';
 import { SchemaDiagramNodeModule } from './node/schema-diagram-node.module';
 import { NoMultiSelectModule } from '../util/no-multi-select.module';
+import { KeepSelectionOnReclickModule } from '../util/keep-selection-on-reclick.module';
 import { EMPTY, Observable, switchMap } from 'rxjs';
 import {
   AddEdgePatch,
@@ -98,6 +99,7 @@ export class SchemaDiagramComponent implements AfterViewInit {
     SchemaDiagramNodeModule,
     SchemaDiagramEdgeModule,
     NoMultiSelectModule,
+    KeepSelectionOnReclickModule,
   ];
 
   allModules = computed(() => [...this.MODULES, ...this.additionalModules()]);
