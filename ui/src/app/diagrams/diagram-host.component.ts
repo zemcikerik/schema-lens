@@ -179,6 +179,22 @@ export class DiagramHostComponent implements AfterViewInit, OnDestroy {
     });
   }
 
+  recropConnections(connections: Connection[]): void {
+    if (connections.length === 0) {
+      return;
+    }
+
+    this.runInDiagramContext(() => {
+      connections.forEach(connection => {
+        const cropped = this.connectionDocking.getCroppedWaypoints(connection);
+        cropped.forEach(point => delete point.original);
+        connection.waypoints = cropped;
+      });
+
+      this.eventBus.fire('elements.changed', { elements: [...connections] });
+    });
+  }
+
   removeShape(shape: Shape): void {
     this.runInDiagramContext(() => this.canvas.removeShape(shape));
   }

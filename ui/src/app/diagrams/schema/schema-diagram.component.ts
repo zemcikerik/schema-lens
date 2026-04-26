@@ -203,10 +203,18 @@ export class SchemaDiagramComponent implements AfterViewInit {
     const minDimensions = SchemaDiagramNodeComponent.estimateDimensions(node);
     const width = Math.max(entry.shape.width, minDimensions.width);
     const height = Math.max(entry.shape.height, minDimensions.height);
+    const dimensionsChanged = entry.shape.width !== width || entry.shape.height !== height;
 
     this.diagramHost().updateAll([entry.shape], {
       [entry.shape.id]: { width, height, minDimensions },
     });
+
+    if (dimensionsChanged) {
+      this.diagramHost().recropConnections([
+        ...(entry.shape.incoming ?? []),
+        ...(entry.shape.outgoing ?? []),
+      ]);
+    }
 
     this.angularRenderer.setShapeInput(entry.shape, 'node', node);
     this.nodes[node.id] = { ...entry, node };
