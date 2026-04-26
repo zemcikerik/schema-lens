@@ -44,6 +44,7 @@ import { SchemaDiagramSelection } from './model/schema-diagram-selection.model';
 import { SchemaDiagramConnectNodes } from './model/schema-diagram-connect-nodes.model';
 import { AngularDisableShapeMoveWhenModuleFactory } from '../angular/angular-disable-shape-move-when.module';
 import { ModuleDeclaration } from 'didi';
+import SnappingModule from 'diagram-js/lib/features/snapping';
 
 interface NodeEntry {
   readonly node: SchemaDiagramNode;
@@ -100,6 +101,7 @@ export class SchemaDiagramComponent implements AfterViewInit {
     SchemaDiagramEdgeModule,
     NoMultiSelectModule,
     KeepSelectionOnReclickModule,
+    SnappingModule,
   ];
 
   allModules = computed(() => [...this.MODULES, ...this.additionalModules()]);

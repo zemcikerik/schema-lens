@@ -22,6 +22,14 @@
     }
   }
 
+  .djs-snap-line {
+    stroke: mat.get-theme-color(t.$theme, secondary);
+    stroke-linecap: round;
+    stroke-width: 2px;
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
   .djs-resizer-visual {
     fill: mat.get-theme-color(t.$theme, tertiary);
     stroke: mat.get-theme-color(t.$theme, surface);
