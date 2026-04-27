@@ -2,6 +2,7 @@ package dev.zemco.schemalens.modeling.nodes
 
 import dev.zemco.schemalens.modeling.edges.DataModelEdgeWriteService
 import dev.zemco.schemalens.modeling.models.DataModel
+import dev.zemco.schemalens.modeling.models.DataModelCascadeService
 import dev.zemco.schemalens.modeling.models.DataModelEdgeCascadeMutationService
 import dev.zemco.schemalens.modeling.models.DataModelModificationDto
 import org.springframework.stereotype.Service
@@ -10,9 +11,12 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class DataModelNodeServiceImpl(
     private val nodeRepository: DataModelNodeRepository,
+    private val cascadeService: DataModelCascadeService,
     private val edgeCascadeMutationService: DataModelEdgeCascadeMutationService,
     private val edgeWriteService: DataModelEdgeWriteService,
 ) : DataModelNodeService {
+
+    private enum class PrimaryKeyChange { NONE, TYPE_ONLY, STRUCTURAL }
 
     @Transactional
     override fun createNode(
@@ -60,7 +64,7 @@ class DataModelNodeServiceImpl(
         validateFieldNameUniqueness(dto.fields.map { it.name } + edgeFieldNames)
 
         node.name = normalizedName
-        val primaryKeyChanged = hasPrimaryKeyChanged(node.fields, dto.fields)
+        val primaryKeyChange = detectPrimaryKeyChange(node.fields, dto.fields)
 
         val (toUpdate, toInsert) = dto.fields.partition { it.fieldId != null }
         val updateById = toUpdate.associateBy { it.fieldId!! }
@@ -89,25 +93,38 @@ class DataModelNodeServiceImpl(
         val savedNode = nodeRepository.save(node)
         val updatedNodes = listOf(DataModelNodeDto.from(savedNode))
 
-        if (!primaryKeyChanged) {
-            return DataModelModificationDto(updatedNodes = updatedNodes)
+        return when (primaryKeyChange) {
+            PrimaryKeyChange.NONE -> DataModelModificationDto(updatedNodes = updatedNodes)
+
+            PrimaryKeyChange.TYPE_ONLY -> {
+                val visuallyStaleNodeIds = cascadeService.edgesInCascadeScope(savedNode)
+                    .map { it.toNodeId }
+                    .filter { it != savedNode.id }
+                    .distinct()
+
+                DataModelModificationDto(
+                    updatedNodes = updatedNodes,
+                    visuallyStaleNodeIds = visuallyStaleNodeIds,
+                )
+            }
+
+            PrimaryKeyChange.STRUCTURAL -> {
+                val updatedEdges = edgeCascadeMutationService
+                    .collectCascadeEdgesAndSync(model, savedNode)
+                    .let { edgeWriteService.persistAndMapEdges(it) }
+
+                val visuallyStaleNodeIds = updatedEdges
+                    .map { it.toNodeId }
+                    .filter { it != savedNode.id }
+                    .distinct()
+
+                DataModelModificationDto(
+                    updatedNodes = updatedNodes,
+                    updatedEdges = updatedEdges,
+                    visuallyStaleNodeIds = visuallyStaleNodeIds,
+                )
+            }
         }
-
-        val updatedEdges = edgeCascadeMutationService
-            .collectCascadeEdgesAndSync(model, savedNode)
-            .let { edgeWriteService.persistAndMapEdges(it) }
-
-        val updatedNodeIds = updatedNodes.map { it.nodeId }.toSet()
-        val visuallyStaleNodeIds = updatedEdges
-            .map { it.toNodeId }
-            .filter { it !in updatedNodeIds }
-            .distinct()
-
-        return DataModelModificationDto(
-            updatedNodes = updatedNodes,
-            updatedEdges = updatedEdges,
-            visuallyStaleNodeIds = visuallyStaleNodeIds,
-        )
     }
 
     @Transactional
@@ -154,10 +171,10 @@ class DataModelNodeServiceImpl(
         )
     }
 
-    private fun hasPrimaryKeyChanged(
+    private fun detectPrimaryKeyChange(
         existingFields: Collection<DataModelField>,
         requestedFields: Collection<DataModelFieldInputDto>,
-    ): Boolean {
+    ): PrimaryKeyChange {
         val existingById = existingFields.associateBy { field -> field.id!! }
 
         val requestedById = requestedFields
@@ -166,21 +183,28 @@ class DataModelNodeServiceImpl(
             .associateBy { it.fieldId!! }
 
         if (existingFields.any { it.isPrimaryKey && it.id !in requestedById }) {
-            return true
+            return PrimaryKeyChange.STRUCTURAL
         }
 
         if (requestedFields.any { it.fieldId == null && it.isPrimaryKey }) {
-            return true
+            return PrimaryKeyChange.STRUCTURAL
         }
 
-        return existingById.any { (fieldId, existingField) ->
-            val requestedField = requestedById[fieldId] ?: return@any false
+        var typeOnlyChange = false
 
-            val primaryKeyMembershipChanged = requestedField.isPrimaryKey != existingField.isPrimaryKey
-            val primaryKeyTypeChanged = existingField.isPrimaryKey && requestedField.typeId != existingField.typeId
+        for ((fieldId, existingField) in existingById) {
+            val requestedField = requestedById[fieldId] ?: continue
 
-            primaryKeyMembershipChanged || primaryKeyTypeChanged
+            if (requestedField.isPrimaryKey != existingField.isPrimaryKey) {
+                return PrimaryKeyChange.STRUCTURAL
+            }
+
+            if (existingField.isPrimaryKey && requestedField.typeId != existingField.typeId) {
+                typeOnlyChange = true
+            }
         }
+
+        return if (typeOnlyChange) PrimaryKeyChange.TYPE_ONLY else PrimaryKeyChange.NONE
     }
 
     private fun validateFieldNameUniqueness(fieldNames: List<String>) {
