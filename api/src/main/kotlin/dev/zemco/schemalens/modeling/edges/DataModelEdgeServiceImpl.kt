@@ -1,6 +1,7 @@
 package dev.zemco.schemalens.modeling.edges
 
 import dev.zemco.schemalens.modeling.models.DataModel
+import dev.zemco.schemalens.modeling.models.DataModelCascadeService
 import dev.zemco.schemalens.modeling.models.DataModelEdgeCascadeMutationService
 import dev.zemco.schemalens.modeling.models.DataModelModificationDto
 import org.springframework.stereotype.Service
@@ -8,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class DataModelEdgeServiceImpl(
+    private val cascadeService: DataModelCascadeService,
     private val edgeRepository: DataModelEdgeRepository,
     private val edgeCascadeMutationService: DataModelEdgeCascadeMutationService,
     private val edgeWriteService: DataModelEdgeWriteService,
@@ -17,6 +19,10 @@ class DataModelEdgeServiceImpl(
     override fun createEdge(model: DataModel, dto: DataModelEdgeInputDto): DataModelModificationDto {
         val fromNode = model.findNode(dto.fromNodeId)
         val toNode = model.findNode(dto.toNodeId)
+
+        if (dto.isIdentifying) {
+            cascadeService.checkNoIdentifyingCycle(model, fromNode.id!!, toNode.id!!, excludeEdgeId = null)
+        }
 
         val edge = DataModelEdge(
             modelId = model.id!!,
@@ -51,6 +57,10 @@ class DataModelEdgeServiceImpl(
 
         if (existingFieldIds != requestedFieldIds) {
             throw DataModelEdgeReferencedFieldsImmutableException(edgeId)
+        }
+
+        if (dto.isIdentifying && !wasIdentifying) {
+            cascadeService.checkNoIdentifyingCycle(model, edge.fromNodeId, edge.toNodeId, excludeEdgeId = edge.id)
         }
 
         edge.apply {

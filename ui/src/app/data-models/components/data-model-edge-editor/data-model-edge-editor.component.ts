@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, effect, inject, input } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, effect, inject, input } from '@angular/core';
 import { DataModelEditor } from '../data-model-editor/data-model-editor.component';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Observable, tap } from 'rxjs';
@@ -8,8 +8,10 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { MatFormField, MatLabel } from '@angular/material/input';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { MatTooltip } from '@angular/material/tooltip';
+import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { DataModelStore } from '../../data-model.store';
+import { DataModelEdgeCycleService } from '../../services/data-model-edge-cycle.service';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
@@ -23,6 +25,7 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
     MatLabel,
     MatOption,
     MatSelect,
+    MatTooltip,
     ReactiveFormsModule,
     SectionHeaderComponent,
     TranslatePipe,
@@ -33,6 +36,7 @@ export class DataModelEdgeEditorComponent implements DataModelEditor {
 
   private store = inject(DataModelStore);
   private fb = inject(FormBuilder);
+  private cycleService = inject(DataModelEdgeCycleService);
 
   readonly form = this.fb.nonNullable.group({
     type: this.fb.nonNullable.control<DataModelEdgeType>('1:N', [Validators.required]),
@@ -41,6 +45,16 @@ export class DataModelEdgeEditorComponent implements DataModelEditor {
   });
 
   edgeModified = false;
+
+  private isIdentifyingValue = toSignal(this.form.controls.isIdentifying.valueChanges, {
+    initialValue: this.form.controls.isIdentifying.value,
+  });
+  private identifyingWouldCycle = computed(() => {
+    const edge = this.edge();
+    const edges = this.store.edges();
+    return this.cycleService.wouldIdentifyingCycle(edges, edge.fromNodeId, edge.toNodeId, edge.edgeId);
+  });
+  cannotEnableIdentifying = computed(() => !this.isIdentifyingValue() && this.identifyingWouldCycle());
 
   constructor() {
     effect(() => {
@@ -53,6 +67,16 @@ export class DataModelEdgeEditorComponent implements DataModelEditor {
       });
 
       this.edgeModified = false;
+    });
+
+    effect(() => {
+      const control = this.form.controls.isIdentifying;
+
+      if (this.cannotEnableIdentifying()) {
+        control.disable({ emitEvent: false });
+      } else {
+        control.enable({ emitEvent: false });
+      }
     });
 
     this.form.controls.isIdentifying.valueChanges.pipe(takeUntilDestroyed()).subscribe(isIdentifying => {

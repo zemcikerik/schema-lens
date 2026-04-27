@@ -358,6 +358,7 @@
       "TYPE_ONE_TO_ONE": "1:1 (One to One)",
       "TYPE_ONE_TO_MANY": "1:N (One to Many)",
       "IDENTIFYING_LABEL": "Identifying",
+      "IDENTIFYING_CYCLE_TOOLTIP": "Cannot mark this edge as identifying because it would create a cycle in identifying relationships.",
       "MANDATORY_LABEL": "Mandatory"
     },
     "MODELER": {

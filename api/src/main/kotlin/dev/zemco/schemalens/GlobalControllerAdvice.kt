@@ -1,6 +1,7 @@
 package dev.zemco.schemalens
 
 import dev.zemco.schemalens.auth.ResourceAccessDeniedException
+import dev.zemco.schemalens.modeling.edges.DataModelEdgeIdentifyingCycleException
 import dev.zemco.schemalens.modeling.nodes.FieldNameNotUniqueException
 import dev.zemco.schemalens.modeling.nodes.NodeExistsException
 import dev.zemco.schemalens.modeling.types.DataTypeExistsException
@@ -29,6 +30,7 @@ class GlobalControllerAdvice {
         DataTypeExistsException::class,
         NodeExistsException::class,
         FieldNameNotUniqueException::class,
+        DataModelEdgeIdentifyingCycleException::class,
     )
     fun handleConflictException(ex: RuntimeException) =
         ResponseEntity.status(HttpStatus.CONFLICT).body(ex.message)

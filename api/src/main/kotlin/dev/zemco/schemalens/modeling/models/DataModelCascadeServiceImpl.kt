@@ -2,6 +2,7 @@ package dev.zemco.schemalens.modeling.models
 
 import dev.zemco.schemalens.modeling.edges.DataModelEdge
 import dev.zemco.schemalens.modeling.edges.DataModelEdgeField
+import dev.zemco.schemalens.modeling.edges.DataModelEdgeIdentifyingCycleException
 import dev.zemco.schemalens.modeling.nodes.DataModelField
 import dev.zemco.schemalens.modeling.nodes.DataModelNode
 import org.springframework.stereotype.Service
@@ -47,6 +48,40 @@ class DataModelCascadeServiceImpl : DataModelCascadeService {
         }
 
         return result
+    }
+
+    override fun checkNoIdentifyingCycle(
+        model: DataModel,
+        fromNodeId: Long,
+        toNodeId: Long,
+        excludeEdgeId: Long?,
+    ) {
+        if (fromNodeId == toNodeId) {
+            throw DataModelEdgeIdentifyingCycleException()
+        }
+
+        val outgoingIdentifyingByFromNodeId = model.edges.asSequence()
+            .filter { it.isIdentifying && it.id != excludeEdgeId }
+            .groupBy { it.fromNodeId }
+
+        val visited = mutableSetOf<Long>()
+        val queue = ArrayDeque<Long>()
+        queue.addLast(toNodeId)
+
+        while (queue.isNotEmpty()) {
+            val current = queue.removeFirst()
+
+            if (!visited.add(current)) {
+                continue
+            }
+            if (current == fromNodeId) {
+                throw DataModelEdgeIdentifyingCycleException()
+            }
+
+            outgoingIdentifyingByFromNodeId[current].orEmpty().forEach {
+                queue.addLast(it.toNodeId)
+            }
+        }
     }
 
     override fun syncReferencedFieldsFromPrimaryKey(model: DataModel, edge: DataModelEdge) {
