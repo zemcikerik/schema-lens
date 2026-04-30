@@ -1,7 +1,6 @@
 import {
   ChangeDetectionStrategy,
   Component,
-  ComponentRef,
   computed,
   DestroyRef,
   effect,
@@ -20,8 +19,7 @@ import { catchError, concat, filter, of, switchMap } from 'rxjs';
 import { DataModelerState } from '../data-modeler.state';
 import { DataModelerDiagramState } from '../data-modeler-diagram.state';
 import { DataModelerDialogService } from '../data-modeler-dialog.service';
-import { DataModelerEditorResolverService } from './data-modeler-editor-resolver.service';
-import { DataModelEditor } from '../../components/data-model-editor/data-model-editor.component';
+import { DataModelerEditorCreationService, ResolvedEditor } from './data-modeler-editor-creation.service';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
 @Component({
@@ -41,38 +39,37 @@ export class DataModelerPropertiesHostComponent {
   private dialogs = inject(DataModelerDialogService);
   private state = inject(DataModelerState);
   private diagramState = inject(DataModelerDiagramState);
-  private editorResolver = inject(DataModelerEditorResolverService);
+  private editorResolver = inject(DataModelerEditorCreationService);
   private destroyRef = inject(DestroyRef);
 
   editorTarget = viewChild.required('editorTarget', { read: ViewContainerRef });
 
-  private currentRef = signal<ComponentRef<DataModelEditor> | null>(null);
+  private editorKind = computed(() => this.state.currentSelection()?.type ?? 'diagram');
+  private editor = signal<ResolvedEditor>({ ref: null, titleKey: 'DATA_MODEL.MODELER.PROPERTIES.DIAGRAM_TITLE' });
+  titleKey = computed(() => this.editor().titleKey);
   formInvalid = signal<boolean>(false);
-
-  private editorKind = computed(() => this.editorResolver.editorKind(this.state.currentSelection()));
-  titleKey = computed(() => this.editorResolver.editorTitleKey(this.state.currentSelection()));
 
   constructor() {
     this.recreateEditorOnKindChange();
     this.trackFormValidity();
     this.disableFormWhenBusy();
-    this.destroyRef.onDestroy(() => this.currentRef()?.destroy());
+    this.destroyRef.onDestroy(() => this.editor().ref?.destroy());
   }
 
   private recreateEditorOnKindChange(): void {
     toObservable(this.editorKind)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(() => {
-        this.currentRef()?.destroy();
-        this.currentRef.set(this.editorResolver.createEditor(this.state.currentSelection, this.editorTarget()));
+      .subscribe(kind => {
+        this.editor().ref?.destroy();
+        this.editor.set(this.editorResolver.createEditor(kind, this.editorTarget()));
       });
   }
 
   private trackFormValidity(): void {
-    toObservable(this.currentRef)
+    toObservable(this.editor)
       .pipe(
-        switchMap(ref => {
-          const form = ref?.instance.form;
+        switchMap(result => {
+          const form = result.ref?.instance.form;
           return form ? concat(of(form.status), form.statusChanges) : of('VALID' as const);
         }),
         takeUntilDestroyed(this.destroyRef),
@@ -82,7 +79,7 @@ export class DataModelerPropertiesHostComponent {
 
   private disableFormWhenBusy(): void {
     effect(() => {
-      const form = this.currentRef()?.instance.form;
+      const form = this.editor().ref?.instance.form;
 
       if (!form) {
         return;
@@ -97,7 +94,7 @@ export class DataModelerPropertiesHostComponent {
   }
 
   notifyUserOfInvalidForm(): void {
-    this.currentRef()?.instance.form?.markAllAsTouched();
+    this.editor().ref?.instance.form?.markAllAsTouched();
     this.dialogs.openInvalidPropertiesDialog();
   }
 
@@ -106,7 +103,7 @@ export class DataModelerPropertiesHostComponent {
       return;
     }
 
-    const save$ = this.currentRef()?.instance.save();
+    const save$ = this.editor().ref?.instance.save();
 
     if (!save$) {
       return;
