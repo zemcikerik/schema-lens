@@ -1,4 +1,32 @@
 <form [formGroup]="form">
+  <app-section-header [title]="('DATA_MODEL.EDGE.NODES_LABEL' | translate)()" />
+
+  <div class="data-model-edge-editor__node-row">
+    <div class="data-model-edge-editor__node-name">
+      <span class="data-model-edge-editor__node-direction">{{ ('DATA_MODEL.EDGE.FROM_NODE_LABEL' | translate)() }}</span>
+      <span>{{ fromNodeName() }}</span>
+    </div>
+    <button
+      mat-icon-button
+      [matTooltip]="('DATA_MODEL.EDGE.GO_TO_NODE_TOOLTIP' | translate)()"
+      (click)="goToNode(edge().fromNodeId)">
+      <mat-icon>link</mat-icon>
+    </button>
+  </div>
+
+  <div class="data-model-edge-editor__node-row">
+    <div class="data-model-edge-editor__node-name">
+      <span class="data-model-edge-editor__node-direction">{{ ('DATA_MODEL.EDGE.TO_NODE_LABEL' | translate)() }}</span>
+      <span>{{ toNodeName() }}</span>
+    </div>
+    <button
+      mat-icon-button
+      [matTooltip]="('DATA_MODEL.EDGE.GO_TO_NODE_TOOLTIP' | translate)()"
+      (click)="goToNode(edge().toNodeId)">
+      <mat-icon>link</mat-icon>
+    </button>
+  </div>
+
   <app-section-header [title]="('DATA_MODEL.EDGE.PROPERTIES_LABEL' | translate)()" />
 
   <mat-form-field class="w-100">

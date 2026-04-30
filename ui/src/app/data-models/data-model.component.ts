@@ -10,6 +10,10 @@ import { TranslatePipe } from '../core/translate/translate.pipe';
 import { takeUntilDestroyed, toObservable } from '@angular/core/rxjs-interop';
 import { DataModelStore } from './data-model.store';
 import {
+  GO_TO_NODE_HANDLER,
+  DefaultDataModelGoToNodeHandler,
+} from './services/data-model-go-to-node-handler.service';
+import {
   GO_TO_EDGE_HANDLER,
   UnsupportedDataModelGoToEdgeHandler,
 } from './services/data-model-go-to-edge-handler.service';
@@ -28,6 +32,7 @@ import {
     TranslatePipe,
   ],
   providers: [
+    { provide: GO_TO_NODE_HANDLER, useClass: DefaultDataModelGoToNodeHandler },
     { provide: GO_TO_EDGE_HANDLER, useClass: UnsupportedDataModelGoToEdgeHandler },
   ]
 })

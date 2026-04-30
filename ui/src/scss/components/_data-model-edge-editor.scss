@@ -1,0 +1,21 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.data-model-edge-editor {
+  &__node-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+  }
+
+  &__node-name {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__node-direction {
+    font-size: 0.75rem;
+    color: mat.get-theme-color(t.$theme, secondary);
+  }
+}

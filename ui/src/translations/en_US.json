@@ -354,6 +354,10 @@
       "EDIT_LABEL": "Edit Relationship {layer, select, logical {Attribute} other {Column}}"
     },
     "EDGE": {
+      "NODES_LABEL": "{layer, select, logical {Entities} other {Tables}}",
+      "FROM_NODE_LABEL": "From:",
+      "TO_NODE_LABEL": "To:",
+      "GO_TO_NODE_TOOLTIP": "Go to {layer, select, logical {entity} other {table}}",
       "PROPERTIES_LABEL": "Properties",
       "TYPE_LABEL": "Relationship Type",
       "TYPE_ONE_TO_ONE": "1:1 (One to One)",

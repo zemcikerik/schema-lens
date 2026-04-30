@@ -46,6 +46,7 @@
 
 @use './scss/components/data-model-nav';
 @use './scss/components/data-model-node-editor';
+@use './scss/components/data-model-edge-editor';
 
 @include mat.elevation-classes();
 @include mat.app-background();

@@ -8,12 +8,15 @@ import { MatCheckbox } from '@angular/material/checkbox';
 import { MatFormField, MatLabel } from '@angular/material/input';
 import { MatOption } from '@angular/material/core';
 import { MatSelect } from '@angular/material/select';
+import { MatIconButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
 import { takeUntilDestroyed, toSignal } from '@angular/core/rxjs-interop';
 import { DataModelStore } from '../../data-model.store';
 import { DataModelEdgeCycleService } from '../../services/data-model-edge-cycle.service';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
+import { GO_TO_NODE_HANDLER } from '../../services/data-model-go-to-node-handler.service';
 
 @Component({
   selector: 'app-data-model-edge-editor',
@@ -22,6 +25,8 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
   imports: [
     MatCheckbox,
     MatFormField,
+    MatIcon,
+    MatIconButton,
     MatLabel,
     MatOption,
     MatSelect,
@@ -37,6 +42,7 @@ export class DataModelEdgeEditorComponent implements DataModelEditor {
   private store = inject(DataModelStore);
   private fb = inject(FormBuilder);
   private cycleService = inject(DataModelEdgeCycleService);
+  private goToNodeHandler = inject(GO_TO_NODE_HANDLER);
 
   readonly form = this.fb.nonNullable.group({
     type: this.fb.nonNullable.control<DataModelEdgeType>('1:N', [Validators.required]),
@@ -45,6 +51,11 @@ export class DataModelEdgeEditorComponent implements DataModelEditor {
   });
 
   edgeModified = false;
+
+  private fromNodeId = computed(() => this.edge().fromNodeId);
+  private toNodeId = computed(() => this.edge().toNodeId);
+  fromNodeName = computed(() => this.store.nodes().find(n => n.nodeId === this.fromNodeId())?.name ?? '');
+  toNodeName = computed(() => this.store.nodes().find(n => n.nodeId === this.toNodeId())?.name ?? '');
 
   private isIdentifyingValue = toSignal(this.form.controls.isIdentifying.valueChanges, {
     initialValue: this.form.controls.isIdentifying.value,
@@ -102,5 +113,9 @@ export class DataModelEdgeEditorComponent implements DataModelEditor {
     const updated: DataModelEdge = { ...this.edge(), type, isMandatory, isIdentifying };
 
     return this.store.updateEdge(updated).pipe(tap(() => (this.edgeModified = false)));
+  }
+
+  goToNode(nodeId: number): void {
+    this.goToNodeHandler.goToNode(nodeId);
   }
 }
