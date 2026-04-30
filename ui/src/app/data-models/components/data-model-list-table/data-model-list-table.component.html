@@ -4,6 +4,16 @@
     <mat-cell *matCellDef="let dataModel">{{ dataModel.name }}</mat-cell>
   </ng-container>
 
+  <ng-container matColumnDef="owner">
+    <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.LIST_COLUMN.OWNER_LABEL' | translate)() }}</mat-header-cell>
+    <mat-cell *matCellDef>
+      @if (currentUser(); as user) {
+        <app-profile-picture class="selectable-list-table__profile-picture" [username]="user.username" />
+        {{ user.username }}
+      }
+    </mat-cell>
+  </ng-container>
+
   <mat-header-row *matHeaderRowDef="DISPLAYED_COLUMNS" />
   <mat-row matRipple *matRowDef="let dataModel; columns: DISPLAYED_COLUMNS" (click)="selected.emit(dataModel)" />
 </mat-table>
