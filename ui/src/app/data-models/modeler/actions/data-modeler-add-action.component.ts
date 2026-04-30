@@ -5,6 +5,7 @@ import { MatMenu, MatMenuItem, MatMenuTrigger } from '@angular/material/menu';
 import { MatTooltip } from '@angular/material/tooltip';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { catchError, filter, of, switchMap, tap } from 'rxjs';
+import { DataModelerState } from '../data-modeler.state';
 import { DataModelerDiagramState } from '../data-modeler-diagram.state';
 import { DataModelerDialogService } from '../data-modeler-dialog.service';
 import { DataModelStore } from '../../data-model.store';
@@ -17,8 +18,7 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
     <button
       mat-icon-button
       [matTooltip]="('DATA_MODEL.MODELER.ACTIONS.ADD_NODE_TOOLTIP' | translate)()"
-      [matMenuTriggerFor]="addMenu"
-    >
+      [matMenuTriggerFor]="addMenu">
       <mat-icon>add_box</mat-icon>
     </button>
 
@@ -36,7 +36,8 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
   imports: [MatIconButton, MatIcon, MatMenu, MatMenuItem, MatMenuTrigger, MatTooltip, TranslatePipe],
 })
 export class DataModelerAddActionComponent {
-  private state = inject(DataModelerDiagramState);
+  private state = inject(DataModelerState);
+  private diagramState = inject(DataModelerDiagramState);
   private dialogs = inject(DataModelerDialogService);
   private store = inject(DataModelStore);
   private destroyRef = inject(DestroyRef);
@@ -44,24 +45,31 @@ export class DataModelerAddActionComponent {
   createNode(): void {
     const existingNames = this.store.nodes().map(n => n.name);
 
-    this.dialogs.openCreateNodeDialog(existingNames).pipe(
-      filter((name): name is string => name !== null),
-      switchMap(name =>
-        this.state.withLoading(this.store.createNode({ name, nodeId: null }))
-          .pipe(tap(modification => this.state.addNodeToDiagram(modification.updatedNodes[0]))),
-      ),
-      catchError(() => {
-        this.dialogs.openCreationErrorDialog();
-        return of(null);
-      }),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe();
+    this.dialogs
+      .openCreateNodeDialog(existingNames)
+      .pipe(
+        filter((name): name is string => name !== null),
+        switchMap(name =>
+          this.state
+            .withLoading(this.store.createNode({ name, nodeId: null }))
+            .pipe(tap(modification => this.diagramState.addNodeToDiagram(modification.updatedNodes[0]))),
+        ),
+        catchError(() => {
+          this.dialogs.openCreationErrorDialog();
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
   addExistingNode(): void {
-    this.dialogs.openAddExistingNode(this.state.getAvailableNodes()).pipe(
-      filter(node => node !== null),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe(node => this.state.addNodeToDiagram(node));
+    this.dialogs
+      .openAddExistingNode(this.diagramState.getAvailableNodes())
+      .pipe(
+        filter(node => node !== null),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe(node => this.diagramState.addNodeToDiagram(node));
   }
 }

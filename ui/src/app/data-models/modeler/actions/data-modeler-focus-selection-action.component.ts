@@ -2,6 +2,7 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { MatTooltip } from '@angular/material/tooltip';
+import { DataModelerState } from '../data-modeler.state';
 import { DataModelerDiagramState } from '../data-modeler-diagram.state';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 
@@ -13,15 +14,15 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
       mat-icon-button
       [disabled]="!selection()"
       [matTooltip]="('DATA_MODEL.MODELER.ACTIONS.FOCUS_SELECTION_TOOLTIP' | translate)()"
-      (click)="focusSelection()"
-    >
+      (click)="focusSelection()">
       <mat-icon>center_focus_strong</mat-icon>
     </button>
   `,
   imports: [MatIconButton, MatIcon, MatTooltip, TranslatePipe],
 })
 export class DataModelerFocusSelectionActionComponent {
-  private state = inject(DataModelerDiagramState);
+  private state = inject(DataModelerState);
+  private diagramState = inject(DataModelerDiagramState);
   selection = this.state.currentSelection;
 
   focusSelection(): void {
@@ -32,9 +33,9 @@ export class DataModelerFocusSelectionActionComponent {
     }
 
     if (selection.type === 'node') {
-      this.state.focusNode(selection.node.id);
+      this.diagramState.focusNode(selection.node.id);
     } else {
-      this.state.focusEdge(selection.edge.id);
+      this.diagramState.focusEdge(selection.edge.id);
     }
   }
 }

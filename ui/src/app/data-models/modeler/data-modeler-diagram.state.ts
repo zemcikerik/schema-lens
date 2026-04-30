@@ -1,13 +1,12 @@
 import { computed, inject, Injectable, signal } from '@angular/core';
-import { catchError, defer, finalize, Observable, tap, throwError } from 'rxjs';
-import { Subject } from 'rxjs';
+import { Observable, Subject, tap } from 'rxjs';
 import { DataModelStore } from '../data-model.store';
 import { DataModelerDiagramMapper } from './data-modeler-diagram.mapper';
 import { DataModelNodeFieldResolver } from '../services/data-model-node-field.resolver';
+import { DataModelerState } from './data-modeler.state';
 import { SchemaDiagramPatch } from '../../diagrams/schema/model/schema-diagram-patches.model';
 import { SchemaDiagramNode } from '../../diagrams/schema/model/schema-diagram-node.model';
 import { SchemaDiagramPositionSnapshot } from '../../diagrams/schema/model/schema-diagram-position-snapshot.model';
-import { SchemaDiagramSelection } from '../../diagrams/schema/model/schema-diagram-selection.model';
 import { DataModelDetails, DataModelModification } from '../models/data-model.model';
 import { DataModelNode, DataModelField } from '../models/data-model-node.model';
 import { DataModelDiagram } from '../models/data-model-diagram.model';
@@ -17,18 +16,15 @@ export class DataModelerDiagramState {
   private store = inject(DataModelStore);
   private mapper = inject(DataModelerDiagramMapper);
   private fieldResolver = inject(DataModelNodeFieldResolver);
+  private modelerState = inject(DataModelerState);
 
   private _patches$ = new Subject<SchemaDiagramPatch>();
-  private _loading = signal<boolean>(false);
   private _hasUnsavedPositions = signal<boolean>(false);
   private _activeDiagram = signal<DataModelDiagram | null>(null);
-  private _currentSelection = signal<SchemaDiagramSelection | null>(null);
 
   patches$ = this._patches$.asObservable();
-  loading = this._loading.asReadonly();
   hasUnsavedPositions = this._hasUnsavedPositions.asReadonly();
   activeDiagram = this._activeDiagram.asReadonly();
-  currentSelection = this._currentSelection.asReadonly();
   diagramName = computed(() => this._activeDiagram()?.name ?? '');
 
   private visibleNodeIds = new Set<number>();
@@ -43,7 +39,6 @@ export class DataModelerDiagramState {
     }
 
     this._patches$.next({ type: 'diagram:clear' });
-    this.clearCurrentSelection();
     this.clearUnsavedPositions();
     this.visibleNodeIds.clear();
     this.visibleEdgeIds.clear();
@@ -159,7 +154,7 @@ export class DataModelerDiagramState {
       })),
     };
 
-    return this.withLoading(
+    return this.modelerState.withLoading(
       this.store.updateDiagram(updatedDiagram).pipe(
         tap(updated => {
           this._activeDiagram.set(updated);
@@ -172,7 +167,7 @@ export class DataModelerDiagramState {
   updateDiagramName(name: string): Observable<unknown> {
     const diagram = this.activeDiagram() as DataModelDiagram;
 
-    return this.withLoading(
+    return this.modelerState.withLoading(
       this.store.updateDiagram({ ...diagram, name }).pipe(
         tap(updated => this._activeDiagram.set(updated)),
       ),
@@ -182,7 +177,7 @@ export class DataModelerDiagramState {
   deleteDiagram(): Observable<boolean> {
     const diagram = this.activeDiagram() as DataModelDiagram;
 
-    return this.withLoading(
+    return this.modelerState.withLoading(
       this.store.deleteDiagram(diagram.id as number).pipe(
         tap(() => this._activeDiagram.set(null)),
       ),
@@ -218,14 +213,6 @@ export class DataModelerDiagramState {
     this._patches$.next({ type: 'node:focus', nodeId });
   }
 
-  setCurrentSelection(selection: SchemaDiagramSelection | null): void {
-    this._currentSelection.set(selection);
-  }
-
-  clearCurrentSelection(): void {
-    this._currentSelection.set(null);
-  }
-
   markPositionsUnsaved(): void {
     this._hasUnsavedPositions.set(true);
   }
@@ -234,18 +221,6 @@ export class DataModelerDiagramState {
     this._hasUnsavedPositions.set(false);
   }
 
-  withLoading<T>(observable: Observable<T>): Observable<T> {
-    return defer(() => {
-      this._loading.set(true);
-      return observable.pipe(
-        catchError(err => {
-          console.error(err);
-          return throwError(() => err);
-        }),
-        finalize(() => this._loading.set(false)),
-      );
-    });
-  }
 
   private resolveAndMapNode(node: DataModelNode): SchemaDiagramNode {
     const resolved = this.fieldResolver.resolveFields(node.nodeId as number)();

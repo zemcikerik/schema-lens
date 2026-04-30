@@ -8,7 +8,6 @@ import {
   inject,
   Injector,
   input,
-  signal,
   viewChild,
 } from '@angular/core';
 import { LayoutContentWithSidebarComponent } from '../../core/layouts/layout-content-with-sidebar.component';
@@ -27,6 +26,7 @@ import { MatIconButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { catchError, defer, filter, from, map, mergeMap, NEVER, Observable, of, switchMap, tap } from 'rxjs';
 import { AlertComponent } from '../../shared/components/alert/alert.component';
+import { DataModelerState } from './data-modeler.state';
 import { DataModelerDiagramState } from './data-modeler-diagram.state';
 import { DataModelStore } from '../data-model.store';
 import { TranslatePipe } from '../../core/translate/translate.pipe';
@@ -64,7 +64,8 @@ export class DataModelerComponent {
   diagramId = input.required<string>();
 
   store = inject(DataModelStore);
-  state = inject(DataModelerDiagramState);
+  state = inject(DataModelerState);
+  diagramState = inject(DataModelerDiagramState);
   private contextState = inject(DataModelContextState);
   private dialogs = inject(DataModelerDialogService);
   private destroyRef = inject(DestroyRef);
@@ -73,7 +74,6 @@ export class DataModelerComponent {
   private diagram = viewChild(SchemaDiagramComponent);
 
   backNavigationCommand = computed(() => ['/model', this.dataModelId(), this.contextState.context()]);
-  connectMode = signal<boolean>(false);
 
   constructor() {
     this.notifyUserOfUnsupportedInputDevice();
@@ -86,27 +86,34 @@ export class DataModelerComponent {
             return this.redirectTo404();
           }
 
-          return this.store
-            .loadModel(dataModelId)
-            .pipe(
-              switchMap(model => model ? this.store.loadDiagram(diagramId) : this.redirectTo404()),
-              mergeMap(diagram => {
-                if (!diagram) {
-                  return this.redirectTo404();
-                }
+          return this.store.loadModel(dataModelId).pipe(
+            switchMap(model => (model ? this.store.loadDiagram(diagramId) : this.redirectTo404())),
+            mergeMap(diagram => {
+              if (!diagram) {
+                return this.redirectTo404();
+              }
 
-                const switchToCorrectContext$ = diagram.type !== mapContextToDataModelDiagramType(this.contextState.context())
+              const switchToCorrectContext$ =
+                diagram.type !== mapContextToDataModelDiagramType(this.contextState.context())
                   ? from(this.contextState.switchToContext(mapDataModelDiagramTypeToContext(diagram.type)))
                   : of(false);
 
-                return switchToCorrectContext$.pipe(map(() => diagram));
-              }),
-            );
+              return switchToCorrectContext$.pipe(map(() => diagram));
+            }),
+          );
         }),
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe(diagram =>
-        afterNextRender({ mixedReadWrite: () => this.state.initDiagram(diagram) }, { injector: this.injector }),
+        afterNextRender(
+          {
+            mixedReadWrite: () => {
+              this.diagramState.initDiagram(diagram);
+              this.state.clearCurrentSelection();
+            },
+          },
+          { injector: this.injector },
+        ),
       );
   }
 
@@ -114,15 +121,15 @@ export class DataModelerComponent {
     const inputDevice = inject(InputDeviceService);
 
     effect(() => {
-      if (this.state.activeDiagram() && inputDevice.isTouchPrimary()) {
-        this.connectMode.set(false);
+      if (this.diagramState.activeDiagram() && inputDevice.isTouchPrimary()) {
+        this.state.disableConnectMode();
         this.dialogs.openTouchNotSupportedWarning();
       }
     });
   }
 
   onConnectNodes({ from, to }: SchemaDiagramConnectNodes): void {
-    this.connectMode.set(false);
+    this.state.disableConnectMode();
 
     const edge: DataModelEdge = {
       edgeId: null,
@@ -135,14 +142,17 @@ export class DataModelerComponent {
       fields: [],
     };
 
-    this.state.withLoading(this.store.createEdge(edge)).pipe(
-      tap(modification => this.state.applyModification(modification)),
-      catchError(() => {
-        this.dialogs.openCreationErrorDialog();
-        return of(null);
-      }),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe();
+    this.state
+      .withLoading(this.store.createEdge(edge))
+      .pipe(
+        tap(modification => this.diagramState.applyModification(modification)),
+        catchError(() => {
+          this.dialogs.openCreationErrorDialog();
+          return of(null);
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
   onDeletePressed(): void {
@@ -160,50 +170,56 @@ export class DataModelerComponent {
   }
 
   private deleteNode(nodeId: number): void {
-    this.dialogs.openDeleteNodeConfirmation().pipe(
-      filter(result => result !== null),
-      mergeMap(({ deleteFromModel }) => {
-        if (!deleteFromModel) {
-          this.state.removeNodeFromDiagram(nodeId);
-          return of(null);
-        }
-
-        return this.state.withLoading(this.store.deleteNode(nodeId)).pipe(
-          tap(modification => this.state.applyModification(modification)),
-          catchError(() => {
-            this.dialogs.openDeleteNodeErrorDialog();
+    this.dialogs
+      .openDeleteNodeConfirmation()
+      .pipe(
+        filter(result => result !== null),
+        mergeMap(({ deleteFromModel }) => {
+          if (!deleteFromModel) {
+            this.diagramState.removeNodeFromDiagram(nodeId);
             return of(null);
-          }),
-        );
-      }),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe();
+          }
+
+          return this.state.withLoading(this.store.deleteNode(nodeId)).pipe(
+            tap(modification => this.diagramState.applyModification(modification)),
+            catchError(() => {
+              this.dialogs.openDeleteNodeErrorDialog();
+              return of(null);
+            }),
+          );
+        }),
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
   private deleteEdge(edgeId: number): void {
-    this.dialogs.openDeleteEdgeConfirmation().pipe(
-      filter(result => result === true),
-      mergeMap(() =>
-        this.state.withLoading(this.store.deleteEdge(edgeId)).pipe(
-          tap(modification => this.state.applyModification(modification)),
-          catchError(() => {
-            this.dialogs.openDeleteEdgeErrorDialog();
-            return of(null);
-          }),
+    this.dialogs
+      .openDeleteEdgeConfirmation()
+      .pipe(
+        filter(result => result === true),
+        mergeMap(() =>
+          this.state.withLoading(this.store.deleteEdge(edgeId)).pipe(
+            tap(modification => this.diagramState.applyModification(modification)),
+            catchError(() => {
+              this.dialogs.openDeleteEdgeErrorDialog();
+              return of(null);
+            }),
+          ),
         ),
-      ),
-      takeUntilDestroyed(this.destroyRef),
-    ).subscribe();
+        takeUntilDestroyed(this.destroyRef),
+      )
+      .subscribe();
   }
 
   savePositions(): void {
     const diagram = this.diagram();
 
-    if (!diagram || !this.state.hasUnsavedPositions()) {
+    if (!diagram || !this.diagramState.hasUnsavedPositions()) {
       return;
     }
 
-    this.state
+    this.diagramState
       .savePositions(diagram.snapshotDiagramPositions())
       .pipe(
         catchError(() => {

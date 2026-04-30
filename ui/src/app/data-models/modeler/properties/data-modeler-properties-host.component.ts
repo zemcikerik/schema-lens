@@ -17,6 +17,7 @@ import { CdkTrapFocus } from '@angular/cdk/a11y';
 import { TrapClicksDirective } from '../../../core/directives/trap-clicks.directive';
 import { FocusLeftDirective } from '../../../core/directives/focus-left.directive';
 import { catchError, concat, filter, of, switchMap } from 'rxjs';
+import { DataModelerState } from '../data-modeler.state';
 import { DataModelerDiagramState } from '../data-modeler-diagram.state';
 import { DataModelerDialogService } from '../data-modeler-dialog.service';
 import { DataModelerEditorResolverService } from './data-modeler-editor-resolver.service';
@@ -38,7 +39,8 @@ import { TranslatePipe } from '../../../core/translate/translate.pipe';
 })
 export class DataModelerPropertiesHostComponent {
   private dialogs = inject(DataModelerDialogService);
-  private state = inject(DataModelerDiagramState);
+  private state = inject(DataModelerState);
+  private diagramState = inject(DataModelerDiagramState);
   private editorResolver = inject(DataModelerEditorResolverService);
   private destroyRef = inject(DestroyRef);
 
@@ -110,7 +112,8 @@ export class DataModelerPropertiesHostComponent {
       return;
     }
 
-    this.state.withLoading(save$)
+    this.state
+      .withLoading(save$)
       .pipe(
         catchError(() => {
           this.dialogs.openCreationErrorDialog();
@@ -119,6 +122,6 @@ export class DataModelerPropertiesHostComponent {
         filter(modification => modification !== null),
         takeUntilDestroyed(this.destroyRef),
       )
-      .subscribe(modification => this.state.applyModification(modification));
+      .subscribe(modification => this.diagramState.applyModification(modification));
   }
 }

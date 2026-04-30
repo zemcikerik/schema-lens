@@ -1,4 +1,5 @@
 import { NgModule } from '@angular/core';
+import { DataModelerState } from './data-modeler.state';
 import { DataModelerDiagramState } from './data-modeler-diagram.state';
 import { DataModelerDiagramMapper } from './data-modeler-diagram.mapper';
 import { DataModelerDialogService } from './data-modeler-dialog.service';
@@ -8,6 +9,7 @@ import { GO_TO_EDGE_HANDLER } from '../services/data-model-go-to-edge-handler.se
 
 @NgModule({
   providers: [
+    DataModelerState,
     DataModelerDiagramState,
     DataModelerDiagramMapper,
     DataModelerDialogService,

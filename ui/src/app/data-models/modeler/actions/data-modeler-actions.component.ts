@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component, input, model, output } from '@angular/core';
+import { ChangeDetectionStrategy, Component, input, output } from '@angular/core';
 import { DiagramHostComponent } from '../../../diagrams/diagram-host.component';
 import { FullscreenDirective } from '../../../core/directives/fullscreen.directive';
 import { DiagramZoomControlComponent } from '../../../diagrams/diagram-zoom-control.component';
@@ -17,7 +17,7 @@ import { DataModelerVerifyActionComponent } from './data-modeler-verify-action.c
   template: `
     <div class="data-modeler__actions">
       <app-data-modeler-add-action />
-      <app-data-modeler-connect-action [(active)]="connectMode" />
+      <app-data-modeler-connect-action />
       <app-data-modeler-focus-selection-action />
       <div class="separator"></div>
       <app-data-modeler-save-action [hasUnsavedPositions]="hasUnsavedPositions()" (save)="save.emit()" />
@@ -45,7 +45,6 @@ import { DataModelerVerifyActionComponent } from './data-modeler-verify-action.c
 export class DataModelerActionsComponent {
   diagramHost = input.required<DiagramHostComponent>();
   fullscreenHost = input.required<FullscreenDirective>();
-  connectMode = model.required<boolean>();
   hasUnsavedPositions = input.required<boolean>();
   save = output();
 }
