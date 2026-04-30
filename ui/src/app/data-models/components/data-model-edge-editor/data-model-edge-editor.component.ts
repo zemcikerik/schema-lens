@@ -38,6 +38,7 @@ import { GO_TO_NODE_HANDLER } from '../../services/data-model-go-to-node-handler
 })
 export class DataModelEdgeEditorComponent implements DataModelEditor {
   edge = input.required<DataModelEdge>();
+  compact = input<boolean>(false);
 
   private store = inject(DataModelStore);
   private fb = inject(FormBuilder);

@@ -76,7 +76,7 @@ export class DataModelerEditorCreationService {
 
     return {
       ref: target.createComponent(DataModelEdgeEditorComponent, {
-        bindings: [inputBinding('edge', edgeSignal)],
+        bindings: [inputBinding('edge', edgeSignal), inputBinding('compact', signal(true))],
       }),
       titleKey: 'DATA_MODEL.MODELER.PROPERTIES.EDGE_TITLE',
     };

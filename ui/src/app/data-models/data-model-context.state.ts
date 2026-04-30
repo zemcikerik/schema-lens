@@ -59,6 +59,10 @@ export class DataModelContextState {
       map: (match, context) => ['/model', match[1], context, this.mapNodeSegment(context), match[4]],
     },
     {
+      pattern: /^\/model\/([^/]+)\/(logical|oracle)\/relationship\/([^/]+)$/,
+      map: (match, context) => ['/model', match[1], context, 'relationship', match[3]],
+    },
+    {
       pattern: /^\/modeler\/([^/]+)\/(logical|oracle)\/([^/]+)$/,
       map: (match, context) => ['/modeler', match[1], context, match[3]],
     },

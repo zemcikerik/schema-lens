@@ -86,6 +86,14 @@ export class DataModelDialogService {
     );
   }
 
+  openDeleteEdgeConfirmationDialog(): Observable<boolean | null> {
+    return this.dialogService.openConfirmationDialog(
+      'DATA_MODEL.EDGE.DELETE_TITLE',
+      'DATA_MODEL.EDGE.DELETE_DESCRIPTION',
+      'danger',
+    );
+  }
+
   openDeleteFieldConfirmationDialog(): Observable<boolean | null> {
     return this.dialogService.openConfirmationDialog(
       'DATA_MODEL.NODE.DELETE_FIELD_TITLE',

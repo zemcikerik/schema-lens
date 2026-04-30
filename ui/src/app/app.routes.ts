@@ -69,6 +69,14 @@ export const appRoutes: Route[] = [
         data: { dataModelingContext: 'logical' },
       },
       {
+        path: 'logical/relationship/:edgeId',
+        loadComponent: () =>
+          import('./data-models/components/data-model-edge/data-model-edge.component').then(
+            c => c.DataModelEdgeComponent,
+          ),
+        data: { dataModelingContext: 'logical' },
+      },
+      {
         path: 'oracle/properties',
         loadComponent: () =>
           import('./data-models/components/data-model-properties-edit/data-model-properties-edit.component').then(
@@ -89,6 +97,14 @@ export const appRoutes: Route[] = [
         loadComponent: () =>
           import('./data-models/components/data-model-node/data-model-node.component').then(
             c => c.DataModelNodeComponent,
+          ),
+        data: { dataModelingContext: 'oracle' },
+      },
+      {
+        path: 'oracle/relationship/:edgeId',
+        loadComponent: () =>
+          import('./data-models/components/data-model-edge/data-model-edge.component').then(
+            c => c.DataModelEdgeComponent,
           ),
         data: { dataModelingContext: 'oracle' },
       },

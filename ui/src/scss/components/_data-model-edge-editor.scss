@@ -2,6 +2,12 @@
 @use '../theme' as t;
 
 .data-model-edge-editor {
+  &__nodes {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.5rem;
+  }
+
   &__node-row {
     display: flex;
     align-items: center;
@@ -17,5 +23,10 @@
   &__node-direction {
     font-size: 0.75rem;
     color: mat.get-theme-color(t.$theme, secondary);
+  }
+
+  &--compact &__nodes {
+    grid-template-columns: 1fr;
+    gap: 0;
   }
 }

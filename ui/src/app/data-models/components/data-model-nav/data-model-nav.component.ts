@@ -81,9 +81,24 @@ export class DataModelNavComponent {
     } satisfies ObjectSelectorEntry))
   ));
 
+  private edgeEntries$ = toObservable(computed(() =>
+    this.store.edges().map(edge => ({
+      id: edge.edgeId,
+      label: `#${edge.edgeId}`,
+      routerLink: [
+        '/model',
+        this.dataModelId(),
+        this.contextState.context(),
+        'relationship',
+        edge.edgeId as number,
+      ],
+    } satisfies ObjectSelectorEntry))
+  ));
+
   dataTypeLoadEntries: () => Observable<ObjectSelectorEntry[]> = () => this.dataTypeEntries$;
   diagramLoadEntries: () => Observable<ObjectSelectorEntry[]> = () => this.diagramEntries$;
   nodeLoadEntries: () => Observable<ObjectSelectorEntry[]> = () => this.nodeEntries$;
+  edgeLoadEntries: () => Observable<ObjectSelectorEntry[]> = () => this.edgeEntries$;
 
   addNewDiagram(): void {
     this.dialogService.openCreateDiagramDialog()
