@@ -61,12 +61,29 @@ export class DataModelEdgeEditorComponent implements DataModelEditor {
   private isIdentifyingValue = toSignal(this.form.controls.isIdentifying.valueChanges, {
     initialValue: this.form.controls.isIdentifying.value,
   });
-  private identifyingWouldCycle = computed(() => {
+
+  identifyingWouldCycle = computed(() => {
     const edge = this.edge();
     const edges = this.store.edges();
     return this.cycleService.wouldIdentifyingCycle(edges, edge.fromNodeId, edge.toNodeId, edge.edgeId);
   });
-  cannotEnableIdentifying = computed(() => !this.isIdentifyingValue() && this.identifyingWouldCycle());
+
+  hasDuplicateIdentifyingEdge = computed(() => {
+    const edge = this.edge();
+    const edges = this.store.edges();
+
+    return edges.some(
+      e =>
+        e.isIdentifying &&
+        e.edgeId !== edge.edgeId &&
+        e.fromNodeId === edge.fromNodeId &&
+        e.toNodeId === edge.toNodeId,
+    );
+  });
+
+  cannotEnableIdentifying = computed(
+    () => !this.isIdentifyingValue() && (this.identifyingWouldCycle() || this.hasDuplicateIdentifyingEdge()),
+  );
 
   constructor() {
     effect(() => {

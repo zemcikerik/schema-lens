@@ -21,6 +21,7 @@ class DataModelEdgeServiceImpl(
         val toNode = model.findNode(dto.toNodeId)
 
         if (dto.isIdentifying) {
+            checkNoDuplicateIdentifyingEdge(model, fromNode.id!!, toNode.id!!)
             cascadeService.checkNoIdentifyingCycle(model, fromNode.id!!, toNode.id!!, excludeEdgeId = null)
         }
 
@@ -60,6 +61,7 @@ class DataModelEdgeServiceImpl(
         }
 
         if (dto.isIdentifying && !wasIdentifying) {
+            checkNoDuplicateIdentifyingEdge(model, edge.fromNodeId, edge.toNodeId)
             cascadeService.checkNoIdentifyingCycle(model, edge.fromNodeId, edge.toNodeId, excludeEdgeId = edge.id)
         }
 
@@ -146,5 +148,13 @@ class DataModelEdgeServiceImpl(
             updatedEdges = updatedEdges,
             visuallyStaleNodeIds = visuallyStaleNodeIds,
         )
+    }
+
+    private fun checkNoDuplicateIdentifyingEdge(model: DataModel, fromNodeId: Long, toNodeId: Long) {
+        val hasDuplicate = model.edges.any { it.isIdentifying && it.fromNodeId == fromNodeId && it.toNodeId == toNodeId }
+
+        if (hasDuplicate) {
+            throw DataModelEdgeDuplicateIdentifyingException(fromNodeId, toNodeId)
+        }
     }
 }
