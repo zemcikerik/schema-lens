@@ -6,10 +6,12 @@ import { SchemaDiagramNode } from '../../diagrams/schema/model/schema-diagram-no
 import { EDGE_TYPE_ONE_TO_MANY, EDGE_TYPE_ONE_TO_ONE, SchemaDiagramEdge } from '../../diagrams/schema/model/schema-diagram-edge.model';
 import { SchemaDiagramField } from '../../diagrams/schema/model/schema-diagram-field.model';
 import { DataModelDataTypeResolver } from '../services/data-model-data-type.resolver';
+import { DataModelContextState } from '../data-model-context.state';
 
 @Injectable()
 export class DataModelerDiagramMapper {
   private typeResolver = inject(DataModelDataTypeResolver);
+  private contextState = inject(DataModelContextState);
 
   nodeToDiagramNode(node: DataModelNode, dataTypes: DataModelDataType[], parentEdges: DataModelEdge[] = []): SchemaDiagramNode {
     return {
@@ -41,7 +43,12 @@ export class DataModelerDiagramMapper {
   private fieldToDiagramField(attr: DataModelField, dataTypes: DataModelDataType[]): SchemaDiagramField {
     return {
       name: attr.name,
-      type: this.typeResolver.resolveFrom(attr.typeId, dataTypes),
+      type: this.typeResolver.resolveFromContext(
+        attr.typeId,
+        dataTypes,
+        this.contextState.context(),
+        attr.dataTypeParameters,
+      ),
       key: attr.isPrimaryKey,
       nullable: attr.isNullable,
     };

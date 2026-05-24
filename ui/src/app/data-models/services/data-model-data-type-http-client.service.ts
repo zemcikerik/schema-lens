@@ -11,11 +11,11 @@ export class DataModelDataTypeHttpClientService {
   private httpClient = inject(HttpClient);
 
   createDataType(dataModelId: number, dataType: DataModelDataType): Observable<DataModelDataType> {
-    return this.httpClient.post<DataModelDataType>(`/model/${dataModelId}/dataType`, { name: dataType.name });
+    return this.httpClient.post<DataModelDataType>(`/model/${dataModelId}/dataType`, dataType);
   }
 
   updateDataType(dataModelId: number, dataType: DataModelDataType): Observable<DataModelDataType> {
-    return this.httpClient.put<DataModelDataType>(`/model/${dataModelId}/dataType/${dataType.typeId}`, { name: dataType.name });
+    return this.httpClient.put<DataModelDataType>(`/model/${dataModelId}/dataType/${dataType.typeId}`, dataType);
   }
 
   deleteDataType(dataModelId: number, typeId: number): Observable<boolean> {

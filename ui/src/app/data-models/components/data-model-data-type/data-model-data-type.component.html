@@ -6,16 +6,76 @@
     <app-alert type="error">{{ ((error() ?? 'GENERIC.ERROR_LABEL') | translate)() }}</app-alert>
   }
 
-  <form [formGroup]="propertiesForm">
+  <form class="data-model-data-type" [formGroup]="propertiesForm">
     <app-section-header [title]="('DATA_MODEL.DATA_TYPE.PROPERTIES_LABEL' | translate)()"/>
 
-    <mat-form-field class="w-100">
-      <mat-label>{{ ('DATA_MODEL.DATA_TYPE.NAME_LABEL' | translate)() }}</mat-label>
-      <input matInput required formControlName="name">
-      @if (nameControl.invalid) {
-        <mat-error>{{ (nameControl.errors | formatGenericValidationErrors)() }}</mat-error>
-      }
-    </mat-form-field>
+    <div class="data-model-data-type__top-fields-row">
+      <mat-form-field class="data-model-data-type__form-field">
+        <mat-label>{{ ('DATA_MODEL.DATA_TYPE.NAME_LABEL' | translate)() }}</mat-label>
+        <input matInput required formControlName="name">
+        @if (nameControl.invalid) {
+          <mat-error>{{ (nameControl.errors | formatGenericValidationErrors)() }}</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field class="data-model-data-type__form-field">
+        <mat-label>{{ ('DATA_MODEL.DATA_TYPE.PARAMETERS_LABEL' | translate)() }}</mat-label>
+
+        <mat-chip-grid #parameterChipGrid aria-label="Enter parameters">
+          @for (param of parameters(); track $index; let i = $index) {
+            <mat-chip-row
+              [editable]="true"
+              [removable]="true"
+              (edited)="editParameter(i, $event)"
+              (removed)="removeParameter(i)"
+              [aria-description]="'press enter to edit ' + param.name"
+            >
+              <button matChipEdit [attr.aria-label]="'Edit ' + param.name">
+                <mat-icon>edit</mat-icon>
+              </button>
+              {{ param.name }}
+              <button matChipRemove [attr.aria-label]="'Remove ' + param.name">
+                <mat-icon>close</mat-icon>
+              </button>
+            </mat-chip-row>
+          }
+        </mat-chip-grid>
+
+        <input
+          matInput
+          [placeholder]="('DATA_MODEL.DATA_TYPE.PARAMETER_PLACEHOLDER' | translate)()"
+          [matChipInputFor]="parameterChipGrid"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          [matChipInputAddOnBlur]="addOnBlur"
+          (matChipInputTokenEnd)="addParameterFromChipInput($event)"
+        />
+      </mat-form-field>
+    </div>
+
+    @if (contextDbSystem()) {
+      <app-section-header [title]="('DATA_MODEL.DATA_TYPE.MAPPING_LABEL' | translate)()"/>
+
+      <div class="data-model-data-type__form-fields-row">
+        <mat-form-field class="data-model-data-type__form-field">
+          <mat-label>{{ ('DATA_MODEL.DATA_TYPE.PHYSICAL_DATA_TYPE_LABEL' | translate)() }}</mat-label>
+          <input matInput formControlName="physicalDataType" [matAutocomplete]="physicalDataTypeAuto">
+          <mat-autocomplete #physicalDataTypeAuto="matAutocomplete">
+            @for (category of filteredPhysicalDataTypes(); track category.category) {
+              <mat-optgroup [label]="category.category">
+                @for (type of category.types; track type) {
+                  <mat-option [value]="type">{{ type }}</mat-option>
+                }
+              </mat-optgroup>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field class="data-model-data-type__form-field">
+          <mat-label>{{ ('DATA_MODEL.DATA_TYPE.CHECK_CONSTRAINT_LABEL' | translate)() }}</mat-label>
+          <textarea matInput formControlName="checkConstraint" rows="1"></textarea>
+        </mat-form-field>
+      </div>
+    }
 
     <app-save-delete-control
       [deleteLoading]="deleteLoading()"

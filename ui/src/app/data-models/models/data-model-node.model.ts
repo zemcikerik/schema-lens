@@ -14,6 +14,7 @@ export interface DataModelField {
   isPrimaryKey: boolean;
   isNullable: boolean;
   position: number;
+  dataTypeParameters?: { name: string; value: number | null }[] | null;
 }
 
 export interface DataModelFieldReorderRequest {

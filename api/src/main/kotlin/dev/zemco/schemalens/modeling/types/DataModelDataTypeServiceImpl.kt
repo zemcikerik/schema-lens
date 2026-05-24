@@ -7,7 +7,9 @@ import org.springframework.transaction.annotation.Transactional
 
 @Service
 class DataModelDataTypeServiceImpl(
-    private val dataTypeRepository: DataModelDataTypeRepository
+    private val dataTypeRepository: DataModelDataTypeRepository,
+    private val oracleService: DataModelDataTypeOracleService,
+    private val parameterService: DataModelDataTypeParameterService,
 ) : DataModelDataTypeService {
 
     @Transactional
@@ -39,8 +41,11 @@ class DataModelDataTypeServiceImpl(
         }
 
         dataType.name = normalizedName
+        val saved = dataTypeRepository.save(dataType)
+        parameterService.syncParameters(saved, dto.parameters)
+        oracleService.syncOracle(saved, dto.mappings)
 
-        return DataModelDataTypeDto.from(dataTypeRepository.save(dataType))
+        return DataModelDataTypeDto.from(saved)
     }
 
     @Transactional

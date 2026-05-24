@@ -1375,4 +1375,116 @@
       </sql>
     </rollback>
   </changeSet>
+
+  <changeSet id="2026-05-22T0900-add-data-model-data-type-oracle-table"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <createTable tableName="data_model_data_type_oracle">
+      <column name="type_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_data_type_oracle" />
+      </column>
+
+      <column name="physical"
+              type="VARCHAR2(38)">
+        <constraints nullable="false" />
+      </column>
+
+      <column name="check_constraint"
+              type="CLOB" />
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2026-05-22T0901-data-model-data-type-oracle-type-ownership"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <addForeignKeyConstraint baseTableName="data_model_data_type_oracle"
+                             baseColumnNames="type_id"
+                             constraintName="fk_data_model_data_type_oracle_on_type_id"
+                             referencedTableName="data_model_data_type"
+                             referencedColumnNames="type_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2026-05-22T0902-add-data-model-data-type-parameter-table"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <createTable tableName="data_model_data_type_parameter">
+      <column name="type_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_data_type_parameter" />
+      </column>
+
+      <column name="name"
+              type="VARCHAR(38)">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_data_type_parameter" />
+      </column>
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2026-05-22T0903-data-model-data-type-parameter-type-ownership"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <addForeignKeyConstraint baseTableName="data_model_data_type_parameter"
+                             baseColumnNames="type_id"
+                             constraintName="fk_data_model_data_type_parameter_on_type_id"
+                             referencedTableName="data_model_data_type"
+                             referencedColumnNames="type_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2026-05-22T0904-add-data-model-data-type-par-field-table"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <createTable tableName="data_model_data_type_par_field">
+      <column name="field_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_data_type_par_field" />
+      </column>
+
+      <column name="type_id"
+              type="BIGINT">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_data_type_par_field" />
+      </column>
+
+      <column name="name"
+              type="VARCHAR(38)">
+        <constraints nullable="false"
+                     primaryKey="true"
+                     primaryKeyName="pk_data_model_data_type_par_field" />
+      </column>
+
+      <column name="value"
+              type="VARCHAR(256)" />
+    </createTable>
+  </changeSet>
+
+  <changeSet id="2026-05-22T0905-data-model-data-type-par-field-field-ownership"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <addForeignKeyConstraint baseTableName="data_model_data_type_par_field"
+                             baseColumnNames="field_id"
+                             constraintName="fk_data_model_data_type_par_field_on_field_id"
+                             referencedTableName="data_model_field"
+                             referencedColumnNames="field_id"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
+
+  <changeSet id="2026-05-22T0906-data-model-data-type-par-field-parameter-ownership"
+             author="Juraj Gacho (gacho@stud.uniza.sk)">
+    <addForeignKeyConstraint baseTableName="data_model_data_type_par_field"
+                             baseColumnNames="type_id, name"
+                             constraintName="fk_data_model_data_type_par_field_on_parameter"
+                             referencedTableName="data_model_data_type_parameter"
+                             referencedColumnNames="type_id, name"
+                             onDelete="CASCADE"
+                             onUpdate="CASCADE" />
+  </changeSet>
 </databaseChangeLog>
