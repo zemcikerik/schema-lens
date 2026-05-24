@@ -12,6 +12,7 @@ import { DataModelDialogService } from '../../services/data-model-dialog.service
 import { ObjectSelectorComponent, ObjectSelectorEntry } from '../../../shared/components/object-selector/object-selector.component';
 import { DataModelContextSwitcherComponent } from '../data-model-context-switcher/data-model-context-switcher.component';
 import { DataModelContextState } from '../../data-model-context.state';
+import { DataModelDataType } from '../../models/data-model-data-type.model';
 import { mapContextToDataModelDiagramType } from '../../models/data-model-diagram.model';
 
 @Component({
@@ -45,7 +46,7 @@ export class DataModelNavComponent {
   private dataTypeEntries$ = toObservable(computed(() =>
     this.store.dataTypes().map(dataType => ({
       id: dataType.typeId,
-      label: dataType.name,
+      label: this.dataTypeLabel(dataType),
       routerLink: [
         '/model',
         this.dataModelId(),
@@ -164,5 +165,19 @@ export class DataModelNavComponent {
         takeUntilDestroyed(this.destroyRef),
       )
       .subscribe();
+  }
+
+  private dataTypeLabel(dataType: DataModelDataType): string {
+    if (this.contextState.layer() !== 'physical') {
+      return dataType.name;
+    }
+
+    const physicalDataType = dataType.mappings?.find(mapping => mapping.dbSystem === 'oracle')?.physicalDataType;
+
+    if (!physicalDataType) {
+      return dataType.name;
+    }
+
+    return `${dataType.name} - ${physicalDataType}`;
   }
 }

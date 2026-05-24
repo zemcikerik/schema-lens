@@ -346,6 +346,12 @@
     },
     "DATA_TYPE": {
       "NAME_LABEL": "Name",
+      "PHYSICAL_DATA_TYPE_LABEL": "Physical Data Type",
+      "PARAMETERS_LABEL": "Parameters",
+      "PARAMETER_PLACEHOLDER": "Type new parameter",
+      "MAPPING_LABEL": "Mapping",
+      "CHECK_CONSTRAINT_LABEL": "Check Constraint",
+      "NO_MAPPING_LABEL": "No mapping set",
       "CREATE_TITLE": "Create New {layer, select, logical {Domain} other {Data Type}}",
       "SELECT_TITLE": "Select {layer, select, logical {Domain} other {Data Type}}",
       "EDIT_TITLE": "{name}",

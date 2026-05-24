@@ -5,6 +5,8 @@ import dev.zemco.schemalens.modeling.models.DataModel
 import dev.zemco.schemalens.modeling.models.DataModelCascadeService
 import dev.zemco.schemalens.modeling.models.DataModelEdgeCascadeMutationService
 import dev.zemco.schemalens.modeling.models.DataModelModificationDto
+import dev.zemco.schemalens.modeling.types.DataModelDataType
+import dev.zemco.schemalens.modeling.types.DataModelDataTypeParField
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -73,14 +75,19 @@ class DataModelNodeServiceImpl(
             val input = updateById[existingField.id]
 
             if (input != null) {
+                val dataType = model.findDataType(input.typeId)
+                val typeChanged = existingField.typeId != dataType.id
+
                 existingField.apply {
                     name = input.name.trim()
-                    typeId = input.typeId
-                    type = model.findDataType(input.typeId)
+                    typeId = dataType.id!!
+                    type = dataType
                     isPrimaryKey = input.isPrimaryKey
                     isNullable = input.isNullable
                     position = input.position
                 }
+
+                syncFieldDataTypeParameters(existingField, dataType, input.dataTypeParameters, typeChanged)
             }
         }
 
@@ -225,7 +232,7 @@ class DataModelNodeServiceImpl(
             throw IllegalArgumentException("Primary key field cannot be nullable")
         }
 
-        return DataModelField(
+        val field = DataModelField(
             nodeId = node.id ?: 0,
             node = node,
             name = name.trim(),
@@ -235,5 +242,73 @@ class DataModelNodeServiceImpl(
             isNullable = isNullable,
             position = position,
         )
+
+        syncFieldDataTypeParameters(field, dataType, dataTypeParameters, typeChanged = true)
+
+        return field
+    }
+
+    private fun syncFieldDataTypeParameters(
+        field: DataModelField,
+        dataType: DataModelDataType,
+        requestedParameters: List<DataModelFieldTypeParameterInputDto>?,
+        typeChanged: Boolean,
+    ) {
+        if (requestedParameters == null) {
+            if (typeChanged) {
+                field.dataTypeParameters.clear()
+            }
+            return
+        }
+
+        if (dataType.parameters.isEmpty()) {
+            field.dataTypeParameters.clear()
+            return
+        }
+
+        field.dataTypeParameters.clear()
+        field.dataTypeParameters.addAll(buildFieldDataTypeParameters(field, dataType, requestedParameters))
+    }
+
+    private fun buildFieldDataTypeParameters(
+        field: DataModelField,
+        dataType: DataModelDataType,
+        requestedParameters: List<DataModelFieldTypeParameterInputDto>,
+    ): MutableSet<DataModelDataTypeParField> {
+        val normalizedNames = mutableSetOf<String>()
+        val inputByName = linkedMapOf<String, DataModelFieldTypeParameterInputDto>()
+
+        for (input in requestedParameters) {
+            val normalizedName = input.name.trim()
+            val normalizedKey = normalizedName.uppercase()
+
+            if (!normalizedNames.add(normalizedKey)) {
+                throw IllegalArgumentException("Data type parameter '${normalizedName}' specified multiple times")
+            }
+
+            inputByName[normalizedKey] = input.copy(name = normalizedName)
+        }
+
+        val availableParameters = dataType.parameters.associateBy { it.id.name.uppercase() }
+        val unknownNames = inputByName.keys.filter { it !in availableParameters }
+        if (unknownNames.isNotEmpty()) {
+            throw IllegalArgumentException("Unknown data type parameter '${unknownNames.first()}'")
+        }
+
+        return dataType.parameters
+            .map { parameter ->
+                val value = inputByName[parameter.id.name.uppercase()]?.value
+                DataModelDataTypeParField(
+                    id = DataModelDataTypeParField.Id(
+                        fieldId = field.id ?: 0,
+                        typeId = dataType.id!!,
+                        name = parameter.id.name,
+                    ),
+                    field = field,
+                    parameter = parameter,
+                    value = value,
+                )
+            }
+            .toMutableSet()
     }
 }

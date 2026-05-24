@@ -16,6 +16,24 @@
       [control]="form.controls.typeName"
       [label]="('DATA_MODEL.NODE.FIELD_PROPERTIES.DATA_TYPE' | translate)()"/>
 
+    @if (isPhysicalContext) {
+      <mat-form-field class="w-100">
+        <mat-label>{{ ('DATA_MODEL.DATA_TYPE.PHYSICAL_DATA_TYPE_LABEL' | translate)() }}</mat-label>
+        <input matInput [value]="physicalMappingValue" disabled>
+      </mat-form-field>
+    }
+
+    @if (dataTypeParameterGroups.length > 0) {
+      @for (parameter of dataTypeParameterGroups; track $index) {
+        <div [formGroup]="parameter">
+          <mat-form-field class="w-100">
+            <mat-label>{{ parameter.get('name')?.value }}</mat-label>
+            <input matInput formControlName="value">
+          </mat-form-field>
+        </div>
+      }
+    }
+
     <mat-checkbox formControlName="isPrimaryKey">
       {{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.PRIMARY_KEY' | translate)() }}
     </mat-checkbox>
