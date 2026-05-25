@@ -1,0 +1,59 @@
+@use '@angular/material' as mat;
+@use '../theme' as t;
+
+.admin-backup {
+  &__configuration {
+    margin: 1rem 0;
+
+    &__fields {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(min(100%, 18rem), 1fr));
+      gap: 1rem;
+      align-items: start;
+      margin-top: 1rem;
+    }
+
+    &__actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: 1rem;
+    }
+  }
+
+  &__table {
+    .mat-column-id,
+    .mat-column-actions {
+      width: 3rem;
+    }
+
+    .mat-column-fileSizeBytes {
+      width: 7rem;
+    }
+
+    .mat-column-startedAt {
+      width: 12rem;
+    }
+
+    td.mat-column-id {
+      font: mat.get-theme-typography(t.$theme, label-large);
+    }
+  }
+
+  &__status {
+    font: mat.get-theme-typography(t.$theme, label-medium);
+
+    &--success {
+      color: mat.get-theme-color(t.$theme, primary);
+    }
+
+    &--failed {
+      color: mat.get-theme-color(t.$theme, error);
+    }
+  }
+
+  &__error {
+    color: mat.get-theme-color(t.$theme, error);
+    font: mat.get-theme-typography(t.$theme, body-small);
+    margin-top: 0.25rem;
+  }
+}

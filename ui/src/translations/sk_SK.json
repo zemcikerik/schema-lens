@@ -274,6 +274,35 @@
       "UPDATE_DESCRIPTION": "Aktualizovať existujúcu často kladenú otázku. Táto otázka sa zobrazí iba pre aktuálny jazyk.",
       "CONFIRM_DELETE_TITLE": "Zmazať otázku",
       "CONFIRM_DELETE_DESCRIPTION": "Ste si istý, že chcete zmazať túto otázku?"
+    },
+    "BACKUP": {
+      "LABEL": "Zálohy databázy",
+      "RUN_NOW_LABEL": "Spustiť zálohu",
+      "AUTOMATIC_ENABLED_LABEL": "Povoliť automatické zálohovanie",
+      "CRON_LABEL": "Cron výraz",
+      "RETENTION_DAYS_LABEL": "Dni uchovania",
+      "RETENTION_DAYS_HINT": "Nastavte 0 alebo menej pre vypnutie automatického čistenia.",
+      "ORACLE_DIRECTORY_LABEL": "Oracle adresár",
+      "STARTED_AT_LABEL": "Spustené",
+      "STARTED_AT_VALUE": "{startedAt, date, medium} {startedAt, time, short}",
+      "STATUS_LABEL": "Stav",
+      "TRIGGER_LABEL": "Spustenie",
+      "FILE_LABEL": "Súbor",
+      "SIZE_LABEL": "Veľkosť",
+      "DOWNLOAD_LABEL": "Stiahnuť",
+      "DOWNLOAD_LOG_LABEL": "Stiahnuť log",
+      "EMPTY_LABEL": "Zatiaľ neboli spustené žiadne databázové zálohy.",
+      "CONFIRM_DELETE_TITLE": "Zmazať zálohu",
+      "CONFIRM_DELETE_DESCRIPTION": "Ste si istý, že chcete zmazať tento beh zálohy a jeho dump súbory?",
+      "STATUS": {
+        "RUNNING": "Beží",
+        "SUCCESS": "Úspešné",
+        "FAILED": "Zlyhalo"
+      },
+      "TRIGGER": {
+        "MANUAL": "Manuálne",
+        "SCHEDULED": "Plánované"
+      }
     }
   }
 }

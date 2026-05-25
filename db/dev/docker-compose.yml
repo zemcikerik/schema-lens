@@ -6,6 +6,8 @@ services:
       - '1521:1521'
     volumes:
       - ./data:/opt/oracle/oradata:Z
+      - ./backups:/opt/oracle/backups:Z
+      - ../init:/container-entrypoint-initdb.d:ro
     environment:
       ORACLE_PASSWORD: testtest1!
       APP_USER: schema_lens

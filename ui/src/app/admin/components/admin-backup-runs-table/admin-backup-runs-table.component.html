@@ -1,0 +1,83 @@
+<table mat-table class="admin-backup__table" [dataSource]="runs()">
+  <ng-container matColumnDef="id">
+    <th mat-header-cell *matHeaderCellDef>{{ ('ADMIN.ID_LABEL' | translate)() }}</th>
+    <td mat-cell *matCellDef="let run">{{ run.id }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="startedAt">
+    <th mat-header-cell *matHeaderCellDef>{{ ('ADMIN.BACKUP.STARTED_AT_LABEL' | translate)() }}</th>
+    <td mat-cell *matCellDef="let run">{{ ('ADMIN.BACKUP.STARTED_AT_VALUE' | translate: { startedAt: startedAtDate(run) })() }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="status">
+    <th mat-header-cell *matHeaderCellDef>{{ ('ADMIN.BACKUP.STATUS_LABEL' | translate)() }}</th>
+    <td mat-cell *matCellDef="let run">
+      <span
+        class="admin-backup__status"
+        [class.admin-backup__status--running]="run.status === 'RUNNING'"
+        [class.admin-backup__status--success]="run.status === 'SUCCESS'"
+        [class.admin-backup__status--failed]="run.status === 'FAILED'"
+      >
+        {{ ('ADMIN.BACKUP.STATUS.' + run.status | translate)() }}
+      </span>
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="triggerType">
+    <th mat-header-cell *matHeaderCellDef>{{ ('ADMIN.BACKUP.TRIGGER_LABEL' | translate)() }}</th>
+    <td mat-cell *matCellDef="let run">{{ ('ADMIN.BACKUP.TRIGGER.' + run.triggerType | translate)() }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="fileName">
+    <th mat-header-cell *matHeaderCellDef>{{ ('ADMIN.BACKUP.FILE_LABEL' | translate)() }}</th>
+    <td mat-cell *matCellDef="let run">
+      @if (run.errorMessage) {
+        <div class="admin-backup__error">{{ run.errorMessage }}</div>
+      } @else {
+        {{ run.status === 'FAILED' ? '-' : run.fileName }}
+      }
+    </td>
+  </ng-container>
+
+  <ng-container matColumnDef="fileSizeBytes">
+    <th mat-header-cell *matHeaderCellDef>{{ ('ADMIN.BACKUP.SIZE_LABEL' | translate)() }}</th>
+    <td mat-cell *matCellDef="let run">{{ fileSizeLabel(run) }}</td>
+  </ng-container>
+
+  <ng-container matColumnDef="actions">
+    <th mat-header-cell *matHeaderCellDef></th>
+    <td mat-cell *matCellDef="let run">
+      <button
+        mat-icon-button
+        [disabled]="isDownloadLoading(run)"
+        [matMenuTriggerFor]="actionsMenu"
+        [matMenuTriggerData]="{ run }"
+      >
+        @if (isDownloadLoading(run)) {
+          <app-progress-spinner [center]="true" size="small" />
+        } @else {
+          <mat-icon>more_vert</mat-icon>
+        }
+      </button>
+    </td>
+  </ng-container>
+
+  <tr mat-header-row *matHeaderRowDef="DISPLAYED_COLUMNS"></tr>
+  <tr mat-row *matRowDef="let row; columns: DISPLAYED_COLUMNS"></tr>
+</table>
+
+<mat-menu #actionsMenu>
+  <ng-template matMenuContent let-run="run">
+    <button mat-menu-item [disabled]="run.status !== 'SUCCESS'" (click)="download.emit(run)">
+      <mat-icon>download</mat-icon> {{ ('ADMIN.BACKUP.DOWNLOAD_LABEL' | translate)() }}
+    </button>
+
+    <button mat-menu-item [disabled]="run.status === 'RUNNING'" (click)="downloadLog.emit(run)">
+      <mat-icon>article</mat-icon> {{ ('ADMIN.BACKUP.DOWNLOAD_LOG_LABEL' | translate)() }}
+    </button>
+
+    <button mat-menu-item [disabled]="run.status === 'RUNNING'" (click)="delete.emit(run)">
+      <mat-icon>delete</mat-icon> {{ ('GENERIC.DELETE_LABEL' | translate)() }}
+    </button>
+  </ng-template>
+</mat-menu>
