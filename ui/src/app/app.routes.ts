@@ -226,6 +226,10 @@ export const appRoutes: Route[] = [
         path: 'faq',
         loadComponent: () => import('./admin/components/admin-faq/admin-faq.component').then(c => c.AdminFaqComponent),
       },
+      {
+        path: 'backup',
+        loadComponent: () => import('./admin/components/admin-backup/admin-backup.component').then(c => c.AdminBackupComponent),
+      },
     ],
   },
   { path: '**', redirectTo: '404' },

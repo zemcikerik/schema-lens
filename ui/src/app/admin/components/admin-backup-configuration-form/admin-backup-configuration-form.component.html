@@ -1,0 +1,41 @@
+<form class="admin-backup__configuration" [formGroup]="configurationForm">
+  <mat-slide-toggle formControlName="automaticEnabled">
+    {{ ('ADMIN.BACKUP.AUTOMATIC_ENABLED_LABEL' | translate)() }}
+  </mat-slide-toggle>
+
+  @if (configurationForm.controls.automaticEnabled.value) {
+    <div class="admin-backup__configuration__fields">
+      <mat-form-field>
+        <mat-label>{{ ('ADMIN.BACKUP.CRON_LABEL' | translate)() }}</mat-label>
+        <input matInput type="text" formControlName="cronExpression">
+        <mat-error>{{ (configurationForm.controls.cronExpression.errors | formatGenericValidationErrors)() }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ ('ADMIN.BACKUP.RETENTION_DAYS_LABEL' | translate)() }}</mat-label>
+        <input matInput type="number" formControlName="retentionDays">
+        <mat-hint>{{ ('ADMIN.BACKUP.RETENTION_DAYS_HINT' | translate)() }}</mat-hint>
+        <mat-error>{{ (configurationForm.controls.retentionDays.errors | formatGenericValidationErrors)() }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <mat-label>{{ ('ADMIN.BACKUP.ORACLE_DIRECTORY_LABEL' | translate)() }}</mat-label>
+        <input matInput type="text" formControlName="oracleDirectoryName">
+        <mat-error>
+          {{ (configurationForm.controls.oracleDirectoryName.errors | formatGenericValidationErrors)() }}
+        </mat-error>
+      </mat-form-field>
+    </div>
+  }
+
+  <div class="admin-backup__configuration__actions">
+    <button mat-flat-button type="button" [disabled]="loading() || configurationForm.invalid" (click)="submit()">
+      <mat-icon>save</mat-icon>
+      @if (loading()) {
+        <app-progress-spinner [center]="true" size="small" />
+      } @else {
+        {{ ('GENERIC.SAVE_LABEL' | translate)() }}
+      }
+    </button>
+  </div>
+</form>

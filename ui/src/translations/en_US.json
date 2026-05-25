@@ -276,6 +276,35 @@
       "UPDATE_DESCRIPTION": "Update an existing frequently asked question. This question will be displayed only for the shown locale.",
       "CONFIRM_DELETE_TITLE": "Delete FAQ",
       "CONFIRM_DELETE_DESCRIPTION": "Are you sure you want to delete this frequently asked question?"
+    },
+    "BACKUP": {
+      "LABEL": "Database Backups",
+      "RUN_NOW_LABEL": "Run backup now",
+      "AUTOMATIC_ENABLED_LABEL": "Run backups automatically",
+      "CRON_LABEL": "Cron expression",
+      "RETENTION_DAYS_LABEL": "Retention days",
+      "RETENTION_DAYS_HINT": "Set to 0 or less to disable automatic retention cleanup.",
+      "ORACLE_DIRECTORY_LABEL": "Oracle directory",
+      "STARTED_AT_LABEL": "Started",
+      "STARTED_AT_VALUE": "{startedAt, date, medium} {startedAt, time, short}",
+      "STATUS_LABEL": "Status",
+      "TRIGGER_LABEL": "Trigger",
+      "FILE_LABEL": "File",
+      "SIZE_LABEL": "Size",
+      "DOWNLOAD_LABEL": "Download",
+      "DOWNLOAD_LOG_LABEL": "Download log",
+      "EMPTY_LABEL": "There are no database backup runs yet.",
+      "CONFIRM_DELETE_TITLE": "Delete backup",
+      "CONFIRM_DELETE_DESCRIPTION": "Are you sure you want to delete this backup run and its dump files?",
+      "STATUS": {
+        "RUNNING": "Running",
+        "SUCCESS": "Success",
+        "FAILED": "Failed"
+      },
+      "TRIGGER": {
+        "MANUAL": "Manual",
+        "SCHEDULED": "Scheduled"
+      }
     }
   },
   "DATA_MODEL": {

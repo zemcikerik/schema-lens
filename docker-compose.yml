@@ -72,6 +72,8 @@ services:
     restart: on-failure:3
     volumes:
       - ${DB_DATA_FOLDER_PATH}:/opt/oracle/oradata
+      - ${DB_BACKUP_FOLDER_PATH}:/opt/oracle/backups
+      - ./db/init:/container-entrypoint-initdb.d:ro
     environment:
       ORACLE_PASSWORD: ${DB_ROOT_PASSWORD}
       APP_USER: ${DB_APP_USER}
