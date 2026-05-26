@@ -385,7 +385,7 @@
       "EDIT_LABEL": "Edit Relationship {layer, select, logical {Attribute} other {Column}}"
     },
     "EDGE": {
-      "EDIT_TITLE": "{name} (unfinished - ids won't be shown)",
+      "EDIT_TITLE": "{name} (unfinished)",
       "NODES_LABEL": "{layer, select, logical {Entities} other {Tables}}",
       "FROM_NODE_LABEL": "From:",
       "TO_NODE_LABEL": "To:",
