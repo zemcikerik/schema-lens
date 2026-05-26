@@ -233,12 +233,19 @@ class BackupServiceImpl(
         )
 
     private fun cleanupExpiredRuns() {
-        val retentionDays = getConfiguration().retentionDays
-        if (retentionDays <= 0) {
+        val configuration = getConfiguration()
+
+        if (!configuration.automaticEnabled) {
+            LOGGER.debug("Skipped backup retention cleanup because automatic backups are disabled")
+            return
+        }
+
+        if (configuration.retentionDays <= 0) {
             LOGGER.debug("Skipped backup retention cleanup because retention is disabled")
             return
         }
 
+        val retentionDays = configuration.retentionDays
         val threshold = Instant.now().minus(retentionDays.toLong(), ChronoUnit.DAYS)
 
         runRepository.findByStartedAtBeforeAndStatusNot(threshold, BackupRunStatus.RUNNING).forEach {
