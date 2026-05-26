@@ -1,7 +1,8 @@
 package dev.zemco.schemalens.auth
 
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 
 @Service
 class RefreshTokenServiceImpl(
@@ -12,18 +13,20 @@ class RefreshTokenServiceImpl(
 
     override fun createRefreshTokenFor(user: User): String =
         refreshTokenGenerator.generateRefreshToken().also {
+            val createdAt = Instant.now()
             refreshTokenRepository.save(RefreshTokenEntry(
                 token = it,
                 userId = user.id!!,
                 user = user,
-                expiresAt = createExpirationDate()
+                createdAt = createdAt,
+                expiresAt = createExpirationDate(createdAt)
             ))
         }
 
     override fun useRefreshToken(token: String): User? {
         val entry = refreshTokenRepository.findByToken(token) ?: return null
 
-        if (LocalDateTime.now() > entry.expiresAt) {
+        if (Instant.now() > entry.expiresAt) {
             return null
         }
 
@@ -31,7 +34,6 @@ class RefreshTokenServiceImpl(
         return entry.user
     }
 
-    private fun createExpirationDate(): LocalDateTime =
-        LocalDateTime.now().plusMinutes(jwtConfiguration.refreshTokenExpirationMinutes)
-
+    private fun createExpirationDate(createdAt: Instant): Instant =
+        createdAt.plus(jwtConfiguration.refreshTokenExpirationMinutes, ChronoUnit.MINUTES)
 }

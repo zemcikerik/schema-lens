@@ -6,8 +6,10 @@ import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.ApplicationEventPublisher
 import org.springframework.core.io.Resource
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
+import java.time.Instant
+import java.time.ZoneOffset
 import java.time.format.DateTimeFormatter
+import java.time.temporal.ChronoUnit
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Semaphore
 
@@ -20,7 +22,7 @@ class BackupServiceImpl(
     @param:Qualifier("backupTaskExecutor") private val taskExecutor: ExecutorService,
 ) : BackupService {
     private val runSemaphore = Semaphore(1)
-    private val fileNameTimestampFormatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss")
+    private val fileNameTimestampFormatter = DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss").withZone(ZoneOffset.UTC)
 
     override fun getConfiguration(): BackupConfiguration =
         configurationRepository.findById(BackupConfiguration.DEFAULT_ID).orElse(null)
@@ -56,7 +58,7 @@ class BackupServiceImpl(
 
             run.apply {
                 status = BackupRunStatus.FAILED
-                finishedAt = LocalDateTime.now()
+                finishedAt = Instant.now()
                 errorMessage = cleanupMessage
             }
             runRepository.save(run)
@@ -77,9 +79,10 @@ class BackupServiceImpl(
                 throw BackupAlreadyRunningException()
             }
 
-            val now = LocalDateTime.now()
-            val baseFileName = "schema_lens_${now.format(fileNameTimestampFormatter)}"
+            val now = Instant.now()
+            val baseFileName = "schema_lens_${fileNameTimestampFormatter.format(now)}"
             val run = runRepository.save(BackupRun(
+                startedAt = now,
                 triggerType = triggerType,
                 fileName = "$baseFileName.dmp",
                 logFileName = "$baseFileName.log",
@@ -118,14 +121,14 @@ class BackupServiceImpl(
                 run.apply {
                     status = BackupRunStatus.SUCCESS
                     fileSizeBytes = backupExecutor.getFileSize(oracleDirectoryName, fileName)
-                    finishedAt = LocalDateTime.now()
+                    finishedAt = Instant.now()
                 }
                 LOGGER.info("Finished backup run id={} with status={}, fileSizeBytes={}", run.id, run.status, run.fileSizeBytes)
             } catch (ex: Exception) {
                 run.apply {
                     status = BackupRunStatus.FAILED
                     errorMessage = ex.message?.take(2048) ?: ex.javaClass.simpleName
-                    finishedAt = LocalDateTime.now()
+                    finishedAt = Instant.now()
                 }
                 LOGGER.error("Finished backup run id={} with status={}: {}", run.id, run.status, run.errorMessage, ex)
             }
@@ -236,7 +239,7 @@ class BackupServiceImpl(
             return
         }
 
-        val threshold = LocalDateTime.now().minusDays(retentionDays.toLong())
+        val threshold = Instant.now().minus(retentionDays.toLong(), ChronoUnit.DAYS)
 
         runRepository.findByStartedAtBeforeAndStatusNot(threshold, BackupRunStatus.RUNNING).forEach {
             LOGGER.info("Deleting expired backup run id={} older than {} days", it.id, retentionDays)
@@ -244,7 +247,7 @@ class BackupServiceImpl(
         }
     }
 
-    companion object {
+    private companion object {
         private val LOGGER = LoggerFactory.getLogger(BackupServiceImpl::class.java)
     }
 }

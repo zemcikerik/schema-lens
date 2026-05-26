@@ -280,6 +280,7 @@
       "RUN_NOW_LABEL": "Spustiť zálohu",
       "AUTOMATIC_ENABLED_LABEL": "Povoliť automatické zálohovanie",
       "CRON_LABEL": "Cron výraz",
+      "CRON_HINT": "Vyhodnocuje sa v UTC.",
       "RETENTION_DAYS_LABEL": "Dni uchovania",
       "RETENTION_DAYS_HINT": "Nastavte 0 alebo menej pre vypnutie automatického čistenia.",
       "ORACLE_DIRECTORY_LABEL": "Oracle adresár",

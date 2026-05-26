@@ -3,7 +3,7 @@ package dev.zemco.schemalens.auth
 import jakarta.persistence.*
 import jakarta.validation.constraints.NotBlank
 import org.hibernate.validator.constraints.Length
-import java.time.LocalDateTime
+import java.time.Instant
 
 @Entity
 class RefreshTokenEntry(
@@ -23,8 +23,8 @@ class RefreshTokenEntry(
     var user: User,
 
     @Column(nullable = false)
-    var createdAt: LocalDateTime = LocalDateTime.now(),
+    var createdAt: Instant = Instant.now(),
 
     @Column(nullable = false)
-    var expiresAt: LocalDateTime,
+    var expiresAt: Instant,
 )
