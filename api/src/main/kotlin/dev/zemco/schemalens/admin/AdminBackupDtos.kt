@@ -6,7 +6,7 @@ import dev.zemco.schemalens.validation.CronExpressionConstraint
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.NotBlank
 import jakarta.validation.constraints.Pattern
-import java.time.LocalDateTime
+import java.time.Instant
 
 data class AdminBackupDto(
     val configuration: AdminBackupConfigurationDto,
@@ -37,8 +37,8 @@ data class AdminUpdateBackupConfigurationDto(
 
 data class AdminBackupRunDto(
     val id: Long,
-    val startedAt: LocalDateTime,
-    val finishedAt: LocalDateTime?,
+    val startedAt: Instant,
+    val finishedAt: Instant?,
     val status: BackupRunStatus,
     val triggerType: BackupTriggerType,
     val fileName: String?,

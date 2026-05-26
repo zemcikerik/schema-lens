@@ -10,7 +10,7 @@ import jakarta.persistence.GenerationType
 import jakarta.persistence.Id
 import jakarta.persistence.JoinColumn
 import jakarta.persistence.ManyToOne
-import java.time.LocalDateTime
+import java.time.Instant
 
 @Entity(name = "backup_run")
 class BackupRun(
@@ -19,9 +19,9 @@ class BackupRun(
     var id: Long? = null,
 
     @Column(nullable = false)
-    var startedAt: LocalDateTime = LocalDateTime.now(),
+    var startedAt: Instant = Instant.now(),
 
-    var finishedAt: LocalDateTime? = null,
+    var finishedAt: Instant? = null,
 
     @Convert(converter = BackupRunStatusConverter::class)
     @Column(nullable = false, length = 1)

@@ -8,6 +8,7 @@
       <mat-form-field>
         <mat-label>{{ ('ADMIN.BACKUP.CRON_LABEL' | translate)() }}</mat-label>
         <input matInput type="text" formControlName="cronExpression">
+        <mat-hint>{{ ('ADMIN.BACKUP.CRON_HINT' | translate)() }}</mat-hint>
         <mat-error>{{ (configurationForm.controls.cronExpression.errors | formatGenericValidationErrors)() }}</mat-error>
       </mat-form-field>
 

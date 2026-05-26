@@ -8,6 +8,7 @@ import org.springframework.context.event.EventListener
 import org.springframework.scheduling.TaskScheduler
 import org.springframework.scheduling.support.CronTrigger
 import org.springframework.stereotype.Component
+import java.time.ZoneOffset
 import java.util.concurrent.ScheduledFuture
 import java.util.concurrent.locks.ReentrantLock
 import kotlin.concurrent.withLock
@@ -38,7 +39,7 @@ class BackupScheduler(
     private fun reschedule(configuration: BackupConfiguration) {
         val trigger = configuration
             .takeIf { it.automaticEnabled }
-            ?.let { CronTrigger(it.cronExpression) }
+            ?.let { CronTrigger(it.cronExpression, ZoneOffset.UTC) }
 
         scheduleLock.withLock {
             scheduledBackup?.cancel(false)

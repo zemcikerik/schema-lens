@@ -9,8 +9,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication
 import org.springframework.security.core.userdetails.UserDetailsService
 import org.springframework.stereotype.Service
-import java.time.LocalDateTime
-import java.time.ZoneId
+import java.time.Instant
+import java.time.temporal.ChronoUnit
 import java.util.*
 import javax.crypto.SecretKey
 
@@ -46,10 +46,10 @@ class JwtServiceImpl(
             .let { userDetailsService.loadUserByUsername(it) }
             .let { UsernamePasswordAuthenticationToken(it, null, it.authorities) }
 
-    private fun createExpirationDate(): Date {
-        val dateTime = LocalDateTime.now().plusMinutes(jwtConfiguration.expirationMinutes)
-        return Date.from(dateTime.atZone(ZoneId.systemDefault()).toInstant())
-    }
+    private fun createExpirationDate(): Date =
+        Instant.now()
+            .plus(jwtConfiguration.expirationMinutes, ChronoUnit.MINUTES)
+            .let { Date.from(it) }
 
     private fun decodeKey(base64EncodedKey: String): SecretKey {
         val bytes = Decoders.BASE64.decode(base64EncodedKey)

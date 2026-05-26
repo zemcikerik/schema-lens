@@ -282,6 +282,7 @@
       "RUN_NOW_LABEL": "Run backup now",
       "AUTOMATIC_ENABLED_LABEL": "Run backups automatically",
       "CRON_LABEL": "Cron expression",
+      "CRON_HINT": "Evaluated in UTC.",
       "RETENTION_DAYS_LABEL": "Retention days",
       "RETENTION_DAYS_HINT": "Set to 0 or less to disable automatic retention cleanup.",
       "ORACLE_DIRECTORY_LABEL": "Oracle directory",
