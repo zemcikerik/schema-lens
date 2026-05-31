@@ -4,15 +4,9 @@
   <mat-chip-grid #chipGrid [formControl]="control()" [required]="required()">
     @for (item of control().value; track $index; let i = $index) {
       <mat-chip-row
-        [editable]="true"
         [removable]="true"
-        (edited)="editItem(i, $event)"
         (removed)="removeItem(i)"
       >
-        <button matChipEdit>
-          <mat-icon>edit</mat-icon>
-        </button>
-
         {{ item }}
 
         <button matChipRemove>
