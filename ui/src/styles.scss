@@ -48,7 +48,7 @@
 @use './scss/components/data-model-nav';
 @use './scss/components/data-model-node-editor';
 @use './scss/components/data-model-edge-editor';
-@use './scss/components/data-model-data-type_editor';
+@use './scss/components/data-model-data-type-editor';
 
 @include mat.elevation-classes();
 @include mat.app-background();
@@ -79,13 +79,14 @@ html {
   @include mat.tooltip-theme(t.$theme);
 }
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, 'Helvetica Neue', sans-serif;
 }
 
 .app-root {
@@ -98,7 +99,8 @@ body {
   --app-top-bar-height: var(--mat-toolbar-standard-height);
   height: calc(100vh - var(--app-top-bar-height));
 
-  @media (max-width: 599.99px) { // breakpoint used by @angular/material for toolbar height
+  @media (max-width: 599.99px) {
+    // breakpoint used by @angular/material for toolbar height
     --app-top-bar-height: var(--mat-toolbar-mobile-height);
   }
 

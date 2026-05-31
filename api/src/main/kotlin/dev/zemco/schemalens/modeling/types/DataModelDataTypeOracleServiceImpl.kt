@@ -12,26 +12,14 @@ class DataModelDataTypeOracleServiceImpl(
     override fun syncOracle(dataType: DataModelDataType, mappings: List<DataModelDataTypeMappingDto>) {
         val typeId = dataType.id ?: return
 
-        val oracleMappings = mappings.filter {
-            it.dbSystem.trim().lowercase() == "oracle"
-        }
-
-        if (oracleMappings.size > 1) {
-            throw IllegalArgumentException("Only one Oracle data type mapping is allowed")
-        }
-
-        val requestedMapping = oracleMappings.firstOrNull() ?: run {
-            repository.deleteByTypeId(typeId)
-            dataType.oracle = null
+        val requestedMapping = findRequestedOracleMapping(mappings) ?: run {
+            removeOracleMapping(dataType, typeId)
             return
         }
 
-        val physical = requestedMapping.physicalDataType.trim()
-        if (physical.isBlank()) {
-            throw IllegalArgumentException("Oracle physical data type cannot be blank")
-        }
+        val physical = normalizePhysicalDataType(requestedMapping)
+        val checkConstraint = requestedMapping.checkConstraint.normalizeCheckConstraint()
 
-        val checkConstraint = requestedMapping.checkConstraint?.trim()?.takeIf { it.isNotEmpty() }
         val oracle = repository.findByTypeId(typeId)?.apply {
             this.physical = physical
             this.checkConstraint = checkConstraint
@@ -43,6 +31,40 @@ class DataModelDataTypeOracleServiceImpl(
 
         dataType.oracle = repository.save(oracle)
     }
+
+    private fun removeOracleMapping(dataType: DataModelDataType, typeId: Long) {
+        if (dataType.oracle != null) {
+            repository.deleteByTypeId(typeId)
+            dataType.oracle = null
+        }
+    }
+
+    private fun findRequestedOracleMapping(mappings: List<DataModelDataTypeMappingDto>): DataModelDataTypeMappingDto? {
+        val oracleMappings = mappings.filter {
+            it.dbSystem.trim().equals(ORACLE_DB_SYSTEM, ignoreCase = true)
+        }
+
+        if (oracleMappings.size > 1) {
+            throw DataTypeMappingExistsException(ORACLE_DB_SYSTEM)
+        }
+
+        return oracleMappings.firstOrNull()
+    }
+
+    private fun normalizePhysicalDataType(mapping: DataModelDataTypeMappingDto): String {
+        val physical = mapping.physicalDataType.trim()
+
+        if (physical.isBlank()) {
+            throw IllegalArgumentException("Oracle physical data type cannot be blank")
+        }
+
+        return physical
+    }
+
+    private fun String?.normalizeCheckConstraint(): String? =
+        this?.trim()?.takeIf { it.isNotEmpty() }
+
+    private companion object {
+        const val ORACLE_DB_SYSTEM = "oracle"
+    }
 }
-
-

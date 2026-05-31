@@ -2,9 +2,8 @@ package dev.zemco.schemalens.modeling.nodes
 
 import dev.zemco.schemalens.modeling.edges.DataModelEdgeField
 import dev.zemco.schemalens.modeling.types.DataModelDataType
-import dev.zemco.schemalens.modeling.types.DataModelDataTypeParField
+import dev.zemco.schemalens.modeling.types.DataModelFieldDataTypeParameter
 import jakarta.persistence.CascadeType
-
 import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
@@ -51,7 +50,7 @@ class DataModelField(
     var position: Short,
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "field", cascade = [CascadeType.ALL], orphanRemoval = true)
-    var dataTypeParameters: MutableSet<DataModelDataTypeParField> = mutableSetOf(),
+    var typeParameters: MutableSet<DataModelFieldDataTypeParameter> = mutableSetOf(),
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "referencedField", cascade = [CascadeType.REMOVE])
     var edgeFields: MutableSet<DataModelEdgeField> = mutableSetOf(),

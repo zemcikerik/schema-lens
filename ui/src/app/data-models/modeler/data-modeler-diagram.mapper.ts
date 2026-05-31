@@ -47,7 +47,7 @@ export class DataModelerDiagramMapper {
         attr.typeId,
         dataTypes,
         this.contextState.context(),
-        attr.dataTypeParameters,
+        attr.typeParameters,
       ),
       key: attr.isPrimaryKey,
       nullable: attr.isNullable,

@@ -45,8 +45,7 @@ data class DataModelDataTypeInputDto(
     val mappings: List<DataModelDataTypeMappingDto> = listOf(),
 )
 
-@Suppress("unused")
-class DataModelDataTypeDto(
+data class DataModelDataTypeDto(
     val typeId: Long,
     val name: String,
     val parameters: List<DataModelDataTypeParameterDto> = emptyList(),

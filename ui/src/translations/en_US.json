@@ -23,6 +23,7 @@
     "VALIDATION": {
       "REQUIRED": "This field is required.",
       "NO_START_END_WHITESPACE": "This field cannot start or end with whitespace.",
+      "NO_WHITESPACE": "This field cannot contain whitespace.",
       "MIN_LENGTH": "This field has to be at least {minLength} characters long.",
       "MAX_LENGTH": "This field has to be maximum {maxLength} characters long.",
       "PATTERN": "This field contains disallowed characters.",
@@ -375,6 +376,7 @@
       "FIELD_PROPERTIES": {
         "NAME": "Name",
         "DATA_TYPE": "{layer, select, logical {Domain} other {Type}}",
+        "PARAMETER": "Parameter [{name}]",
         "NULLABLE": "Nullable",
         "PRIMARY_KEY": "Primary key"
       },

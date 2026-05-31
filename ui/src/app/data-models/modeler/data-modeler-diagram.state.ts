@@ -241,6 +241,7 @@ export class DataModelerDiagramState {
         isPrimaryKey: r.edge.isIdentifying,
         isNullable: !r.edge.isMandatory,
         position: r.position,
+        typeParameters: [],
       };
     });
 

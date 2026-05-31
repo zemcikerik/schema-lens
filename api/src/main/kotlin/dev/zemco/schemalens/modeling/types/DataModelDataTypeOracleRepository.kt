@@ -7,8 +7,7 @@ import org.springframework.data.jpa.repository.Query
 interface DataModelDataTypeOracleRepository : JpaRepository<DataModelDataTypeOracle, Long> {
     fun findByTypeId(typeId: Long): DataModelDataTypeOracle?
 
-    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Modifying(flushAutomatically = true)
     @Query("delete from DataModelDataTypeOracle o where o.typeId = ?1")
     fun deleteByTypeId(typeId: Long): Int
 }
-

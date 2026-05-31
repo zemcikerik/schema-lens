@@ -2,13 +2,13 @@ package dev.zemco.schemalens.modeling.nodes
 
 import jakarta.validation.constraints.NotBlank
 
-data class DataModelFieldTypeParameterInputDto(
+data class DataModelFieldDataTypeParameterInputDto(
     @field:NotBlank
     val name: String,
     val value: String? = null,
 )
 
-data class DataModelFieldTypeParameterDto(
+data class DataModelFieldDataTypeParameterDto(
     val name: String,
     val value: String? = null,
 )
@@ -20,7 +20,7 @@ data class DataModelFieldInputDto(
     val isPrimaryKey: Boolean,
     val isNullable: Boolean,
     val position: Short,
-    val dataTypeParameters: List<DataModelFieldTypeParameterInputDto>? = null,
+    val typeParameters: List<DataModelFieldDataTypeParameterInputDto>? = null,
 )
 
 data class DataModelFieldDto(
@@ -30,24 +30,22 @@ data class DataModelFieldDto(
     val isPrimaryKey: Boolean = false,
     val isNullable: Boolean = true,
     val position: Short,
-    val dataTypeParameters: List<DataModelFieldTypeParameterDto>? = null,
+    val typeParameters: List<DataModelFieldDataTypeParameterDto> = emptyList(),
 ) {
     companion object {
         fun from(field: DataModelField): DataModelFieldDto {
             val parameters = field.type.parameters
-            val dataTypeParameters = if (parameters.isEmpty()) {
-                null
-            } else {
-                val valuesByName = field.dataTypeParameters.associateBy { it.id.name }
+            val typeParameters = if (parameters.isNotEmpty()) {
+                val valuesByName = field.typeParameters.associateBy { it.id.name }
                 parameters
                     .map { parameter ->
-                        DataModelFieldTypeParameterDto(
+                        DataModelFieldDataTypeParameterDto(
                             name = parameter.id.name,
                             value = valuesByName[parameter.id.name]?.value,
                         )
                     }
                     .sortedBy { dto -> dto.name }
-            }
+            } else emptyList()
 
             return DataModelFieldDto(
                 fieldId = field.id,
@@ -56,7 +54,7 @@ data class DataModelFieldDto(
                 isPrimaryKey = field.isPrimaryKey,
                 isNullable = field.isNullable,
                 position = field.position,
-                dataTypeParameters = dataTypeParameters,
+                typeParameters = typeParameters,
             )
         }
     }

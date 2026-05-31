@@ -1,0 +1,36 @@
+<mat-form-field class="w-100">
+  <mat-label>{{ label() }}</mat-label>
+
+  <mat-chip-grid #chipGrid [formControl]="control()" [required]="required()">
+    @for (item of control().value; track $index; let i = $index) {
+      <mat-chip-row
+        [editable]="true"
+        [removable]="true"
+        (edited)="editItem(i, $event)"
+        (removed)="removeItem(i)"
+      >
+        <button matChipEdit>
+          <mat-icon>edit</mat-icon>
+        </button>
+
+        {{ item }}
+
+        <button matChipRemove>
+          <mat-icon>close</mat-icon>
+        </button>
+      </mat-chip-row>
+    }
+  </mat-chip-grid>
+
+  <input
+    matInput
+    [placeholder]="placeholder()"
+    [matChipInputFor]="chipGrid"
+    [matChipInputSeparatorKeyCodes]="separatorKeyCodes()"
+    [matChipInputAddOnBlur]="addOnBlur()"
+    (matChipInputTokenEnd)="addItem($event)" />
+
+  @if (control().invalid) {
+    <mat-error>{{ (control().errors | formatGenericValidationErrors)() }}</mat-error>
+  }
+</mat-form-field>

@@ -22,11 +22,13 @@
     "VALIDATION": {
       "REQUIRED": "Toto pole je povinné.",
       "NO_START_END_WHITESPACE": "Toto pole nemôže začínať alebo končiť medzerou.",
+      "NO_WHITESPACE": "Toto pole nemôže obsahovať medzery.",
       "MIN_LENGTH": "Toto pole musí mať aspoň {minLength} znakov.",
       "MAX_LENGTH": "Toto pole môže mať maximálne {maxLength} znakov.",
       "PATTERN": "Toto pole obsahuje nepovolené znaky.",
       "EMAIL": "Tento e-mail je neplatný.",
       "VERIFY_PASSWORD": "Heslá sa musia zhodovať.",
+      "UNIQUE": "Táto hodnota musí byť jedinečná.",
       "UNKNOWN": "Toto pole je neplatné.",
       "IP_ADDRESS": {
         "INVALID": "Táto IP adresa je neplatná.",

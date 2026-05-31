@@ -6,7 +6,12 @@ import { DataModelStore } from './data-model.store';
 
 export type DataModelingLayer = 'logical' | 'physical' | 'unknown';
 export type DataModelingContext = 'logical' | 'oracle' | 'unknown';
+export type DataModelingDbSystem = Exclude<DataModelingContext, 'logical' | 'unknown'>;
 type SwitchableDataModelingContext = Exclude<DataModelingContext, 'unknown'>;
+
+export function mapDataModelingContextToDbSystem(context: DataModelingContext): DataModelingDbSystem | null {
+  return context === 'oracle' ? context : null;
+}
 
 interface ContextRouteMapper {
   pattern: RegExp;
@@ -28,6 +33,8 @@ export class DataModelContextState {
     const context = this.context();
     return context === 'oracle' ? 'physical' : context;
   });
+
+  dbSystem = computed<DataModelingDbSystem | null>(() => mapDataModelingContextToDbSystem(this.context()));
 
   availableContexts = computed<DataModelingContext[] | null>(() => {
     const model = this.store.model();

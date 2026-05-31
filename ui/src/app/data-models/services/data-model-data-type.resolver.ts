@@ -1,19 +1,16 @@
 import { Injectable } from '@angular/core';
 import { DataModelDataType } from '../models/data-model-data-type.model';
-import { DataModelingContext } from '../data-model-context.state';
+import { DataModelingContext, mapDataModelingContextToDbSystem } from '../data-model-context.state';
+import { DataModelFieldDataTypeParameter } from '../models/data-model-node.model';
 
 @Injectable({ providedIn: 'root' })
 export class DataModelDataTypeResolver {
-
-  resolveFrom(typeId: number, types: DataModelDataType[]): string {
-    return types.find(type => type.typeId === typeId)?.name ?? String(typeId);
-  }
 
   resolveFromContext(
     typeId: number,
     types: DataModelDataType[],
     context: DataModelingContext,
-    parameters?: { name: string; value: number | null }[] | null,
+    parameters: DataModelFieldDataTypeParameter[],
   ): string {
     const type = types.find(entry => entry.typeId === typeId);
 
@@ -21,15 +18,16 @@ export class DataModelDataTypeResolver {
       return String(typeId);
     }
 
-    const template = context === 'oracle'
-      ? type.mappings?.find(mapping => mapping.dbSystem === context)?.physicalDataType ?? '-'
+    const dbSystem = mapDataModelingContextToDbSystem(context);
+    const template = dbSystem
+      ? (type.mappings.find(mapping => mapping.dbSystem === dbSystem)?.physicalDataType ?? '-')
       : type.name;
 
     return this.applyParameters(template, parameters);
   }
 
-  private applyParameters(template: string, parameters?: { name: string; value: number | null }[] | null): string {
-    if (!parameters?.length) {
+  private applyParameters(template: string, parameters: DataModelFieldDataTypeParameter[]): string {
+    if (!parameters.length) {
       return template;
     }
 

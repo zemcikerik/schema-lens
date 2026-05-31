@@ -30,4 +30,3 @@ class DataModelDataTypeParameter(
         var name: String = "",
     )
 }
-
