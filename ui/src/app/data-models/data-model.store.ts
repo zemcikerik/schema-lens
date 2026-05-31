@@ -11,6 +11,7 @@ import { DataModelEdgeService } from './services/data-model-edge.service';
 import { DataModelDataTypeService } from './services/data-model-data-type.service';
 import { DataModelDiagramService } from './services/data-model-diagram.service';
 import { DataModelService } from './services/data-model.service';
+import { DataModelDataTypeSyncService } from './services/data-model-data-type-sync.service';
 
 @Injectable({ providedIn: 'root' })
 export class DataModelStore {
@@ -19,6 +20,7 @@ export class DataModelStore {
   private nodeService = inject(DataModelNodeService);
   private edgeService = inject(DataModelEdgeService);
   private dataTypeService = inject(DataModelDataTypeService);
+  private dataTypeSyncService = inject(DataModelDataTypeSyncService);
   private diagramService = inject(DataModelDiagramService);
 
   dataModelId = -1;
@@ -126,10 +128,7 @@ export class DataModelStore {
   updateDataType(dataType: DataModelDataType): Observable<DataModelDataType> {
     return this.dataTypeService.updateDataType(this.dataModelId, dataType).pipe(
       tap(updated =>
-        this._model.update(m => m && {
-          ...m,
-          dataTypes: m.dataTypes.map(t => (t.typeId === updated.typeId ? updated : t)),
-        }),
+        this._model.update(m => m && this.dataTypeSyncService.applyDataTypeUpdate(m, updated)),
       ),
     );
   }
