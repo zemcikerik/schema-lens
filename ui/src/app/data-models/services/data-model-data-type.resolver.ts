@@ -31,13 +31,25 @@ export class DataModelDataTypeResolver {
       return template;
     }
 
-    return parameters.reduce((value, parameter) => {
-      if (parameter.value === null || parameter.value === undefined) {
-        return value;
-      }
+    const valuesByToken = new Map(
+      parameters
+        .filter(parameter => parameter.value !== null && parameter.value !== undefined)
+        .map(parameter => [`$${parameter.name}`, String(parameter.value)]),
+    );
 
-      const token = `$${parameter.name}`;
-      return value.split(token).join(String(parameter.value));
-    }, template);
+    if (valuesByToken.size === 0) {
+      return template;
+    }
+
+    const tokenPattern = [...valuesByToken.keys()]
+      .sort((a, b) => b.length - a.length)
+      .map(token => this.escapeRegex(token))
+      .join('|');
+
+    return template.replace(new RegExp(tokenPattern, 'g'), token => valuesByToken.get(token) ?? token);
+  }
+
+  private escapeRegex(value: string): string {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   }
 }

@@ -20,20 +20,6 @@ class DataModelFieldDataTypeParameterServiceImpl : DataModelFieldDataTypeParamet
             return
         }
 
-        field.typeParameters.clear()
-
-        if (dataType.parameters.isEmpty()) {
-            return
-        }
-
-        field.typeParameters.addAll(buildFieldDataTypeParameters(field, dataType, requestedParameters))
-    }
-
-    private fun buildFieldDataTypeParameters(
-        field: DataModelField,
-        dataType: DataModelDataType,
-        requestedParameters: List<DataModelFieldDataTypeParameterInputDto>,
-    ): List<DataModelFieldDataTypeParameter> {
         val inputByName = normalizeByParameterName(requestedParameters)
         val availableParameters = dataType.parameters.associateBy { it.id.name.uppercase() }
         val unknownName = inputByName.keys.firstOrNull { it !in availableParameters }
@@ -42,8 +28,21 @@ class DataModelFieldDataTypeParameterServiceImpl : DataModelFieldDataTypeParamet
             throw FieldDataTypeParameterUnknownException(inputByName.getValue(unknownName).name)
         }
 
-        return dataType.parameters.map { parameter ->
+        field.typeParameters.removeIf { existing ->
+            existing.id.typeId != dataType.id || existing.id.name.uppercase() !in availableParameters
+        }
+
+        val existingByName = field.typeParameters.associateBy { it.id.name.uppercase() }
+        val missingParameters = dataType.parameters.mapNotNull { parameter ->
             val value = inputByName[parameter.id.name.uppercase()]?.value
+            val existingParameter = existingByName[parameter.id.name.uppercase()]
+
+            if (existingParameter != null) {
+                existingParameter.parameter = parameter
+                existingParameter.value = value
+                return@mapNotNull null
+            }
+
             DataModelFieldDataTypeParameter(
                 id = DataModelFieldDataTypeParameter.Id(
                     fieldId = field.id ?: 0,
@@ -55,6 +54,8 @@ class DataModelFieldDataTypeParameterServiceImpl : DataModelFieldDataTypeParamet
                 value = value,
             )
         }
+
+        field.typeParameters.addAll(missingParameters)
     }
 
     private fun normalizeByParameterName(
