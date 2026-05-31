@@ -1,18 +1,22 @@
-import { ChangeDetectionStrategy, Component, DestroyRef, computed, effect, inject, input, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  computed,
+  effect,
+  inject,
+  input,
+  signal,
+  untracked,
+} from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatError, MatFormField, MatLabel } from '@angular/material/form-field';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { MatInput } from '@angular/material/input';
 import { FormatGenericValidationErrorsPipe } from '../../../shared/pipes/format-generic-validation-errors.pipe';
-import { noStartEndWhitespaceValidator } from '../../../core/validators/no-start-end-whitespace.validator';
 import { LayoutHeaderAndContentComponent } from '../../../core/layouts/layout-header-and-content.component';
-import {
-  DataModelDataType,
-  DataModelDataTypeMapping,
-  DataModelDataTypeParameter,
-  DbSystem,
-} from '../../models/data-model-data-type.model';
+import { DataModelDataType, DataModelDataTypeMapping } from '../../models/data-model-data-type.model';
 import { Router } from '@angular/router';
 import { AlertComponent } from '../../../shared/components/alert/alert.component';
 import { DialogService } from '../../../core/dialog.service';
@@ -20,17 +24,15 @@ import { DataModelStore } from '../../data-model.store';
 import { DataModelContextState } from '../../data-model-context.state';
 import { filter, finalize, switchMap, tap, map, startWith } from 'rxjs';
 import { SectionHeaderComponent } from '../../../shared/components/section-header/section-header.component';
-import {
-  SaveDeleteControlComponent
-} from '../../../shared/components/save-delete-control/save-delete-control.component';
+import { SaveDeleteControlComponent } from '../../../shared/components/save-delete-control/save-delete-control.component';
 import { MatAutocomplete, MatOption, MatAutocompleteTrigger, MatOptgroup } from '@angular/material/autocomplete';
-import { DatabaseTypeService } from '../../services/database-type.service';
+import { DataModelPhysicalDataTypeService } from '../../services/data-model-physical-data-type.service';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { MatChipsModule } from '@angular/material/chips';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatChipEditedEvent, MatChipInputEvent } from '@angular/material/chips';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { StringListFieldComponent } from '../../../shared/components/string-list-field/string-list-field.component';
+import {
+  dataModelDataTypeNameValidators,
+  dataModelDataTypeParameterValidators,
+} from '../../validators/data-model-name.validators';
 
 @Component({
   selector: 'app-data-model-data-type',
@@ -52,9 +54,7 @@ import { COMMA, ENTER } from '@angular/cdk/keycodes';
     MatOption,
     MatOptgroup,
     MatAutocompleteTrigger,
-    MatChipsModule,
-    MatIconModule,
-    MatButtonModule,
+    StringListFieldComponent,
   ],
 })
 export class DataModelDataTypeComponent {
@@ -69,41 +69,29 @@ export class DataModelDataTypeComponent {
   private dialogService = inject(DialogService);
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
-  private databaseTypeService = inject(DatabaseTypeService);
-  private contextState = inject(DataModelContextState);
-
-  parameters = signal<DataModelDataTypeParameter[]>([]);
-  mappings = signal<DataModelDataTypeMapping[]>([]);
-  readonly separatorKeysCodes = [ENTER, COMMA] as const;
-  readonly addOnBlur = true;
+  private physicalDataTypeService = inject(DataModelPhysicalDataTypeService);
+  contextState = inject(DataModelContextState);
 
   propertiesForm = this.fb.nonNullable.group({
-    name: this.fb.nonNullable.control('', [Validators.required, noStartEndWhitespaceValidator, Validators.maxLength(40)]),
-    dbSystem: this.fb.nonNullable.control<DbSystem | ''>(''),
-    physicalDataType: this.fb.nonNullable.control(''),
-    checkConstraint: this.fb.nonNullable.control(''),
+    name: this.fb.nonNullable.control('', []),
+    parameters: this.fb.nonNullable.control<string[]>([], dataModelDataTypeParameterValidators()),
+    physicalDataType: this.fb.nonNullable.control('', [Validators.maxLength(38)]),
+    checkConstraint: this.fb.control(''),
   });
 
-  contextDbSystem = computed<DbSystem | ''>(() => (this.contextState.layer() === 'physical' ? 'oracle' : ''));
-
-  selectedMapping = computed(() => {
-    const dbSystem = this.contextDbSystem();
-
-    if (!dbSystem) {
-      return null;
-    }
-
-    return this.mappings().find(mapping => mapping.dbSystem === dbSystem) ?? null;
+  currentMappings = computed(() => {
+    const dbSystem = this.contextState.dbSystem();
+    return dbSystem ? (this.dataType()?.mappings.find(mapping => mapping.dbSystem === dbSystem) ?? null) : null;
   });
 
   filteredPhysicalDataTypes = toSignal(
     this.propertiesForm.valueChanges.pipe(
-      map(() => ({ dbSystem: this.dbSystemControl.value, searchTerm: this.physicalDataTypeControl.value })),
+      map(() => ({ dbSystem: this.contextState.dbSystem(), searchTerm: this.physicalDataTypeControl.value })),
       map(({ dbSystem, searchTerm }) => {
-        if (!dbSystem || (typeof dbSystem === 'string' && dbSystem.length === 0)) {
+        if (!dbSystem) {
           return [];
         }
-        return this.databaseTypeService.filterCategorizedPhysicalDataTypes(dbSystem as DbSystem, searchTerm ?? '');
+        return this.physicalDataTypeService.filterCategorizedPhysicalDataTypes(dbSystem, searchTerm ?? '');
       }),
       startWith([]),
     ),
@@ -117,81 +105,40 @@ export class DataModelDataTypeComponent {
 
   constructor() {
     effect(() => {
-      const dbSystem = this.contextDbSystem();
+      const dataType = this.dataType();
+      const existingNames = this.store
+        .dataTypes()
+        .filter(existingType => existingType.typeId !== dataType?.typeId)
+        .map(existingType => existingType.name);
 
-      if (this.dbSystemControl.value !== dbSystem) {
-        this.dbSystemControl.setValue(dbSystem);
-      }
+      this.nameControl.setValidators(dataModelDataTypeNameValidators(existingNames));
+      this.nameControl.updateValueAndValidity({ emitEvent: false });
     });
 
     effect(() => {
       const dataType = this.dataType();
 
-      if (dataType !== null) {
-        this.parameters.set((dataType.parameters ?? []).map(parameter => ({ name: parameter.name })));
-        this.mappings.set((dataType.mappings ?? []).map(mapping => ({ ...mapping })));
-
-        this.propertiesForm.reset({
-          name: dataType.name,
-          dbSystem: this.contextDbSystem(),
-          physicalDataType: '',
-          checkConstraint: '',
-        });
-
+      if (dataType === null) {
+        if (!this.loading()) {
+          void this.redirectToModel();
+        }
         return;
       }
 
-      if (!this.loading()) {
-        this.redirectToModel();
-      }
+      this.propertiesForm.reset({
+        name: dataType.name,
+        parameters: dataType.parameters.map(parameter => parameter.name),
+        ...untracked(() => this.currentMappings()),
+      });
     });
 
     effect(() => {
-      if (!this.contextDbSystem()) {
-        return;
+      const mapping = this.currentMappings();
+
+      if (mapping !== null) {
+        this.propertiesForm.patchValue(mapping, { emitEvent: false });
       }
-
-      const mapping = this.selectedMapping();
-
-      this.propertiesForm.patchValue(
-        {
-          physicalDataType: mapping?.physicalDataType ?? '',
-          checkConstraint: mapping?.checkConstraint ?? '',
-        },
-        { emitEvent: false },
-      );
     });
-  }
-
-  addParameterFromChipInput(event: MatChipInputEvent): void {
-    const value = (event.value ?? '').trim();
-
-    if (!value || this.parameters().some(parameter => parameter.name === value)) {
-      event.chipInput?.clear();
-      return;
-    }
-
-    this.parameters.update(params => [...params, { name: value }]);
-    event.chipInput?.clear();
-  }
-
-  editParameter(index: number, event: MatChipEditedEvent): void {
-    const value = event.value.trim();
-
-    if (!value) {
-      this.removeParameter(index);
-      return;
-    }
-
-    if (this.parameters().some((parameter, i) => i !== index && parameter.name === value)) {
-      return;
-    }
-
-    this.parameters.update(params => params.map((parameter, i) => (i === index ? { name: value } : parameter)));
-  }
-
-  removeParameter(index: number): void {
-    this.parameters.update(params => params.filter((_, i) => i !== index));
   }
 
   updateDataType(): void {
@@ -206,26 +153,19 @@ export class DataModelDataTypeComponent {
       return;
     }
 
-    this.syncCurrentMappingFromForm();
-
-    const { name } = this.propertiesForm.getRawValue();
+    const { name, parameters } = this.propertiesForm.getRawValue();
+    const updatedDataType: DataModelDataType = {
+      typeId,
+      name,
+      parameters: parameters.map(parameter => ({ name: parameter })),
+      mappings: this.applyCurrentFormStateToMappings(),
+    };
 
     this.updateLoading.set(true);
     this.error.set(null);
 
-    const mappings = this.contextDbSystem()
-      ? this.mappings().filter(mapping => mapping.physicalDataType)
-      : this.dataType()?.mappings ?? [];
-
-    const updatePayload = {
-      typeId,
-      name,
-      parameters: this.parameters(),
-      mappings,
-    } as DataModelDataType;
-
     this.store
-      .updateDataType(updatePayload)
+      .updateDataType(updatedDataType)
       .pipe(
         finalize(() => this.updateLoading.set(false)),
         takeUntilDestroyed(this.destroyRef),
@@ -271,37 +211,39 @@ export class DataModelDataTypeComponent {
     return this.propertiesForm.controls.name;
   }
 
-  get dbSystemControl() {
-    return this.propertiesForm.controls.dbSystem;
+  get parametersControl() {
+    return this.propertiesForm.controls.parameters;
   }
 
   get physicalDataTypeControl() {
     return this.propertiesForm.controls.physicalDataType;
   }
 
-  private syncCurrentMappingFromForm(): void {
-    const dbSystem = this.contextDbSystem();
+  private applyCurrentFormStateToMappings(): DataModelDataTypeMapping[] {
+    const currentMappings = this.dataType()?.mappings ?? [];
+    const dbSystem = this.contextState.dbSystem();
 
-    if (!dbSystem) {
-      return;
+    if (dbSystem == null) {
+      return this.dataType()?.mappings ?? [];
     }
 
     const { physicalDataType, checkConstraint } = this.propertiesForm.getRawValue();
-    const nextMapping: DataModelDataTypeMapping = {
+    const normalizedPhysicalDataType = physicalDataType.trim();
+
+    if (normalizedPhysicalDataType.length === 0) {
+      return currentMappings.filter(mapping => mapping.dbSystem !== dbSystem);
+    }
+
+    const updatedMapping: DataModelDataTypeMapping = {
       dbSystem,
-      physicalDataType: physicalDataType.length > 0 ? physicalDataType : undefined,
-      checkConstraint: checkConstraint.length > 0 ? checkConstraint : undefined,
+      physicalDataType: normalizedPhysicalDataType,
+      checkConstraint: (checkConstraint?.length ?? 0) > 0 ? checkConstraint : null,
     };
+    const existingIndex = currentMappings.findIndex(mapping => mapping.dbSystem === dbSystem);
 
-    this.mappings.update(mappings => {
-      const index = mappings.findIndex(mapping => mapping.dbSystem === dbSystem);
-
-      if (index < 0) {
-        return [...mappings, nextMapping];
-      }
-
-      return mappings.map((mapping, i) => (i === index ? nextMapping : mapping));
-    });
+    return existingIndex !== -1
+      ? currentMappings.map((m, i) => (i === existingIndex ? updatedMapping : m))
+      : [...currentMappings, updatedMapping];
   }
 
   private async redirectToModel(): Promise<void> {

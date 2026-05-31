@@ -1,6 +1,6 @@
 import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogActions, MatDialogContent, MatDialogRef, MatDialogTitle } from '@angular/material/dialog';
-import { FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { FormBuilder, FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButton } from '@angular/material/button';
 import { MatCheckbox } from '@angular/material/checkbox';
 import { MatError, MatFormField, MatInput, MatLabel } from '@angular/material/input';
@@ -12,13 +12,17 @@ import { DataModelField } from '../../models/data-model-node.model';
 import { TranslatePipe } from '../../../core/translate/translate.pipe';
 import { dataModelFieldNameValidators } from '../../validators/data-model-name.validators';
 import { DataModelContextState } from '../../data-model-context.state';
-import { TranslateService } from '../../../core/translate/translate.service';
 
 export interface DataModelNodeFieldFormDialogData {
   field: DataModelField | null;
   dataTypes: DataModelDataType[];
   existingFieldNames: string[];
 }
+
+type DataTypeParameterFormGroup = FormGroup<{
+  name: FormControl<string>;
+  value: FormControl<string>;
+}>;
 
 @Component({
   selector: 'app-data-model-node-field-form-dialog',
@@ -46,7 +50,6 @@ export class DataModelNodeFieldFormDialogComponent {
 
   private fb = inject(FormBuilder);
   private contextState = inject(DataModelContextState);
-  private translateService = inject(TranslateService);
 
   form = this.fb.nonNullable.group({
     name: this.fb.nonNullable.control(this.data.field?.name ?? '', dataModelFieldNameValidators(this.data.existingFieldNames)),
@@ -56,8 +59,10 @@ export class DataModelNodeFieldFormDialogComponent {
       value: this.data.field?.isNullable ?? true,
       disabled: this.data.field?.isPrimaryKey ?? false,
     }),
-    dataTypeParameters: this.fb.array([]),
+    typeParameters: this.fb.array<DataTypeParameterFormGroup>([]),
   });
+
+  isPhysicalContext = this.contextState.layer() === 'physical';
 
   constructor() {
     const { isPrimaryKey, isNullable, typeName } = this.form.controls;
@@ -71,39 +76,11 @@ export class DataModelNodeFieldFormDialogComponent {
       }
     });
 
-    this.syncParameterControls();
-
-    typeName.valueChanges.pipe(takeUntilDestroyed()).subscribe(() => this.syncParameterControls());
-  }
-
-  get dataTypeParametersArray(): FormArray {
-    return this.form.controls.dataTypeParameters as FormArray;
-  }
-
-  get dataTypeParameterGroups(): FormGroup[] {
-    return this.dataTypeParametersArray.controls as FormGroup[];
-  }
-
-  get isPhysicalContext(): boolean {
-    return this.contextState.layer() === 'physical';
-  }
-
-  get physicalMappingValue(): string {
-    if (!this.isPhysicalContext) {
-      return '';
-    }
-
-    const type = this.getTypeByName(this.form.controls.typeName.value);
-    const dbSystem = this.contextState.context();
-
-    if (!type || dbSystem === 'unknown') {
-      return this.translateService.translate('DATA_MODEL.DATA_TYPE.NO_MAPPING_LABEL')();
-    }
-
-    return (
-      type.mappings?.find(mapping => mapping.dbSystem === dbSystem)?.physicalDataType ??
-        this.translateService.translate('DATA_MODEL.DATA_TYPE.NO_MAPPING_LABEL')()
-    );
+    this.resetParameterControls(this.getSelectedType());
+    typeName.valueChanges.pipe(takeUntilDestroyed()).subscribe(typeNameValue => {
+      const selectedType = this.data.dataTypes.find(type => type.name === typeNameValue) ?? null;
+      this.resetParameterControls(selectedType);
+    });
   }
 
   confirm(): void {
@@ -112,14 +89,12 @@ export class DataModelNodeFieldFormDialogComponent {
       return;
     }
 
-    const { name, typeName, isPrimaryKey, isNullable } = this.form.getRawValue();
-    const type = this.getTypeByName(typeName);
+    const { name, isPrimaryKey, isNullable } = this.form.getRawValue();
+    const type = this.getSelectedType();
 
-    if (!type || type.typeId === null) {
+    if (type === null || type.typeId === null) {
       return;
     }
-
-    const dataTypeParameters = this.getParameterValues(type);
 
     this.matDialogRef.close({
       ...this.data.field,
@@ -127,57 +102,50 @@ export class DataModelNodeFieldFormDialogComponent {
       typeId: type.typeId,
       isPrimaryKey,
       isNullable: isPrimaryKey ? false : isNullable,
-      dataTypeParameters,
+      typeParameters: this.form.controls.typeParameters.controls.map(control => ({
+        name: control.controls.name.value,
+        value: control.controls.value.value,
+      })),
     });
   }
 
   cancel(): void {
-    this.matDialogRef.close(undefined);
+    this.matDialogRef.close();
   }
 
   private getInitialTypeName(): string {
-    const initial = this.data.dataTypes.find(type => type.typeId === this.data.field?.typeId)?.name;
-    return initial ?? '';
+    return this.data.dataTypes.find(type => type.typeId === this.data.field?.typeId)?.name ?? '';
   }
 
-  private getTypeByName(name: string): DataModelDataType | undefined {
-    return this.data.dataTypes.find(type => type.name === name);
+  private getSelectedType(): DataModelDataType | null {
+    return this.data.dataTypes.find(type => type.name === this.form.controls.typeName.value) ?? null;
   }
 
-  private syncParameterControls(): void {
-    this.resetParameterControls(this.getTypeByName(this.form.controls.typeName.value));
+  getPhysicalMappingValue(): string | null {
+    const dbSystem = this.contextState.dbSystem();
+    const selectedType = this.getSelectedType();
+
+    return selectedType
+      ? selectedType.mappings.find(mapping => mapping.dbSystem === dbSystem)?.physicalDataType ?? null
+      : null;
   }
 
-  private resetParameterControls(type: DataModelDataType | undefined): void {
+  private resetParameterControls(type: DataModelDataType | null): void {
     const parameters = type?.parameters ?? [];
     const shouldReuseValues = type?.typeId === this.data.field?.typeId;
-    const existingValues = new Map(
-      shouldReuseValues
-        ? (this.data.field?.dataTypeParameters ?? []).map(parameter => [parameter.name, parameter.value ?? null])
-        : [],
-    );
+    const existingValues = shouldReuseValues
+      ? new Map((this.data.field?.typeParameters ?? []).map(parameter => [parameter.name, parameter.value ?? '']))
+      : new Map<string, string>();
 
     const controls = parameters.map(parameter =>
       this.fb.group({
         name: this.fb.nonNullable.control(parameter.name),
-        value: this.fb.control<number | null>(existingValues.get(parameter.name) ?? null),
+        value: this.fb.nonNullable.control(existingValues.get(parameter.name) ?? '', Validators.required),
       }),
     );
 
-    const array = this.form.controls.dataTypeParameters as FormArray;
+    const array = this.form.controls.typeParameters;
     array.clear();
     controls.forEach(control => array.push(control));
   }
-
-  private getParameterValues(type: DataModelDataType): { name: string; value: number | null }[] | null {
-    if (!type.parameters?.length) {
-      return null;
-    }
-
-    return this.dataTypeParametersArray.controls.map(control => ({
-      name: control.get('name')?.value as string,
-      value: control.get('value')?.value ?? null,
-    }));
-  }
 }
-

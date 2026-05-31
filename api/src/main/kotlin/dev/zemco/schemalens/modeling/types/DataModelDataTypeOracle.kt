@@ -29,4 +29,3 @@ class DataModelDataTypeOracle(
     @Column(name = "check_constraint")
     var checkConstraint: String? = null,
 )
-

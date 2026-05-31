@@ -11,7 +11,7 @@ import { DataModelStore } from '../../data-model.store';
 import { DataModelDialogService } from '../../services/data-model-dialog.service';
 import { ObjectSelectorComponent, ObjectSelectorEntry } from '../../../shared/components/object-selector/object-selector.component';
 import { DataModelContextSwitcherComponent } from '../data-model-context-switcher/data-model-context-switcher.component';
-import { DataModelContextState } from '../../data-model-context.state';
+import { DataModelContextState, DataModelingDbSystem } from '../../data-model-context.state';
 import { DataModelDataType } from '../../models/data-model-data-type.model';
 import { mapContextToDataModelDiagramType } from '../../models/data-model-diagram.model';
 
@@ -46,7 +46,7 @@ export class DataModelNavComponent {
   private dataTypeEntries$ = toObservable(computed(() =>
     this.store.dataTypes().map(dataType => ({
       id: dataType.typeId,
-      label: this.dataTypeLabel(dataType),
+      label: this.dataTypeLabel(dataType, this.contextState.dbSystem()),
       routerLink: [
         '/model',
         this.dataModelId(),
@@ -154,7 +154,7 @@ export class DataModelNavComponent {
             return of(null);
           }
           this.dataTypeCreating.set(true);
-          return this.store.createDataType({ name, typeId: null }).pipe(
+          return this.store.createDataType({ name, typeId: null, parameters: [], mappings: [] }).pipe(
             finalize(() => this.dataTypeCreating.set(false)),
           );
         }),
@@ -167,12 +167,14 @@ export class DataModelNavComponent {
       .subscribe();
   }
 
-  private dataTypeLabel(dataType: DataModelDataType): string {
-    if (this.contextState.layer() !== 'physical') {
+  private dataTypeLabel(dataType: DataModelDataType, dbSystem: DataModelingDbSystem | null): string {
+    if (this.contextState.layer() === null) {
       return dataType.name;
     }
 
-    const physicalDataType = dataType.mappings?.find(mapping => mapping.dbSystem === 'oracle')?.physicalDataType;
+    const physicalDataType = dbSystem
+      ? dataType.mappings.find(mapping => mapping.dbSystem === dbSystem)?.physicalDataType
+      : null;
 
     if (!physicalDataType) {
       return dataType.name;

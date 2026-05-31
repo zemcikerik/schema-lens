@@ -8,3 +8,9 @@ class NodeExistsException(name: String) :
 
 class FieldNameNotUniqueException(name: String) :
     RuntimeException("Field with name '$name' already exists on this node!")
+
+class FieldDataTypeParameterExistsException(name: String) :
+    RuntimeException("Data type parameter with name '$name' was specified multiple times!")
+
+class FieldDataTypeParameterUnknownException(name: String) :
+    RuntimeException("Data type parameter with name '$name' does not exist on the selected data type!")

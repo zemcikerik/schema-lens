@@ -12,7 +12,7 @@ import jakarta.persistence.ManyToOne
 import jakarta.persistence.MapsId
 
 @Entity
-class DataModelDataTypeParField(
+class DataModelFieldDataTypeParameter(
     @EmbeddedId
     var id: Id,
 
@@ -43,4 +43,3 @@ class DataModelDataTypeParField(
         var name: String = "",
     )
 }
-

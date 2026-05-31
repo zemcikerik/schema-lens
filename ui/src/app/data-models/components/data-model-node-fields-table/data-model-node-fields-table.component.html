@@ -33,7 +33,8 @@
     <mat-header-cell *matHeaderCellDef>{{ ('DATA_MODEL.NODE.FIELD_PROPERTIES.DATA_TYPE' | translate)() }}</mat-header-cell>
     <mat-cell *matCellDef="let row">
       @let typeId = row.source === 'direct' ? row.field.typeId : row.referencedField.typeId;
-      <span class="text-code">{{ typeId | dataModelDataType: dataTypes() }}</span>
+      @let parameters = row.source === 'direct' ? row.field.typeParameters : row.referencedField.typeParameters;
+      <span class="text-code">{{ (typeId | dataModelDataType: { types: dataTypes(), parameters })() }}</span>
     </mat-cell>
   </ng-container>
 

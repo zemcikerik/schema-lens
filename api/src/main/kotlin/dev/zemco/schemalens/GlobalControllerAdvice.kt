@@ -4,10 +4,14 @@ import dev.zemco.schemalens.auth.ResourceAccessDeniedException
 import dev.zemco.schemalens.backup.BackupAlreadyRunningException
 import dev.zemco.schemalens.modeling.edges.DataModelEdgeDuplicateIdentifyingException
 import dev.zemco.schemalens.modeling.edges.DataModelEdgeIdentifyingCycleException
+import dev.zemco.schemalens.modeling.nodes.FieldDataTypeParameterExistsException
+import dev.zemco.schemalens.modeling.nodes.FieldDataTypeParameterUnknownException
 import dev.zemco.schemalens.modeling.nodes.FieldNameNotUniqueException
 import dev.zemco.schemalens.modeling.nodes.NodeExistsException
 import dev.zemco.schemalens.modeling.types.DataTypeExistsException
 import dev.zemco.schemalens.modeling.types.DataTypeInUseException
+import dev.zemco.schemalens.modeling.types.DataTypeMappingExistsException
+import dev.zemco.schemalens.modeling.types.DataTypeParameterExistsException
 import dev.zemco.schemalens.projects.ProjectConnectionException
 import dev.zemco.schemalens.projects.ProjectConnectionFailureDto
 import org.springframework.http.HttpStatus
@@ -30,8 +34,12 @@ class GlobalControllerAdvice {
     @ExceptionHandler(
         DataTypeInUseException::class,
         DataTypeExistsException::class,
+        DataTypeParameterExistsException::class,
+        DataTypeMappingExistsException::class,
         NodeExistsException::class,
         FieldNameNotUniqueException::class,
+        FieldDataTypeParameterExistsException::class,
+        FieldDataTypeParameterUnknownException::class,
         DataModelEdgeDuplicateIdentifyingException::class,
         DataModelEdgeIdentifyingCycleException::class,
         BackupAlreadyRunningException::class,

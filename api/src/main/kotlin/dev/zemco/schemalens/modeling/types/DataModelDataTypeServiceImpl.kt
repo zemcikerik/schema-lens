@@ -1,7 +1,6 @@
 package dev.zemco.schemalens.modeling.types
 
 import dev.zemco.schemalens.modeling.models.DataModel
-
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -24,10 +23,10 @@ class DataModelDataTypeServiceImpl(
         val dataType = DataModelDataType(
             modelId = modelId,
             model = model,
-            name = normalizedName
+            name = normalizedName,
         )
 
-        return DataModelDataTypeDto.from(dataTypeRepository.save(dataType))
+        return dataTypeRepository.save(dataType).syncAndMap(dto)
     }
 
     @Transactional
@@ -41,11 +40,8 @@ class DataModelDataTypeServiceImpl(
         }
 
         dataType.name = normalizedName
-        val saved = dataTypeRepository.save(dataType)
-        parameterService.syncParameters(saved, dto.parameters)
-        oracleService.syncOracle(saved, dto.mappings)
 
-        return DataModelDataTypeDto.from(saved)
+        return dataTypeRepository.save(dataType).syncAndMap(dto)
     }
 
     @Transactional
@@ -57,5 +53,12 @@ class DataModelDataTypeServiceImpl(
         }
 
         dataTypeRepository.delete(dataType)
+    }
+
+    private fun DataModelDataType.syncAndMap(dto: DataModelDataTypeInputDto): DataModelDataTypeDto {
+        parameterService.syncParameters(this, dto.parameters)
+        oracleService.syncOracle(this, dto.mappings)
+
+        return DataModelDataTypeDto.from(this)
     }
 }

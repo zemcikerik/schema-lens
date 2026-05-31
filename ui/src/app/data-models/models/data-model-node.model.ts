@@ -14,7 +14,12 @@ export interface DataModelField {
   isPrimaryKey: boolean;
   isNullable: boolean;
   position: number;
-  dataTypeParameters?: { name: string; value: number | null }[] | null;
+  typeParameters: DataModelFieldDataTypeParameter[];
+}
+
+export interface DataModelFieldDataTypeParameter {
+  name: string;
+  value: string | null;
 }
 
 export interface DataModelFieldReorderRequest {

@@ -6,7 +6,6 @@ import dev.zemco.schemalens.modeling.models.DataModelCascadeService
 import dev.zemco.schemalens.modeling.models.DataModelEdgeCascadeMutationService
 import dev.zemco.schemalens.modeling.models.DataModelModificationDto
 import dev.zemco.schemalens.modeling.types.DataModelDataType
-import dev.zemco.schemalens.modeling.types.DataModelDataTypeParField
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
 
@@ -16,6 +15,7 @@ class DataModelNodeServiceImpl(
     private val cascadeService: DataModelCascadeService,
     private val edgeCascadeMutationService: DataModelEdgeCascadeMutationService,
     private val edgeWriteService: DataModelEdgeWriteService,
+    private val fieldDataTypeParameterService: DataModelFieldDataTypeParameterService,
 ) : DataModelNodeService {
 
     private enum class PrimaryKeyChange { NONE, TYPE_ONLY, STRUCTURAL }
@@ -42,7 +42,7 @@ class DataModelNodeServiceImpl(
         )
 
         node.fields = dto.fields.asSequence()
-            .map { fieldInput -> fieldInput.toEntity(model, node) }
+            .map { it.toEntityWithParameters(model, node) }
             .toMutableSet()
 
         return DataModelNodeDto.from(nodeRepository.save(node))
@@ -66,7 +66,7 @@ class DataModelNodeServiceImpl(
         validateFieldNameUniqueness(dto.fields.map { it.name } + edgeFieldNames)
 
         node.name = normalizedName
-        val primaryKeyChange = detectPrimaryKeyChange(node.fields, dto.fields)
+        val primaryKeyChange = detectPrimaryKeyChange(model, node.fields, dto.fields)
 
         val (toUpdate, toInsert) = dto.fields.partition { it.fieldId != null }
         val updateById = toUpdate.associateBy { it.fieldId!! }
@@ -76,7 +76,7 @@ class DataModelNodeServiceImpl(
 
             if (input != null) {
                 val dataType = model.findDataType(input.typeId)
-                val typeChanged = existingField.typeId != dataType.id
+                val typeChanged = existingField.typeId != input.typeId
 
                 existingField.apply {
                     name = input.name.trim()
@@ -87,14 +87,16 @@ class DataModelNodeServiceImpl(
                     position = input.position
                 }
 
-                syncFieldDataTypeParameters(existingField, dataType, input.dataTypeParameters, typeChanged)
+                fieldDataTypeParameterService.syncParameters(
+                    existingField, dataType, input.typeParameters, clearWhenAbsent = typeChanged,
+                )
             }
         }
 
         node.fields.removeAll { it.id !in updateById }
 
         node.fields.addAll(
-            toInsert.map { fieldInput -> fieldInput.toEntity(model, node) }
+            toInsert.map { it.toEntityWithParameters(model, node) }
         )
 
         val savedNode = nodeRepository.save(node)
@@ -179,6 +181,7 @@ class DataModelNodeServiceImpl(
     }
 
     private fun detectPrimaryKeyChange(
+        model: DataModel,
         existingFields: Collection<DataModelField>,
         requestedFields: Collection<DataModelFieldInputDto>,
     ): PrimaryKeyChange {
@@ -208,10 +211,30 @@ class DataModelNodeServiceImpl(
 
             if (existingField.isPrimaryKey && requestedField.typeId != existingField.typeId) {
                 typeOnlyChange = true
+            } else if (existingField.isPrimaryKey) {
+                val requestedDataType = model.findDataType(requestedField.typeId)
+                if (hasRequestedTypeParameterChange(existingField, requestedField, requestedDataType)) {
+                    typeOnlyChange = true
+                }
             }
         }
 
         return if (typeOnlyChange) PrimaryKeyChange.TYPE_ONLY else PrimaryKeyChange.NONE
+    }
+
+    private fun hasRequestedTypeParameterChange(
+        existingField: DataModelField,
+        requestedField: DataModelFieldInputDto,
+        requestedDataType: DataModelDataType,
+    ): Boolean {
+        val requestedParameters = requestedField.typeParameters ?: return false
+        val existingValuesByName = existingField.typeParameters.associate { it.id.name.uppercase() to it.value }
+        val requestedValuesByName = requestedParameters.associate { it.name.trim().uppercase() to it.value }
+
+        return requestedDataType.parameters.any { parameter ->
+            val key = parameter.id.name.uppercase()
+            existingValuesByName[key] != requestedValuesByName[key]
+        }
     }
 
     private fun validateFieldNameUniqueness(fieldNames: List<String>) {
@@ -232,7 +255,7 @@ class DataModelNodeServiceImpl(
             throw IllegalArgumentException("Primary key field cannot be nullable")
         }
 
-        val field = DataModelField(
+        return DataModelField(
             nodeId = node.id ?: 0,
             node = node,
             name = name.trim(),
@@ -242,73 +265,12 @@ class DataModelNodeServiceImpl(
             isNullable = isNullable,
             position = position,
         )
-
-        syncFieldDataTypeParameters(field, dataType, dataTypeParameters, typeChanged = true)
-
-        return field
     }
 
-    private fun syncFieldDataTypeParameters(
-        field: DataModelField,
-        dataType: DataModelDataType,
-        requestedParameters: List<DataModelFieldTypeParameterInputDto>?,
-        typeChanged: Boolean,
-    ) {
-        if (requestedParameters == null) {
-            if (typeChanged) {
-                field.dataTypeParameters.clear()
-            }
-            return
+    private fun DataModelFieldInputDto.toEntityWithParameters(model: DataModel, node: DataModelNode): DataModelField =
+        toEntity(model, node).also {
+            fieldDataTypeParameterService.syncParameters(
+                it, it.type, typeParameters, clearWhenAbsent = true,
+            )
         }
-
-        if (dataType.parameters.isEmpty()) {
-            field.dataTypeParameters.clear()
-            return
-        }
-
-        field.dataTypeParameters.clear()
-        field.dataTypeParameters.addAll(buildFieldDataTypeParameters(field, dataType, requestedParameters))
-    }
-
-    private fun buildFieldDataTypeParameters(
-        field: DataModelField,
-        dataType: DataModelDataType,
-        requestedParameters: List<DataModelFieldTypeParameterInputDto>,
-    ): MutableSet<DataModelDataTypeParField> {
-        val normalizedNames = mutableSetOf<String>()
-        val inputByName = linkedMapOf<String, DataModelFieldTypeParameterInputDto>()
-
-        for (input in requestedParameters) {
-            val normalizedName = input.name.trim()
-            val normalizedKey = normalizedName.uppercase()
-
-            if (!normalizedNames.add(normalizedKey)) {
-                throw IllegalArgumentException("Data type parameter '${normalizedName}' specified multiple times")
-            }
-
-            inputByName[normalizedKey] = input.copy(name = normalizedName)
-        }
-
-        val availableParameters = dataType.parameters.associateBy { it.id.name.uppercase() }
-        val unknownNames = inputByName.keys.filter { it !in availableParameters }
-        if (unknownNames.isNotEmpty()) {
-            throw IllegalArgumentException("Unknown data type parameter '${unknownNames.first()}'")
-        }
-
-        return dataType.parameters
-            .map { parameter ->
-                val value = inputByName[parameter.id.name.uppercase()]?.value
-                DataModelDataTypeParField(
-                    id = DataModelDataTypeParField.Id(
-                        fieldId = field.id ?: 0,
-                        typeId = dataType.id!!,
-                        name = parameter.id.name,
-                    ),
-                    field = field,
-                    parameter = parameter,
-                    value = value,
-                )
-            }
-            .toMutableSet()
-    }
 }

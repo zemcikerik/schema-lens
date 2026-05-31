@@ -1,51 +1,35 @@
 @use '../utilities/breakpoints' as breakpoints;
 
 .data-model-data-type {
-  &__top-fields-row {
-    display: flex;
-    gap: 1rem;
+  &__field {
     width: 100%;
-    align-items: flex-start;
-
-    .data-model-data-type__form-field {
-      &:nth-child(1) {
-        flex: 2;
-      }
-
-      &:nth-child(2) {
-        flex: 1;
-      }
-    }
   }
 
-  &__form-fields-row {
+  &__mapping-row {
     display: flex;
     align-items: flex-start;
     gap: 1rem;
     width: 100%;
-    margin-top: .5rem;
   }
 
-  &__form-field {
-    &:nth-child(1) {
+  &__mapping-field {
+    &:first-child {
       flex: 1;
     }
 
-    &:nth-child(2) {
+    &:last-child {
       flex: 2;
     }
   }
 
   @include breakpoints.breakpoint-down(md) {
-    &__top-fields-row,
-    &__form-fields-row {
+    &__mapping-row {
       flex-direction: column;
       gap: 0;
     }
 
-    &__form-field {
+    &__mapping-field {
       width: 100%;
-      flex: none;
 
       &:nth-child(1),
       &:nth-child(2) {

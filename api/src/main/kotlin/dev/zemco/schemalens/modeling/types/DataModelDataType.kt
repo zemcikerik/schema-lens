@@ -1,8 +1,8 @@
 package dev.zemco.schemalens.modeling.types
 
 import dev.zemco.schemalens.modeling.models.DataModel
-import jakarta.persistence.Column
 import jakarta.persistence.CascadeType
+import jakarta.persistence.Column
 import jakarta.persistence.Entity
 import jakarta.persistence.FetchType
 import jakarta.persistence.GeneratedValue
