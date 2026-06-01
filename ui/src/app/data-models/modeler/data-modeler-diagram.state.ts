@@ -225,10 +225,6 @@ export class DataModelerDiagramState {
   private resolveAndMapNode(node: DataModelNode): SchemaDiagramNode {
     const resolved = this.fieldResolver.resolveFields(node.nodeId as number)();
 
-    const fieldTypeById = new Map<number, number>(
-      this.store.nodes().flatMap(n => n.fields.map(f => [f.fieldId as number, f.typeId])),
-    );
-
     const fields: DataModelField[] = resolved.map(r => {
       if (r.source === 'direct') {
         return r.field;
@@ -237,11 +233,11 @@ export class DataModelerDiagramState {
       return {
         fieldId: null,
         name: r.field.name,
-        typeId: fieldTypeById.get(r.field.referencedFieldId) ?? 0,
+        typeId: r.referencedField.typeId,
         isPrimaryKey: r.edge.isIdentifying,
         isNullable: !r.edge.isMandatory,
         position: r.position,
-        typeParameters: [],
+        typeParameters: r.referencedField.typeParameters,
       };
     });
 

@@ -10,6 +10,8 @@ import jakarta.persistence.JoinColumn
 import jakarta.persistence.JoinColumns
 import jakarta.persistence.ManyToOne
 import jakarta.persistence.MapsId
+import org.hibernate.annotations.OnDelete
+import org.hibernate.annotations.OnDeleteAction
 
 @Entity
 class DataModelFieldDataTypeParameter(
@@ -26,6 +28,7 @@ class DataModelFieldDataTypeParameter(
         JoinColumn(name = "type_id", referencedColumnName = "type_id", nullable = false, insertable = false, updatable = false),
         JoinColumn(name = "name", referencedColumnName = "name", nullable = false, insertable = false, updatable = false),
     )
+    @OnDelete(action = OnDeleteAction.CASCADE)
     var parameter: DataModelDataTypeParameter,
 
     @Column(name = "value")
