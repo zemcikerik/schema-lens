@@ -1,9 +1,9 @@
 plugins {
-    kotlin("jvm") version "2.3.21"
-    kotlin("plugin.spring") version "2.3.21"
-    kotlin("plugin.jpa") version "2.3.21"
-    kotlin("plugin.allopen") version "2.3.21"
-    id("org.springframework.boot") version "4.0.6"
+    kotlin("jvm") version "2.4.21"
+    kotlin("plugin.spring") version "2.4.21"
+    kotlin("plugin.jpa") version "2.4.21"
+    kotlin("plugin.allopen") version "2.4.21"
+    id("org.springframework.boot") version "4.1.1"
     id("io.spring.dependency-management") version "1.1.7"
 }
 
@@ -40,7 +40,7 @@ dependencies {
     implementation("io.jsonwebtoken:jjwt-api:0.13.0")
     runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.13.0") // this includes jackson2 dependency, replace it when jackson3 support is released
     runtimeOnly("io.jsonwebtoken:jjwt-impl:0.13.0")
-    implementation("commons-validator:commons-validator:1.10.1") {
+    implementation("commons-validator:commons-validator:1.11.0") {
         exclude(group = "commons-logging", module = "commons-logging")
     }
     runtimeOnly("com.oracle.database.jdbc:ojdbc11")
@@ -55,7 +55,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-security-test")
     testImplementation("org.springframework.boot:spring-boot-starter-actuator-test")
     testImplementation("org.jetbrains.kotlin:kotlin-test-junit5")
-    testImplementation("io.mockk:mockk:1.14.9")
+    testImplementation("io.mockk:mockk:1.14.11")
     testRuntimeOnly("org.junit.platform:junit-platform-launcher")
 }
 
