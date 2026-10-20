@@ -358,7 +358,7 @@ jobs:
       - formatter-build-docker
       - reverse-proxy-build-docker
     if: |
-      always() &&
+      false &&
       github.event_name == 'push' &&
       (
         needs.ui-build-docker.result == 'success' ||
