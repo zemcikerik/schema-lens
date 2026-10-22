@@ -10,6 +10,7 @@
     "build": {
       "executor": "@nx/angular:application",
       "outputs": ["{options.outputPath}"],
+      "defaultConfiguration": "production",
       "options": {
         "outputPath": "dist/schema-lens",
         "index": "./src/index.html",
@@ -48,11 +49,15 @@
           "extractLicenses": false,
           "sourceMap": true
         }
-      },
-      "defaultConfiguration": "production"
+      }
     },
     "serve": {
       "executor": "@nx/angular:dev-server",
+      "defaultConfiguration": "development",
+      "continuous": true,
+      "options": {
+        "proxyConfig": "./src/proxy-local.config.json"
+      },
       "configurations": {
         "production": {
           "buildTarget": "schema-lens:build:production"
@@ -61,11 +66,9 @@
           "buildTarget": "schema-lens:build:development"
         }
       },
-      "defaultConfiguration": "development",
-      "options": {
-        "proxyConfig": "./src/proxy-local.config.json"
-      },
-      "continuous": true
+      "readyWhen": {
+        "signal": true
+      }
     },
     "extract-i18n": {
       "executor": "@angular-devkit/build-angular:extract-i18n",
@@ -74,17 +77,33 @@
       }
     },
     "lint": {
-      "executor": "@nx/eslint:lint",
-      "options": {
-        "lintFilePatterns": ["./src"]
-      }
+      "inputs": [
+        "default",
+        "{workspaceRoot}/.eslintrc.json",
+        "{workspaceRoot}/.eslintignore",
+        "{workspaceRoot}/eslint.config.mjs",
+        {
+          "externalDependencies": ["eslint"]
+        }
+      ]
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectName}"],
+      "inputs": [
+        "default",
+        "^production",
+        "{workspaceRoot}/jest.preset.js",
+        {
+          "externalDependencies": ["jest", "@nx/jest", "ts-jest", "jest-preset-angular"]
+        }
+      ],
       "options": {
-        "jestConfig": "jest.config.ts",
-        "tsConfig": "tsconfig.spec.json"
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "coverage": true
+        }
       }
     },
     "serve-static": {

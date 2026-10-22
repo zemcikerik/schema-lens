@@ -1,6 +1,7 @@
 import { TableService } from './table.service';
 import { MockBuilder, MockRender, ngMocks } from 'ng-mocks';
 import { TableHttpClientService } from './table-http-client.service';
+import { TableCacheService } from './table-cache.service';
 import { lastValueFrom, of, Subject } from 'rxjs';
 import { Table } from '../models/table.model';
 
@@ -10,7 +11,8 @@ describe('TableService', () => {
   ngMocks.faster();
 
   beforeAll(() => MockBuilder(TableService)
-    .mock(TableHttpClientService));
+    .mock(TableHttpClientService)
+    .keep(TableCacheService));
 
   beforeEach(() => {
     service = MockRender(TableService).point.componentInstance;

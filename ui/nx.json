@@ -21,53 +21,25 @@
       "dependsOn": ["^build"],
       "inputs": ["production", "^production"]
     },
-    "@nx/eslint:lint": {
-      "cache": true,
-      "inputs": [
-        "default",
-        "{workspaceRoot}/.eslintrc.json",
-        "{workspaceRoot}/.eslintignore",
-        "{workspaceRoot}/eslint.config.mjs"
-      ]
-    },
-    "@nx/jest:jest": {
-      "cache": true,
-      "inputs": ["default", "^production", "{workspaceRoot}/jest.preset.js"],
-      "options": {
-        "passWithNoTests": true
-      },
-      "configurations": {
-        "ci": {
-          "ci": true,
-          "codeCoverage": true
-        }
-      }
-    },
     "e2e-ci--**/*": {
       "dependsOn": ["^build"]
     }
   },
   "plugins": [
     {
-      "plugin": "@nx/playwright/plugin",
-      "options": {
-        "targetName": "e2e"
-      }
-    },
-    {
       "plugin": "@nx/eslint/plugin",
       "options": {
         "targetName": "lint"
       }
+    },
+    {
+      "plugin": "@nx/jest/plugin",
+      "options": {
+        "targetName": "test"
+      }
     }
   ],
   "generators": {
-    "@nx/angular:application": {
-      "e2eTestRunner": "playwright",
-      "linter": "eslint",
-      "style": "scss",
-      "unitTestRunner": "jest"
-    },
     "@nx/angular:component": {
       "style": "scss",
       "type": "component"
@@ -86,12 +58,6 @@
     },
     "@schematics/angular:service": {
       "type": "service"
-    },
-    "@nx/angular:scam": {
-      "type": "component"
-    },
-    "@nx/angular:scam-directive": {
-      "type": "directive"
     },
     "@nx/angular:guard": {
       "typeSeparator": "."
@@ -126,5 +92,8 @@
   },
   "defaultProject": "schema-lens",
   "useLegacyCache": false,
-  "analytics": false
+  "analytics": false,
+  "affected": {
+    "legacy": true
+  }
 }

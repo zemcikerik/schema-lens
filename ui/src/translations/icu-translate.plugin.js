@@ -1,6 +1,6 @@
 import path from 'node:path';
 import { readFile } from 'node:fs/promises';
-import compileModule from '@messageformat/core/compile-module'
+import compileModule from '@messageformat/core/compile-module.js';
 import MessageFormat from '@messageformat/core';
 
 export const icuTranslatePlugin = {
